@@ -124,7 +124,7 @@ function App() {
           <div className="flex items-center justify-between">
             <div className="flex items-center">
               <div className="bg-white/20 backdrop-blur-sm p-2 sm:p-3 rounded-xl mr-3 sm:mr-4">
-                <img src="/krishyak_logo.png" alt="Krishyak Logo" className="w-6 h-6 sm:w-8 sm:h-8" />
+                <img src="/krishyak_logo.png" alt="Krishyak Logo" className="w-10 h-10 sm:w-12 sm:h-12" />
               </div>
               <div>
                 <h1 className="text-xl sm:text-3xl font-bold text-white">Krishyak</h1>
