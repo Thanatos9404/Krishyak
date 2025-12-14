@@ -6,19 +6,6 @@
   <img src="frontend/public/krishyak_logo.png" alt="Krishyak Logo" width="120">
 </p>
 
-## 📸 Screenshots
-
-### Main Dashboard
-![Dashboard](screenshots/dashboard.png)
-
-### Crop Health Check (AI Disease Detection)
-![Crop Health](screenshots/crop_health.png)
-
-### Simulation Panel
-![Simulation](screenshots/simulation.png)
-
----
-
 ## 🌾 Overview
 
 Krishyak (कृष्यक - "The Cultivator") is a comprehensive full-stack web application that helps Indian farmers make data-driven decisions about crop planning, cultivation strategies, and market timing. The system uses advanced simulation engines, machine learning models, and real-time data to provide actionable insights.
@@ -38,6 +25,17 @@ Krishyak (कृष्यक - "The Cultivator") is a comprehensive full-stack w
 | 🏛️ **Government Schemes** | Eligibility checker for PM-KISAN, PMFBY, KCC and 8+ schemes |
 | 🌿 **Disease Detection** | Multi-source AI-powered crop disease identification with treatment recommendations |
 | 📱 **Mobile Responsive** | Floating action button and bottom sheet for mobile-first experience |
+
+
+## 📸 Screenshots
+
+### Main Dashboard
+![Dashboard](screenshots/dashboard.png)
+
+### Crop Health Check (AI Disease Detection)
+![Crop Health](screenshots/crop_health.png)
+
+---
 
 ## 🏗️ Technology Stack
 
