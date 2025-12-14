@@ -1,9 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Sprout, BarChart3, Lightbulb, TrendingUp } from 'lucide-react';
+import { BarChart3, Lightbulb, TrendingUp, Leaf } from 'lucide-react';
 import Sidebar from './components/Sidebar';
 import Dashboard from './components/Dashboard';
 import ScenarioComparison from './components/ScenarioComparison';
 import RecommendationPanel from './components/RecommendationPanel';
+import CropHealthCheck from './components/CropHealthCheck';
+import LoadingOverlay from './components/LoadingOverlay';
+import FloatingActionButton from './components/FloatingActionButton';
+import BottomSheet from './components/BottomSheet';
+import { useToast, ToastContainer } from './components/Toast';
 import farmingApi from './api/farmingApi';
 
 function App() {
@@ -14,6 +19,8 @@ function App() {
   const [simulationData, setSimulationData] = useState(null);
   const [comparisonData, setComparisonData] = useState(null);
   const [recommendationData, setRecommendationData] = useState(null);
+  const [mobileInputsOpen, setMobileInputsOpen] = useState(false);
+  const { toasts, addToast, removeToast } = useToast();
 
   const [formData, setFormData] = useState({
     crop: 'Rice',
@@ -52,7 +59,6 @@ function App() {
       setSoilTypes(soilsRes.soil_types || []);
     } catch (error) {
       console.error('Error loading initial data:', error);
-      // Set defaults if API fails
       setCrops(['Rice', 'Wheat', 'Maize', 'Cotton', 'Sugarcane']);
       setSoilTypes(['Alluvial', 'Black', 'Red', 'Laterite', 'Desert']);
     }
@@ -60,8 +66,9 @@ function App() {
 
   const runSimulation = async () => {
     setLoading(true);
+    setMobileInputsOpen(false);
+
     try {
-      // Run all three API calls
       const [simRes, compRes, recRes] = await Promise.all([
         farmingApi.simulate(formData, 500),
         farmingApi.compareScenarios(formData, 500),
@@ -71,37 +78,62 @@ function App() {
       setSimulationData(simRes.data);
       setComparisonData(compRes.data);
       setRecommendationData(recRes.data);
-      
-      // Switch to dashboard tab after simulation
       setActiveTab('dashboard');
+
+      const profitImprovement = recRes.data.profit_improvement || 0;
+      addToast({
+        type: 'success',
+        message: '✅ Analysis Complete!',
+        profitImprovement: profitImprovement,
+        actionText: 'View Recommendations',
+        onAction: () => setActiveTab('recommendations')
+      });
+
     } catch (error) {
       console.error('Simulation error:', error);
-      alert('Error running simulation. Please check if the backend server is running on port 8000.');
+      addToast({
+        type: 'error',
+        message: 'Failed to run simulation. Please check if backend is running.',
+        actionText: 'Retry',
+        onAction: runSimulation
+      });
     } finally {
       setLoading(false);
     }
   };
 
+  const SidebarContent = () => (
+    <Sidebar
+      formData={formData}
+      setFormData={setFormData}
+      crops={crops}
+      soilTypes={soilTypes}
+      onSimulate={runSimulation}
+      loading={loading}
+    />
+  );
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-farm-green-50 via-earth-brown-50 to-sky-blue-50">
+      <ToastContainer toasts={toasts} removeToast={removeToast} />
+      <LoadingOverlay isLoading={loading} />
+
       {/* Header */}
-      <header className="bg-white shadow-lg border-b-4 border-farm-green-500">
-        <div className="max-w-7xl mx-auto px-6 py-4">
+      <header className="bg-gradient-to-r from-farm-green-600 via-farm-green-500 to-farm-green-400 shadow-lg">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
-              <div className="bg-gradient-to-r from-farm-green-500 to-farm-green-600 p-3 rounded-xl mr-4">
-                <Sprout className="w-8 h-8 text-white" />
+              <div className="bg-white/20 backdrop-blur-sm p-2 sm:p-3 rounded-xl mr-3 sm:mr-4">
+                <img src="/krishyak_logo.png" alt="Krishyak Logo" className="w-6 h-6 sm:w-8 sm:h-8" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-gray-800">
-                  KrishiSaarthi
-                </h1>
-                <p className="text-sm text-gray-600">AI Farm Decision Simulator</p>
+                <h1 className="text-xl sm:text-3xl font-bold text-white">Krishyak</h1>
+                <p className="text-xs sm:text-sm text-green-100">AI Farm Decision Simulator</p>
               </div>
             </div>
             <div className="hidden md:flex items-center space-x-2">
-              <div className="bg-farm-green-100 px-4 py-2 rounded-lg">
-                <p className="text-xs text-farm-green-700 font-semibold">
+              <div className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-lg">
+                <p className="text-xs text-white font-semibold">
                   🌾 Smart Farming • 📊 Data-Driven • 🤖 AI-Powered
                 </p>
               </div>
@@ -111,69 +143,51 @@ function App() {
       </header>
 
       {/* Tab Navigation */}
-      <div className="bg-white shadow-md">
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex space-x-1">
-            <TabButton
-              icon={BarChart3}
-              label="Dashboard"
-              active={activeTab === 'dashboard'}
-              onClick={() => setActiveTab('dashboard')}
-            />
-            <TabButton
-              icon={TrendingUp}
-              label="Scenario Comparison"
-              active={activeTab === 'comparison'}
-              onClick={() => setActiveTab('comparison')}
-            />
-            <TabButton
-              icon={Lightbulb}
-              label="AI Recommendations"
-              active={activeTab === 'recommendations'}
-              onClick={() => setActiveTab('recommendations')}
-            />
+      <div className="bg-white shadow-md sticky top-0 z-30">
+        <div className="max-w-7xl mx-auto px-2 sm:px-6">
+          <div className="flex overflow-x-auto scrollbar-hide">
+            <TabButton icon={BarChart3} label="Dashboard" active={activeTab === 'dashboard'} onClick={() => setActiveTab('dashboard')} />
+            <TabButton icon={TrendingUp} label="Scenarios" active={activeTab === 'comparison'} onClick={() => setActiveTab('comparison')} />
+            <TabButton icon={Lightbulb} label="AI Insights" active={activeTab === 'recommendations'} onClick={() => setActiveTab('recommendations')} />
+            <TabButton icon={Leaf} label="Crop Health" active={activeTab === 'health'} onClick={() => setActiveTab('health')} />
           </div>
         </div>
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto p-6">
+      <div className="max-w-7xl mx-auto p-4 sm:p-6">
         <div className="flex flex-col lg:flex-row gap-6">
-          {/* Sidebar */}
-          <Sidebar
-            formData={formData}
-            setFormData={setFormData}
-            crops={crops}
-            soilTypes={soilTypes}
-            onSimulate={runSimulation}
-            loading={loading}
-          />
+          <div className="hidden lg:block">
+            <SidebarContent />
+          </div>
 
-          {/* Main Content Area */}
           <div className="flex-1">
-            {activeTab === 'dashboard' && (
-              <Dashboard simulationData={simulationData} />
-            )}
-            {activeTab === 'comparison' && (
-              <ScenarioComparison comparisonData={comparisonData} />
-            )}
+            {activeTab === 'dashboard' && <Dashboard simulationData={simulationData} />}
+            {activeTab === 'comparison' && <ScenarioComparison comparisonData={comparisonData} />}
             {activeTab === 'recommendations' && (
-              <RecommendationPanel 
+              <RecommendationPanel
                 recommendationData={recommendationData}
                 simulationData={simulationData}
+                formData={formData}
               />
             )}
+            {activeTab === 'health' && <CropHealthCheck />}
           </div>
         </div>
       </div>
+
+      <FloatingActionButton onClick={() => setMobileInputsOpen(true)} />
+
+      <BottomSheet isOpen={mobileInputsOpen} onClose={() => setMobileInputsOpen(false)} title="Farm Inputs">
+        <SidebarContent />
+      </BottomSheet>
 
       {/* Footer */}
       <footer className="bg-white border-t-2 border-farm-green-100 mt-12">
         <div className="max-w-7xl mx-auto px-6 py-6">
           <div className="text-center text-gray-600 text-sm">
             <p className="mb-2">
-              <span className="font-semibold text-farm-green-600">KrishiSaarthi</span> - 
-              Empowering Indian farmers with AI-driven decision support
+              <span className="font-semibold text-farm-green-600">Krishyak</span> - Empowering Indian farmers with AI-driven decision support
             </p>
             <p className="text-xs text-gray-500">
               Built with React, FastAPI, and advanced ML models • Data-driven insights for sustainable farming
@@ -188,14 +202,13 @@ function App() {
 const TabButton = ({ icon: Icon, label, active, onClick }) => (
   <button
     onClick={onClick}
-    className={`flex items-center px-6 py-4 font-semibold transition-all duration-300 border-b-4 ${
-      active
-        ? 'border-farm-green-500 text-farm-green-600 bg-farm-green-50'
-        : 'border-transparent text-gray-600 hover:text-farm-green-600 hover:bg-gray-50'
-    }`}
+    className={`flex items-center px-3 sm:px-6 py-3 sm:py-4 font-semibold transition-all duration-300 border-b-4 whitespace-nowrap ${active
+      ? 'border-farm-green-500 text-farm-green-600 bg-farm-green-50'
+      : 'border-transparent text-gray-600 hover:text-farm-green-600 hover:bg-gray-50'
+      }`}
   >
-    <Icon className="w-5 h-5 mr-2" />
-    {label}
+    <Icon className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
+    <span className="text-sm sm:text-base">{label}</span>
   </button>
 );
 

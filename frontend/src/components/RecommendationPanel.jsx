@@ -1,8 +1,51 @@
 import React from 'react';
 import { Lightbulb, TrendingUp, Shield, Target, ArrowRight } from 'lucide-react';
 import PriceForecastChart from './PriceForecastChart';
+import GovernmentSchemes from './GovernmentSchemes';
 
-const RecommendationPanel = ({ recommendationData, simulationData }) => {
+// Helper function to format recommendation text (remove markdown asterisks, format properly)
+const formatRecommendation = (text) => {
+  if (!text) return null;
+
+  // Process the text into formatted sections
+  const lines = text.split('\n').filter(line => line.trim());
+
+  return lines.map((line, index) => {
+    let processedLine = line.trim();
+
+    // Handle **bold** text by converting to strong styling
+    processedLine = processedLine.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+
+    // Check if it's a bullet point
+    const isBullet = processedLine.startsWith('•') || processedLine.startsWith('-');
+
+    // Check if it's a header (starts with emoji or uppercase)
+    const isHeader = /^[🌾💡📊💰✅🎯]/.test(processedLine) ||
+      (processedLine.startsWith('<strong>') && processedLine.endsWith('</strong>'));
+
+    if (isBullet) {
+      return (
+        <li key={index} className="text-gray-700 ml-4 mb-1">
+          <span dangerouslySetInnerHTML={{ __html: processedLine.replace(/^[•\-]\s*/, '') }} />
+        </li>
+      );
+    } else if (isHeader) {
+      return (
+        <p key={index} className="font-semibold text-gray-800 mt-4 mb-2">
+          <span dangerouslySetInnerHTML={{ __html: processedLine }} />
+        </p>
+      );
+    } else {
+      return (
+        <p key={index} className="text-gray-700 mb-2">
+          <span dangerouslySetInnerHTML={{ __html: processedLine }} />
+        </p>
+      );
+    }
+  });
+};
+
+const RecommendationPanel = ({ recommendationData, simulationData, formData }) => {
   if (!recommendationData) return null;
 
   return (
@@ -23,11 +66,9 @@ const RecommendationPanel = ({ recommendationData, simulationData }) => {
           </div>
         </div>
 
-        <div className="prose max-w-none">
-          <div className="bg-white rounded-xl p-6 shadow-sm border-l-4 border-farm-green-500">
-            <pre className="whitespace-pre-wrap font-sans text-gray-700 leading-relaxed">
-              {recommendationData.recommendation_text}
-            </pre>
+        <div className="bg-white rounded-xl p-6 shadow-sm border-l-4 border-farm-green-500">
+          <div className="prose max-w-none">
+            {formatRecommendation(recommendationData.recommendation_text)}
           </div>
         </div>
       </div>
@@ -66,7 +107,7 @@ const RecommendationPanel = ({ recommendationData, simulationData }) => {
         </div>
 
         {/* Risk Improvement */}
-        <div className="card-farm card-glow p-6 animate-fade-in" style={{animationDelay: '0.1s'}}>
+        <div className="card-farm card-glow p-6 animate-fade-in" style={{ animationDelay: '0.1s' }}>
           <div className="flex items-center mb-4">
             <div className="bg-blue-100 p-3 rounded-xl mr-3">
               <Shield className="w-6 h-6 text-blue-600" />
@@ -97,7 +138,7 @@ const RecommendationPanel = ({ recommendationData, simulationData }) => {
         </div>
 
         {/* Key Optimizations */}
-        <div className="card-farm card-glow p-6 animate-fade-in" style={{animationDelay: '0.2s'}}>
+        <div className="card-farm card-glow p-6 animate-fade-in" style={{ animationDelay: '0.2s' }}>
           <div className="flex items-center mb-4">
             <div className="bg-yellow-100 p-3 rounded-xl mr-3">
               <Target className="w-6 h-6 text-yellow-600" />
@@ -132,7 +173,7 @@ const RecommendationPanel = ({ recommendationData, simulationData }) => {
         <h3 className="text-xl font-bold text-gray-800 mb-4">Action Items</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           {recommendationData.key_insights.map((insight, idx) => (
-            <div 
+            <div
               key={idx}
               className="flex items-start p-4 bg-gradient-to-r from-farm-green-50 to-white rounded-xl border-l-4 border-farm-green-500"
             >
@@ -149,6 +190,9 @@ const RecommendationPanel = ({ recommendationData, simulationData }) => {
       {simulationData && simulationData.price_forecast && (
         <PriceForecastChart forecastData={simulationData.price_forecast} />
       )}
+
+      {/* Government Schemes */}
+      <GovernmentSchemes formData={formData} simulationData={simulationData} />
     </div>
   );
 };

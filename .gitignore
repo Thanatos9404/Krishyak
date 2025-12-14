@@ -37,6 +37,7 @@ yarn-error.log*
 # OS
 .DS_Store
 Thumbs.db
+desktop.ini
 
 # Build
 build/
@@ -48,18 +49,43 @@ frontend/build/
 *.log
 logs/
 
-# Models
+# ML Models (large files)
 backend/models/*.pkl
 backend/models/*.h5
+backend/models/*.keras
+backend/models/*.tflite
+backend/models/class_indices.json
+*.onnx
+
+# TensorFlow/Keras
+*.pb
+checkpoint/
+saved_model/
 
 # Data (keep structure, ignore large files)
-datasets/*.csv
-datasets/*.xls
-datasets/*.xlsx
-datasets/*.zip
-datasets/*.tar.gz
-datasets/*.json
+datasets/
 !datasets/.gitkeep
 
 # React
 .eslintcache
+
+# Agent/AI artifacts (keep only in local)
+.gemini/
+.agent/
+
+# Jupyter Notebooks checkpoints
+.ipynb_checkpoints/
+
+# Coverage reports
+coverage/
+htmlcov/
+.coverage
+
+# Package lock (optional - keep for consistency)
+# package-lock.json
+# yarn.lock
+
+# Temporary files
+*.tmp
+*.temp
+*.bak

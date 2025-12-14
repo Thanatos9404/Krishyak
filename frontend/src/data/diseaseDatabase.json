@@ -1,0 +1,772 @@
+{
+  "diseases": {
+    "rice": [
+      {
+        "id": "rice_blast",
+        "name": "Rice Blast",
+        "scientificName": "Magnaporthe oryzae",
+        "severity": "high",
+        "symptoms": [
+          "Diamond-shaped lesions with gray centers on leaves",
+          "Brown edges around lesions",
+          "Lesions may coalesce killing entire leaves",
+          "Node rot causing stem breakage"
+        ],
+        "causes": [
+          "Fungal pathogen spread by wind and rain",
+          "High humidity (>90%)",
+          "Temperature between 25-28°C",
+          "Excessive nitrogen fertilization"
+        ],
+        "treatment": [
+          "Apply Tricyclazole 75% WP @ 0.6g/L water",
+          "Use Carbendazim 50% WP @ 1g/L as foliar spray",
+          "Remove and destroy infected plant debris",
+          "Drain fields and reduce water for few days"
+        ],
+        "prevention": [
+          "Use resistant varieties (Pusa Basmati, IR64)",
+          "Balanced fertilizer application",
+          "Avoid excessive nitrogen",
+          "Maintain proper spacing between plants"
+        ],
+        "affectedParts": [
+          "leaves",
+          "stems",
+          "nodes",
+          "panicles"
+        ]
+      },
+      {
+        "id": "rice_brown_spot",
+        "name": "Brown Spot",
+        "scientificName": "Bipolaris oryzae",
+        "severity": "medium",
+        "symptoms": [
+          "Oval brown spots on leaves",
+          "Spots have yellow halo around them",
+          "Grains become discolored and chaffy",
+          "Poor grain filling"
+        ],
+        "causes": [
+          "Fungus favored by nutrient deficiency",
+          "Potassium and silicon deficiency",
+          "Drought stress",
+          "Temperature 25-30°C with high humidity"
+        ],
+        "treatment": [
+          "Spray Mancozeb 75% WP @ 2.5g/L water",
+          "Apply Propiconazole 25% EC @ 1ml/L",
+          "Foliar application of potassium fertilizer",
+          "Seed treatment with Carbendazim before sowing"
+        ],
+        "prevention": [
+          "Ensure balanced NPK nutrition",
+          "Add potash and silica to soil",
+          "Use certified disease-free seeds",
+          "Avoid water stress during crop growth"
+        ],
+        "affectedParts": [
+          "leaves",
+          "grains"
+        ]
+      },
+      {
+        "id": "rice_sheath_blight",
+        "name": "Sheath Blight",
+        "scientificName": "Rhizoctonia solani",
+        "severity": "high",
+        "symptoms": [
+          "Oval or irregular greenish-gray lesions on sheath",
+          "Lesions have dark brown margins",
+          "White fungal growth visible in humid conditions",
+          "Rotting of leaf sheath causing lodging"
+        ],
+        "causes": [
+          "Soil-borne fungal pathogen",
+          "High plant density",
+          "Excessive nitrogen fertilization",
+          "Waterlogged conditions"
+        ],
+        "treatment": [
+          "Spray Hexaconazole 5% EC @ 2ml/L",
+          "Apply Validamycin 3% L @ 2.5ml/L",
+          "Drain excess water from field",
+          "Remove severely infected plants"
+        ],
+        "prevention": [
+          "Optimum plant spacing",
+          "Avoid excess nitrogen",
+          "Crop rotation with non-host crops",
+          "Use resistant varieties"
+        ],
+        "affectedParts": [
+          "sheath",
+          "leaves",
+          "stems"
+        ]
+      }
+    ],
+    "wheat": [
+      {
+        "id": "wheat_yellow_rust",
+        "name": "Yellow Rust (Stripe Rust)",
+        "scientificName": "Puccinia striiformis",
+        "severity": "high",
+        "symptoms": [
+          "Yellow-orange pustules in stripes along leaves",
+          "Pustules arranged in linear patterns",
+          "Severe infection causes leaf yellowing",
+          "Premature drying of leaves"
+        ],
+        "causes": [
+          "Cool temperatures (10-15°C)",
+          "High humidity and dew",
+          "Wind-borne spore dispersal",
+          "Susceptible varieties"
+        ],
+        "treatment": [
+          "Spray Propiconazole 25% EC @ 0.1%",
+          "Apply Tebuconazole 25% EC @ 1ml/L",
+          "Two sprays at 15-day interval",
+          "First spray at disease appearance"
+        ],
+        "prevention": [
+          "Grow resistant varieties (HD 2967, HD 3086)",
+          "Timely sowing (avoid late sowing)",
+          "Avoid excessive nitrogen",
+          "Regular field monitoring"
+        ],
+        "affectedParts": [
+          "leaves",
+          "stems"
+        ]
+      },
+      {
+        "id": "wheat_brown_rust",
+        "name": "Brown Rust (Leaf Rust)",
+        "scientificName": "Puccinia triticina",
+        "severity": "medium",
+        "symptoms": [
+          "Orange-brown circular pustules on leaves",
+          "Pustules scattered randomly on leaf surface",
+          "Affected leaves turn yellow and dry",
+          "Reduced grain weight"
+        ],
+        "causes": [
+          "Moderate temperature (15-25°C)",
+          "High humidity",
+          "Dense crop canopy",
+          "Late sown crop more susceptible"
+        ],
+        "treatment": [
+          "Spray Mancozeb 75% WP @ 0.25%",
+          "Apply Propiconazole @ 0.1%",
+          "Repeat spray after 15 days if needed"
+        ],
+        "prevention": [
+          "Use resistant varieties",
+          "Optimal sowing time",
+          "Balanced fertilization",
+          "Remove volunteer wheat plants"
+        ],
+        "affectedParts": [
+          "leaves"
+        ]
+      }
+    ],
+    "cotton": [
+      {
+        "id": "cotton_bacterial_blight",
+        "name": "Bacterial Blight",
+        "scientificName": "Xanthomonas citri pv. malvacearum",
+        "severity": "high",
+        "symptoms": [
+          "Angular water-soaked lesions on leaves",
+          "Lesions turn brown with yellow halo",
+          "Black arm symptom on stems",
+          "Boll rot in severe cases"
+        ],
+        "causes": [
+          "Bacteria spread through rain splash",
+          "Infected seeds",
+          "High humidity and rainfall",
+          "Temperature 25-30°C"
+        ],
+        "treatment": [
+          "Spray Streptocycline @ 0.01%",
+          "Copper oxychloride 50% WP @ 0.3%",
+          "Remove and destroy infected plants",
+          "Avoid working in wet fields"
+        ],
+        "prevention": [
+          "Use disease-free certified seeds",
+          "Seed treatment with Carboxin",
+          "Crop rotation for 2-3 years",
+          "Grow resistant varieties"
+        ],
+        "affectedParts": [
+          "leaves",
+          "stems",
+          "bolls"
+        ]
+      },
+      {
+        "id": "cotton_leaf_curl",
+        "name": "Leaf Curl Virus",
+        "scientificName": "Cotton leaf curl virus (CLCuV)",
+        "severity": "high",
+        "symptoms": [
+          "Upward curling of leaves",
+          "Thickening of leaf veins",
+          "Enations (leaf-like outgrowths) on underside",
+          "Stunted plant growth"
+        ],
+        "causes": [
+          "Virus transmitted by whitefly (Bemisia tabaci)",
+          "High whitefly population",
+          "Infected crop residues",
+          "Continuous cotton cultivation"
+        ],
+        "treatment": [
+          "Control whitefly with Imidacloprid @ 0.5ml/L",
+          "Spray Thiamethoxam 25% WG @ 0.5g/L",
+          "Remove and destroy infected plants early",
+          "Use yellow sticky traps"
+        ],
+        "prevention": [
+          "Grow resistant/tolerant varieties",
+          "Early sowing to escape whitefly peak",
+          "Destroy crop residues after harvest",
+          "Avoid growing okra nearby"
+        ],
+        "affectedParts": [
+          "leaves",
+          "whole plant"
+        ]
+      }
+    ],
+    "tomato": [
+      {
+        "id": "tomato_early_blight",
+        "name": "Early Blight",
+        "scientificName": "Alternaria solani",
+        "severity": "medium",
+        "symptoms": [
+          "Dark brown spots with concentric rings (target spots)",
+          "Spots start on lower leaves",
+          "Yellowing around spots",
+          "Fruit develops dark sunken spots at stem end"
+        ],
+        "causes": [
+          "Fungus survives in plant debris",
+          "Warm humid weather (24-29°C)",
+          "Overhead irrigation",
+          "Poor air circulation"
+        ],
+        "treatment": [
+          "Spray Mancozeb 75% WP @ 2.5g/L",
+          "Apply Chlorothalonil @ 2g/L",
+          "Remove infected lower leaves",
+          "Apply at 7-10 day intervals"
+        ],
+        "prevention": [
+          "Crop rotation with non-solanaceous crops",
+          "Use disease-free transplants",
+          "Adequate plant spacing",
+          "Mulching to prevent soil splash"
+        ],
+        "affectedParts": [
+          "leaves",
+          "stems",
+          "fruits"
+        ]
+      },
+      {
+        "id": "tomato_late_blight",
+        "name": "Late Blight",
+        "scientificName": "Phytophthora infestans",
+        "severity": "high",
+        "symptoms": [
+          "Water-soaked spots on leaves turning brown",
+          "White fuzzy growth on leaf underside",
+          "Rapid plant collapse in wet weather",
+          "Brown patches on fruits"
+        ],
+        "causes": [
+          "Cool wet conditions (10-20°C)",
+          "High humidity (>90%)",
+          "Rain and fog",
+          "Infected seed potatoes nearby"
+        ],
+        "treatment": [
+          "Spray Metalaxyl + Mancozeb @ 2.5g/L",
+          "Apply Cymoxanil 8% + Mancozeb 64% @ 3g/L",
+          "Remove and destroy infected plants",
+          "Increase spray frequency in wet weather"
+        ],
+        "prevention": [
+          "Use resistant varieties",
+          "Avoid overhead irrigation",
+          "Proper drainage",
+          "Don't plant near potato fields"
+        ],
+        "affectedParts": [
+          "leaves",
+          "stems",
+          "fruits"
+        ]
+      },
+      {
+        "id": "tomato_leaf_mold",
+        "name": "Leaf Mold",
+        "scientificName": "Passalora fulva",
+        "severity": "medium",
+        "symptoms": [
+          "Pale green to yellow spots on upper leaf surface",
+          "Olive-green velvety mold on lower leaf surface",
+          "Leaves curl and die in severe cases",
+          "Common in greenhouse conditions"
+        ],
+        "causes": [
+          "High humidity (>85%)",
+          "Poor ventilation",
+          "Moderate temperatures (22-24°C)",
+          "Dense planting"
+        ],
+        "treatment": [
+          "Spray Chlorothalonil @ 2g/L",
+          "Apply Copper-based fungicides",
+          "Improve greenhouse ventilation",
+          "Reduce humidity"
+        ],
+        "prevention": [
+          "Grow resistant varieties",
+          "Ensure good air circulation",
+          "Avoid leaf wetness",
+          "Use drip irrigation"
+        ],
+        "affectedParts": [
+          "leaves"
+        ]
+      },
+      {
+        "id": "tomato_mosaic",
+        "name": "Tomato Mosaic Virus",
+        "scientificName": "Tomato mosaic virus (ToMV)",
+        "severity": "high",
+        "symptoms": [
+          "Light and dark green mottling on leaves",
+          "Leaf curling and distortion",
+          "Stunted plant growth",
+          "Reduced fruit size and quality"
+        ],
+        "causes": [
+          "Virus spread by contaminated tools",
+          "Infected seeds",
+          "Mechanical transmission by workers",
+          "Very stable virus survives in soil"
+        ],
+        "treatment": [
+          "No chemical cure available",
+          "Remove and destroy infected plants",
+          "Disinfect tools with 10% bleach",
+          "Control aphids with insecticides"
+        ],
+        "prevention": [
+          "Use virus-free seeds",
+          "Wash hands before handling plants",
+          "Disinfect tools regularly",
+          "Remove weeds that harbor virus"
+        ],
+        "affectedParts": [
+          "leaves",
+          "fruits",
+          "whole plant"
+        ]
+      }
+    ],
+    "potato": [
+      {
+        "id": "potato_late_blight",
+        "name": "Late Blight",
+        "scientificName": "Phytophthora infestans",
+        "severity": "high",
+        "symptoms": [
+          "Water-soaked lesions on leaves",
+          "White mold on leaf underside",
+          "Rapid plant death in wet conditions",
+          "Brown rot in tubers"
+        ],
+        "causes": [
+          "Cool moist weather",
+          "Infected seed tubers",
+          "Volunteer potato plants",
+          "Wind-borne spores"
+        ],
+        "treatment": [
+          "Spray Mancozeb @ 0.25%",
+          "Apply Metalaxyl-M + Mancozeb",
+          "Destroy infected plants",
+          "Copper-based fungicides"
+        ],
+        "prevention": [
+          "Use certified seed tubers",
+          "Plant resistant varieties",
+          "Good drainage",
+          "Destroy volunteer plants"
+        ],
+        "affectedParts": [
+          "leaves",
+          "stems",
+          "tubers"
+        ]
+      },
+      {
+        "id": "potato_early_blight",
+        "name": "Early Blight",
+        "scientificName": "Alternaria solani",
+        "severity": "medium",
+        "symptoms": [
+          "Target-like spots with concentric rings",
+          "Starts on lower older leaves",
+          "Leaf yellowing and drop",
+          "Dark lesions on tubers"
+        ],
+        "causes": [
+          "Warm humid weather",
+          "Stressed plants",
+          "Poor nutrition",
+          "Previous crop residue"
+        ],
+        "treatment": [
+          "Spray Chlorothalonil @ 2g/L",
+          "Apply Azoxystrobin @ 1ml/L",
+          "Improve plant nutrition",
+          "Remove infected leaves"
+        ],
+        "prevention": [
+          "Crop rotation",
+          "Balanced fertilization",
+          "Adequate irrigation",
+          "Use resistant varieties"
+        ],
+        "affectedParts": [
+          "leaves",
+          "tubers"
+        ]
+      }
+    ],
+    "mango": [
+      {
+        "id": "mango_anthracnose",
+        "name": "Anthracnose",
+        "scientificName": "Colletotrichum gloeosporioides",
+        "severity": "high",
+        "symptoms": [
+          "Black spots on leaves and flowers",
+          "Flower and fruit drop",
+          "Dark sunken spots on fruits",
+          "Tear stain on fruits during ripening"
+        ],
+        "causes": [
+          "High humidity and rainfall",
+          "Warm temperature (25-30°C)",
+          "Dense canopy",
+          "Infected plant debris"
+        ],
+        "treatment": [
+          "Spray Carbendazim 50% WP @ 1g/L",
+          "Apply Copper oxychloride @ 3g/L",
+          "Hot water treatment of fruits (52°C, 5 min)",
+          "Post-harvest dip in fungicide"
+        ],
+        "prevention": [
+          "Prune trees for air circulation",
+          "Remove fallen leaves and fruits",
+          "Pre-bloom fungicide spray",
+          "Proper orchard sanitation"
+        ],
+        "affectedParts": [
+          "leaves",
+          "flowers",
+          "fruits"
+        ]
+      },
+      {
+        "id": "mango_powdery_mildew",
+        "name": "Powdery Mildew",
+        "scientificName": "Oidium mangiferae",
+        "severity": "high",
+        "symptoms": [
+          "White powdery coating on flowers",
+          "Affected flowers drop early",
+          "Poor fruit set",
+          "Young fruits develop cracks"
+        ],
+        "causes": [
+          "Cool dry weather",
+          "Temperature 10-31°C",
+          "High humidity at night",
+          "Cloudy weather during flowering"
+        ],
+        "treatment": [
+          "Spray Sulfur 80% WP @ 2g/L",
+          "Apply Hexaconazole @ 1ml/L",
+          "Spray at flower bud stage",
+          "Repeat at 15-day intervals"
+        ],
+        "prevention": [
+          "Avoid close planting",
+          "Maintain orchard hygiene",
+          "Pre-flowering sulfur spray",
+          "Regular monitoring during flowering"
+        ],
+        "affectedParts": [
+          "flowers",
+          "fruits",
+          "leaves"
+        ]
+      }
+    ],
+    "grapes": [
+      {
+        "id": "grape_downy_mildew",
+        "name": "Downy Mildew",
+        "scientificName": "Plasmopara viticola",
+        "severity": "high",
+        "symptoms": [
+          "Oily spots on upper leaf surface",
+          "White downy growth below leaves",
+          "Affected leaves curl and drop",
+          "Brown lesions on young berries"
+        ],
+        "causes": [
+          "Warm wet weather",
+          "Rain splash",
+          "Dense canopy",
+          "Poor air circulation"
+        ],
+        "treatment": [
+          "Spray Mancozeb @ 2.5g/L",
+          "Apply Metalaxyl-M + Mancozeb @ 2.5g/L",
+          "Copper-based fungicides",
+          "Spray before and after rain"
+        ],
+        "prevention": [
+          "Good canopy management",
+          "Proper drainage",
+          "Avoid overhead irrigation",
+          "Remove infected leaves"
+        ],
+        "affectedParts": [
+          "leaves",
+          "shoots",
+          "berries"
+        ]
+      },
+      {
+        "id": "grape_powdery_mildew",
+        "name": "Powdery Mildew",
+        "scientificName": "Uncinula necator",
+        "severity": "high",
+        "symptoms": [
+          "White powdery patches on leaves",
+          "Leaves curl and distort",
+          "Gray coating on berries",
+          "Berry cracking and scarring"
+        ],
+        "causes": [
+          "Moderate temperature (20-27°C)",
+          "High humidity",
+          "Shaded conditions",
+          "Dense vine growth"
+        ],
+        "treatment": [
+          "Spray Sulfur 80% WP @ 2.5g/L",
+          "Apply Triadimefon 25% WP @ 0.5g/L",
+          "Alternate fungicides to prevent resistance",
+          "Apply during early morning"
+        ],
+        "prevention": [
+          "Open canopy management",
+          "Avoid excess nitrogen",
+          "Regular pruning",
+          "Pre-bloom sulfur applications"
+        ],
+        "affectedParts": [
+          "leaves",
+          "shoots",
+          "berries"
+        ]
+      }
+    ],
+    "citrus": [
+      {
+        "id": "citrus_canker",
+        "name": "Citrus Canker",
+        "scientificName": "Xanthomonas citri subsp. citri",
+        "severity": "high",
+        "symptoms": [
+          "Raised corky lesions on leaves",
+          "Brown crater-like spots on fruits",
+          "Yellow halo around lesions",
+          "Premature fruit drop"
+        ],
+        "causes": [
+          "Bacteria spread by wind-driven rain",
+          "Contaminated tools and equipment",
+          "Leaf miner injury provides entry",
+          "Warm humid weather"
+        ],
+        "treatment": [
+          "Spray Copper hydroxide @ 2g/L",
+          "Apply Streptocycline @ 0.01%",
+          "Control leaf miner",
+          "Remove severely infected branches"
+        ],
+        "prevention": [
+          "Use disease-free nursery stock",
+          "Control leaf miner population",
+          "Avoid working in wet orchards",
+          "Disinfect pruning tools"
+        ],
+        "affectedParts": [
+          "leaves",
+          "fruits",
+          "twigs"
+        ]
+      },
+      {
+        "id": "citrus_greening",
+        "name": "Citrus Greening (HLB)",
+        "scientificName": "Candidatus Liberibacter asiaticus",
+        "severity": "high",
+        "symptoms": [
+          "Blotchy mottling of leaves (not symmetric)",
+          "Yellow shoots",
+          "Misshapen lopsided fruits",
+          "Bitter juice and green fruits"
+        ],
+        "causes": [
+          "Bacteria transmitted by Asian citrus psyllid",
+          "Infected nursery plants",
+          "No cure once infected"
+        ],
+        "treatment": [
+          "No cure available",
+          "Control psyllid with Imidacloprid",
+          "Remove infected trees",
+          "Nutritional sprays may prolong tree life"
+        ],
+        "prevention": [
+          "Use certified disease-free plants",
+          "Regular psyllid monitoring and control",
+          "Remove infected trees promptly",
+          "Barrier planting around orchards"
+        ],
+        "affectedParts": [
+          "leaves",
+          "fruits",
+          "whole tree"
+        ]
+      }
+    ],
+    "chilli": [
+      {
+        "id": "chilli_leaf_curl",
+        "name": "Leaf Curl Virus",
+        "scientificName": "Chilli leaf curl virus",
+        "severity": "high",
+        "symptoms": [
+          "Upward curling and puckering of leaves",
+          "Thickening of leaf veins",
+          "Stunted plant growth",
+          "Poor fruit set"
+        ],
+        "causes": [
+          "Virus transmitted by whitefly",
+          "Infected transplants",
+          "High whitefly population"
+        ],
+        "treatment": [
+          "Control whitefly with Imidacloprid @ 0.3ml/L",
+          "Remove infected plants early",
+          "Use yellow sticky traps",
+          "Spray neem oil @ 5ml/L"
+        ],
+        "prevention": [
+          "Use virus-free transplants",
+          "Early planting to avoid peak whitefly",
+          "Control weeds",
+          "Use reflective mulches"
+        ],
+        "affectedParts": [
+          "leaves",
+          "whole plant"
+        ]
+      },
+      {
+        "id": "chilli_anthracnose",
+        "name": "Anthracnose (Fruit Rot)",
+        "scientificName": "Colletotrichum capsici",
+        "severity": "high",
+        "symptoms": [
+          "Sunken spots on ripe fruits",
+          "Concentric rings in spots",
+          "Fruits shrivel and drop",
+          "Die-back of twigs"
+        ],
+        "causes": [
+          "Warm wet weather",
+          "Infected seeds",
+          "Rain splash",
+          "High humidity"
+        ],
+        "treatment": [
+          "Spray Mancozeb @ 2.5g/L",
+          "Apply Carbendazim @ 1g/L",
+          "Remove infected fruits",
+          "Seed treatment before sowing"
+        ],
+        "prevention": [
+          "Use disease-free seeds",
+          "Crop rotation for 2-3 years",
+          "Proper drainage",
+          "Avoid overhead irrigation"
+        ],
+        "affectedParts": [
+          "fruits",
+          "twigs"
+        ]
+      }
+    ]
+  },
+  "healthyIndicators": [
+    "Uniform green leaf color",
+    "No spots or lesions",
+    "Normal leaf shape without curling",
+    "Healthy stem structure",
+    "Good fruit development",
+    "No visible pest damage"
+  ],
+  "generalTips": {
+    "prevention": [
+      "Use certified disease-free seeds/planting material",
+      "Practice crop rotation (3-4 years)",
+      "Maintain proper plant spacing for air circulation",
+      "Avoid overhead irrigation to reduce leaf wetness",
+      "Remove and destroy infected plant debris",
+      "Regular field monitoring for early detection",
+      "Balanced fertilization - avoid excess nitrogen",
+      "Use resistant varieties when available"
+    ],
+    "organic": [
+      "Neem oil spray @ 5ml/L for fungal and pest control",
+      "Trichoderma viride soil application",
+      "Pseudomonas fluorescens spray",
+      "Bordeaux mixture for fungal diseases",
+      "Panchagavya foliar spray for plant immunity"
+    ]
+  }
+}

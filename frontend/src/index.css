@@ -46,44 +46,158 @@ code {
     opacity: 0;
     transform: translateY(20px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
-.animate-fade-in {
-  animation: fadeIn 0.6s ease-out;
+@keyframes fadeInStagger {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 @keyframes pulse-soft {
-  0%, 100% {
+
+  0%,
+  100% {
     opacity: 1;
+    transform: scale(1);
   }
+
   50% {
     opacity: 0.8;
+    transform: scale(0.98);
   }
+}
+
+@keyframes gauge-fill {
+  from {
+    stroke-dashoffset: 283;
+  }
+}
+
+@keyframes ripple {
+  0% {
+    transform: scale(0.8);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+@keyframes bounce-subtle {
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.6s ease-out forwards;
+}
+
+.animate-fade-in-stagger {
+  animation: fadeInStagger 0.5s ease-out forwards;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.4s ease-out forwards;
+}
+
+.animate-slide-in-right {
+  animation: slideInRight 0.3s ease-out forwards;
 }
 
 .animate-pulse-soft {
   animation: pulse-soft 2s ease-in-out infinite;
 }
 
+.animate-bounce-subtle {
+  animation: bounce-subtle 2s ease-in-out infinite;
+}
+
+/* Staggered animation delays */
+.stagger-1 {
+  animation-delay: 0.1s;
+}
+
+.stagger-2 {
+  animation-delay: 0.2s;
+}
+
+.stagger-3 {
+  animation-delay: 0.3s;
+}
+
+.stagger-4 {
+  animation-delay: 0.4s;
+}
+
+.stagger-5 {
+  animation-delay: 0.5s;
+}
+
 /* Custom card styles */
 .card-farm {
-  @apply bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 border border-farm-green-100;
+  @apply bg-white rounded-2xl shadow-lg transition-all duration-300 border border-farm-green-100;
+}
+
+.card-farm:hover {
+  @apply shadow-xl -translate-y-1;
 }
 
 .card-glow {
-  box-shadow: 0 4px 6px -1px rgba(34, 197, 94, 0.1), 
-              0 2px 4px -1px rgba(34, 197, 94, 0.06),
-              0 0 0 1px rgba(34, 197, 94, 0.05);
+  box-shadow: 0 4px 6px -1px rgba(34, 197, 94, 0.1),
+    0 2px 4px -1px rgba(34, 197, 94, 0.06),
+    0 0 0 1px rgba(34, 197, 94, 0.05);
 }
 
 .card-glow:hover {
-  box-shadow: 0 20px 25px -5px rgba(34, 197, 94, 0.1),
-              0 10px 10px -5px rgba(34, 197, 94, 0.04),
-              0 0 0 1px rgba(34, 197, 94, 0.1);
+  box-shadow: 0 20px 25px -5px rgba(34, 197, 94, 0.15),
+    0 10px 10px -5px rgba(34, 197, 94, 0.08),
+    0 0 0 1px rgba(34, 197, 94, 0.1);
+  transform: translateY(-4px);
 }
 
 /* Input styles */
@@ -91,11 +205,231 @@ code {
   @apply w-full px-4 py-3 rounded-xl border-2 border-farm-green-200 focus:border-farm-green-500 focus:ring-4 focus:ring-farm-green-100 outline-none transition-all duration-200;
 }
 
+.input-farm:hover {
+  @apply border-farm-green-300;
+}
+
+/* Validation input styles */
+.input-optimal {
+  @apply border-green-400 bg-green-50;
+}
+
+.input-acceptable {
+  @apply border-yellow-400 bg-yellow-50;
+}
+
+.input-warning {
+  @apply border-orange-400 bg-orange-50;
+}
+
+.input-danger {
+  @apply border-red-400 bg-red-50;
+}
+
 /* Button styles */
 .btn-primary {
-  @apply bg-gradient-to-r from-farm-green-500 to-farm-green-600 text-white font-semibold px-6 py-3 rounded-xl shadow-lg hover:shadow-xl hover:from-farm-green-600 hover:to-farm-green-700 transition-all duration-300 transform hover:-translate-y-0.5;
+  @apply bg-gradient-to-r from-farm-green-500 to-farm-green-600 text-white font-semibold px-6 py-3 rounded-xl shadow-lg transition-all duration-300 transform;
+}
+
+.btn-primary:hover {
+  @apply shadow-xl from-farm-green-600 to-farm-green-700 -translate-y-1;
+}
+
+.btn-primary:active {
+  @apply translate-y-0 shadow-lg;
 }
 
 .btn-secondary {
   @apply bg-white text-farm-green-600 border-2 border-farm-green-500 font-semibold px-6 py-3 rounded-xl hover:bg-farm-green-50 transition-all duration-300;
+}
+
+/* Glassmorphism */
+.glass {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.glass-dark {
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* Toast animations */
+.toast-enter {
+  animation: slideInRight 0.3s ease-out forwards;
+}
+
+.toast-exit {
+  animation: slideInRight 0.3s ease-out reverse forwards;
+}
+
+/* Progress bar animation */
+@keyframes progress-indeterminate {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(400%);
+  }
+}
+
+.progress-indeterminate {
+  animation: progress-indeterminate 1.5s ease-in-out infinite;
+}
+
+/* Circular gauge */
+.gauge-circle {
+  stroke-linecap: round;
+  transition: stroke-dashoffset 1s ease-out;
+}
+
+/* Mobile bottom sheet */
+.bottom-sheet {
+  @apply fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-2xl z-50;
+  max-height: 90vh;
+  touch-action: pan-y;
+}
+
+.bottom-sheet-handle {
+  @apply w-12 h-1.5 bg-gray-300 rounded-full mx-auto mt-3 mb-2;
+}
+
+/* Floating Action Button */
+.fab {
+  @apply fixed bottom-6 right-6 z-40 bg-gradient-to-r from-farm-green-500 to-farm-green-600 text-white rounded-full shadow-lg p-4 transition-all duration-300;
+}
+
+.fab:hover {
+  @apply shadow-xl from-farm-green-600 to-farm-green-700 scale-110;
+}
+
+/* Overlay */
+.overlay {
+  @apply fixed inset-0 bg-black/50 z-40 backdrop-blur-sm;
+}
+
+/* Loading spinner */
+.spinner {
+  @apply animate-spin rounded-full border-4 border-farm-green-200 border-t-farm-green-600;
+}
+
+/* Range slider custom styling */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  width: 100%;
+  height: 24px;
+  cursor: pointer;
+}
+
+/* Track - Webkit (Chrome, Safari, Edge) */
+input[type="range"]::-webkit-slider-runnable-track {
+  width: 100%;
+  height: 8px;
+  background: linear-gradient(to right, #bbf7d0, #86efac);
+  border-radius: 9999px;
+  border: none;
+}
+
+/* Track - Firefox */
+input[type="range"]::-moz-range-track {
+  width: 100%;
+  height: 8px;
+  background: linear-gradient(to right, #bbf7d0, #86efac);
+  border-radius: 9999px;
+  border: none;
+}
+
+/* Thumb - Webkit */
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  cursor: grab;
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.5);
+  border: 3px solid white;
+  margin-top: -7px;
+  transition: all 0.2s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.15);
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.6);
+}
+
+input[type="range"]::-webkit-slider-thumb:active {
+  cursor: grabbing;
+  transform: scale(1.1);
+}
+
+/* Thumb - Firefox */
+input[type="range"]::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+  cursor: grab;
+  border: 3px solid white;
+  box-shadow: 0 2px 8px rgba(34, 197, 94, 0.5);
+  transition: all 0.2s ease;
+}
+
+input[type="range"]::-moz-range-thumb:hover {
+  transform: scale(1.15);
+}
+
+/* Red variant for pest risk slider */
+input[type="range"].slider-red::-webkit-slider-runnable-track {
+  background: linear-gradient(to right, #fecaca, #f87171);
+}
+
+input[type="range"].slider-red::-moz-range-track {
+  background: linear-gradient(to right, #fecaca, #f87171);
+}
+
+input[type="range"].slider-red::-webkit-slider-thumb {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.5);
+}
+
+input[type="range"].slider-red::-moz-range-thumb {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.5);
+}
+
+/* Tab transitions */
+.tab-content {
+  @apply transition-opacity duration-300;
+}
+
+/* Responsive utilities */
+@media (max-width: 768px) {
+  .hide-mobile {
+    display: none !important;
+  }
+
+  .show-mobile {
+    display: block !important;
+  }
+
+  .card-farm:hover {
+    transform: none;
+  }
+}
+
+@media (min-width: 769px) {
+  .hide-desktop {
+    display: none !important;
+  }
+
+  .show-desktop {
+    display: block !important;
+  }
 }

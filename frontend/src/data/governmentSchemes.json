@@ -1,0 +1,252 @@
+{
+  "schemes": [
+    {
+      "id": "pm-kisan",
+      "name": "PM-KISAN",
+      "fullName": "Pradhan Mantri Kisan Samman Nidhi",
+      "icon": "💰",
+      "description": "Direct income support of ₹6,000/year to farmer families. 21st installment released Nov 2025. Tenant farmers now eligible.",
+      "benefitAmount": 6000,
+      "benefitFrequency": "yearly",
+      "eligibility": {
+        "minArea": 0,
+        "maxArea": 100,
+        "allCrops": true,
+        "allSoils": true
+      },
+      "applicationUrl": "https://pmkisan.gov.in/",
+      "documents": [
+        "Aadhaar Card",
+        "Land Records",
+        "Bank Account Details",
+        "eKYC Completion"
+      ],
+      "status": "active",
+      "lastUpdated": "November 2025"
+    },
+    {
+      "id": "pmfby",
+      "name": "PMFBY",
+      "fullName": "Pradhan Mantri Fasal Bima Yojana",
+      "icon": "🛡️",
+      "description": "Crop insurance with 2% premium for Kharif, 1.5% for Rabi. Now covers wild animal attacks. Report losses within 72 hours via app.",
+      "benefitAmount": 0,
+      "benefitType": "insurance",
+      "premiumRate": {
+        "kharif": 2,
+        "rabi": 1.5,
+        "commercial": 5
+      },
+      "eligibility": {
+        "crops": [
+          "Rice",
+          "Wheat",
+          "Maize",
+          "Cotton",
+          "Sugarcane",
+          "Pulses",
+          "Oilseeds"
+        ],
+        "loanee": true,
+        "nonLoanee": true
+      },
+      "applicationUrl": "https://pmfby.gov.in/",
+      "documents": [
+        "Land Records",
+        "Sowing Certificate",
+        "Bank Account",
+        "Crop Insurance App"
+      ],
+      "status": "active",
+      "enrollmentDeadline": "Rabi: Dec 31, 2025"
+    },
+    {
+      "id": "soil-health-card",
+      "name": "Soil Health Card",
+      "fullName": "Soil Health Card Scheme",
+      "icon": "🧪",
+      "description": "Free soil testing with nutrient-based recommendations. Digital soil health reports every 3 years.",
+      "benefitAmount": 500,
+      "benefitType": "service",
+      "eligibility": {
+        "allFarmers": true
+      },
+      "applicationUrl": "https://soilhealth.dac.gov.in/",
+      "documents": [
+        "Aadhaar Card",
+        "Land Details"
+      ],
+      "status": "active"
+    },
+    {
+      "id": "micro-irrigation",
+      "name": "Micro Irrigation Subsidy",
+      "fullName": "PM Krishi Sinchai Yojana - Per Drop More Crop",
+      "icon": "💧",
+      "description": "55% subsidy for small/marginal farmers, 45% for others on drip and sprinkler irrigation systems.",
+      "benefitAmount": 0,
+      "benefitType": "subsidy",
+      "subsidyRate": {
+        "smallFarmer": 55,
+        "others": 45
+      },
+      "eligibility": {
+        "minArea": 0.5,
+        "irrigationType": [
+          "drip",
+          "sprinkler"
+        ]
+      },
+      "applicationUrl": "https://pmksy.gov.in/microirrigation/",
+      "documents": [
+        "Land Records",
+        "Water Source Proof",
+        "Bank Account"
+      ],
+      "status": "active"
+    },
+    {
+      "id": "organic-farming",
+      "name": "Organic Farming Mission",
+      "fullName": "Paramparagat Krishi Vikas Yojana (PKVY)",
+      "icon": "🌿",
+      "description": "₹50,000/hectare over 3 years for organic farming. Cluster-based approach with 50+ farmers.",
+      "benefitAmount": 50000,
+      "benefitPeriod": "3 years",
+      "eligibility": {
+        "minClusterSize": 50,
+        "minAreaPerFarmer": 1,
+        "organicOnly": true
+      },
+      "applicationUrl": "https://pgsindia-ncof.gov.in/pkvy.aspx",
+      "documents": [
+        "Land Records",
+        "Cluster Formation",
+        "Organic Plan"
+      ],
+      "status": "active"
+    },
+    {
+      "id": "kcc",
+      "name": "Kisan Credit Card",
+      "fullName": "Kisan Credit Card Scheme",
+      "icon": "💳",
+      "description": "Agricultural credit up to ₹3 lakh at 4% interest (after subvention). Covers crop, animal husbandry, fisheries.",
+      "benefitType": "credit",
+      "interestRate": 4,
+      "maxLimit": 300000,
+      "eligibility": {
+        "allFarmers": true,
+        "allCrops": true
+      },
+      "applicationUrl": "https://www.india.gov.in/spotlight/kisan-credit-card-kcc",
+      "documents": [
+        "Land Records",
+        "ID Proof",
+        "Passport Photo"
+      ],
+      "status": "active"
+    },
+    {
+      "id": "msp",
+      "name": "MSP 2025-26",
+      "fullName": "Minimum Support Price Procurement",
+      "icon": "📊",
+      "description": "Government guaranteed prices for major crops. CCEA approved 50% margin over production costs.",
+      "benefitType": "price_support",
+      "mspRates2025": {
+        "Rice": 2369,
+        "Wheat": 2425,
+        "Maize": 2400,
+        "Cotton": 7521,
+        "Sugarcane": 340
+      },
+      "eligibility": {
+        "crops": [
+          "Rice",
+          "Wheat",
+          "Maize",
+          "Cotton",
+          "Sugarcane",
+          "Pulses"
+        ]
+      },
+      "applicationUrl": "https://farmer.gov.in/",
+      "documents": [
+        "Mandi Registration",
+        "Produce Quality Certificate"
+      ],
+      "status": "active",
+      "lastUpdated": "May 2025 (Kharif), Oct 2024 (Rabi)"
+    },
+    {
+      "id": "smam",
+      "name": "Farm Mechanization",
+      "fullName": "Sub-Mission on Agricultural Mechanization (SMAM)",
+      "icon": "🚜",
+      "description": "40-50% subsidy on tractors, harvesters, tillers, and agricultural implements. Higher for SC/ST farmers.",
+      "benefitType": "subsidy",
+      "subsidyRate": {
+        "general": 40,
+        "scst": 50
+      },
+      "eligibility": {
+        "minArea": 1,
+        "allCrops": true
+      },
+      "applicationUrl": "https://agrimachinery.nic.in/",
+      "documents": [
+        "Land Records",
+        "Caste Certificate (if applicable)",
+        "Bank Account"
+      ],
+      "status": "active"
+    },
+    {
+      "id": "aif",
+      "name": "Agri Infrastructure Fund",
+      "fullName": "Agriculture Infrastructure Fund (AIF)",
+      "icon": "🏗️",
+      "description": "₹1 lakh crore for post-harvest infrastructure. 3% interest subvention on loans up to ₹2 crore.",
+      "benefitType": "loan",
+      "interestSubvention": 3,
+      "maxLoan": 20000000,
+      "eligibility": {
+        "allFarmers": true,
+        "fpOs": true,
+        "agriStartups": true
+      },
+      "applicationUrl": "https://agriinfra.dac.gov.in/",
+      "documents": [
+        "Project Report",
+        "Land/Lease Documents",
+        "Bank Account"
+      ],
+      "status": "active"
+    },
+    {
+      "id": "enam",
+      "name": "e-NAM",
+      "fullName": "Electronic National Agriculture Market",
+      "icon": "🛒",
+      "description": "Online trading platform connecting 1,361 mandis. Get best prices by selling to buyers across India.",
+      "benefitType": "market_access",
+      "eligibility": {
+        "allFarmers": true,
+        "allCrops": true
+      },
+      "applicationUrl": "https://enam.gov.in/",
+      "documents": [
+        "Aadhaar Card",
+        "Bank Account",
+        "Mandi Registration"
+      ],
+      "status": "active"
+    }
+  ],
+  "metadata": {
+    "lastUpdated": "2025-12-08",
+    "source": "Ministry of Agriculture & Farmers Welfare, Government of India",
+    "disclaimer": "Benefits and eligibility may vary by state. Verify with local agricultural offices or KVKs for current information."
+  }
+}

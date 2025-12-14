@@ -1,5 +1,5 @@
-"""FastAPI main application for KrishiSaarthi"""
-from fastapi import FastAPI, HTTPException
+"""FastAPI main application for Krishyak"""
+from fastapi import FastAPI, HTTPException, File, UploadFile, Form
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from typing import Dict, List, Optional
@@ -12,10 +12,12 @@ from cost_calculator import CostCalculator
 from risk_engine import RiskEngine
 from data_loader import DataLoader
 import config
+import os
+from disease_detector import detect_disease_mock, CROP_DISEASES
 
 # Initialize FastAPI app
 app = FastAPI(
-    title="KrishiSaarthi - AI Farm Decision Simulator",
+    title="Krishyak - AI Farm Decision Simulator",
     description="AI-powered farming decision support system for Indian farmers",
     version="1.0.0"
 )
@@ -69,7 +71,7 @@ class PriceForecastRequest(BaseModel):
 async def root():
     """Root endpoint"""
     return {
-        "message": "KrishiSaarthi - AI Farm Decision Simulator API",
+        "message": "Krishyak - AI Farm Decision Simulator API",
         "version": "1.0.0",
         "endpoints": ["/simulate", "/forecast_prices", "/compare_scenarios", "/recommend", "/crops", "/soils"]
     }
@@ -199,7 +201,102 @@ async def get_recommendations(request: SimulationRequest):
 @app.get("/health")
 async def health_check():
     """Health check endpoint"""
-    return {"status": "healthy", "service": "KrishiSaarthi API"}
+    return {"status": "healthy", "service": "Krishyak API"}
+
+
+# ============ DISEASE DETECTION ENDPOINTS ============
+
+@app.post("/detect_disease")
+async def detect_disease(
+    file: UploadFile = File(...),
+    crop_type: str = Form(None)
+):
+    """
+    Detect plant disease from uploaded image.
+    Priority: Trained ML Model > Plant.ID API > Mock detection
+    
+    Args:
+        file: Image file (JPG, PNG)
+        crop_type: Optional crop type for more accurate detection
+    
+    Returns:
+        Disease detection result with treatment recommendations
+    """
+    # Validate file type
+    allowed_types = ["image/jpeg", "image/png", "image/jpg", "image/webp"]
+    if file.content_type not in allowed_types:
+        raise HTTPException(
+            status_code=400, 
+            detail=f"Invalid file type. Allowed: {', '.join(allowed_types)}"
+        )
+    
+    # Read file content
+    try:
+        contents = await file.read()
+        
+        # Check file size (max 10MB)
+        if len(contents) > 10 * 1024 * 1024:
+            raise HTTPException(status_code=400, detail="File too large. Maximum size is 10MB.")
+        
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Error reading file: {str(e)}")
+    
+    # Use multi-source detection: ML Model > Reverse Image Search > Pattern Matching
+    from disease_detector import detect_disease_multisource, get_detection_status
+    
+    try:
+        result = detect_disease_multisource(contents, crop_type)
+        status = get_detection_status()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Disease detection failed: {str(e)}")
+    
+    # Determine mode from detection sources (check for 'sources', not 'sources_used')
+    sources = result.get("sources", [])
+    source_names = [s.get("name", "").lower() for s in sources]
+    
+    if any("ml model" in name or "trained" in name for name in source_names):
+        mode = "trained_model"
+    elif any("visual" in name or "search" in name for name in source_names):
+        mode = "visual_search"
+    else:
+        mode = "pattern_matching"
+    
+    return {
+        "success": True,
+        "data": result,
+        "mode": mode,
+        "detection_status": status
+    }
+
+
+
+@app.get("/diseases")
+async def get_diseases():
+    """Get list of supported disease categories by crop"""
+    return {
+        "success": True,
+        "data": {
+            crop: [d["name"] for d in diseases]
+            for crop, diseases in CROP_DISEASES.items()
+        }
+    }
+
+
+@app.get("/diseases/{crop}")
+async def get_diseases_by_crop(crop: str):
+    """Get diseases for a specific crop"""
+    crop_lower = crop.lower()
+    if crop_lower not in CROP_DISEASES:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Crop '{crop}' not found. Available: {', '.join(CROP_DISEASES.keys())}"
+        )
+    
+    return {
+        "success": True,
+        "crop": crop,
+        "diseases": CROP_DISEASES[crop_lower]
+    }
 
 # Run server
 if __name__ == "__main__":
