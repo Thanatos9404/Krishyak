@@ -1,5 +1,5 @@
 import React from 'react';
-import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recharts';
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { Shield } from 'lucide-react';
 
 const RiskGauge = ({ riskData }) => {
@@ -34,9 +34,9 @@ const RiskGauge = ({ riskData }) => {
               <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
             ))}
           </Pie>
-          <Tooltip 
-            contentStyle={{ 
-              backgroundColor: '#fff', 
+          <Tooltip
+            contentStyle={{
+              backgroundColor: '#fff',
               border: '2px solid #86efac',
               borderRadius: '12px',
               padding: '12px'
@@ -47,7 +47,7 @@ const RiskGauge = ({ riskData }) => {
       <div className="grid grid-cols-2 gap-3 mt-4">
         {data.map((item, idx) => (
           <div key={idx} className="flex items-center bg-gray-50 rounded-lg p-3">
-            <div 
+            <div
               className="w-4 h-4 rounded-full mr-2"
               style={{ backgroundColor: COLORS[idx] }}
             ></div>

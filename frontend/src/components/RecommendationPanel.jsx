@@ -26,7 +26,7 @@ const formatRecommendation = (text) => {
     if (isBullet) {
       return (
         <li key={index} className="text-gray-700 ml-4 mb-1">
-          <span dangerouslySetInnerHTML={{ __html: processedLine.replace(/^[•\-]\s*/, '') }} />
+          <span dangerouslySetInnerHTML={{ __html: processedLine.replace(/^[•-]\s*/, '') }} />
         </li>
       );
     } else if (isHeader) {
