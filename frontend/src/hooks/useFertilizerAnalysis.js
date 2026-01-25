@@ -180,12 +180,12 @@ export function useFertilizerAnalysis(crop, areaHectares = 1, soilData = null, g
     }
   }, [crop, fetchRecommendation, fetchSchedule, fetchOrganicAlternatives]);
 
-  // Refetch when organic preference changes
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // Refetch when organic preference changes - dependencies intentionally limited
   useEffect(() => {
     if (crop && recommendation) {
       fetchRecommendation();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [preferOrganic]);
 
   // ============================================================================
