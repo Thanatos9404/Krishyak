@@ -146,6 +146,7 @@ const CropHealthCheck = () => {
         const diseaseId = data.data.disease.id;
         // Try to find full disease info from local database
         let fullDiseaseInfo = null;
+        // eslint-disable-next-line no-unused-vars
         for (const [_crop, diseases] of Object.entries(diseaseDatabase.diseases)) {
           const found = diseases.find(d => d.id === diseaseId);
           if (found) {
