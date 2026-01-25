@@ -32,8 +32,9 @@ class SecurityConfig:
         self.environment = os.getenv("ENVIRONMENT", "development")
         self.debug = os.getenv("DEBUG", "false").lower() == "true"
         
-        # CORS configuration
-        cors_origins = os.getenv("CORS_ORIGINS", "http://localhost:3000")
+        # CORS configuration - include production URLs in defaults
+        default_origins = "http://localhost:3000,http://127.0.0.1:3000,https://krishyak.vercel.app,https://krishisaarthi.vercel.app"
+        cors_origins = os.getenv("CORS_ORIGINS", default_origins)
         self.cors_origins = [origin.strip() for origin in cors_origins.split(",") if origin.strip()]
         
         # Rate limiting
