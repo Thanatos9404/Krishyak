@@ -9,9 +9,12 @@ import LoadingOverlay from './components/LoadingOverlay';
 import FloatingActionButton from './components/FloatingActionButton';
 import BottomSheet from './components/BottomSheet';
 import { useToast, ToastContainer } from './components/Toast';
+import LanguageSelector from './components/LanguageSelector';
+import { useTranslation } from './i18n';
 import farmingApi from './api/farmingApi';
 
 function App() {
+  const { t } = useTranslation();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [crops, setCrops] = useState([]);
   const [soilTypes, setSoilTypes] = useState([]);
@@ -123,20 +126,19 @@ function App() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center">
-              <div className="bg-white/20 backdrop-blur-sm p-2 sm:p-3 rounded-xl mr-3 sm:mr-4">
-                <img src="/krishyak_logo.png" alt="Krishyak Logo" className="w-10 h-10 sm:w-12 sm:h-12" />
-              </div>
+              <img src="/krishyak_logo.png" alt="Krishyak Logo" className="w-14 h-14 sm:w-16 sm:h-16 mr-3 sm:mr-4 rounded-lg" />
               <div>
-                <h1 className="text-xl sm:text-3xl font-bold text-white">Krishyak</h1>
-                <p className="text-xs sm:text-sm text-green-100">AI Farm Decision Simulator</p>
+                <h1 className="text-xl sm:text-3xl font-bold text-white">{t('app.name')}</h1>
+                <p className="text-xs sm:text-sm text-green-100">{t('app.tagline')}</p>
               </div>
             </div>
-            <div className="hidden md:flex items-center space-x-2">
-              <div className="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-lg">
+            <div className="flex items-center space-x-3">
+              <div className="hidden md:block bg-white/20 backdrop-blur-sm px-4 py-2 rounded-lg">
                 <p className="text-xs text-white font-semibold">
-                  🌾 Smart Farming • 📊 Data-Driven • 🤖 AI-Powered
+                  {t('app.subtitle')}
                 </p>
               </div>
+              <LanguageSelector />
             </div>
           </div>
         </div>
@@ -146,10 +148,10 @@ function App() {
       <div className="bg-white shadow-md sticky top-0 z-30">
         <div className="max-w-7xl mx-auto px-2 sm:px-6">
           <div className="flex overflow-x-auto scrollbar-hide">
-            <TabButton icon={BarChart3} label="Dashboard" active={activeTab === 'dashboard'} onClick={() => setActiveTab('dashboard')} />
-            <TabButton icon={TrendingUp} label="Scenarios" active={activeTab === 'comparison'} onClick={() => setActiveTab('comparison')} />
-            <TabButton icon={Lightbulb} label="AI Insights" active={activeTab === 'recommendations'} onClick={() => setActiveTab('recommendations')} />
-            <TabButton icon={Leaf} label="Crop Health" active={activeTab === 'health'} onClick={() => setActiveTab('health')} />
+            <TabButton icon={BarChart3} label={t('nav.dashboard')} active={activeTab === 'dashboard'} onClick={() => setActiveTab('dashboard')} />
+            <TabButton icon={TrendingUp} label={t('nav.scenarios')} active={activeTab === 'comparison'} onClick={() => setActiveTab('comparison')} />
+            <TabButton icon={Lightbulb} label={t('nav.aiInsights')} active={activeTab === 'recommendations'} onClick={() => setActiveTab('recommendations')} />
+            <TabButton icon={Leaf} label={t('nav.cropHealth')} active={activeTab === 'health'} onClick={() => setActiveTab('health')} />
           </div>
         </div>
       </div>

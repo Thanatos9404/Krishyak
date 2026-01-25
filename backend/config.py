@@ -1,14 +1,23 @@
 """Configuration settings for Krishyak backend"""
 import os
+import logging
 from pathlib import Path
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+
+logger = logging.getLogger(__name__)
 
 # Base directories
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR.parent / "datasets"
 MODELS_DIR = BASE_DIR / "models"
 
-# API Configuration
-API_KEY = os.getenv("API_KEY", "579b464db66ec23bdd0000019e4dba64f69842d1547080c5536593c7")
+# API Configuration - MUST be set via environment variable
+API_KEY = os.getenv("EXTERNAL_API_KEY", "")
+if not API_KEY:
+    logger.warning("EXTERNAL_API_KEY not set - external API features will be disabled")
 
 # Crop configurations - Comprehensive list including vegetables and fruits
 CROPS = [

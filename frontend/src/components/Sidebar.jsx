@@ -3,11 +3,15 @@ import { Sprout, Mic } from 'lucide-react';
 import AccordionSection from './AccordionSection';
 import WeatherCard from './WeatherCard';
 import VoiceInputModal from './VoiceInputModal';
+import SoilDataCard from './SoilDataCard';
+import { useTranslation } from '../i18n';
 
 const Sidebar = ({ formData, setFormData, crops, soilTypes, onSimulate, loading }) => {
+  const { t } = useTranslation();
   // Accordion state - Basic Information is expanded by default
   const [expandedSections, setExpandedSections] = useState({
     basic: true,
+    soil: false,
     weather: false,
     fertilizer: false,
     irrigation: false,
@@ -62,9 +66,9 @@ const Sidebar = ({ formData, setFormData, crops, soilTypes, onSimulate, loading 
         <div className="text-center p-6 border-b-2 border-farm-green-100 flex-shrink-0">
           <div className="flex items-center justify-center mb-2">
             <Sprout className="w-8 h-8 text-farm-green-600 mr-2" />
-            <h2 className="text-2xl font-bold text-farm-green-800">Farm Inputs</h2>
+            <h2 className="text-2xl font-bold text-farm-green-800">{t('sidebar.title')}</h2>
           </div>
-          <p className="text-sm text-gray-600">Configure your farming parameters</p>
+          <p className="text-sm text-gray-600">{t('sidebar.configureParams') || 'Configure your farming parameters'}</p>
 
           {/* Voice Input Button */}
           <button
@@ -72,7 +76,7 @@ const Sidebar = ({ formData, setFormData, crops, soilTypes, onSimulate, loading 
             className="mt-3 flex items-center justify-center w-full bg-gradient-to-r from-purple-500 to-purple-600 text-white py-2.5 px-4 rounded-xl hover:from-purple-600 hover:to-purple-700 transition-all duration-300 shadow-md hover:shadow-lg"
           >
             <Mic className="w-4 h-4 mr-2" />
-            <span className="text-sm font-semibold">🎤 Voice Input (Hindi/English)</span>
+            <span className="text-sm font-semibold">🎤 {t('voice.title')}</span>
           </button>
         </div>
 
@@ -80,37 +84,37 @@ const Sidebar = ({ formData, setFormData, crops, soilTypes, onSimulate, loading 
         <div className="flex-1 overflow-y-auto p-4 space-y-2">
           {/* Basic Information Section */}
           <AccordionSection
-            title="Basic Information"
+            title={t('sidebar.basicInfo') || 'Basic Information'}
             icon="🌾"
             isExpanded={expandedSections.basic}
             onToggle={() => toggleSection('basic')}
           >
             {/* Crop Selection */}
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-gray-700">Crop Type</label>
+              <label className="text-sm font-semibold text-gray-700">{t('sidebar.cropType') || 'Crop Type'}</label>
               <select
                 value={formData.crop}
                 onChange={(e) => handleChange('crop', e.target.value)}
                 className="input-farm"
               >
-                <option value="">Select Crop</option>
+                <option value="">{t('sidebar.selectCrop')}</option>
                 {crops.map(crop => (
-                  <option key={crop} value={crop}>{crop}</option>
+                  <option key={crop} value={crop}>{t(`crops.${crop.toLowerCase()}`) || crop}</option>
                 ))}
               </select>
             </div>
 
             {/* Soil Type */}
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-gray-700">Soil Type</label>
+              <label className="text-sm font-semibold text-gray-700">{t('sidebar.soilType')}</label>
               <select
                 value={formData.soil_type}
                 onChange={(e) => handleChange('soil_type', e.target.value)}
                 className="input-farm"
               >
-                <option value="">Select Soil</option>
+                <option value="">{t('sidebar.selectSoil')}</option>
                 {soilTypes.map(soil => (
-                  <option key={soil} value={soil}>{soil}</option>
+                  <option key={soil} value={soil}>{t(`soils.${soil.toLowerCase()}`) || soil}</option>
                 ))}
               </select>
             </div>
@@ -118,7 +122,7 @@ const Sidebar = ({ formData, setFormData, crops, soilTypes, onSimulate, loading 
             {/* Area */}
             <div className="space-y-2">
               <label className="text-sm font-semibold text-gray-700">
-                Cultivation Area (hectares)
+                {t('sidebar.farmArea')} ({t('units.hectares')})
               </label>
               <input
                 type="number"
@@ -131,9 +135,28 @@ const Sidebar = ({ formData, setFormData, crops, soilTypes, onSimulate, loading 
             </div>
           </AccordionSection>
 
+          {/* Soil Sensor Data Section */}
+          <AccordionSection
+            title={t('soilSensor.title') || 'Soil Sensor Data'}
+            icon="🌱"
+            isExpanded={expandedSections.soil}
+            onToggle={() => toggleSection('soil')}
+          >
+            <SoilDataCard
+              deviceId="default"
+              onDataUpdate={(data) => {
+                // Update fertilizer recommendations based on soil data
+                if (data && data.nitrogen !== undefined) {
+                  // Could auto-adjust fertilizer mix based on soil NPK
+                  console.log('Soil data updated:', data);
+                }
+              }}
+            />
+          </AccordionSection>
+
           {/* Weather Conditions Section */}
           <AccordionSection
-            title="Weather Conditions"
+            title={t('sidebar.weatherConditions') || 'Weather Conditions'}
             icon="🌧️"
             isExpanded={expandedSections.weather}
             onToggle={() => toggleSection('weather')}
@@ -144,7 +167,7 @@ const Sidebar = ({ formData, setFormData, crops, soilTypes, onSimulate, loading 
             {/* Rainfall */}
             <div className="space-y-2 mt-4">
               <label className="text-sm font-semibold text-gray-700">
-                Expected Rainfall (mm)
+                {t('sidebar.rainfall') || 'Expected Rainfall (mm)'}
               </label>
               <input
                 type="number"
@@ -158,7 +181,7 @@ const Sidebar = ({ formData, setFormData, crops, soilTypes, onSimulate, loading 
             {/* Rainfall Delay */}
             <div className="space-y-2">
               <label className="text-sm font-semibold text-gray-700">
-                Monsoon Delay (days)
+                {t('sidebar.monsoonDelay') || 'Monsoon Delay (days)'}
               </label>
               <input
                 type="number"
@@ -172,14 +195,14 @@ const Sidebar = ({ formData, setFormData, crops, soilTypes, onSimulate, loading 
             {/* Seed Quality */}
             <div className="space-y-2">
               <label className="text-sm font-semibold text-gray-700">
-                Seed Quality
+                {t('sidebar.seedQuality') || 'Seed Quality'}
               </label>
               <div className="grid grid-cols-4 gap-2">
                 {[
-                  { value: 0.4, label: 'Poor', color: 'bg-red-100 border-red-300 text-red-700' },
-                  { value: 0.6, label: 'Fair', color: 'bg-yellow-100 border-yellow-300 text-yellow-700' },
-                  { value: 0.8, label: 'Good', color: 'bg-green-100 border-green-300 text-green-700' },
-                  { value: 0.95, label: 'Premium', color: 'bg-blue-100 border-blue-300 text-blue-700' }
+                  { value: 0.4, labelKey: 'sidebar.poor', label: 'Poor', color: 'bg-red-100 border-red-300 text-red-700' },
+                  { value: 0.6, labelKey: 'sidebar.fair', label: 'Fair', color: 'bg-yellow-100 border-yellow-300 text-yellow-700' },
+                  { value: 0.8, labelKey: 'sidebar.good', label: 'Good', color: 'bg-green-100 border-green-300 text-green-700' },
+                  { value: 0.95, labelKey: 'sidebar.premium', label: 'Premium', color: 'bg-blue-100 border-blue-300 text-blue-700' }
                 ].map(option => (
                   <button
                     key={option.value}
@@ -189,11 +212,11 @@ const Sidebar = ({ formData, setFormData, crops, soilTypes, onSimulate, loading 
                       handleChange('seed_quality', option.value);
                     }}
                     className={`py-2 px-2 text-xs font-medium rounded-lg border-2 transition-all ${formData.seed_quality === option.value
-                        ? option.color + ' ring-2 ring-offset-1 ring-gray-400'
-                        : 'bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100'
+                      ? option.color + ' ring-2 ring-offset-1 ring-gray-400'
+                      : 'bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100'
                       }`}
                   >
-                    {option.label}
+                    {t(option.labelKey) || option.label}
                   </button>
                 ))}
               </div>
@@ -202,7 +225,7 @@ const Sidebar = ({ formData, setFormData, crops, soilTypes, onSimulate, loading 
 
           {/* Fertilizer Mix Section */}
           <AccordionSection
-            title="Fertilizer Mix (kg/ha)"
+            title={t('sidebar.fertilizerMix') || 'Fertilizer Mix (kg/ha)'}
             icon="🧪"
             isExpanded={expandedSections.fertilizer}
             onToggle={() => toggleSection('fertilizer')}
@@ -239,7 +262,7 @@ const Sidebar = ({ formData, setFormData, crops, soilTypes, onSimulate, loading 
 
           {/* Irrigation & Pest Control Section */}
           <AccordionSection
-            title="Irrigation & Pest Control"
+            title={t('sidebar.irrigationPest') || 'Irrigation & Pest Control'}
             icon="💧"
             isExpanded={expandedSections.irrigation}
             onToggle={() => toggleSection('irrigation')}
@@ -247,7 +270,7 @@ const Sidebar = ({ formData, setFormData, crops, soilTypes, onSimulate, loading 
             {/* Irrigation */}
             <div className="space-y-2">
               <label className="text-sm font-semibold text-gray-700">
-                Irrigation Frequency (per month)
+                {t('sidebar.irrigationFrequency') || 'Irrigation Frequency (per month)'}
               </label>
               <input
                 type="number"
@@ -278,8 +301,8 @@ const Sidebar = ({ formData, setFormData, crops, soilTypes, onSimulate, loading 
                       handleChange('pest_probability', option.value);
                     }}
                     className={`py-2 px-2 text-xs font-medium rounded-lg border-2 transition-all ${formData.pest_probability === option.value
-                        ? option.color + ' ring-2 ring-offset-1 ring-gray-400'
-                        : 'bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100'
+                      ? option.color + ' ring-2 ring-offset-1 ring-gray-400'
+                      : 'bg-gray-50 border-gray-200 text-gray-600 hover:bg-gray-100'
                       }`}
                   >
                     {option.label}
@@ -348,12 +371,12 @@ const Sidebar = ({ formData, setFormData, crops, soilTypes, onSimulate, loading 
             {loading ? (
               <div className="flex items-center">
                 <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></div>
-                Running Simulation...
+                {t('sidebar.analyzing')}
               </div>
             ) : (
               <>
                 <Sprout className="w-6 h-6 mr-2" />
-                Run Simulation
+                {t('sidebar.runSimulation')}
               </>
             )}
           </button>

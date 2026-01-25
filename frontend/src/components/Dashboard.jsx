@@ -1,11 +1,15 @@
 import React from 'react';
 import { TrendingUp, TrendingDown, AlertCircle, DollarSign, Target, Award, Shield } from 'lucide-react';
 import YieldChart from './YieldChart';
-import PriceForecastChart from './PriceForecastChart';
 import RiskGauge from './RiskGauge';
 import RiskScoreGauge from './RiskScoreGauge';
+import WeatherAlertCard from './WeatherAlertCard';
+import PestAlertCard from './PestAlertCard';
+import FertilizerRecommendationCard from './FertilizerRecommendationCard';
+import { useTranslation } from '../i18n';
 
 const Dashboard = ({ simulationData }) => {
+  const { t } = useTranslation();
   if (!simulationData) {
     return (
       <div className="flex-1 flex items-center justify-center p-8">
@@ -14,11 +18,10 @@ const Dashboard = ({ simulationData }) => {
             <Target className="w-24 h-24 mx-auto text-farm-green-400" />
           </div>
           <h3 className="text-2xl font-bold text-gray-700 mb-3">
-            Welcome to Krishyak
+            {t('dashboard.noData') || 'Welcome to Krishyak'}
           </h3>
           <p className="text-gray-600 leading-relaxed">
-            Configure your farming parameters in the sidebar and click "Run Simulation"
-            to get AI-powered insights for your crop planning decisions.
+            {t('dashboard.runPrompt')}
           </p>
         </div>
       </div>
@@ -38,10 +41,10 @@ const Dashboard = ({ simulationData }) => {
               <TrendingUp className="w-6 h-6 text-farm-green-600" />
             </div>
           </div>
-          <h3 className="text-sm font-semibold text-gray-600 mb-1">Expected Yield</h3>
+          <h3 className="text-sm font-semibold text-gray-600 mb-1">{t('dashboard.yieldEstimate')}</h3>
           <p className="text-3xl font-bold text-gray-900">
             {yieldData.total_production_quintals.toFixed(1)}
-            <span className="text-base font-normal text-gray-500 ml-1">quintals</span>
+            <span className="text-base font-normal text-gray-500 ml-1">{t('units.quintals')}</span>
           </p>
           <div className="mt-3 pt-3 border-t border-gray-100 flex justify-between items-center">
             <p className="text-xs text-gray-600">
@@ -60,14 +63,14 @@ const Dashboard = ({ simulationData }) => {
               <DollarSign className="w-6 h-6 text-earth-brown-600" />
             </div>
           </div>
-          <h3 className="text-sm font-semibold text-gray-600 mb-1">Total Cost</h3>
+          <h3 className="text-sm font-semibold text-gray-600 mb-1">{t('dashboard.totalCost')}</h3>
           <p className="text-3xl font-bold text-gray-900">
             ₹{(costs.total_cost / 1000).toFixed(1)}k
           </p>
-          <p className="text-sm text-gray-500 mt-1">cultivation cost</p>
+          <p className="text-sm text-gray-500 mt-1">{t('dashboard.cultivationCost') || 'cultivation cost'}</p>
           <div className="mt-3 pt-3 border-t border-gray-100">
             <p className="text-xs text-gray-600">
-              ₹{costs.cost_per_quintal.toFixed(0)} per quintal
+              ₹{costs.cost_per_quintal.toFixed(0)} {t('units.per')} {t('units.quintal')}
             </p>
           </div>
         </div>
@@ -83,14 +86,14 @@ const Dashboard = ({ simulationData }) => {
               )}
             </div>
           </div>
-          <h3 className="text-sm font-semibold text-gray-600 mb-1">Expected Profit</h3>
+          <h3 className="text-sm font-semibold text-gray-600 mb-1">{t('dashboard.netProfit')}</h3>
           <p className={`text-3xl font-bold ${profit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
             ₹{(Math.abs(profit) / 1000).toFixed(1)}k
-            <span className="text-base font-normal text-gray-500 ml-1">{profit >= 0 ? 'profit' : 'loss'}</span>
+            <span className="text-base font-normal text-gray-500 ml-1">{profit >= 0 ? t('scenarios.profit') : t('common.loss') || 'loss'}</span>
           </p>
           <div className="mt-3 pt-3 border-t border-gray-100 flex justify-between items-center">
             <p className="text-xs text-gray-600">
-              Revenue: ₹{(revenue / 1000).toFixed(1)}k
+              {t('dashboard.estimatedRevenue')}: ₹{(revenue / 1000).toFixed(1)}k
             </p>
             <span className={`text-xs font-semibold px-2 py-1 rounded ${profit >= 0 ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600'}`}>
               {roi_percentage.toFixed(1)}% ROI
@@ -109,7 +112,7 @@ const Dashboard = ({ simulationData }) => {
                 }`} />
             </div>
           </div>
-          <h3 className="text-sm font-semibold text-gray-600 mb-1">Risk Score</h3>
+          <h3 className="text-sm font-semibold text-gray-600 mb-1">{t('dashboard.riskScore')}</h3>
           <p className={`text-3xl font-bold ${risk.overall_risk_score < 40 ? 'text-green-600' :
             risk.overall_risk_score < 70 ? 'text-yellow-600' : 'text-red-600'
             }`}>
@@ -129,20 +132,46 @@ const Dashboard = ({ simulationData }) => {
         </div>
       </div>
 
-      {/* Enhanced Risk Score Section */}
-      <div className="card-farm card-glow p-8 animate-fade-in">
-        <div className="flex items-center mb-6">
-          <Shield className="w-6 h-6 text-farm-green-600 mr-2" />
-          <h3 className="text-xl font-bold text-gray-800">Risk Assessment</h3>
+      {/* Weather Alerts Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <WeatherAlertCard crop={simulationData?.crop || 'default'} />
+
+        {/* Enhanced Risk Score Section */}
+        <div className="card-farm card-glow p-8 animate-fade-in">
+          <div className="flex items-center mb-6">
+            <Shield className="w-6 h-6 text-farm-green-600 mr-2" />
+            <h3 className="text-xl font-bold text-gray-800">{t('dashboard.riskAssessment')}</h3>
+          </div>
+          <div className="grid grid-cols-1 gap-4 items-center">
+            <RiskScoreGauge score={risk.overall_risk_score} />
+          </div>
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-          <RiskScoreGauge score={risk.overall_risk_score} />
+      </div>
+
+      {/* Pest Intelligence Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <PestAlertCard
+          crop={simulationData?.crop || ''}
+          location={null}
+          state="Maharashtra"
+          district=""
+          weather={{}}
+        />
+
+        {/* Risk Distribution */}
+        <div className="card-farm card-glow p-8 animate-fade-in">
           <RiskGauge riskData={risk} />
         </div>
       </div>
 
-      {/* Charts Row */}
-      <div className="grid grid-cols-1 gap-6">
+      {/* Fertilizer & Charts Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <FertilizerRecommendationCard
+          crop={simulationData?.crop || ''}
+          areaHectares={simulationData?.area || 1}
+          soilData={null}
+          growthStage="basal"
+        />
         <YieldChart yieldData={yieldData} />
       </div>
 
@@ -150,7 +179,7 @@ const Dashboard = ({ simulationData }) => {
       <div className="card-farm card-glow p-6 animate-fade-in">
         <div className="flex items-center mb-4">
           <Award className="w-6 h-6 text-farm-green-600 mr-2" />
-          <h3 className="text-xl font-bold text-gray-800">Risk Insights</h3>
+          <h3 className="text-xl font-bold text-gray-800">{t('dashboard.riskInsights')}</h3>
         </div>
         <div className="space-y-2">
           {risk.insights.map((insight, idx) => (
@@ -166,7 +195,7 @@ const Dashboard = ({ simulationData }) => {
 
       {/* Cost Breakdown */}
       <div className="card-farm card-glow p-6 animate-fade-in">
-        <h3 className="text-xl font-bold text-gray-800 mb-4">Cost Breakdown</h3>
+        <h3 className="text-xl font-bold text-gray-800 mb-4">{t('dashboard.costBreakdown')}</h3>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
           {Object.entries(costs.breakdown).map(([key, value]) => (
             <div key={key} className="bg-gray-50 rounded-xl p-4">

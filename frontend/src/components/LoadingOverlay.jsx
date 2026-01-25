@@ -1,16 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Check, Loader2 } from 'lucide-react';
+import { useTranslation } from '../i18n';
 
 const LoadingOverlay = ({ isLoading, onComplete }) => {
+  const { t } = useTranslation();
   const [currentStep, setCurrentStep] = useState(0);
   const [progress, setProgress] = useState(0);
   const stepRef = useRef(0);
 
   const steps = [
-    { icon: '🌱', text: 'Analyzing crop parameters...' },
-    { icon: '🌦️', text: 'Processing weather data...' },
-    { icon: '📊', text: 'Running AI prediction models...' },
-    { icon: '💰', text: 'Calculating profit scenarios...' }
+    { icon: '🌱', key: 'simulation.step1' },
+    { icon: '🌦️', key: 'simulation.step2' },
+    { icon: '📊', key: 'simulation.step3' },
+    { icon: '💰', key: 'simulation.step4' }
   ];
 
   useEffect(() => {
@@ -64,8 +66,12 @@ const LoadingOverlay = ({ isLoading, onComplete }) => {
           <div className="w-16 h-16 bg-gradient-to-r from-farm-green-400 to-farm-green-600 rounded-full flex items-center justify-center mx-auto mb-4 animate-pulse-soft">
             <Loader2 className="w-8 h-8 text-white animate-spin" />
           </div>
-          <h3 className="text-xl font-bold text-gray-800">Running Simulation</h3>
-          <p className="text-sm text-gray-500 mt-1">This may take a few seconds</p>
+          <h3 className="text-xl font-bold text-gray-800">
+            {t('simulation.running') || 'Running Simulation'}
+          </h3>
+          <p className="text-sm text-gray-500 mt-1">
+            {t('simulation.wait') || 'This may take a few seconds'}
+          </p>
         </div>
 
         {/* Steps */}
@@ -74,17 +80,17 @@ const LoadingOverlay = ({ isLoading, onComplete }) => {
             <div
               key={index}
               className={`flex items-center p-3 rounded-xl transition-all duration-300 ${index < currentStep
-                  ? 'bg-green-50 border border-green-200'
-                  : index === currentStep
-                    ? 'bg-farm-green-50 border border-farm-green-300 shadow-sm'
-                    : 'bg-gray-50 border border-gray-200 opacity-50'
+                ? 'bg-green-50 border border-green-200'
+                : index === currentStep
+                  ? 'bg-farm-green-50 border border-farm-green-300 shadow-sm'
+                  : 'bg-gray-50 border border-gray-200 opacity-50'
                 }`}
             >
               <div className={`w-8 h-8 rounded-full flex items-center justify-center mr-3 ${index < currentStep
-                  ? 'bg-green-500'
-                  : index === currentStep
-                    ? 'bg-farm-green-500 animate-pulse'
-                    : 'bg-gray-300'
+                ? 'bg-green-500'
+                : index === currentStep
+                  ? 'bg-farm-green-500 animate-pulse'
+                  : 'bg-gray-300'
                 }`}>
                 {index < currentStep ? (
                   <Check className="w-5 h-5 text-white" />
@@ -94,7 +100,7 @@ const LoadingOverlay = ({ isLoading, onComplete }) => {
               </div>
               <span className={`text-sm font-medium ${index <= currentStep ? 'text-gray-800' : 'text-gray-400'
                 }`}>
-                {step.text}
+                {t(step.key) || step.key}
               </span>
             </div>
           ))}
@@ -110,7 +116,7 @@ const LoadingOverlay = ({ isLoading, onComplete }) => {
 
         {/* Progress percentage */}
         <p className="text-center text-sm text-gray-500 mt-2">
-          {Math.round(progress)}% complete
+          {Math.round(progress)}% {t('simulation.complete') || 'complete'}
         </p>
       </div>
     </div>

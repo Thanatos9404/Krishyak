@@ -309,7 +309,8 @@ export const getLocationBasedData = async () => {
   }
 };
 
-export default {
+// Named export for eslint compliance
+const weatherApi = {
   getCurrentLocation,
   getLocationName,
   getSoilTypeForLocation,
@@ -318,3 +319,5 @@ export default {
   estimateMonsoonDelay,
   getLocationBasedData
 };
+
+export default weatherApi;

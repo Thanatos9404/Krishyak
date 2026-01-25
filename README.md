@@ -24,16 +24,17 @@ Krishyak (कृष्यक - "The Cultivator") is a comprehensive full-stack w
 | Feature | Description |
 |---------|-------------|
 | 🎯 **AI Yield Estimation** | Multi-factor yield prediction based on soil, rainfall, irrigation, fertilizer, and pest risks |
-| 💰 **Cost Analysis** | Complete cultivation cost breakdown including seeds, fertilizers, labour, and logistics |
+| 💰 **Fertilizer Analyzer** | Crop-specific NPK recommendations with organic alternatives and dosage schedules |
 | ⚠️ **Risk Assessment** | Circular gauge with intelligent risk scoring (weather, price, pest, soil factors) |
 | 📈 **Price Forecasting** | Time-series market price predictions with optimal selling recommendations |
 | 🔄 **What-If Simulation** | Monte Carlo simulations (100-2000 scenarios) to compare farming strategies |
-| 🤖 **Smart Recommendations** | Natural language insights for optimization opportunities |
+| 🌍 **13 Indian Languages** | Full i18n support: Hindi, Tamil, Telugu, Bengali, Marathi, Gujarati, Kannada, Malayalam, Punjabi, Assamese, Odia, Urdu (RTL) |
 | 🎤 **Voice Input** | Hindi & English voice commands - "दो हेक्टेयर धान की खेती" |
 | 📍 **Location Auto-Fill** | Automatic soil type and rainfall detection via geolocation |
-| 🏛️ **Government Schemes** | Eligibility checker for PM-KISAN, PMFBY, KCC and 8+ schemes |
+| 🏛️ **Government Schemes** | Smart eligibility matcher for PM-KISAN, PMFBY, KCC and 8+ schemes with required documents |
 | 🌿 **Disease Detection** | Multi-source AI-powered crop disease identification with treatment recommendations |
 | 📱 **Mobile Responsive** | Floating action button and bottom sheet for mobile-first experience |
+| 🧪 **Soil Sensor Integration** | Manual soil data entry with NPK, pH, moisture, temperature tracking |
 
 ## 📸 Screenshots
 
@@ -195,15 +196,18 @@ Risk = Weather(30%) + Price Volatility(25%) + Pest Severity(25%) + Soil Mismatch
 5. **Disease Management** - Early detection and treatment recommendations
 6. **Scheme Eligibility** - Check government benefits
 
-## ✅ Recent Updates (Dec 2025)
+## ✅ Recent Updates (January 2026)
 
+- [x] **13 Indian Languages** - Full i18n with Hindi, Tamil, Telugu, Bengali, Marathi, Gujarati, Kannada, Malayalam, Punjabi, Assamese, Odia, Urdu (RTL)
+- [x] **Fertilizer Analyzer Engine** - Crop-specific NPK recommendations with organic alternatives and dosage schedules
+- [x] **Government Scheme Matcher** - Smart eligibility checker with expandable document requirements
+- [x] **Soil Sensor Integration** - Manual NPK/pH/moisture data entry with React Portal modal
+- [x] **55+ Crop Translations** - Complete translations for all crops in all languages
 - [x] Multi-source AI disease detection
 - [x] 50+ crops with MSP 2025-26 rates
 - [x] Voice input in Hindi & English
 - [x] Location-based soil detection
-- [x] Government schemes (Dec 2025)
 - [x] Circular risk gauge visualization
-- [x] Multi-step loading animations
 - [x] Mobile-responsive design
 
 ## 📝 License

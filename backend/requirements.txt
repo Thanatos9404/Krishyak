@@ -1,10 +1,31 @@
+# Krishyak Backend Dependencies
+# For production deployment, use requirements-render.txt (lighter weight)
+
+# Core Framework
 fastapi==0.104.1
 uvicorn[standard]==0.24.0
-pandas==2.2.0
-numpy==1.26.3
-scikit-learn==1.4.0
 pydantic==2.5.0
 python-multipart==0.0.6
+
+# Data Processing
+pandas==2.2.0
+numpy==1.26.3
 openpyxl==3.1.2
-python-dotenv==1.0.0
+
+# Machine Learning
+scikit-learn==1.4.0
+tensorflow==2.15.0
+keras==2.15.0
+pillow==10.1.0
+
+# HTTP Client
 httpx==0.25.1
+
+# Configuration
+python-dotenv==1.0.0
+
+# Security (optional - for enhanced security features)
+# slowapi==0.1.9  # For Redis-based rate limiting in production
+
+# Logging (optional)
+# python-json-logger==2.0.7
