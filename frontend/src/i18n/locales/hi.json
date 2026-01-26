@@ -350,5 +350,29 @@
     "potentialBenefit": "संभावित लाभ",
     "documentsList": "आवश्यक दस्तावेज",
     "steps": "आवेदन के चरण"
+  },
+  "jam": {
+    "title": "किसान सत्यापन",
+    "aadhaarVerify": "आधार सत्यापित करें",
+    "landRecords": "भूमि रिकॉर्ड",
+    "bankAccount": "बैंक खाता",
+    "pmKisanStatus": "PM-KISAN स्थिति",
+    "consentTitle": "आपकी सहमति आवश्यक",
+    "consentMessage": "हमें सरकारी डेटाबेस से आपकी पहचान सत्यापित करने की अनुमति चाहिए",
+    "grantConsent": "मैं सहमत हूं",
+    "denyConsent": "नहीं धन्यवाद",
+    "verified": "सत्यापित",
+    "pending": "लंबित",
+    "notLinked": "लिंक नहीं",
+    "smallFarmer": "लघु किसान",
+    "marginalFarmer": "सीमांत किसान",
+    "landholding": "भूमि जोत",
+    "dbtEnabled": "DBT सक्षम",
+    "startVerification": "सत्यापन शुरू करें",
+    "verifyAndFetch": "सत्यापित करें और रिकॉर्ड प्राप्त करें",
+    "enterAadhaar": "आधार के अंतिम 4 अंक दर्ज करें",
+    "nameOptional": "नाम (वैकल्पिक - सत्यापन के लिए)",
+    "schemeEligibility": "योजना पात्रता",
+    "farmerCategory": "किसान श्रेणी"
   }
 }

@@ -27,6 +27,8 @@ from data_loader import DataLoader
 import config
 import os
 from disease_detector import detect_disease_mock, CROP_DISEASES
+from jam_trinity import get_jam_service, JAMTrinityService
+from land_records import get_land_service, LandRecordsService
 
 # Initialize logging
 logger = setup_logging()
@@ -1080,6 +1082,291 @@ async def get_organic_alternatives(crop: str):
         
     except Exception as e:
         logger.error(f"Error fetching organic alternatives: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ============================================================================
+# JAM TRINITY VERIFICATION ENDPOINTS
+# ============================================================================
+
+class ConsentRequest(BaseModel):
+    """Request to create a consent record"""
+    purpose: str = Field(..., description="Purpose of data access")
+    scopes: List[str] = Field(..., description="Scopes to grant access to")
+
+
+class AadhaarVerifyRequest(BaseModel):
+    """Request to verify Aadhaar"""
+    aadhaar_last4: str = Field(..., min_length=4, max_length=4, pattern="^[0-9]{4}$")
+    consent_id: str = Field(..., description="Consent ID from consent request")
+    name: Optional[str] = Field(None, description="Name to verify against Aadhaar")
+
+
+class TokenRequest(BaseModel):
+    """Request using Aadhaar token"""
+    aadhaar_token: str = Field(..., description="Token from Aadhaar verification")
+    consent_id: str = Field(..., description="Consent ID")
+
+
+@app.post("/consent/request")
+async def request_consent(request: ConsentRequest):
+    """
+    Request user consent for data access.
+    Returns a consent_id that must be confirmed by user before verification.
+    """
+    try:
+        jam_service = get_jam_service(security_config.secret_key)
+        result = jam_service.request_consent(
+            purpose=request.purpose,
+            scopes=request.scopes
+        )
+        
+        return {
+            "success": True,
+            "data": result
+        }
+        
+    except Exception as e:
+        logger.error(f"Consent request error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/consent/grant/{consent_id}")
+async def grant_consent(consent_id: str):
+    """
+    User grants consent (in real app, this would be after showing consent UI).
+    For demo, this immediately activates the consent.
+    """
+    try:
+        jam_service = get_jam_service(security_config.secret_key)
+        consent = jam_service.consent_manager.get_consent(consent_id)
+        
+        if not consent:
+            raise HTTPException(status_code=404, detail="Consent not found")
+        
+        return {
+            "success": True,
+            "consent_id": consent_id,
+            "status": "granted",
+            "expires_at": consent.expires_at.isoformat()
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Consent grant error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/consent/revoke/{consent_id}")
+async def revoke_consent(consent_id: str):
+    """
+    User revokes previously granted consent.
+    """
+    try:
+        jam_service = get_jam_service(security_config.secret_key)
+        success = jam_service.consent_manager.revoke_consent(consent_id)
+        
+        if not success:
+            raise HTTPException(status_code=404, detail="Consent not found")
+        
+        return {
+            "success": True,
+            "consent_id": consent_id,
+            "status": "revoked"
+        }
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Consent revoke error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/verify/aadhaar")
+async def verify_aadhaar(request: AadhaarVerifyRequest):
+    """
+    Verify Aadhaar and get tokenized reference.
+    Does NOT store full Aadhaar number - only uses last 4 digits for demo.
+    """
+    try:
+        jam_service = get_jam_service(security_config.secret_key)
+        
+        result = jam_service.verify_aadhaar(
+            aadhaar_last4=request.aadhaar_last4,
+            consent_id=request.consent_id,
+            name_to_verify=request.name
+        )
+        
+        if result.error:
+            return {
+                "success": False,
+                "error": result.error
+            }
+        
+        return {
+            "success": True,
+            "data": {
+                "verified": result.verified,
+                "token": result.token,
+                "name_verified": result.name_verified,
+                "demographic_match": result.demographic_match,
+                "consent_id": result.consent_id
+            }
+        }
+        
+    except Exception as e:
+        logger.error(f"Aadhaar verification error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/verify/land")
+async def verify_land_records(request: TokenRequest):
+    """
+    Get verified land records using Aadhaar token.
+    Returns land holding details without exposing sensitive data.
+    """
+    try:
+        jam_service = get_jam_service(security_config.secret_key)
+        
+        result = jam_service.get_land_records(
+            aadhaar_token=request.aadhaar_token,
+            consent_id=request.consent_id
+        )
+        
+        if result.error:
+            return {
+                "success": False,
+                "error": result.error
+            }
+        
+        return {
+            "success": True,
+            "data": {
+                "verified": result.verified,
+                "state": result.state,
+                "district": result.district,
+                "total_area_hectares": result.total_area_hectares,
+                "irrigated_percentage": result.irrigated_percentage,
+                "farmer_category": result.farmer_category,
+                "survey_numbers": result.survey_numbers,
+                "ownership_verified": result.ownership_verified
+            }
+        }
+        
+    except Exception as e:
+        logger.error(f"Land verification error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/verify/jan-dhan")
+async def verify_jan_dhan(request: TokenRequest):
+    """
+    Verify Jan Dhan bank account linkage.
+    Returns masked account details and DBT status.
+    """
+    try:
+        jam_service = get_jam_service(security_config.secret_key)
+        
+        result = jam_service.verify_jan_dhan(
+            aadhaar_token=request.aadhaar_token,
+            consent_id=request.consent_id
+        )
+        
+        if result.error:
+            return {
+                "success": False,
+                "error": result.error
+            }
+        
+        return {
+            "success": True,
+            "data": {
+                "linked": result.linked,
+                "bank_name": result.bank_name,
+                "account_masked": result.account_masked,
+                "dbt_enabled": result.dbt_enabled,
+                "pm_kisan_beneficiary": result.pm_kisan_beneficiary,
+                "last_dbt_date": result.last_dbt_date
+            }
+        }
+        
+    except Exception as e:
+        logger.error(f"Jan Dhan verification error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/verify/pm-kisan-status")
+async def get_pm_kisan_status(request: TokenRequest):
+    """
+    Get PM-KISAN enrollment and payment status.
+    """
+    try:
+        jam_service = get_jam_service(security_config.secret_key)
+        
+        result = jam_service.get_pm_kisan_status(
+            aadhaar_token=request.aadhaar_token,
+            consent_id=request.consent_id
+        )
+        
+        return {
+            "success": True,
+            "data": {
+                "enrolled": result.enrolled,
+                "beneficiary_id": result.beneficiary_id,
+                "installments_received": result.installments_received,
+                "last_installment_date": result.last_installment_date,
+                "last_installment_amount": result.last_installment_amount,
+                "next_installment_expected": result.next_installment_expected,
+                "bank_verified": result.bank_verified
+            }
+        }
+        
+    except Exception as e:
+        logger.error(f"PM-KISAN status error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.post("/farmer/profile")
+async def get_farmer_profile(request: TokenRequest):
+    """
+    Get unified farmer profile with all verifications.
+    Combines land records, bank details, and scheme eligibility.
+    """
+    try:
+        jam_service = get_jam_service(security_config.secret_key)
+        
+        profile = jam_service.get_unified_farmer_profile(
+            aadhaar_token=request.aadhaar_token,
+            consent_id=request.consent_id
+        )
+        
+        return {
+            "success": True,
+            "data": profile
+        }
+        
+    except Exception as e:
+        logger.error(f"Farmer profile error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/land/supported-states")
+async def get_supported_states():
+    """
+    Get list of states with land records integration.
+    """
+    try:
+        land_service = get_land_service()
+        states = land_service.get_supported_states()
+        
+        return {
+            "success": True,
+            "data": states
+        }
+        
+    except Exception as e:
+        logger.error(f"Supported states error: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 

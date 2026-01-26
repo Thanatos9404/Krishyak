@@ -350,5 +350,29 @@
     "potentialBenefit": "Potential Benefit",
     "documentsList": "Documents Required",
     "steps": "Steps to Apply"
+  },
+  "jam": {
+    "title": "Farmer Verification",
+    "aadhaarVerify": "Verify Aadhaar",
+    "landRecords": "Land Records",
+    "bankAccount": "Bank Account",
+    "pmKisanStatus": "PM-KISAN Status",
+    "consentTitle": "Your Consent Required",
+    "consentMessage": "We need your permission to verify your identity with government databases",
+    "grantConsent": "I Agree",
+    "denyConsent": "No Thanks",
+    "verified": "Verified",
+    "pending": "Pending",
+    "notLinked": "Not Linked",
+    "smallFarmer": "Small Farmer",
+    "marginalFarmer": "Marginal Farmer",
+    "landholding": "Land Holding",
+    "dbtEnabled": "DBT Enabled",
+    "startVerification": "Start Verification",
+    "verifyAndFetch": "Verify & Fetch Records",
+    "enterAadhaar": "Enter Last 4 Digits of Aadhaar",
+    "nameOptional": "Name (Optional - for verification)",
+    "schemeEligibility": "Scheme Eligibility",
+    "farmerCategory": "Farmer Category"
   }
 }
