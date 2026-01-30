@@ -433,3 +433,87 @@ input[type="range"].slider-red::-moz-range-thumb {
     display: block !important;
   }
 }
+
+/* Mobile-specific improvements for 360px - 420px viewports */
+@media (max-width: 640px) {
+  /* Prevent iOS auto-zoom on input focus */
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+
+  /* Touch-friendly targets (min 44px) */
+  .btn-touch,
+  button,
+  [role="button"] {
+    min-height: 44px;
+  }
+
+  /* Improved form inputs */
+  .input-farm {
+    font-size: 16px;
+    min-height: 48px;
+    padding: 12px 16px;
+  }
+
+  /* Stack grids vertically */
+  .grid-cols-2,
+  .grid-cols-3,
+  .grid-cols-4 {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Full-width cards */
+  .card-farm {
+    border-radius: 16px;
+    margin-left: -8px;
+    margin-right: -8px;
+  }
+
+  /* Reduce padding on mobile */
+  .p-6 {
+    padding: 16px !important;
+  }
+
+  .p-8 {
+    padding: 20px !important;
+  }
+
+  /* Bottom sheet improvements */
+  .bottom-sheet {
+    max-height: 85vh;
+  }
+
+  /* FAB position adjustment */
+  .fab {
+    bottom: 20px;
+    right: 16px;
+  }
+
+  /* Tab button sizing */
+  .tab-button {
+    padding: 10px 12px;
+    font-size: 14px;
+  }
+}
+
+/* Hide scrollbar but keep functionality */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Progress stepper mobile styles */
+@media (max-width: 480px) {
+  .progress-stepper-mobile {
+    gap: 4px;
+  }
+
+  .progress-stepper-mobile .step-icon {
+    width: 36px;
+    height: 36px;
+  }
+}

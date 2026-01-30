@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { MapPin, CloudRain, Thermometer, Droplets, RefreshCw, Loader2, Leaf } from 'lucide-react';
 import { getLocationBasedData } from '../api/weatherApi';
+import { useTranslation } from '../i18n';
 
 const WeatherCard = ({ onWeatherUpdate }) => {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [locationData, setLocationData] = useState(null);
@@ -28,11 +30,11 @@ const WeatherCard = ({ onWeatherUpdate }) => {
     } catch (err) {
       console.error('Location error:', err);
       if (err.code === 1) {
-        setError('Location access denied. Please enable location permissions in your browser.');
+        setError(t('weatherCard.errors.denied'));
       } else if (err.message === 'Geolocation not supported') {
-        setError('Your browser does not support location detection.');
+        setError(t('weatherCard.errors.notSupported'));
       } else {
-        setError('Failed to detect location. Please try again.');
+        setError(t('weatherCard.errors.failed'));
       }
     } finally {
       setLoading(false);
@@ -50,12 +52,12 @@ const WeatherCard = ({ onWeatherUpdate }) => {
         {loading ? (
           <>
             <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-            Detecting Location...
+            {t('weatherCard.detecting')}
           </>
         ) : (
           <>
             <MapPin className="w-5 h-5 mr-2" />
-            📍 Auto-Detect Location & Soil
+            {t('weatherCard.autoDetect')}
           </>
         )}
       </button>
@@ -82,7 +84,7 @@ const WeatherCard = ({ onWeatherUpdate }) => {
               onClick={detectLocation}
               disabled={loading}
               className="p-1 hover:bg-white/50 rounded-full transition-colors"
-              title="Refresh"
+              title={t('common.refresh') || "Refresh"}
             >
               <RefreshCw className={`w-4 h-4 text-gray-500 ${loading ? 'animate-spin' : ''}`} />
             </button>
@@ -91,7 +93,7 @@ const WeatherCard = ({ onWeatherUpdate }) => {
           {/* Zone Info */}
           {locationData.zone && locationData.zone !== 'Unknown' && (
             <p className="text-xs text-gray-500 -mt-2">
-              {locationData.zone} Region
+              {locationData.zone} {t('weatherCard.region')}
             </p>
           )}
 
@@ -115,24 +117,24 @@ const WeatherCard = ({ onWeatherUpdate }) => {
             <div className="bg-white/60 rounded-lg p-3">
               <div className="flex items-center mb-1">
                 <Leaf className="w-4 h-4 text-farm-green-600 mr-1" />
-                <span className="text-xs font-semibold text-gray-600">Soil Type</span>
+                <span className="text-xs font-semibold text-gray-600">{t('weatherCard.soilType')}</span>
               </div>
               <p className="text-lg font-bold text-farm-green-700">
                 {locationData.soil_type}
               </p>
-              <p className="text-xs text-green-600">✓ Auto-filled</p>
+              <p className="text-xs text-green-600">{t('weatherCard.autoFilled')}</p>
             </div>
 
             {/* Rainfall */}
             <div className="bg-white/60 rounded-lg p-3">
               <div className="flex items-center mb-1">
                 <CloudRain className="w-4 h-4 text-sky-blue-600 mr-1" />
-                <span className="text-xs font-semibold text-gray-600">Avg. Rainfall</span>
+                <span className="text-xs font-semibold text-gray-600">{t('weatherCard.avgRainfall')}</span>
               </div>
               <p className="text-lg font-bold text-sky-blue-700">
                 {locationData.expected_rainfall} mm
               </p>
-              <p className="text-xs text-green-600">✓ Auto-filled</p>
+              <p className="text-xs text-green-600">{t('weatherCard.autoFilled')}</p>
             </div>
           </div>
 
@@ -140,7 +142,7 @@ const WeatherCard = ({ onWeatherUpdate }) => {
           {locationData.rainfall_delay > 0 && (
             <div className="bg-yellow-50 rounded-lg p-3 border border-yellow-200">
               <p className="text-sm text-yellow-800">
-                ⚠️ Monsoon may be delayed by ~{locationData.rainfall_delay} days this season
+                {t('weatherCard.monsoonWarning', { days: locationData.rainfall_delay })}
               </p>
             </div>
           )}
@@ -148,7 +150,7 @@ const WeatherCard = ({ onWeatherUpdate }) => {
           {/* Mock Data Notice */}
           {locationData.weather?.isMock && (
             <p className="text-xs text-gray-400 text-center">
-              🌤️ Weather demo data • Add API key for real-time data
+              {t('weatherCard.demoData')}
             </p>
           )}
         </div>
@@ -157,7 +159,7 @@ const WeatherCard = ({ onWeatherUpdate }) => {
       {/* Helper Text */}
       {!locationData && !error && (
         <p className="text-xs text-gray-500 text-center">
-          Click above to auto-detect your location, soil type, and rainfall
+          {t('weatherCard.clickToDetect')}
         </p>
       )}
     </div>

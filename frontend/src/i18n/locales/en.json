@@ -46,7 +46,12 @@
     "weatherConditions": "Weather Conditions",
     "fertilizerMix": "Fertilizer Mix (kg/ha)",
     "irrigationPest": "Irrigation & Pest Control",
-    "marketInfo": "Market Information"
+    "marketInfo": "Market Information",
+    "marketPrice": "Current Market Price",
+    "saleMonth": "Planned Sale Month",
+    "immediate": "Immediate",
+    "month": "Month",
+    "months": "Months"
   },
   "simulation": {
     "running": "Running Simulation",
@@ -172,7 +177,10 @@
     "increase": "increase",
     "decrease": "decrease",
     "loss": "loss",
-    "stale": "Stale"
+    "stale": "Stale",
+    "and": "and",
+    "logout": "Logout",
+    "select": "Select..."
   },
   "crops": {
     "rice": "Rice",
@@ -374,5 +382,223 @@
     "nameOptional": "Name (Optional - for verification)",
     "schemeEligibility": "Scheme Eligibility",
     "farmerCategory": "Farmer Category"
+  },
+  "registration": {
+    "title": "Farmer Registration",
+    "subtitle": "Join Krishyak to access government schemes and AI-powered farming insights",
+    "step1Title": "Personal Information",
+    "step2Title": "Location Details",
+    "step3Title": "Land Details",
+    "step4Title": "Farming Information",
+    "stepOf": "Step {{current}} of {{total}}",
+    "fullName": "Full Name (पूरा नाम)",
+    "fullNamePlaceholder": "Enter your full name",
+    "fatherName": "Father's/Husband's Name (पिता/पति का नाम)",
+    "fatherNamePlaceholder": "Enter father's or husband's name",
+    "mobileNumber": "Mobile Number (मोबाइल नंबर)",
+    "dateOfBirth": "Date of Birth (जन्म तिथि)",
+    "aadhaarNumber": "Aadhaar Number (आधार संख्या)",
+    "state": "State (राज्य)",
+    "selectState": "Select State",
+    "district": "District (जिला)",
+    "selectDistrict": "Select District",
+    "tehsil": "Tehsil/Block (तहसील/ब्लॉक)",
+    "selectTehsil": "Select Tehsil",
+    "village": "Village (गाँव)",
+    "villagePlaceholder": "Enter village name",
+    "pinCode": "PIN Code (पिन कोड)",
+    "khasraNumber": "Khasra/Survey Number (खसरा संख्या)",
+    "khasraPlaceholder": "Enter Khasra number",
+    "totalLandArea": "Total Land Area",
+    "irrigatedLand": "Irrigated Land",
+    "rainfedLand": "Rain-fed Land",
+    "ownershipType": "Land Ownership Type",
+    "primaryCrop": "Primary Crop (मुख्य फसल)",
+    "secondaryCrops": "Secondary Crops",
+    "farmingType": "Farming Type",
+    "experience": "Farming Experience",
+    "consentTitle": "Terms & Consent",
+    "consentData": "I consent to share my data with government departments for scheme eligibility",
+    "consentTerms": "I agree to the",
+    "previous": "Previous",
+    "next": "Next",
+    "submit": "Register",
+    "autoSave": "💾 Your progress is automatically saved",
+    "success": "Welcome! Registration complete."
+  },
+  "ownership": {
+    "own": "Own",
+    "leased": "Leased",
+    "shared": "Shared"
+  },
+  "farmingType": {
+    "organic": "Organic",
+    "conventional": "Conventional",
+    "mixed": "Mixed"
+  },
+  "experience": {
+    "0-5": "0-5 Years",
+    "5-10": "5-10 Years",
+    "10-20": "10-20 Years",
+    "20+": "20+ Years"
+  },
+  "msp": {
+    "title": "MSP Rate Card",
+    "allRates": "All MSP Rates",
+    "viewAll": "View All",
+    "currentMsp": "Current MSP",
+    "perQuintal": "per quintal",
+    "cropName": "Crop Name",
+    "mspRate": "MSP Rate (₹/quintal)",
+    "season": "Season",
+    "allSeasons": "All Seasons",
+    "selectCrop": "Run a simulation to see MSP for your selected crop",
+    "infoText": "MSP is the minimum price at which the government purchases crops from farmers.",
+    "source": "Source",
+    "lastUpdated": "Last Updated"
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "lastUpdated": "Last Updated: January 2026"
+  },
+  "terms": {
+    "title": "Terms of Service",
+    "lastUpdated": "Last Updated: January 2026"
+  },
+  "errors": {
+    "simulationFailed": "Failed to run simulation. Please check if backend is running.",
+    "networkError": "Network error. Please check your connection."
+  },
+  "yieldChart": {
+    "title": "Yield Impact Factors",
+    "modifiers": "Modifiers",
+    "totalModifier": "Total Modifier",
+    "ofBaseYield": "of base yield",
+    "impact": "Impact (%)",
+    "factors": {
+      "soil": "Soil",
+      "rainfall": "Rainfall",
+      "irrigation": "Irrigation",
+      "fertilizer": "Fertilizer",
+      "seed": "Seed",
+      "pest": "Pest"
+    }
+  },
+  "weatherAlert": {
+    "title": "Weather Alerts",
+    "recommendation": "Recommendation"
+  },
+  "pests": {
+    "brown_planthopper": "Brown Planthopper (BPH)",
+    "stem_borer": "Yellow Stem Borer",
+    "leaf_folder": "Rice Leaf Folder",
+    "gall_midge": "Gall Midge",
+    "rice_hispa": "Rice Hispa",
+    "other": "Other",
+    "aphid": "Wheat Aphid",
+    "termite": "Termite",
+    "army_worm": "Army Worm",
+    "pink_borer": "Pink Borer",
+    "bollworm": "American Bollworm",
+    "pink_bollworm": "Pink Bollworm",
+    "whitefly": "Whitefly",
+    "jassid": "Jassid",
+    "thrips": "Thrips",
+    "early_shoot_borer": "Early Shoot Borer",
+    "top_borer": "Top Borer",
+    "woolly_aphid": "Woolly Aphid",
+    "scale_insect": "Scale Insect",
+    "pyrilla": "Pyrilla",
+    "fall_armyworm": "Fall Armyworm"
+  },
+  "pestReport": {
+    "submittedTitle": "Report Submitted!",
+    "submittedMessage": "Thank you for contributing to pest monitoring.",
+    "affectedCrop": "Affected Crop *",
+    "selectCrop": "Select crop",
+    "pestType": "Pest Type *",
+    "selectPest": "Select pest",
+    "severityLevel": "Severity Level *",
+    "location": "Location *",
+    "district": "District",
+    "enterDistrict": "Enter district",
+    "state": "State *",
+    "enterState": "Enter state",
+    "description": "Description (optional)",
+    "descriptionPlaceholder": "Describe what you observed...",
+    "photo": "Photo (optional)",
+    "photoPlaceholder": "Photo upload coming soon",
+    "privacyNote": "Your location is shared anonymously to help other farmers."
+  },
+  "seasons": {
+    "kharif": "Kharif",
+    "rabi": "Rabi",
+    "annual": "Annual"
+  },
+  "validation": {
+    "required": "This field is required",
+    "invalidMobile": "Please enter a valid 10-digit mobile number",
+    "invalidAadhaar": "Please enter a valid 12-digit Aadhaar number",
+    "invalidPinCode": "Please enter a valid 6-digit PIN code",
+    "invalidArea": "Please enter a valid land area",
+    "consentRequired": "You must consent to data sharing",
+    "termsRequired": "You must agree to Terms and Privacy Policy",
+    "fillAll": "Please fill in all required fields",
+    "enterLocation": "Please detect or enter your location",
+    "submitFailed": "Failed to submit report"
+  },
+  "weatherCard": {
+    "detecting": "Detecting Location...",
+    "autoDetect": "📍 Auto-Detect Location & Soil",
+    "region": "Region",
+    "soilType": "Soil Type",
+    "avgRainfall": "Avg. Rainfall",
+    "autoFilled": "✓ Auto-filled",
+    "monsoonWarning": "⚠️ Monsoon may be delayed by ~{{days}} days this season",
+    "demoData": "🌤️ Weather demo data • Add API key for real-time data",
+    "clickToDetect": "Click above to auto-detect your location, soil type, and rainfall",
+    "errors": {
+      "denied": "Location access denied. Please enable location permissions in your browser.",
+      "notSupported": "Your browser does not support location detection.",
+      "failed": "Failed to detect location. Please try again."
+    }
+  },
+  "voiceNew": {
+    "hint": "Speak in Hindi or English",
+    "browserHint": "Please use Chrome, Edge, or Safari",
+    "listeningClickStop": "Listening... Click to stop",
+    "clickToStart": "Click to start speaking",
+    "statusListening": "🎙️ Listening...",
+    "statusPlaceholder": "📝 Your speech will appear here",
+    "micHint": "Press the mic button to start",
+    "trySaying": "💡 Try saying:",
+    "examples": {
+      "1": "Rice farming 2 hectare in Nashik",
+      "2": "Dhaan ki kheti do hectare black soil",
+      "3": "Cotton 5 acres good seed low pest",
+      "4": "Wheat gehun teen hectare alluvial"
+    },
+    "youSaid": "You said:",
+    "noParamsHint": "Try including specific terms like crop names (rice, wheat), area (2 hectare), or soil type (black, alluvial).",
+    "tryAgain": "Try Again",
+    "params": {
+      "crop": "🌾 Crop",
+      "area": "📐 Area",
+      "location": "📍 Location",
+      "rainfall": "🌧️ Rainfall",
+      "pestRisk": "🐛 Pest Risk",
+      "seedQuality": "🌱 Seed Quality",
+      "soilType": "🏔️ Soil Type"
+    },
+    "textInput": "Text Input",
+    "voiceMode": "Voice",
+    "textMode": "Type",
+    "typeCommand": "Type your farming details",
+    "textPlaceholder": "e.g., Rice 2 hectare black soil Nashik",
+    "parseText": "Parse Text →",
+    "useTextInstead": "Use text input instead",
+    "youTyped": "You typed:",
+    "noParams": "No parameters detected",
+    "notSupported": "Voice input not supported in this browser"
   }
 }

@@ -32,7 +32,18 @@ const SEVERITY_LABELS = {
  * Individual Alert Item
  */
 const AlertItem = ({ alert, expanded, onToggle }) => {
+  const { t } = useTranslation();
   const colors = SEVERITY_COLORS[alert.severity] || SEVERITY_COLORS.low;
+
+  const getSeverityLabel = (severity) => {
+    switch (severity) {
+      case 'low': return `🟢 ${t('sidebar.low')}`;
+      case 'medium': return `🟡 ${t('sidebar.medium')}`;
+      case 'high': return `🟠 ${t('sidebar.high')}`;
+      case 'critical': return `🔴 ${t('sidebar.severe')}`;
+      default: return severity;
+    }
+  };
 
   return (
     <div className={`rounded-lg border ${colors.border} ${colors.bg} mb-2 overflow-hidden`}>
@@ -44,12 +55,12 @@ const AlertItem = ({ alert, expanded, onToggle }) => {
           <Bug className={`w-5 h-5 ${colors.text}`} />
           <div>
             <span className={`font-medium ${colors.text}`}>{alert.pest_name}</span>
-            <span className="text-xs text-gray-500 ml-2">on {alert.crop}</span>
+            <span className="text-xs text-gray-500 ml-2">{t('common.on') || 'on'} {alert.crop}</span>
           </div>
         </div>
         <div className="flex items-center space-x-2">
           <span className={`text-xs px-2 py-1 rounded-full ${colors.badge}`}>
-            {SEVERITY_LABELS[alert.severity] || alert.severity}
+            {getSeverityLabel(alert.severity)}
           </span>
           {expanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
         </div>
@@ -66,7 +77,7 @@ const AlertItem = ({ alert, expanded, onToggle }) => {
 
           {alert.recommendations && alert.recommendations.length > 0 && (
             <div className="mt-2">
-              <p className="text-xs font-semibold text-gray-700 mb-1">Recommended Actions:</p>
+              <p className="text-xs font-semibold text-gray-700 mb-1">{t('pest.recommendedActions')}:</p>
               <ul className="text-xs text-gray-600 space-y-1">
                 {alert.recommendations.slice(0, 3).map((rec, idx) => (
                   <li key={idx} className="flex items-start">
@@ -101,8 +112,8 @@ const PredictionItem = ({ prediction }) => {
       <div className="w-full bg-gray-200 rounded-full h-2 mb-2">
         <div
           className={`h-2 rounded-full transition-all duration-500 ${probability >= 70 ? 'bg-red-500' :
-              probability >= 50 ? 'bg-orange-500' :
-                probability >= 30 ? 'bg-yellow-500' : 'bg-green-500'
+            probability >= 50 ? 'bg-orange-500' :
+              probability >= 30 ? 'bg-yellow-500' : 'bg-green-500'
             }`}
           style={{ width: `${probability}%` }}
         />
@@ -194,8 +205,8 @@ const PestAlertCard = ({ crop, location, state, district, weather }) => {
         <button
           onClick={() => setView('alerts')}
           className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${view === 'alerts'
-              ? 'bg-farm-green-600 text-white'
-              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            ? 'bg-farm-green-600 text-white'
+            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
         >
           Alerts ({alerts.length})
@@ -203,8 +214,8 @@ const PestAlertCard = ({ crop, location, state, district, weather }) => {
         <button
           onClick={() => setView('predictions')}
           className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${view === 'predictions'
-              ? 'bg-farm-green-600 text-white'
-              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+            ? 'bg-farm-green-600 text-white'
+            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
         >
           Predictions ({predictions.length})
@@ -274,7 +285,7 @@ const PestAlertCard = ({ crop, location, state, district, weather }) => {
             <span className="text-gray-500">
               Seasonal Risk:
               <span className={`ml-1 font-medium ${seasonalRisk.risk_level === 'high' ? 'text-red-600' :
-                  seasonalRisk.risk_level === 'medium' ? 'text-yellow-600' : 'text-green-600'
+                seasonalRisk.risk_level === 'medium' ? 'text-yellow-600' : 'text-green-600'
                 }`}>
                 {seasonalRisk.risk_level?.toUpperCase()}
               </span>

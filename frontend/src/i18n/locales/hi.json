@@ -46,7 +46,12 @@
     "weatherConditions": "मौसम स्थिति",
     "fertilizerMix": "उर्वरक मिश्रण (किग्रा/हे.)",
     "irrigationPest": "सिंचाई और कीट नियंत्रण",
-    "marketInfo": "बाजार जानकारी"
+    "marketInfo": "बाजार जानकारी",
+    "marketPrice": "वर्तमान बाजार मूल्य",
+    "saleMonth": "बिक्री का नियोजित महीना",
+    "immediate": "तुरंत",
+    "month": "महीना",
+    "months": "महीने"
   },
   "simulation": {
     "running": "विश्लेषण चल रहा है",
@@ -172,7 +177,9 @@
     "loss": "हानि",
     "increase": "वृद्धि",
     "decrease": "कमी",
-    "stale": "पुराना"
+    "stale": "पुराना",
+    "and": "और",
+    "logout": "लॉग आउट"
   },
   "crops": {
     "rice": "धान",
@@ -374,5 +381,223 @@
     "nameOptional": "नाम (वैकल्पिक - सत्यापन के लिए)",
     "schemeEligibility": "योजना पात्रता",
     "farmerCategory": "किसान श्रेणी"
+  },
+  "registration": {
+    "title": "किसान पंजीकरण",
+    "subtitle": "सरकारी योजनाओं और AI-संचालित कृषि सलाह के लिए कृष्यक से जुड़ें",
+    "step1Title": "व्यक्तिगत जानकारी",
+    "step2Title": "स्थान विवरण",
+    "step3Title": "भूमि विवरण",
+    "step4Title": "खेती की जानकारी",
+    "stepOf": "चरण {{current}} में से {{total}}",
+    "fullName": "पूरा नाम",
+    "fullNamePlaceholder": "अपना पूरा नाम दर्ज करें",
+    "fatherName": "पिता/पति का नाम",
+    "fatherNamePlaceholder": "पिता या पति का नाम दर्ज करें",
+    "mobileNumber": "मोबाइल नंबर",
+    "dateOfBirth": "जन्म तिथि",
+    "aadhaarNumber": "आधार संख्या",
+    "state": "राज्य",
+    "selectState": "राज्य चुनें",
+    "district": "जिला",
+    "selectDistrict": "जिला चुनें",
+    "tehsil": "तहसील/ब्लॉक",
+    "selectTehsil": "तहसील चुनें",
+    "village": "गाँव",
+    "villagePlaceholder": "गाँव का नाम दर्ज करें",
+    "pinCode": "पिन कोड",
+    "khasraNumber": "खसरा/सर्वे नंबर",
+    "khasraPlaceholder": "खसरा नंबर दर्ज करें",
+    "totalLandArea": "कुल भूमि क्षेत्र",
+    "irrigatedLand": "सिंचित भूमि",
+    "rainfedLand": "वर्षा आधारित भूमि",
+    "ownershipType": "भूमि स्वामित्व प्रकार",
+    "primaryCrop": "मुख्य फसल",
+    "secondaryCrops": "अन्य फसलें",
+    "farmingType": "खेती का प्रकार",
+    "experience": "खेती का अनुभव",
+    "consentTitle": "नियम और सहमति",
+    "consentData": "मैं योजना पात्रता के लिए सरकारी विभागों के साथ अपना डेटा साझा करने की सहमति देता/देती हूं",
+    "consentTerms": "मैं सहमत हूं",
+    "previous": "पिछला",
+    "next": "अगला",
+    "submit": "पंजीकृत करें",
+    "autoSave": "💾 आपकी प्रगति स्वचालित रूप से सहेजी जाती है",
+    "success": "स्वागत है! पंजीकरण पूर्ण।"
+  },
+  "ownership": {
+    "own": "स्वयं की",
+    "leased": "पट्टे पर",
+    "shared": "साझा"
+  },
+  "farmingType": {
+    "organic": "जैविक",
+    "conventional": "पारंपरिक",
+    "mixed": "मिश्रित"
+  },
+  "experience": {
+    "0-5": "0-5 वर्ष",
+    "5-10": "5-10 वर्ष",
+    "10-20": "10-20 वर्ष",
+    "20+": "20+ वर्ष"
+  },
+  "validation": {
+    "required": "यह फ़ील्ड आवश्यक है",
+    "invalidMobile": "कृपया वैध 10-अंकीय मोबाइल नंबर दर्ज करें",
+    "invalidAadhaar": "कृपया वैध 12-अंकीय आधार संख्या दर्ज करें",
+    "invalidPinCode": "कृपया वैध 6-अंकीय पिन कोड दर्ज करें",
+    "invalidArea": "कृपया वैध भूमि क्षेत्र दर्ज करें",
+    "consentRequired": "आपको डेटा साझा करने की सहमति देनी होगी",
+    "termsRequired": "आपको नियम और गोपनीयता नीति से सहमत होना होगा",
+    "fillAll": "कृपया सभी आवश्यक फ़ील्ड भरें",
+    "enterLocation": "कृपया स्थान का पता लगाएं या दर्ज करें",
+    "submitFailed": "रिपोर्ट सबमिट करने में विफल"
+  },
+  "yieldChart": {
+    "title": "उपज प्रभाव कारक",
+    "modifiers": "संशोधक",
+    "totalModifier": "कुल संशोधक",
+    "ofBaseYield": "मूल उपज का",
+    "impact": "प्रभाव (%)",
+    "factors": {
+      "soil": "मिट्टी",
+      "rainfall": "बारिश",
+      "irrigation": "सिंचाई",
+      "fertilizer": "उर्वरक",
+      "seed": "बीज",
+      "pest": "कीट"
+    }
+  },
+  "weatherAlert": {
+    "title": "मौसम अलर्ट",
+    "recommendation": "सिफारिश"
+  },
+  "pests": {
+    "brown_planthopper": "भूरा प्लांटहॉपपर (BPH)",
+    "stem_borer": "तना छेदक",
+    "leaf_folder": "लीफ फोल्डर",
+    "gall_midge": "गॉल मिज",
+    "rice_hispa": "राइस हिस्पा",
+    "other": "अन्य",
+    "aphid": "एफिड",
+    "termite": "दीमक",
+    "army_worm": "आर्मी वर्म",
+    "pink_borer": "पिंक बोरर",
+    "bollworm": "बॉलवर्म",
+    "pink_bollworm": "पिंक बॉलवर्म",
+    "whitefly": "सफेद मक्खी",
+    "jassid": "जैसिड",
+    "thrips": "थ्रिप्स",
+    "early_shoot_borer": "अर्ली शूट बोरर",
+    "top_borer": "टॉप बोरर",
+    "woolly_aphid": "वूली एफिड",
+    "scale_insect": "स्केल इनसेट",
+    "pyrilla": "पायरीला",
+    "fall_armyworm": "फॉल आर्मी वर्म"
+  },
+  "pestReport": {
+    "submittedTitle": "रिपोर्ट सबमिट की गई!",
+    "submittedMessage": "कीट निगरानी में योगदान देने के लिए धन्यवाद।",
+    "affectedCrop": "प्रभावित फसल *",
+    "selectCrop": "फसल चुनें",
+    "pestType": "कीट प्रकार *",
+    "selectPest": "कीट चुनें",
+    "severityLevel": "गंभीरता स्तर *",
+    "location": "स्थान *",
+    "district": "जिला",
+    "enterDistrict": "जिला दर्ज करें",
+    "state": "राज्य *",
+    "enterState": "राज्य दर्ज करें",
+    "description": "विवरण (वैकल्पिक)",
+    "descriptionPlaceholder": "आपने जो देखा उसका वर्णन करें...",
+    "photo": "तस्वीर (वैकल्पिक)",
+    "photoPlaceholder": "फोटो अपलोड जल्द आ रहा है",
+    "privacyNote": "अन्य किसानों की मदद के लिए आपका स्थान गुमनाम रूप से साझा किया जाता है।"
+  },
+  "seasons": {
+    "kharif": "खरीफ",
+    "rabi": "रबी",
+    "annual": "वार्षिक"
+  },
+  "weatherCard": {
+    "detecting": "स्थान का पता लगा रहा है...",
+    "autoDetect": "📍 स्थान और मिट्टी का स्वतः पता लगाएं",
+    "region": "क्षेत्र",
+    "soilType": "मिट्टी का प्रकार",
+    "avgRainfall": "औसत वर्षा",
+    "autoFilled": "✓ स्वतः भरा हुआ",
+    "monsoonWarning": "⚠️ इस मौसम में मानसून में ~{{days}} दिनों की देरी हो सकती है",
+    "demoData": "🌤️ मौसम डेमो डेटा • रीयल-टाइम डेटा के लिए API कुंजी जोड़ें",
+    "clickToDetect": "अपने स्थान, मिट्टी और वर्षा का स्वतः पता लगाने के लिए ऊपर क्लिक करें",
+    "errors": {
+      "denied": "स्थान पहुंच अस्वीकृत। कृपया अपने ब्राउज़र में स्थान अनुमति सक्षम करें।",
+      "notSupported": "आपका ब्राउज़र स्थान पहचान का समर्थन नहीं करता है।",
+      "failed": "स्थान का पता लगाने में विफल। कृपया पुन: प्रयास करें।"
+    }
+  },
+  "voiceNew": {
+    "hint": "हिंदी या अंग्रेजी में बोलें",
+    "browserHint": "कृपया Chrome, Edge, या Safari का उपयोग करें",
+    "listeningClickStop": "सुन रहे हैं... रोकने के लिए क्लिक करें",
+    "clickToStart": "बोलने के लिए क्लिक करें",
+    "statusListening": "🎙️ सुन रहे हैं...",
+    "statusPlaceholder": "📝 आपकी बात यहाँ दिखाई देगी",
+    "micHint": "शुरू करने के लिए माइक बटन दबाएं",
+    "trySaying": "💡 यह कहने का प्रयास करें:",
+    "examples": {
+      "1": "नासिक में 2 हेक्टेयर धान की खेती",
+      "2": "Dhaan ki kheti do hectare black soil",
+      "3": "कपास 5 एकड़ अच्छा बीज कम कीट",
+      "4": "Wheat gehun teen hectare alluvial"
+    },
+    "youSaid": "आपने कहा:",
+    "noParamsHint": "विशिष्ट शब्द जैसे फसल का नाम (धान, गेहूं), क्षेत्रफल (2 हेक्टेयर), या मिट्टी का प्रकार (काली, जलोढ़) शामिल करने का प्रयास करें।",
+    "tryAgain": "पुनः प्रयास करें",
+    "params": {
+      "crop": "🌾 फसल",
+      "area": "📐 क्षेत्रफल",
+      "location": "📍 स्थान",
+      "rainfall": "🌧️ वर्षा",
+      "pestRisk": "🐛 कीट जोखिम",
+      "seedQuality": "🌱 बीज गुणवत्ता",
+      "soilType": "🏔️ मिट्टी प्रकार"
+    },
+    "textInput": "टेक्स्ट इनपुट",
+    "voiceMode": "आवाज",
+    "textMode": "टाइप करें",
+    "typeCommand": "अपने खेती के विवरण टाइप करें",
+    "textPlaceholder": "जैसे: धान 2 हेक्टेयर काली मिट्टी नासिक",
+    "parseText": "टेक्स्ट पार्स करें →",
+    "useTextInstead": "इसके बजाय टेक्स्ट इनपुट का उपयोग करें",
+    "youTyped": "आपने टाइप किया:",
+    "noParams": "कोई पैरामीटर नहीं मिला",
+    "notSupported": "इस ब्राउज़र में आवाज इनपुट समर्थित नहीं है"
+  },
+  "msp": {
+    "title": "MSP दर कार्ड",
+    "allRates": "सभी MSP दरें",
+    "viewAll": "सभी देखें",
+    "currentMsp": "वर्तमान MSP",
+    "perQuintal": "प्रति क्विंटल",
+    "cropName": "फसल का नाम",
+    "mspRate": "MSP दर (₹/क्विंटल)",
+    "season": "मौसम",
+    "allSeasons": "सभी मौसम",
+    "selectCrop": "अपनी चयनित फसल के लिए MSP देखने के लिए सिमुलेशन चलाएं",
+    "infoText": "MSP वह न्यूनतम मूल्य है जिस पर सरकार किसानों से फसल खरीदती है।",
+    "source": "स्रोत",
+    "lastUpdated": "अंतिम अपडेट"
+  },
+  "privacy": {
+    "title": "गोपनीयता नीति",
+    "lastUpdated": "अंतिम अपडेट: जनवरी 2026"
+  },
+  "terms": {
+    "title": "सेवा की शर्तें",
+    "lastUpdated": "अंतिम अपडेट: जनवरी 2026"
+  },
+  "errors": {
+    "simulationFailed": "सिमुलेशन चलाने में विफल। कृपया जांचें कि बैकएंड चल रहा है।",
+    "networkError": "नेटवर्क त्रुटि। कृपया अपना कनेक्शन जांचें।"
   }
 }

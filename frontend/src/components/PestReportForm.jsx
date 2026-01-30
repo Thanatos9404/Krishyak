@@ -14,48 +14,48 @@ import React, { useState, useEffect } from 'react';
 import { X, Bug, MapPin, Camera, Send, AlertCircle, CheckCircle } from 'lucide-react';
 import { useTranslation } from '../i18n';
 
-// Common pests by crop for dropdown
-const PEST_OPTIONS = {
+// Common pests by crop for dropdown (IDs only)
+const PEST_IDS = {
   rice: [
-    { id: 'brown_planthopper', name: 'Brown Planthopper (BPH)' },
-    { id: 'stem_borer', name: 'Yellow Stem Borer' },
-    { id: 'leaf_folder', name: 'Rice Leaf Folder' },
-    { id: 'gall_midge', name: 'Gall Midge' },
-    { id: 'rice_hispa', name: 'Rice Hispa' },
-    { id: 'other', name: 'Other' }
+    'brown_planthopper',
+    'stem_borer',
+    'leaf_folder',
+    'gall_midge',
+    'rice_hispa',
+    'other'
   ],
   wheat: [
-    { id: 'aphid', name: 'Wheat Aphid' },
-    { id: 'termite', name: 'Termite' },
-    { id: 'army_worm', name: 'Army Worm' },
-    { id: 'pink_borer', name: 'Pink Borer' },
-    { id: 'other', name: 'Other' }
+    'aphid',
+    'termite',
+    'army_worm',
+    'pink_borer',
+    'other'
   ],
   cotton: [
-    { id: 'bollworm', name: 'American Bollworm' },
-    { id: 'pink_bollworm', name: 'Pink Bollworm' },
-    { id: 'whitefly', name: 'Whitefly' },
-    { id: 'jassid', name: 'Jassid' },
-    { id: 'thrips', name: 'Thrips' },
-    { id: 'other', name: 'Other' }
+    'bollworm',
+    'pink_bollworm',
+    'whitefly',
+    'jassid',
+    'thrips',
+    'other'
   ],
   sugarcane: [
-    { id: 'early_shoot_borer', name: 'Early Shoot Borer' },
-    { id: 'top_borer', name: 'Top Borer' },
-    { id: 'woolly_aphid', name: 'Woolly Aphid' },
-    { id: 'scale_insect', name: 'Scale Insect' },
-    { id: 'pyrilla', name: 'Pyrilla' },
-    { id: 'other', name: 'Other' }
+    'early_shoot_borer',
+    'top_borer',
+    'woolly_aphid',
+    'scale_insect',
+    'pyrilla',
+    'other'
   ],
   maize: [
-    { id: 'fall_armyworm', name: 'Fall Armyworm' },
-    { id: 'stem_borer', name: 'Stem Borer' },
-    { id: 'aphid', name: 'Aphid' },
-    { id: 'other', name: 'Other' }
+    'fall_armyworm',
+    'stem_borer',
+    'aphid',
+    'other'
   ]
 };
 
-const CROPS = ['Rice', 'Wheat', 'Cotton', 'Sugarcane', 'Maize', 'Soybean', 'Groundnut', 'Other'];
+const CROPS = ['rice', 'wheat', 'cotton', 'sugarcane', 'maize', 'soybean', 'groundnut', 'other'];
 
 const PestReportForm = ({ isOpen, onClose, onSubmit, initialCrop = '', initialLocation = null }) => {
   const { t } = useTranslation();
@@ -81,13 +81,17 @@ const PestReportForm = ({ isOpen, onClose, onSubmit, initialCrop = '', initialLo
   // Get pest options based on selected crop
   const getPestOptions = () => {
     const cropKey = formData.crop.toLowerCase();
-    return PEST_OPTIONS[cropKey] || [{ id: 'other', name: 'Other' }];
+    const ids = PEST_IDS[cropKey] || ['other'];
+    return ids.map(id => ({
+      id,
+      name: t(`pests.${id}`)
+    }));
   };
 
   // Detect location
   const detectLocation = () => {
     if (!navigator.geolocation) {
-      setLocationError('Geolocation not supported');
+      setLocationError(t('weatherCard.errors.notSupported') || 'Geolocation not supported');
       return;
     }
 
@@ -122,7 +126,7 @@ const PestReportForm = ({ isOpen, onClose, onSubmit, initialCrop = '', initialLo
         setLocationLoading(false);
       },
       (err) => {
-        setLocationError('Could not detect location');
+        setLocationError(t('weatherCard.errors.failed') || 'Could not detect location');
         setLocationLoading(false);
       },
       { enableHighAccuracy: true, timeout: 10000 }
@@ -156,12 +160,12 @@ const PestReportForm = ({ isOpen, onClose, onSubmit, initialCrop = '', initialLo
 
     // Validation
     if (!formData.crop || !formData.pestType || !formData.severity) {
-      setError('Please fill in all required fields');
+      setError(t('validation.fillAll') || 'Please fill in all required fields');
       return;
     }
 
     if (!formData.state) {
-      setError('Please detect or enter your location');
+      setError(t('validation.enterLocation') || 'Please detect or enter your location');
       return;
     }
 
@@ -191,7 +195,7 @@ const PestReportForm = ({ isOpen, onClose, onSubmit, initialCrop = '', initialLo
           });
         }, 2000);
       } else {
-        setError(result.error || 'Failed to submit report');
+        setError(result.error || t('validation.submitFailed') || 'Failed to submit report');
       }
     } catch (err) {
       setError(err.message);
@@ -227,15 +231,15 @@ const PestReportForm = ({ isOpen, onClose, onSubmit, initialCrop = '', initialLo
         {success ? (
           <div className="p-8 text-center">
             <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-            <h3 className="text-lg font-bold text-gray-800 mb-2">Report Submitted!</h3>
-            <p className="text-gray-600">Thank you for contributing to pest monitoring.</p>
+            <h3 className="text-lg font-bold text-gray-800 mb-2">{t('pestReport.submittedTitle')}</h3>
+            <p className="text-gray-600">{t('pestReport.submittedMessage')}</p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="p-4 space-y-4">
             {/* Crop Selection */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Affected Crop *
+                {t('pestReport.affectedCrop')}
               </label>
               <select
                 value={formData.crop}
@@ -243,9 +247,9 @@ const PestReportForm = ({ isOpen, onClose, onSubmit, initialCrop = '', initialLo
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-farm-green-500"
                 required
               >
-                <option value="">Select crop</option>
+                <option value="">{t('pestReport.selectCrop')}</option>
                 {CROPS.map(crop => (
-                  <option key={crop} value={crop}>{crop}</option>
+                  <option key={crop} value={crop}>{t(`crops.${crop}`) || crop}</option>
                 ))}
               </select>
             </div>
@@ -253,7 +257,7 @@ const PestReportForm = ({ isOpen, onClose, onSubmit, initialCrop = '', initialLo
             {/* Pest Type Selection */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Pest Type *
+                {t('pestReport.pestType')}
               </label>
               <select
                 value={formData.pestType}
@@ -262,7 +266,7 @@ const PestReportForm = ({ isOpen, onClose, onSubmit, initialCrop = '', initialLo
                 required
                 disabled={!formData.crop}
               >
-                <option value="">Select pest</option>
+                <option value="">{t('pestReport.selectPest')}</option>
                 {getPestOptions().map(pest => (
                   <option key={pest.id} value={pest.id}>{pest.name}</option>
                 ))}
@@ -272,7 +276,7 @@ const PestReportForm = ({ isOpen, onClose, onSubmit, initialCrop = '', initialLo
             {/* Severity Selection */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Severity Level *
+                {t('pestReport.severityLevel')}
               </label>
               <div className="grid grid-cols-3 gap-2">
                 {['low', 'medium', 'high'].map(level => (
@@ -281,13 +285,13 @@ const PestReportForm = ({ isOpen, onClose, onSubmit, initialCrop = '', initialLo
                     type="button"
                     onClick={() => handleChange('severity', level)}
                     className={`py-2 px-3 rounded-lg border-2 text-sm font-medium transition-all ${formData.severity === level
-                        ? level === 'low' ? 'border-green-500 bg-green-50 text-green-700' :
-                          level === 'medium' ? 'border-yellow-500 bg-yellow-50 text-yellow-700' :
-                            'border-red-500 bg-red-50 text-red-700'
-                        : 'border-gray-200 text-gray-600 hover:border-gray-300'
+                      ? level === 'low' ? 'border-green-500 bg-green-50 text-green-700' :
+                        level === 'medium' ? 'border-yellow-500 bg-yellow-50 text-yellow-700' :
+                          'border-red-500 bg-red-50 text-red-700'
+                      : 'border-gray-200 text-gray-600 hover:border-gray-300'
                       }`}
                   >
-                    {level === 'low' ? '🟢 Low' : level === 'medium' ? '🟡 Medium' : '🔴 High'}
+                    {level === 'low' ? `🟢 ${t('sidebar.low')}` : level === 'medium' ? `🟡 ${t('sidebar.medium')}` : `🔴 ${t('sidebar.high')}`}
                   </button>
                 ))}
               </div>
@@ -296,7 +300,7 @@ const PestReportForm = ({ isOpen, onClose, onSubmit, initialCrop = '', initialLo
             {/* Location */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Location *
+                {t('pestReport.location')}
               </label>
               <div className="flex items-center space-x-2">
                 <button
@@ -306,7 +310,7 @@ const PestReportForm = ({ isOpen, onClose, onSubmit, initialCrop = '', initialLo
                   className="flex items-center px-3 py-2 bg-farm-green-100 text-farm-green-700 rounded-lg hover:bg-farm-green-200 transition-colors disabled:opacity-50"
                 >
                   <MapPin className={`w-4 h-4 mr-1 ${locationLoading ? 'animate-pulse' : ''}`} />
-                  {locationLoading ? 'Detecting...' : 'Detect Location'}
+                  {locationLoading ? t('weatherCard.detecting') : t('weatherCard.detectLocation') || 'Detect Location'}
                 </button>
                 {formData.state && (
                   <span className="text-sm text-gray-600">
@@ -322,22 +326,22 @@ const PestReportForm = ({ isOpen, onClose, onSubmit, initialCrop = '', initialLo
             {/* Manual Location Input */}
             <div className="grid grid-cols-2 gap-2">
               <div>
-                <label className="block text-xs text-gray-500 mb-1">District</label>
+                <label className="block text-xs text-gray-500 mb-1">{t('pestReport.district')}</label>
                 <input
                   type="text"
                   value={formData.district}
                   onChange={(e) => handleChange('district', e.target.value)}
-                  placeholder="Enter district"
+                  placeholder={t('pestReport.enterDistrict')}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-farm-green-500"
                 />
               </div>
               <div>
-                <label className="block text-xs text-gray-500 mb-1">State *</label>
+                <label className="block text-xs text-gray-500 mb-1">{t('pestReport.state')}</label>
                 <input
                   type="text"
                   value={formData.state}
                   onChange={(e) => handleChange('state', e.target.value)}
-                  placeholder="Enter state"
+                  placeholder={t('pestReport.enterState')}
                   required
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-farm-green-500"
                 />
@@ -347,12 +351,12 @@ const PestReportForm = ({ isOpen, onClose, onSubmit, initialCrop = '', initialLo
             {/* Description */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Description (optional)
+                {t('pestReport.description')}
               </label>
               <textarea
                 value={formData.description}
                 onChange={(e) => handleChange('description', e.target.value)}
-                placeholder="Describe what you observed..."
+                placeholder={t('pestReport.descriptionPlaceholder')}
                 rows={3}
                 maxLength={500}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-farm-green-500"
@@ -363,7 +367,7 @@ const PestReportForm = ({ isOpen, onClose, onSubmit, initialCrop = '', initialLo
             {/* Photo Upload Placeholder */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Photo (optional)
+                {t('pestReport.photo')}
               </label>
               <button
                 type="button"
@@ -371,7 +375,7 @@ const PestReportForm = ({ isOpen, onClose, onSubmit, initialCrop = '', initialLo
                 disabled
               >
                 <Camera className="w-5 h-5 mr-2" />
-                Photo upload coming soon
+                {t('pestReport.photoPlaceholder')}
               </button>
             </div>
 
@@ -392,19 +396,19 @@ const PestReportForm = ({ isOpen, onClose, onSubmit, initialCrop = '', initialLo
               {submitting ? (
                 <>
                   <Bug className="w-5 h-5 mr-2 animate-spin" />
-                  Submitting...
+                  {t('common.submitting') || 'Submitting...'}
                 </>
               ) : (
                 <>
                   <Send className="w-5 h-5 mr-2" />
-                  Submit Report
+                  {t('common.submit')}
                 </>
               )}
             </button>
 
             {/* Privacy Note */}
             <p className="text-xs text-gray-400 text-center">
-              Your location is shared anonymously to help other farmers.
+              {t('pestReport.privacyNote')}
             </p>
           </form>
         )}

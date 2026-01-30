@@ -75,6 +75,7 @@ const WeatherIcon = ({ condition, size = 'md' }) => {
 
 // Single alert card
 const AlertItem = ({ alert, expanded, onClick }) => {
+  const { t } = useTranslation();
   const style = severityStyles[alert.severity] || severityStyles.info;
   const Icon = style.icon;
 
@@ -92,7 +93,7 @@ const AlertItem = ({ alert, expanded, onClick }) => {
               <p className="text-sm text-gray-600">{alert.message}</p>
               {alert.recommendation && (
                 <div className="bg-white/50 rounded p-2">
-                  <p className="text-xs font-medium text-gray-500">Recommendation:</p>
+                  <p className="text-xs font-medium text-gray-500">{t('weatherAlert.recommendation')}:</p>
                   <p className="text-sm text-gray-700">{alert.recommendation}</p>
                 </div>
               )}
@@ -144,7 +145,7 @@ const WeatherAlertCard = ({ crop = 'default' }) => {
           <div className="flex items-center gap-2">
             <Bell className="w-5 h-5" />
             <h3 className="font-semibold">
-              {t('weather.alerts') || 'Weather Alerts'}
+              {t('weatherAlert.title') || t('weather.alerts') || 'Weather Alerts'}
             </h3>
             {hasAlerts && (
               <span className="bg-white/20 text-xs px-2 py-0.5 rounded-full">

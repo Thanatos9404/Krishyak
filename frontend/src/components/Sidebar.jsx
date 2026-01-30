@@ -314,7 +314,7 @@ const Sidebar = ({ formData, setFormData, crops, soilTypes, onSimulate, loading 
 
           {/* Market Information Section */}
           <AccordionSection
-            title="Market Information"
+            title={t('sidebar.marketInfo') || 'Market Information'}
             icon="📈"
             isExpanded={expandedSections.market}
             onToggle={() => toggleSection('market')}
@@ -322,7 +322,7 @@ const Sidebar = ({ formData, setFormData, crops, soilTypes, onSimulate, loading 
             {/* Market Price */}
             <div className="space-y-2">
               <label className="text-sm font-semibold text-gray-700">
-                Current Market Price (₹/quintal)
+                {t('sidebar.marketPrice') || 'Current Market Price'} (₹/{t('units.quintal') || 'quintal'})
               </label>
               <input
                 type="number"
@@ -336,26 +336,26 @@ const Sidebar = ({ formData, setFormData, crops, soilTypes, onSimulate, loading 
             {/* Sale Month */}
             <div className="space-y-2">
               <label className="text-sm font-semibold text-gray-700">
-                Planned Sale Month
+                {t('sidebar.saleMonth') || 'Planned Sale Month'}
               </label>
               <select
                 value={formData.sale_month}
                 onChange={(e) => handleChange('sale_month', parseInt(e.target.value))}
                 className="input-farm"
               >
-                <option value="0">Immediate</option>
-                <option value="1">1 Month</option>
-                <option value="2">2 Months</option>
-                <option value="3">3 Months</option>
-                <option value="4">4 Months</option>
-                <option value="5">5 Months</option>
-                <option value="6">6 Months</option>
-                <option value="7">7 Months</option>
-                <option value="8">8 Months</option>
-                <option value="9">9 Months</option>
-                <option value="10">10 Months</option>
-                <option value="11">11 Months</option>
-                <option value="12">12 Months</option>
+                <option value="0">{t('sidebar.immediate') || 'Immediate'}</option>
+                <option value="1">1 {t('sidebar.month') || 'Month'}</option>
+                <option value="2">2 {t('sidebar.months') || 'Months'}</option>
+                <option value="3">3 {t('sidebar.months') || 'Months'}</option>
+                <option value="4">4 {t('sidebar.months') || 'Months'}</option>
+                <option value="5">5 {t('sidebar.months') || 'Months'}</option>
+                <option value="6">6 {t('sidebar.months') || 'Months'}</option>
+                <option value="7">7 {t('sidebar.months') || 'Months'}</option>
+                <option value="8">8 {t('sidebar.months') || 'Months'}</option>
+                <option value="9">9 {t('sidebar.months') || 'Months'}</option>
+                <option value="10">10 {t('sidebar.months') || 'Months'}</option>
+                <option value="11">11 {t('sidebar.months') || 'Months'}</option>
+                <option value="12">12 {t('sidebar.months') || 'Months'}</option>
               </select>
             </div>
           </AccordionSection>

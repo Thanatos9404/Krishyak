@@ -1,42 +1,83 @@
-import React, { useState, useEffect } from 'react';
-import { Mic, X, Check, RefreshCw, AlertCircle } from 'lucide-react';
-import useVoiceRecognition, { parseVoiceCommand } from '../hooks/useVoiceRecognition';
+import React, { useState, useEffect, useRef } from 'react';
+import { Mic, X, Check, RefreshCw, AlertCircle, Type, MicOff } from 'lucide-react';
+import useVoiceRecognition, { parseVoiceCommand, STATUS } from '../hooks/useVoiceRecognition';
+import { useTranslation } from '../i18n';
 
 /**
- * Voice Input Modal - Simple and reliable voice input for farming parameters
+ * Voice Input Modal with Text Fallback
+ * 
+ * Features:
+ * - Voice input when available
+ * - Automatic fallback to text input on errors
+ * - Manual text entry option always available
+ * - Works offline via text input
  */
 const VoiceInputModal = ({ isOpen, onClose, onApply }) => {
+  const { t } = useTranslation();
   const [parsedData, setParsedData] = useState({});
   const [showResults, setShowResults] = useState(false);
+  const [inputMode, setInputMode] = useState('voice'); // 'voice' or 'text'
+  const [textInput, setTextInput] = useState('');
+  const textInputRef = useRef(null);
 
   const {
     isListening,
     transcript,
     error,
     isSupported,
+    status,
     startListening,
     stopListening,
-    resetTranscript
+    resetTranscript,
+    setManualTranscript
   } = useVoiceRecognition();
+
+  // Auto-switch to text mode if voice not supported or error occurs
+  useEffect(() => {
+    if (!isSupported || status === STATUS.ERROR || status === STATUS.NO_SUPPORT) {
+      setInputMode('text');
+    }
+  }, [isSupported, status]);
 
   // Parse transcript when we have text and stopped listening
   useEffect(() => {
-    if (transcript && !isListening) {
+    if (transcript && !isListening && inputMode === 'voice') {
       const parsed = parseVoiceCommand(transcript);
       setParsedData(parsed);
       setShowResults(true);
     }
-  }, [transcript, isListening]);
+  }, [transcript, isListening, inputMode]);
+
+  // Focus text input when switching to text mode
+  useEffect(() => {
+    if (inputMode === 'text' && textInputRef.current && isOpen) {
+      textInputRef.current.focus();
+    }
+  }, [inputMode, isOpen]);
 
   const handleStart = () => {
     resetTranscript();
     setParsedData({});
     setShowResults(false);
-    startListening();
+    setTextInput('');
+    const success = startListening();
+    if (!success) {
+      setInputMode('text');
+    }
   };
 
   const handleStop = () => {
     stopListening();
+  };
+
+  const handleTextSubmit = () => {
+    if (!textInput.trim()) return;
+
+    // Use the text input as transcript
+    setManualTranscript(textInput);
+    const parsed = parseVoiceCommand(textInput);
+    setParsedData(parsed);
+    setShowResults(true);
   };
 
   const handleApply = () => {
@@ -50,7 +91,15 @@ const VoiceInputModal = ({ isOpen, onClose, onApply }) => {
     resetTranscript();
     setParsedData({});
     setShowResults(false);
-    startListening();
+    setTextInput('');
+
+    if (inputMode === 'voice' && isSupported) {
+      startListening();
+    } else {
+      if (textInputRef.current) {
+        textInputRef.current.focus();
+      }
+    }
   };
 
   const handleClose = () => {
@@ -58,26 +107,42 @@ const VoiceInputModal = ({ isOpen, onClose, onApply }) => {
     resetTranscript();
     setParsedData({});
     setShowResults(false);
+    setTextInput('');
     onClose();
+  };
+
+  const toggleInputMode = () => {
+    stopListening();
+    resetTranscript();
+    setParsedData({});
+    setShowResults(false);
+    setTextInput('');
+    setInputMode(prev => prev === 'voice' ? 'text' : 'voice');
   };
 
   if (!isOpen) return null;
 
   const hasResults = Object.keys(parsedData).length > 0;
+  const displayTranscript = inputMode === 'voice' ? transcript : textInput;
 
   return (
     <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden">
+      <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="bg-gradient-to-r from-indigo-500 to-purple-600 p-5 text-white">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-                <Mic className="w-5 h-5" />
+                {inputMode === 'voice' ? <Mic className="w-5 h-5" /> : <Type className="w-5 h-5" />}
               </div>
               <div>
-                <h2 className="text-lg font-bold">Voice Input</h2>
-                <p className="text-sm text-white/80">Speak in Hindi or English</p>
+                <h2 className="text-lg font-bold">
+                  {inputMode === 'voice'
+                    ? (t('voice.title') || 'Voice Input')
+                    : (t('voiceNew.textInput') || 'Text Input')
+                  }
+                </h2>
+                <p className="text-sm text-white/80">{t('voiceNew.hint')}</p>
               </div>
             </div>
             <button
@@ -91,78 +156,149 @@ const VoiceInputModal = ({ isOpen, onClose, onApply }) => {
 
         {/* Content */}
         <div className="p-6">
-          {!isSupported ? (
-            /* Browser not supported */
-            <div className="text-center py-8">
-              <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-3" />
-              <p className="text-red-600 font-medium">Voice input not supported</p>
-              <p className="text-sm text-gray-500 mt-2">Please use Chrome, Edge, or Safari</p>
-            </div>
-          ) : !showResults ? (
-            /* Recording Mode */
+          {!showResults ? (
+            /* Input Mode */
             <>
-              {/* Mic Button */}
-              <div className="flex flex-col items-center py-8">
-                {isListening ? (
-                  <button
-                    onClick={handleStop}
-                    className="w-24 h-24 rounded-full bg-red-500 flex items-center justify-center shadow-lg shadow-red-500/40 animate-pulse"
-                  >
-                    <div className="w-8 h-8 bg-white rounded-sm" />
-                  </button>
-                ) : (
-                  <button
-                    onClick={handleStart}
-                    className="w-24 h-24 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg hover:shadow-xl hover:scale-105 transition-all"
-                  >
-                    <Mic className="w-10 h-10 text-white" />
-                  </button>
-                )}
+              {/* Mode Toggle - Only show if voice is supported */}
+              {isSupported && (
+                <div className="flex justify-center mb-4">
+                  <div className="inline-flex bg-gray-100 rounded-xl p-1">
+                    <button
+                      onClick={() => inputMode !== 'voice' && toggleInputMode()}
+                      className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${inputMode === 'voice'
+                          ? 'bg-white shadow text-indigo-600'
+                          : 'text-gray-600 hover:text-gray-800'
+                        }`}
+                    >
+                      <Mic className="w-4 h-4" />
+                      {t('voiceNew.voiceMode') || 'Voice'}
+                    </button>
+                    <button
+                      onClick={() => inputMode !== 'text' && toggleInputMode()}
+                      className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-all ${inputMode === 'text'
+                          ? 'bg-white shadow text-indigo-600'
+                          : 'text-gray-600 hover:text-gray-800'
+                        }`}
+                    >
+                      <Type className="w-4 h-4" />
+                      {t('voiceNew.textMode') || 'Type'}
+                    </button>
+                  </div>
+                </div>
+              )}
 
-                <p className="mt-4 text-sm font-medium text-gray-600">
-                  {isListening ? (
-                    <span className="text-red-500 flex items-center gap-2">
-                      <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
-                      Listening... Click to stop
-                    </span>
-                  ) : (
-                    'Click to start speaking'
-                  )}
-                </p>
-              </div>
+              {inputMode === 'voice' ? (
+                /* Voice Input Mode */
+                <>
+                  {/* Mic Button */}
+                  <div className="flex flex-col items-center py-6">
+                    {isListening ? (
+                      <button
+                        onClick={handleStop}
+                        className="w-24 h-24 rounded-full bg-red-500 flex items-center justify-center shadow-lg shadow-red-500/40 animate-pulse"
+                      >
+                        <div className="w-8 h-8 bg-white rounded-sm" />
+                      </button>
+                    ) : (
+                      <button
+                        onClick={handleStart}
+                        className="w-24 h-24 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-lg hover:shadow-xl hover:scale-105 transition-all"
+                      >
+                        <Mic className="w-10 h-10 text-white" />
+                      </button>
+                    )}
 
-              {/* Live Transcript */}
-              <div className={`bg-gray-50 rounded-xl p-4 min-h-[80px] border-2 ${isListening ? 'border-indigo-300 bg-indigo-50/50' : 'border-gray-200'}`}>
-                <p className="text-xs text-gray-500 mb-2 font-medium">
-                  {isListening ? '🎙️ Listening...' : '📝 Your speech will appear here'}
-                </p>
-                {transcript ? (
-                  <p className="text-gray-800 font-medium">{transcript}</p>
-                ) : (
-                  <p className="text-gray-400 italic">
-                    {isListening ? 'Speak now...' : 'Press the mic button to start'}
-                  </p>
-                )}
-              </div>
+                    <p className="mt-4 text-sm font-medium text-gray-600">
+                      {isListening ? (
+                        <span className="text-red-500 flex items-center gap-2">
+                          <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
+                          {t('voiceNew.listeningClickStop')}
+                        </span>
+                      ) : (
+                        t('voiceNew.clickToStart')
+                      )}
+                    </p>
+                  </div>
+
+                  {/* Live Transcript */}
+                  <div className={`bg-gray-50 rounded-xl p-4 min-h-[80px] border-2 ${isListening ? 'border-indigo-300 bg-indigo-50/50' : 'border-gray-200'}`}>
+                    <p className="text-xs text-gray-500 mb-2 font-medium">
+                      {isListening ? t('voiceNew.statusListening') : t('voiceNew.statusPlaceholder')}
+                    </p>
+                    {transcript ? (
+                      <p className="text-gray-800 font-medium">{transcript}</p>
+                    ) : (
+                      <p className="text-gray-400 italic">
+                        {isListening ? t('voice.speakNow') : t('voiceNew.micHint')}
+                      </p>
+                    )}
+                  </div>
+                </>
+              ) : (
+                /* Text Input Mode */
+                <>
+                  <div className="py-4">
+                    <div className="flex items-center gap-2 mb-3">
+                      <Type className="w-5 h-5 text-indigo-600" />
+                      <span className="text-sm font-medium text-gray-700">
+                        {t('voiceNew.typeCommand') || 'Type your farming details'}
+                      </span>
+                    </div>
+
+                    <textarea
+                      ref={textInputRef}
+                      value={textInput}
+                      onChange={(e) => setTextInput(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                          e.preventDefault();
+                          handleTextSubmit();
+                        }
+                      }}
+                      placeholder={t('voiceNew.textPlaceholder') || "e.g., Rice 2 hectare black soil Nashik"}
+                      className="w-full p-4 border-2 border-gray-200 rounded-xl focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100 outline-none resize-none transition-all"
+                      rows={3}
+                    />
+
+                    <button
+                      onClick={handleTextSubmit}
+                      disabled={!textInput.trim()}
+                      className="mt-3 w-full py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl font-semibold hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {t('voiceNew.parseText') || 'Parse Text →'}
+                    </button>
+                  </div>
+                </>
+              )}
 
               {/* Error Message */}
               {error && (
-                <div className="mt-4 bg-red-50 text-red-600 rounded-xl p-4 border border-red-200">
-                  <p className="text-sm flex items-center gap-2">
-                    <AlertCircle className="w-4 h-4" />
-                    {error}
+                <div className="mt-4 bg-amber-50 text-amber-700 rounded-xl p-4 border border-amber-200">
+                  <p className="text-sm flex items-start gap-2">
+                    <MicOff className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                    <span>
+                      {error}
+                      {inputMode === 'voice' && (
+                        <button
+                          onClick={() => setInputMode('text')}
+                          className="ml-2 underline font-medium hover:text-amber-800"
+                        >
+                          {t('voiceNew.useTextInstead') || 'Use text input instead'}
+                        </button>
+                      )}
+                    </span>
                   </p>
                 </div>
               )}
 
               {/* Example Commands */}
               <div className="mt-4 bg-indigo-50 rounded-xl p-4">
-                <p className="text-xs text-indigo-700 font-semibold mb-2">💡 Try saying:</p>
+                <p className="text-xs text-indigo-700 font-semibold mb-2">{t('voiceNew.trySaying')}</p>
                 <ul className="text-sm text-indigo-600 space-y-1">
-                  <li>• "Rice farming 2 hectare in Nashik"</li>
-                  <li>• "Dhaan ki kheti do hectare black soil"</li>
-                  <li>• "Cotton 5 acres good seed low pest"</li>
-                  <li>• "Wheat gehun teen hectare alluvial"</li>
+                  <li>• "{t('voiceNew.examples.1')}"</li>
+                  <li>• "{t('voiceNew.examples.2')}"</li>
+                  <li>• "{t('voiceNew.examples.3')}"</li>
+                  <li>• "{t('voiceNew.examples.4')}"</li>
                 </ul>
               </div>
             </>
@@ -171,8 +307,10 @@ const VoiceInputModal = ({ isOpen, onClose, onApply }) => {
             <>
               {/* Transcript */}
               <div className="bg-gray-100 rounded-xl p-4 mb-4">
-                <p className="text-xs text-gray-500 mb-1">You said:</p>
-                <p className="text-gray-800 font-medium">{transcript}</p>
+                <p className="text-xs text-gray-500 mb-1">
+                  {inputMode === 'voice' ? t('voiceNew.youSaid') : (t('voiceNew.youTyped') || 'You typed:')}
+                </p>
+                <p className="text-gray-800 font-medium">{displayTranscript || transcript}</p>
               </div>
 
               {/* Parsed Results */}
@@ -180,48 +318,48 @@ const VoiceInputModal = ({ isOpen, onClose, onApply }) => {
                 <div className="bg-green-50 rounded-xl p-4 mb-6 border border-green-200">
                   <div className="flex items-center gap-2 mb-3">
                     <Check className="w-5 h-5 text-green-600" />
-                    <span className="font-semibold text-green-800">Detected Parameters</span>
+                    <span className="font-semibold text-green-800">{t('voice.detected')}</span>
                   </div>
                   <div className="space-y-2">
                     {parsedData.crop && (
                       <div className="flex justify-between py-1 border-b border-green-200">
-                        <span className="text-gray-600">🌾 Crop</span>
+                        <span className="text-gray-600">{t('voiceNew.params.crop')}</span>
                         <span className="font-bold text-green-700">{parsedData.crop}</span>
                       </div>
                     )}
                     {parsedData.area_hectares && (
                       <div className="flex justify-between py-1 border-b border-green-200">
-                        <span className="text-gray-600">📐 Area</span>
-                        <span className="font-bold text-green-700">{parsedData.area_hectares} hectares</span>
+                        <span className="text-gray-600">{t('voiceNew.params.area')}</span>
+                        <span className="font-bold text-green-700">{parsedData.area_hectares} {t('units.hectares')}</span>
                       </div>
                     )}
                     {parsedData.soil_type && (
                       <div className="flex justify-between py-1 border-b border-green-200">
-                        <span className="text-gray-600">🏔️ Soil Type</span>
+                        <span className="text-gray-600">{t('voiceNew.params.soilType')}</span>
                         <span className="font-bold text-amber-700">{parsedData.soil_type}</span>
                       </div>
                     )}
                     {parsedData.location && (
                       <div className="flex justify-between py-1 border-b border-green-200">
-                        <span className="text-gray-600">📍 Location</span>
+                        <span className="text-gray-600">{t('voiceNew.params.location')}</span>
                         <span className="font-bold text-blue-700">{parsedData.location}</span>
                       </div>
                     )}
                     {parsedData.expected_rainfall && (
                       <div className="flex justify-between py-1 border-b border-green-200">
-                        <span className="text-gray-600">🌧️ Rainfall</span>
+                        <span className="text-gray-600">{t('voiceNew.params.rainfall')}</span>
                         <span className="font-bold text-blue-700">{parsedData.expected_rainfall} mm</span>
                       </div>
                     )}
                     {parsedData.pest_probability !== undefined && (
                       <div className="flex justify-between py-1 border-b border-green-200">
-                        <span className="text-gray-600">🐛 Pest Risk</span>
+                        <span className="text-gray-600">{t('voiceNew.params.pestRisk')}</span>
                         <span className="font-bold text-orange-700">{(parsedData.pest_probability * 100).toFixed(0)}%</span>
                       </div>
                     )}
                     {parsedData.seed_quality !== undefined && (
                       <div className="flex justify-between py-1">
-                        <span className="text-gray-600">🌱 Seed Quality</span>
+                        <span className="text-gray-600">{t('voiceNew.params.seedQuality')}</span>
                         <span className="font-bold text-green-700">{(parsedData.seed_quality * 100).toFixed(0)}%</span>
                       </div>
                     )}
@@ -231,11 +369,10 @@ const VoiceInputModal = ({ isOpen, onClose, onApply }) => {
                 <div className="bg-yellow-50 rounded-xl p-4 mb-6 border border-yellow-200">
                   <div className="flex items-center gap-2">
                     <AlertCircle className="w-5 h-5 text-yellow-600" />
-                    <span className="text-yellow-800">No parameters detected</span>
+                    <span className="text-yellow-800">{t('voiceNew.noParams') || "No parameters detected"}</span>
                   </div>
                   <p className="text-sm text-yellow-700 mt-2">
-                    Try including specific terms like crop names (rice, wheat), area (2 hectare),
-                    or soil type (black, alluvial).
+                    {t('voiceNew.noParamsHint')}
                   </p>
                 </div>
               )}
@@ -247,7 +384,7 @@ const VoiceInputModal = ({ isOpen, onClose, onApply }) => {
                   className="flex-1 flex items-center justify-center gap-2 py-3 px-4 border-2 border-gray-200 rounded-xl text-gray-600 font-semibold hover:bg-gray-50 transition-colors"
                 >
                   <RefreshCw className="w-4 h-4" />
-                  Try Again
+                  {t('voiceNew.tryAgain')}
                 </button>
                 <button
                   onClick={handleApply}
@@ -255,7 +392,7 @@ const VoiceInputModal = ({ isOpen, onClose, onApply }) => {
                   className="flex-1 flex items-center justify-center gap-2 py-3 px-4 bg-green-500 text-white rounded-xl font-semibold hover:bg-green-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   <Check className="w-4 h-4" />
-                  Apply
+                  {t('voice.apply')}
                 </button>
               </div>
             </>

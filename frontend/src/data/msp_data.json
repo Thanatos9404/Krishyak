@@ -1,0 +1,112 @@
+{
+  "season": "Rabi 2024-25 & Kharif 2024-25",
+  "lastUpdated": "2024-10-01",
+  "source": "Ministry of Agriculture & Farmers Welfare, Government of India",
+  "crops": {
+    "Rice": {
+      "msp": 2300,
+      "unit": "quintal",
+      "season": "Kharif"
+    },
+    "Wheat": {
+      "msp": 2275,
+      "unit": "quintal",
+      "season": "Rabi"
+    },
+    "Maize": {
+      "msp": 2225,
+      "unit": "quintal",
+      "season": "Kharif"
+    },
+    "Barley": {
+      "msp": 1850,
+      "unit": "quintal",
+      "season": "Rabi"
+    },
+    "Bajra": {
+      "msp": 2500,
+      "unit": "quintal",
+      "season": "Kharif"
+    },
+    "Jowar": {
+      "msp": 3180,
+      "unit": "quintal",
+      "season": "Kharif"
+    },
+    "Ragi": {
+      "msp": 3846,
+      "unit": "quintal",
+      "season": "Kharif"
+    },
+    "Tur": {
+      "msp": 7000,
+      "unit": "quintal",
+      "season": "Kharif"
+    },
+    "Gram": {
+      "msp": 5440,
+      "unit": "quintal",
+      "season": "Rabi"
+    },
+    "Urad": {
+      "msp": 6950,
+      "unit": "quintal",
+      "season": "Kharif"
+    },
+    "Moong": {
+      "msp": 8558,
+      "unit": "quintal",
+      "season": "Kharif"
+    },
+    "Lentil": {
+      "msp": 6425,
+      "unit": "quintal",
+      "season": "Rabi"
+    },
+    "Groundnut": {
+      "msp": 6377,
+      "unit": "quintal",
+      "season": "Kharif"
+    },
+    "Soybean": {
+      "msp": 4600,
+      "unit": "quintal",
+      "season": "Kharif"
+    },
+    "Sunflower": {
+      "msp": 6760,
+      "unit": "quintal",
+      "season": "Kharif"
+    },
+    "Mustard": {
+      "msp": 5650,
+      "unit": "quintal",
+      "season": "Rabi"
+    },
+    "Sesame": {
+      "msp": 8635,
+      "unit": "quintal",
+      "season": "Kharif"
+    },
+    "Cotton": {
+      "msp": 7020,
+      "unit": "quintal",
+      "season": "Kharif"
+    },
+    "Sugarcane": {
+      "msp": 315,
+      "unit": "quintal",
+      "season": "Annual"
+    },
+    "Jute": {
+      "msp": 5050,
+      "unit": "quintal",
+      "season": "Kharif"
+    },
+    "Copra": {
+      "msp": 11160,
+      "unit": "quintal",
+      "season": "Annual"
+    }
+  }
+}

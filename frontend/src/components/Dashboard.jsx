@@ -6,9 +6,11 @@ import RiskScoreGauge from './RiskScoreGauge';
 import WeatherAlertCard from './WeatherAlertCard';
 import PestAlertCard from './PestAlertCard';
 import FertilizerRecommendationCard from './FertilizerRecommendationCard';
+import JAMTrinityVerification from './JAMTrinityVerification';
+import MSPRateCard from './MSPRateCard';
 import { useTranslation } from '../i18n';
 
-const Dashboard = ({ simulationData }) => {
+const Dashboard = ({ simulationData, formData }) => {
   const { t } = useTranslation();
   if (!simulationData) {
     return (
@@ -164,7 +166,15 @@ const Dashboard = ({ simulationData }) => {
         </div>
       </div>
 
-      {/* Fertilizer & Charts Row */}
+      {/* MSP Rate Card */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <MSPRateCard
+          primaryCrop={formData?.crop || simulationData?.crop || 'Rice'}
+          currentMarketPrice={formData?.current_market_price || 2500}
+        />
+        <YieldChart yieldData={yieldData} />
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <FertilizerRecommendationCard
           crop={simulationData?.crop || ''}
@@ -207,6 +217,41 @@ const Dashboard = ({ simulationData }) => {
               </p>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* JAM Trinity Farmer Verification Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <JAMTrinityVerification
+          onVerificationComplete={(profile) => {
+            console.log('Farmer profile verified:', profile);
+          }}
+        />
+
+        {/* Verification Benefits Info */}
+        <div className="card-farm card-glow p-6 animate-fade-in">
+          <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
+            <Shield className="w-6 h-6 text-blue-600 mr-2" />
+            {t('jam.title') || 'Farmer Verification Benefits'}
+          </h3>
+          <div className="space-y-4">
+            <div className="bg-green-50 rounded-xl p-4 border-l-4 border-green-500">
+              <h4 className="font-semibold text-green-800 mb-1">🎯 PM-KISAN Eligibility</h4>
+              <p className="text-sm text-green-700">Verify your land records to check PM-KISAN eligibility instantly</p>
+            </div>
+            <div className="bg-blue-50 rounded-xl p-4 border-l-4 border-blue-500">
+              <h4 className="font-semibold text-blue-800 mb-1">🏦 DBT Ready</h4>
+              <p className="text-sm text-blue-700">Link your bank account for Direct Benefit Transfer</p>
+            </div>
+            <div className="bg-purple-50 rounded-xl p-4 border-l-4 border-purple-500">
+              <h4 className="font-semibold text-purple-800 mb-1">📋 Scheme Matching</h4>
+              <p className="text-sm text-purple-700">Get personalized scheme recommendations based on verified data</p>
+            </div>
+            <div className="bg-yellow-50 rounded-xl p-4 border-l-4 border-yellow-500">
+              <h4 className="font-semibold text-yellow-800 mb-1">🔐 Privacy Protected</h4>
+              <p className="text-sm text-yellow-700">Your Aadhaar is never stored - only tokenized references used</p>
+            </div>
+          </div>
         </div>
       </div>
     </div>
