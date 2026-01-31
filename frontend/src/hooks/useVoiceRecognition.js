@@ -251,6 +251,7 @@ const useVoiceRecognition = () => {
       shouldBeListeningRef.current = false;
       return false;
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isVoiceAvailable, initRecognition]);
 
   // Stop listening

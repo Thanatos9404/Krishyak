@@ -21,13 +21,6 @@ const SEVERITY_COLORS = {
   critical: { bg: 'bg-red-50', border: 'border-red-200', text: 'text-red-700', badge: 'bg-red-100 text-red-800' }
 };
 
-const SEVERITY_LABELS = {
-  low: '🟢 Low',
-  medium: '🟡 Medium',
-  high: '🟠 High',
-  critical: '🔴 Critical'
-};
-
 /**
  * Individual Alert Item
  */

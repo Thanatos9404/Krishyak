@@ -600,5 +600,16 @@
     "youTyped": "You typed:",
     "noParams": "No parameters detected",
     "notSupported": "Voice input not supported in this browser"
+  },
+  "mandi": {
+    "title": "Live Mandi Prices",
+    "loading": "Loading prices...",
+    "fetchError": "Could not load mandi prices",
+    "lastUpdated": "Last updated",
+    "noData": "No price data available",
+    "showMore": "Show more",
+    "showLess": "Show less",
+    "more": "more",
+    "source": "Source: data.gov.in • National Agriculture Market"
   }
 }

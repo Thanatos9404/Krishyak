@@ -1,112 +1,169 @@
 {
-  "season": "Rabi 2024-25 & Kharif 2024-25",
-  "lastUpdated": "2024-10-01",
+  "season": "Kharif 2025-26 & Rabi 2025-26",
+  "lastUpdated": "2025-01-31",
   "source": "Ministry of Agriculture & Farmers Welfare, Government of India",
   "crops": {
     "Rice": {
-      "msp": 2300,
+      "msp": 2320,
       "unit": "quintal",
-      "season": "Kharif"
+      "season": "Kharif",
+      "variety": "Common Grade"
+    },
+    "Rice (Grade A)": {
+      "msp": 2370,
+      "unit": "quintal",
+      "season": "Kharif",
+      "variety": "Grade A"
     },
     "Wheat": {
-      "msp": 2275,
+      "msp": 2425,
       "unit": "quintal",
-      "season": "Rabi"
+      "season": "Rabi",
+      "variety": "Common"
     },
     "Maize": {
       "msp": 2225,
       "unit": "quintal",
-      "season": "Kharif"
+      "season": "Kharif",
+      "variety": "Common"
     },
     "Barley": {
-      "msp": 1850,
+      "msp": 1980,
       "unit": "quintal",
-      "season": "Rabi"
+      "season": "Rabi",
+      "variety": "Common"
     },
     "Bajra": {
-      "msp": 2500,
+      "msp": 2625,
       "unit": "quintal",
-      "season": "Kharif"
+      "season": "Kharif",
+      "variety": "Pearl Millet"
     },
     "Jowar": {
-      "msp": 3180,
+      "msp": 3371,
       "unit": "quintal",
-      "season": "Kharif"
+      "season": "Kharif",
+      "variety": "Hybrid"
     },
     "Ragi": {
-      "msp": 3846,
+      "msp": 4290,
       "unit": "quintal",
-      "season": "Kharif"
+      "season": "Kharif",
+      "variety": "Finger Millet"
     },
     "Tur": {
-      "msp": 7000,
+      "msp": 7550,
       "unit": "quintal",
-      "season": "Kharif"
+      "season": "Kharif",
+      "variety": "Arhar/Red Gram"
     },
     "Gram": {
-      "msp": 5440,
-      "unit": "quintal",
-      "season": "Rabi"
-    },
-    "Urad": {
-      "msp": 6950,
-      "unit": "quintal",
-      "season": "Kharif"
-    },
-    "Moong": {
-      "msp": 8558,
-      "unit": "quintal",
-      "season": "Kharif"
-    },
-    "Lentil": {
-      "msp": 6425,
-      "unit": "quintal",
-      "season": "Rabi"
-    },
-    "Groundnut": {
-      "msp": 6377,
-      "unit": "quintal",
-      "season": "Kharif"
-    },
-    "Soybean": {
-      "msp": 4600,
-      "unit": "quintal",
-      "season": "Kharif"
-    },
-    "Sunflower": {
-      "msp": 6760,
-      "unit": "quintal",
-      "season": "Kharif"
-    },
-    "Mustard": {
       "msp": 5650,
       "unit": "quintal",
-      "season": "Rabi"
+      "season": "Rabi",
+      "variety": "Chana"
+    },
+    "Urad": {
+      "msp": 7400,
+      "unit": "quintal",
+      "season": "Kharif",
+      "variety": "Black Gram"
+    },
+    "Moong": {
+      "msp": 8682,
+      "unit": "quintal",
+      "season": "Kharif",
+      "variety": "Green Gram"
+    },
+    "Lentil": {
+      "msp": 6700,
+      "unit": "quintal",
+      "season": "Rabi",
+      "variety": "Masoor"
+    },
+    "Groundnut": {
+      "msp": 6783,
+      "unit": "quintal",
+      "season": "Kharif",
+      "variety": "In Shell"
+    },
+    "Soybean": {
+      "msp": 4892,
+      "unit": "quintal",
+      "season": "Kharif",
+      "variety": "Yellow"
+    },
+    "Sunflower": {
+      "msp": 7280,
+      "unit": "quintal",
+      "season": "Kharif",
+      "variety": "Seed"
+    },
+    "Mustard": {
+      "msp": 5950,
+      "unit": "quintal",
+      "season": "Rabi",
+      "variety": "Rapeseed"
+    },
+    "Safflower": {
+      "msp": 5940,
+      "unit": "quintal",
+      "season": "Rabi",
+      "variety": "Carthamus"
     },
     "Sesame": {
-      "msp": 8635,
+      "msp": 9267,
       "unit": "quintal",
-      "season": "Kharif"
+      "season": "Kharif",
+      "variety": "Sesamum"
+    },
+    "Niger Seed": {
+      "msp": 8717,
+      "unit": "quintal",
+      "season": "Kharif",
+      "variety": "Niger"
     },
     "Cotton": {
-      "msp": 7020,
+      "msp": 7521,
       "unit": "quintal",
-      "season": "Kharif"
+      "season": "Kharif",
+      "variety": "Medium Staple"
+    },
+    "Cotton (Long Staple)": {
+      "msp": 7971,
+      "unit": "quintal",
+      "season": "Kharif",
+      "variety": "Long Staple"
     },
     "Sugarcane": {
-      "msp": 315,
+      "msp": 340,
       "unit": "quintal",
-      "season": "Annual"
+      "season": "Annual",
+      "variety": "FRP"
     },
     "Jute": {
-      "msp": 5050,
+      "msp": 5335,
       "unit": "quintal",
-      "season": "Kharif"
+      "season": "Kharif",
+      "variety": "Raw"
     },
     "Copra": {
-      "msp": 11160,
+      "msp": 11582,
       "unit": "quintal",
-      "season": "Annual"
+      "season": "Annual",
+      "variety": "Milling"
+    },
+    "Copra (Ball)": {
+      "msp": 12100,
+      "unit": "quintal",
+      "season": "Annual",
+      "variety": "Ball"
+    },
+    "De-husked Coconut": {
+      "msp": 3200,
+      "unit": "per 1000 nuts",
+      "season": "Annual",
+      "variety": "Dehusked"
     }
   }
 }

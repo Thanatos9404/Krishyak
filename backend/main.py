@@ -1370,6 +1370,118 @@ async def get_supported_states():
         raise HTTPException(status_code=500, detail=str(e))
 
 
+# ==============================================================================
+# MSP AND MANDI PRICE ENDPOINTS (Phase 5: Government Data Integration)
+# ==============================================================================
+
+from gov_api_service import (
+    get_all_msp, get_msp_for_crop, fetch_msp_from_api,
+    fetch_mandi_prices, get_all_states, INDIAN_STATES
+)
+
+
+@app.get("/api/msp/prices")
+async def get_msp_prices():
+    """
+    Get all current MSP (Minimum Support Prices) for supported crops.
+    Updated data for 2025-26 season.
+    """
+    try:
+        msp_data = get_all_msp()
+        
+        return {
+            "success": True,
+            "data": msp_data,
+            "total_crops": len(msp_data["crops"])
+        }
+        
+    except Exception as e:
+        logger.error(f"Error fetching MSP prices: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/msp/prices/{crop}")
+async def get_msp_for_specific_crop(crop: str):
+    """
+    Get MSP for a specific crop.
+    
+    Args:
+        crop: Crop name (e.g., "Rice", "Wheat", "Cotton")
+    """
+    try:
+        msp = get_msp_for_crop(crop)
+        
+        if msp:
+            return {
+                "success": True,
+                "data": msp
+            }
+        
+        return {
+            "success": False,
+            "error": f"MSP data not available for crop: {crop}",
+            "available_crops": list(get_all_msp()["crops"].keys())
+        }
+        
+    except Exception as e:
+        logger.error(f"Error fetching MSP for {crop}: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/mandi/prices")
+async def get_live_mandi_prices(
+    commodity: Optional[str] = None,
+    state: Optional[str] = None,
+    district: Optional[str] = None,
+    limit: int = 50
+):
+    """
+    Get live mandi (market) prices from data.gov.in.
+    
+    Args:
+        commodity: Filter by commodity name (e.g., "Rice", "Wheat")
+        state: Filter by state name
+        district: Filter by district name
+        limit: Maximum number of results (default: 50, max: 100)
+    """
+    if limit > 100:
+        limit = 100
+    
+    try:
+        prices = await fetch_mandi_prices(
+            commodity=commodity,
+            state=state,
+            district=district,
+            limit=limit
+        )
+        
+        return {
+            "success": True,
+            **prices
+        }
+        
+    except Exception as e:
+        logger.error(f"Error fetching mandi prices: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/locations/states")
+async def get_indian_states():
+    """
+    Get list of all Indian states and union territories.
+    """
+    try:
+        return {
+            "success": True,
+            "states": INDIAN_STATES,
+            "total": len(INDIAN_STATES)
+        }
+        
+    except Exception as e:
+        logger.error(f"Error fetching states: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 # Run server
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)

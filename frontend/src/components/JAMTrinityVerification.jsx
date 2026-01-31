@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { createPortal } from 'react-dom';
 import {
   Shield, CheckCircle, XCircle, AlertTriangle,
-  CreditCard, MapPin, Building2, Leaf,
+  MapPin, Building2, Leaf,
   ChevronRight, Loader2, Lock, Eye, EyeOff,
   RefreshCw, User, IndianRupee
 } from 'lucide-react';
@@ -316,8 +316,8 @@ const JAMTrinityVerification = ({ onVerificationComplete }) => {
             onClick={handleVerifyAadhaar}
             disabled={loading || aadhaarInput.length !== 4}
             className={`w-full py-3 px-4 rounded-xl font-semibold flex items-center justify-center transition ${aadhaarInput.length === 4 && !loading
-                ? 'bg-farm-green-500 text-white hover:bg-farm-green-600'
-                : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+              ? 'bg-farm-green-500 text-white hover:bg-farm-green-600'
+              : 'bg-gray-200 text-gray-400 cursor-not-allowed'
               }`}
           >
             {loading ? (
