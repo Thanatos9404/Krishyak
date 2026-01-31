@@ -4,6 +4,7 @@ import { useTranslation } from '../i18n';
 import { indianStates, getDistrictsByState, getTehsilsByDistrict } from '../data/indianStates';
 import { useFormValidation } from '../hooks/useFormValidation';
 import { useFarmerSession } from '../hooks/useFarmerSession';
+import farmingApi from '../api/farmingApi';
 
 const INITIAL_FORM_DATA = {
   // Step 1: Personal Info
@@ -188,13 +189,26 @@ const FarmerRegistrationForm = ({ onComplete }) => {
 
     setIsSubmitting(true);
     try {
-      // Call login to save session
-      const farmerProfile = login(formData);
+      // Add registration timestamp
+      const registrationData = {
+        ...formData,
+        registeredAt: new Date().toISOString()
+      };
+
+      // Call backend to save to CSV (non-blocking, fire and forget)
+      farmingApi.registerFarmer(registrationData).catch(err => {
+        console.warn('Backend registration failed (CSV not saved):', err);
+      });
+
+      // Call login to save session locally
+      const farmerProfile = login(registrationData);
       // Clear the draft after successful registration
       clearDraft();
-      // Small delay to ensure state is saved
-      await new Promise(resolve => setTimeout(resolve, 100));
-      // Call onComplete callback to redirect
+
+      // Small delay to ensure state is saved and UI updates
+      await new Promise(resolve => setTimeout(resolve, 200));
+
+      // Call onComplete callback to redirect to dashboard
       if (onComplete) {
         onComplete(farmerProfile);
       }

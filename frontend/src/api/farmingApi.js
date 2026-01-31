@@ -64,6 +64,19 @@ export const farmingApi = {
     });
     return response.data;
   },
+
+  // Register farmer and save to CSV
+  registerFarmer: async (farmerData) => {
+    try {
+      const response = await api.post('/register-farmer', farmerData);
+      return response.data;
+    } catch (error) {
+      console.error('Failed to register farmer on backend:', error);
+      // Return success anyway - registration is primarily client-side
+      // Backend CSV storage is a secondary feature
+      return { success: false, error: error.message };
+    }
+  },
 };
 
 export default farmingApi;

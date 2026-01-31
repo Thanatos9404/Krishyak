@@ -226,6 +226,117 @@ class PriceForecastRequest(BaseModel):
     current_price: float
     forecast_days: int = Field(60, ge=1, le=180)
 
+# ============ FARMER REGISTRATION ============
+import csv
+from pathlib import Path
+
+# Directory to store farmer data (inside backend folder for easy access)
+FARMER_DATA_DIR = Path(__file__).parent / "data"
+FARMER_CSV_FILE = FARMER_DATA_DIR / "registered_farmers.csv"
+
+# Ensure the data directory exists
+FARMER_DATA_DIR.mkdir(exist_ok=True)
+
+class FarmerRegistrationInput(BaseModel):
+    """Pydantic model for farmer registration data"""
+    fullName: str = Field(..., min_length=2, max_length=100, description="Full name of farmer")
+    fatherName: str = Field(..., min_length=2, max_length=100, description="Father's or husband's name")
+    mobileNumber: str = Field(..., min_length=10, max_length=10, pattern=r"^\d{10}$", description="10-digit mobile number")
+    dateOfBirth: Optional[str] = Field(None, description="Date of birth")
+    aadhaarNumber: Optional[str] = Field(None, description="Aadhaar number (optional)")
+    state: str = Field(..., min_length=2, description="State name")
+    district: str = Field(..., min_length=2, description="District name")
+    tehsil: str = Field(..., min_length=2, description="Tehsil/Block name")
+    village: str = Field(..., min_length=2, description="Village name")
+    pinCode: str = Field(..., min_length=6, max_length=6, pattern=r"^\d{6}$", description="6-digit PIN code")
+    khasraNumber: str = Field(..., description="Khasra/Survey number")
+    totalLandArea: str = Field(..., description="Total land area")
+    landUnit: str = Field("hectares", description="Unit of land area")
+    irrigatedLand: Optional[str] = Field(None, description="Irrigated land area")
+    rainfedLand: Optional[str] = Field(None, description="Rain-fed land area")
+    ownershipType: str = Field(..., description="Land ownership type")
+    primaryCrop: str = Field(..., description="Primary crop")
+    secondaryCrops: Optional[List[str]] = Field(default_factory=list, description="Secondary crops")
+    farmingType: str = Field(..., description="Type of farming")
+    experience: Optional[str] = Field(None, description="Farming experience")
+    consentData: bool = Field(..., description="Consent to share data")
+    consentTerms: bool = Field(..., description="Agree to terms")
+    registeredAt: Optional[str] = Field(None, description="Registration timestamp")
+
+# CSV column headers for farmer data
+FARMER_CSV_HEADERS = [
+    "registeredAt", "fullName", "fatherName", "mobileNumber", "dateOfBirth", "aadhaarNumber",
+    "state", "district", "tehsil", "village", "pinCode",
+    "khasraNumber", "totalLandArea", "landUnit", "irrigatedLand", "rainfedLand", "ownershipType",
+    "primaryCrop", "secondaryCrops", "farmingType", "experience", "consentData", "consentTerms"
+]
+
+@app.post("/register-farmer")
+async def register_farmer(farmer_data: FarmerRegistrationInput):
+    """
+    Register a new farmer and save to CSV file.
+    This endpoint saves all farmer details to a CSV file for easy access.
+    """
+    try:
+        # Set registration timestamp if not provided
+        if not farmer_data.registeredAt:
+            farmer_data.registeredAt = datetime.now().isoformat()
+        
+        # Check if CSV file exists, if not create with headers
+        file_exists = FARMER_CSV_FILE.exists()
+        
+        with open(FARMER_CSV_FILE, mode='a', newline='', encoding='utf-8') as csv_file:
+            writer = csv.DictWriter(csv_file, fieldnames=FARMER_CSV_HEADERS)
+            
+            # Write headers if file is new
+            if not file_exists:
+                writer.writeheader()
+            
+            # Prepare row data
+            row_data = {
+                "registeredAt": farmer_data.registeredAt,
+                "fullName": farmer_data.fullName,
+                "fatherName": farmer_data.fatherName,
+                "mobileNumber": farmer_data.mobileNumber,
+                "dateOfBirth": farmer_data.dateOfBirth or "",
+                "aadhaarNumber": farmer_data.aadhaarNumber or "",
+                "state": farmer_data.state,
+                "district": farmer_data.district,
+                "tehsil": farmer_data.tehsil,
+                "village": farmer_data.village,
+                "pinCode": farmer_data.pinCode,
+                "khasraNumber": farmer_data.khasraNumber,
+                "totalLandArea": farmer_data.totalLandArea,
+                "landUnit": farmer_data.landUnit,
+                "irrigatedLand": farmer_data.irrigatedLand or "",
+                "rainfedLand": farmer_data.rainfedLand or "",
+                "ownershipType": farmer_data.ownershipType,
+                "primaryCrop": farmer_data.primaryCrop,
+                "secondaryCrops": ",".join(farmer_data.secondaryCrops) if farmer_data.secondaryCrops else "",
+                "farmingType": farmer_data.farmingType,
+                "experience": farmer_data.experience or "",
+                "consentData": str(farmer_data.consentData),
+                "consentTerms": str(farmer_data.consentTerms)
+            }
+            
+            writer.writerow(row_data)
+        
+        logger.info(f"New farmer registered: {farmer_data.fullName} ({farmer_data.mobileNumber})")
+        
+        return {
+            "success": True,
+            "message": "Farmer registered successfully",
+            "data": {
+                "fullName": farmer_data.fullName,
+                "mobileNumber": farmer_data.mobileNumber,
+                "registeredAt": farmer_data.registeredAt
+            }
+        }
+    
+    except Exception as e:
+        logger.error(f"Error registering farmer: {e}")
+        raise HTTPException(status_code=500, detail=f"Registration error: {str(e)}")
+
 # API Endpoints
 
 @app.get("/")
