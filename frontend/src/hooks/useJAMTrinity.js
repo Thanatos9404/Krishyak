@@ -103,7 +103,6 @@ const useJAMTrinity = () => {
   /**
    * Revoke consent
    */
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const revokeConsent = useCallback(async () => {
     if (!consentId) {
       setError('No consent to revoke');
@@ -136,6 +135,7 @@ const useJAMTrinity = () => {
     } finally {
       setLoading(false);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [consentId]);
 
   /**
