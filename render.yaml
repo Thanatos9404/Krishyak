@@ -14,3 +14,9 @@ services:
         value: 579b464db66ec23bdd0000019e4dba64f69842d1547080c5536593c7
       - key: PYTHON_VERSION
         value: 3.11.9
+      - key: CORS_ORIGINS
+        value: http://localhost:3000,http://127.0.0.1:3000,https://krishyak.vercel.app,https://krishisaarthi.vercel.app
+      - key: ENVIRONMENT
+        value: production
+      - key: SECRET_KEY
+        generateValue: true
