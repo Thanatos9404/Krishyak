@@ -33,7 +33,7 @@ const RiskScoreGauge = ({ score = 0 }) => {
   return (
     <div className="flex flex-col items-center">
       {/* Gauge */}
-      <div className="relative w-56 h-32 mb-2">
+      <div className="relative w-full max-w-[14rem] h-32 mb-2 mx-auto">
         <svg className="w-full h-full" viewBox="0 0 200 120" overflow="visible">
           {/* Background arc segments — using standardized thresholds: 0-25, 26-50, 51-75, 76-100 */}
           {/* Green segment (0-25) */}

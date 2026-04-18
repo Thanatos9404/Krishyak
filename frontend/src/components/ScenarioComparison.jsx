@@ -91,7 +91,7 @@ const WhatToChangeCard = ({ currentParams, optimalParams, currentPlan, optimalPl
   const yieldDelta = (optimalPlan?.yield?.total_production_quintals || 0) - (currentPlan?.yield?.total_production_quintals || 0);
 
   return (
-    <div className="card-farm card-glow p-6 animate-fade-in border-l-4 border-blue-500">
+    <div className="card-farm card-glow p-4 sm:p-6 animate-fade-in border-l-4 border-blue-500">
       <div className="flex items-center gap-3 mb-4">
         <div className="p-3 rounded-xl bg-blue-100">
           <Lightbulb className="w-6 h-6 text-blue-600" />
@@ -105,17 +105,17 @@ const WhatToChangeCard = ({ currentParams, optimalParams, currentPlan, optimalPl
       {/* Changes list */}
       <div className="space-y-3 mb-4">
         {changes.map((change, idx) => (
-          <div key={idx} className="bg-gray-50 rounded-xl p-4">
+          <div key={idx} className="bg-gray-50 rounded-xl p-3 sm:p-4">
             <div className="flex items-center justify-between mb-2">
-              <span className="font-semibold text-gray-800 flex items-center gap-2">
+              <span className="font-semibold text-gray-800 flex items-center gap-2 text-sm sm:text-base">
                 <span className="text-lg">{change.icon}</span>
                 {change.label}
               </span>
             </div>
-            <div className="flex items-center gap-2 text-sm mb-1">
-              <span className="bg-gray-200 text-gray-700 px-2 py-0.5 rounded-md">{change.from}</span>
-              <ArrowRight className="w-4 h-4 text-blue-500" />
-              <span className="bg-blue-100 text-blue-700 px-2 py-0.5 rounded-md font-medium">{change.to}</span>
+            <div className="flex flex-wrap items-center gap-2 text-sm mb-1">
+              <span className="bg-gray-200 text-gray-700 px-2 py-0.5 rounded-md text-xs sm:text-sm">{change.from}</span>
+              <ArrowRight className="w-4 h-4 text-blue-500 flex-shrink-0" />
+              <span className="bg-blue-100 text-blue-700 px-2 py-0.5 rounded-md font-medium text-xs sm:text-sm">{change.to}</span>
             </div>
             <p className="text-xs text-gray-600">{change.impact}</p>
             <p className="text-xs text-gray-400 mt-1">{change.costNote}</p>
@@ -163,7 +163,7 @@ const ScenarioComparison = ({ comparisonData }) => {
     
     return (
       <div
-        className={`card-farm p-6 border-l-4 ${borderColor} animate-fade-in`}
+        className={`card-farm p-4 sm:p-6 border-l-4 ${borderColor} animate-fade-in`}
         style={{ animationDelay: `${delay}s` }}
       >
         <div className="flex items-center justify-between mb-4">
@@ -171,7 +171,7 @@ const ScenarioComparison = ({ comparisonData }) => {
             <div className={`p-3 rounded-xl ${color} mr-3`}>
               <Icon className="w-6 h-6 text-white" />
             </div>
-            <h3 className="text-lg font-bold text-gray-800">{title}</h3>
+            <h3 className="text-base sm:text-lg font-bold text-gray-800">{title}</h3>
           </div>
         </div>
 
@@ -238,18 +238,18 @@ const ScenarioComparison = ({ comparisonData }) => {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="card-farm card-glow p-6">
-        <div className="flex items-center mb-4">
-          <TrendingUp className="w-6 h-6 text-farm-green-600 mr-2" />
-          <h2 className="text-2xl font-bold text-gray-800">{t('scenarios.title') || 'Scenario Comparison'}</h2>
+      <div className="card-farm card-glow p-4 sm:p-6">
+        <div className="flex items-center mb-3 sm:mb-4">
+          <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-farm-green-600 mr-2" />
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-800">{t('scenarios.title') || 'Scenario Comparison'}</h2>
         </div>
-        <p className="text-gray-600">
+        <p className="text-sm sm:text-base text-gray-600">
           {t('scenarios.description') || 'Compare your current plan with AI-optimized strategy and worst-case scenario'}
         </p>
       </div>
 
       {/* Scenario Cards */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
         <ScenarioCard
           title={t('scenarios.currentPlan') || 'Your Current Plan'}
           data={current_plan}
@@ -287,10 +287,10 @@ const ScenarioComparison = ({ comparisonData }) => {
       {/* Comparison Summary */}
       <div className="card-farm card-glow p-6">
         <h3 className="text-xl font-bold text-gray-800 mb-4">{t('scenarios.keyInsights') || 'Key Insights'}</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="bg-green-50 rounded-xl p-4 border-l-4 border-green-500">
-            <p className="text-sm text-gray-600 mb-2">{t('scenarios.profitImprovement') || 'Profit Improvement'}</p>
-            <p className="text-2xl font-bold text-green-700">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+          <div className="bg-green-50 rounded-xl p-3 sm:p-4 border-l-4 border-green-500">
+            <p className="text-xs sm:text-sm text-gray-600 mb-1 sm:mb-2">{t('scenarios.profitImprovement') || 'Profit Improvement'}</p>
+            <p className="text-xl sm:text-2xl font-bold text-green-700">
               +₹{((ai_optimal_plan.profit - current_plan.profit) / 1000).toFixed(1)}k
             </p>
             <p className="text-xs text-gray-600 mt-1">
@@ -298,17 +298,17 @@ const ScenarioComparison = ({ comparisonData }) => {
             </p>
           </div>
 
-          <div className="bg-blue-50 rounded-xl p-4 border-l-4 border-blue-500">
-            <p className="text-sm text-gray-600 mb-2">{t('scenarios.yieldBoost') || 'Yield Boost'}</p>
-            <p className="text-2xl font-bold text-blue-700">
+          <div className="bg-blue-50 rounded-xl p-3 sm:p-4 border-l-4 border-blue-500">
+            <p className="text-xs sm:text-sm text-gray-600 mb-1 sm:mb-2">{t('scenarios.yieldBoost') || 'Yield Boost'}</p>
+            <p className="text-xl sm:text-2xl font-bold text-blue-700">
               +{(ai_optimal_plan.yield.total_production_quintals - current_plan.yield.total_production_quintals).toFixed(1)}
             </p>
             <p className="text-xs text-gray-600 mt-1">{t('scenarios.quintalsMore') || 'quintals more production'}</p>
           </div>
 
-          <div className="bg-yellow-50 rounded-xl p-4 border-l-4 border-yellow-500">
-            <p className="text-sm text-gray-600 mb-2">{t('scenarios.riskReduction') || 'Risk Reduction'}</p>
-            <p className="text-2xl font-bold text-yellow-700">
+          <div className="bg-yellow-50 rounded-xl p-3 sm:p-4 border-l-4 border-yellow-500">
+            <p className="text-xs sm:text-sm text-gray-600 mb-1 sm:mb-2">{t('scenarios.riskReduction') || 'Risk Reduction'}</p>
+            <p className="text-xl sm:text-2xl font-bold text-yellow-700">
               -{(current_plan.risk.overall_risk_score - ai_optimal_plan.risk.overall_risk_score).toFixed(1)}
             </p>
             <p className="text-xs text-gray-600 mt-1">{t('scenarios.pointsLower') || 'points lower risk'}</p>

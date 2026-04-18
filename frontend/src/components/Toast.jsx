@@ -35,7 +35,7 @@ const Toast = ({ message, type = 'success', profitImprovement, onClose, onAction
 
   return (
     <div
-      className={`fixed top-6 right-6 z-50 max-w-md transition-all duration-300 ${isVisible ? 'animate-slide-in-right' : 'opacity-0 translate-x-full'
+      className={`fixed top-4 left-3 right-3 sm:left-auto sm:right-6 z-50 sm:max-w-md transition-all duration-300 ${isVisible ? 'animate-fade-in sm:animate-slide-in-right' : 'opacity-0 -translate-y-full sm:translate-y-0 sm:translate-x-full'
         }`}
     >
       <div className={`${style.bg} rounded-2xl shadow-2xl overflow-hidden`}>
@@ -85,7 +85,7 @@ const Toast = ({ message, type = 'success', profitImprovement, onClose, onAction
 // Toast container to manage multiple toasts
 export const ToastContainer = ({ toasts, removeToast }) => {
   return (
-    <div className="fixed top-6 right-6 z-50 space-y-3">
+    <div className="fixed top-4 left-3 right-3 sm:left-auto sm:right-6 z-50 space-y-3 sm:max-w-md">
       {toasts.map((toast) => (
         <Toast
           key={toast.id}

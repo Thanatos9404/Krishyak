@@ -34,20 +34,20 @@ const Dashboard = ({ simulationData, formData }) => {
   const { yield: yieldData, costs, revenue, profit, roi_percentage, risk } = simulationData;
 
   return (
-    <div className="flex-1 p-6 space-y-6 overflow-y-auto">
+    <div className="flex-1 space-y-4 sm:space-y-6 overflow-y-auto">
       {/* Header Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         {/* Yield Card */}
-        <div className="card-farm card-glow p-6 animate-fade-in">
+        <div className="card-farm card-glow p-4 sm:p-6 animate-fade-in">
           <div className="flex items-start mb-3">
             <div className="bg-farm-green-100 p-3 rounded-xl">
               <TrendingUp className="w-6 h-6 text-farm-green-600" />
             </div>
           </div>
-          <h3 className="text-sm font-semibold text-gray-600 mb-1">{t('dashboard.yieldEstimate')}</h3>
-          <p className="text-3xl font-bold text-gray-900">
+          <h3 className="text-xs sm:text-sm font-semibold text-gray-600 mb-1">{t('dashboard.yieldEstimate')}</h3>
+          <p className="text-xl sm:text-3xl font-bold text-gray-900">
             {yieldData.total_production_quintals.toFixed(1)}
-            <span className="text-base font-normal text-gray-500 ml-1">{t('units.quintals')}</span>
+            <span className="text-xs sm:text-base font-normal text-gray-500 ml-1">{t('units.quintals')}</span>
           </p>
           <div className="mt-3 pt-3 border-t border-gray-100 flex justify-between items-center">
             <p className="text-xs text-gray-600">
@@ -60,14 +60,14 @@ const Dashboard = ({ simulationData, formData }) => {
         </div>
 
         {/* Cost Card */}
-        <div className="card-farm card-glow p-6 animate-fade-in" style={{ animationDelay: '0.1s' }}>
+        <div className="card-farm card-glow p-4 sm:p-6 animate-fade-in" style={{ animationDelay: '0.1s' }}>
           <div className="flex items-start justify-between mb-3">
             <div className="bg-earth-brown-100 p-3 rounded-xl">
               <DollarSign className="w-6 h-6 text-earth-brown-600" />
             </div>
           </div>
-          <h3 className="text-sm font-semibold text-gray-600 mb-1">{t('dashboard.totalCost')}</h3>
-          <p className="text-3xl font-bold text-gray-900">
+          <h3 className="text-xs sm:text-sm font-semibold text-gray-600 mb-1">{t('dashboard.totalCost')}</h3>
+          <p className="text-xl sm:text-3xl font-bold text-gray-900">
             ₹{(costs.total_cost / 1000).toFixed(1)}k
           </p>
           <p className="text-sm text-gray-500 mt-1">{t('dashboard.cultivationCost') || 'cultivation cost'}</p>
@@ -79,7 +79,7 @@ const Dashboard = ({ simulationData, formData }) => {
         </div>
 
         {/* Profit Card */}
-        <div className="card-farm card-glow p-6 animate-fade-in" style={{ animationDelay: '0.2s' }}>
+        <div className="card-farm card-glow p-4 sm:p-6 animate-fade-in" style={{ animationDelay: '0.2s' }}>
           <div className="flex items-start mb-3">
             <div className={`p-3 rounded-xl ${profit >= 0 ? 'bg-green-100' : 'bg-red-100'}`}>
               {profit >= 0 ? (
@@ -89,10 +89,10 @@ const Dashboard = ({ simulationData, formData }) => {
               )}
             </div>
           </div>
-          <h3 className="text-sm font-semibold text-gray-600 mb-1">{t('dashboard.netProfit')}</h3>
-          <p className={`text-3xl font-bold ${profit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+          <h3 className="text-xs sm:text-sm font-semibold text-gray-600 mb-1">{t('dashboard.netProfit')}</h3>
+          <p className={`text-xl sm:text-3xl font-bold ${profit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
             ₹{(Math.abs(profit) / 1000).toFixed(1)}k
-            <span className="text-base font-normal text-gray-500 ml-1">{profit >= 0 ? t('scenarios.profit') : t('common.loss') || 'loss'}</span>
+            <span className="text-xs sm:text-base font-normal text-gray-500 ml-1">{profit >= 0 ? t('scenarios.profit') : t('common.loss') || 'loss'}</span>
           </p>
           <div className="mt-3 pt-3 border-t border-gray-100 flex justify-between items-center">
             <p className="text-xs text-gray-600">
@@ -108,14 +108,14 @@ const Dashboard = ({ simulationData, formData }) => {
         {(() => {
           const riskInfo = getRiskInfo(risk.overall_risk_score);
           return (
-            <div className="card-farm card-glow p-6 animate-fade-in" style={{ animationDelay: '0.3s' }}>
+            <div className="card-farm card-glow p-4 sm:p-6 animate-fade-in" style={{ animationDelay: '0.3s' }}>
               <div className="flex items-start justify-between mb-3">
                 <div className={`p-3 rounded-xl ${riskInfo.bgClass}`}>
                   <AlertCircle className={`w-6 h-6 ${riskInfo.textClass}`} />
                 </div>
               </div>
-              <h3 className="text-sm font-semibold text-gray-600 mb-1">{t('dashboard.riskScore')}</h3>
-              <p className={`text-3xl font-bold ${riskInfo.textClass}`}>
+              <h3 className="text-xs sm:text-sm font-semibold text-gray-600 mb-1">{t('dashboard.riskScore')}</h3>
+              <p className={`text-xl sm:text-3xl font-bold ${riskInfo.textClass}`}>
                 {risk.overall_risk_score.toFixed(0)}
               </p>
               <p className="text-sm text-gray-500 mt-1">{riskInfo.label}</p>
@@ -137,7 +137,7 @@ const Dashboard = ({ simulationData, formData }) => {
         <WeatherAlertCard crop={simulationData?.crop || 'default'} />
 
         {/* Enhanced Risk Score Section */}
-        <div className="card-farm card-glow p-8 animate-fade-in">
+        <div className="card-farm card-glow p-4 sm:p-8 animate-fade-in">
           <div className="flex items-center mb-6">
             <Shield className="w-6 h-6 text-farm-green-600 mr-2" />
             <h3 className="text-xl font-bold text-gray-800">{t('dashboard.riskAssessment')}</h3>
@@ -159,7 +159,7 @@ const Dashboard = ({ simulationData, formData }) => {
         />
 
         {/* Risk Distribution */}
-        <div className="card-farm card-glow p-8 animate-fade-in">
+        <div className="card-farm card-glow p-4 sm:p-8 animate-fade-in">
           <RiskGauge riskData={risk} />
         </div>
       </div>
@@ -204,7 +204,7 @@ const Dashboard = ({ simulationData, formData }) => {
       {/* Cost Breakdown */}
       <div className="card-farm card-glow p-6 animate-fade-in">
         <h3 className="text-xl font-bold text-gray-800 mb-4">{t('dashboard.costBreakdown')}</h3>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
           {Object.entries(costs.breakdown).map(([key, value]) => (
             <div key={key} className="bg-gray-50 rounded-xl p-4">
               <p className="text-xs text-gray-600 mb-1 capitalize">

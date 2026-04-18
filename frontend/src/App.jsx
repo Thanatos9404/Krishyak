@@ -242,18 +242,18 @@ function App() {
 
       {/* Header */}
       <header className="bg-gradient-to-r from-farm-green-600 via-farm-green-500 to-farm-green-400 shadow-lg">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center cursor-pointer" onClick={() => navigateTo('main')}>
-              <img src="/krishyak_logo.png" alt="Krishyak Logo" className="w-14 h-14 sm:w-16 sm:h-16 mr-3 sm:mr-4 rounded-lg" />
-              <div>
-                <h1 className="text-xl sm:text-3xl font-bold text-white">{t('app.name')}</h1>
-                <p className="text-xs sm:text-sm text-green-100">{t('app.tagline')}</p>
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 py-3 sm:py-4">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center cursor-pointer min-w-0" onClick={() => navigateTo('main')}>
+              <img src="/krishyak_logo.png" alt="Krishyak Logo" className="w-10 h-10 sm:w-14 sm:h-14 mr-2 sm:mr-4 rounded-lg flex-shrink-0" />
+              <div className="min-w-0">
+                <h1 className="text-lg sm:text-2xl lg:text-3xl font-bold text-white truncate">{t('app.name')}</h1>
+                <p className="text-xs text-green-100 hidden sm:block">{t('app.tagline')}</p>
               </div>
             </div>
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
               {farmer && (
-                <div className="hidden md:block bg-white/20 backdrop-blur-sm px-4 py-2 rounded-lg">
+                <div className="hidden md:block bg-white/20 backdrop-blur-sm px-3 py-1.5 rounded-lg">
                   <p className="text-xs text-white font-semibold">
                     👋 {farmer.fullName?.split(' ')[0] || t('app.subtitle')}
                   </p>
@@ -263,7 +263,7 @@ function App() {
               {isRegistered && (
                 <button
                   onClick={logout}
-                  className="text-white/80 hover:text-white text-sm px-3 py-1 rounded hover:bg-white/10"
+                  className="text-white/80 hover:text-white text-xs sm:text-sm px-2 sm:px-3 py-1.5 rounded hover:bg-white/10 whitespace-nowrap"
                 >
                   {t('common.logout') || 'Logout'}
                 </button>
@@ -275,8 +275,8 @@ function App() {
 
       {/* Tab Navigation */}
       <div className="bg-white shadow-md sticky top-0 z-30">
-        <div className="max-w-7xl mx-auto px-2 sm:px-6">
-          <div className="flex overflow-x-auto scrollbar-hide">
+        <div className="max-w-7xl mx-auto px-1 sm:px-6">
+          <div className="flex overflow-x-auto scrollbar-hide snap-x snap-mandatory">
             <TabButton icon={BarChart3} label={t('nav.dashboard')} active={activeTab === 'dashboard'} onClick={() => setActiveTab('dashboard')} />
             <TabButton icon={TrendingUp} label={t('nav.scenarios')} active={activeTab === 'comparison'} onClick={() => setActiveTab('comparison')} disabled={!simulationData} />
             <TabButton icon={Lightbulb} label={t('nav.aiInsights')} active={activeTab === 'recommendations'} onClick={() => setActiveTab('recommendations')} disabled={!simulationData} />
@@ -286,13 +286,13 @@ function App() {
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto p-4 sm:p-6">
-        <div className="flex flex-col lg:flex-row gap-6">
+      <div className="max-w-7xl mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-6">
+        <div className="flex flex-col lg:flex-row gap-4 lg:gap-6">
           <div className="hidden lg:block">
             <SidebarContent />
           </div>
 
-          <div className="flex-1">
+          <div className="flex-1 min-w-0">
             {activeTab === 'dashboard' && <Dashboard simulationData={simulationData} formData={formData} />}
             {activeTab === 'comparison' && <ScenarioComparison comparisonData={comparisonData} />}
             {activeTab === 'recommendations' && (
@@ -314,35 +314,35 @@ function App() {
       </BottomSheet>
 
       {/* Footer */}
-      <footer className="bg-white border-t-2 border-farm-green-100 mt-12">
-        <div className="max-w-7xl mx-auto px-6 py-6">
-          <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+      <footer className="bg-white border-t-2 border-farm-green-100 mt-8 sm:mt-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4">
             <div className="text-center sm:text-left text-gray-600 text-sm">
               <p className="mb-1">
                 <span className="font-semibold text-farm-green-600">Krishyak</span> - {t('footer.tagline') || 'Empowering Indian farmers with AI-driven decision support'}
               </p>
-              <p className="text-xs text-gray-500">
+              <p className="text-xs text-gray-500 hidden sm:block">
                 {t('footer.builtWith') || 'Built with React, FastAPI, and advanced ML models'}
               </p>
             </div>
-            <div className="flex items-center space-x-4 text-sm">
+            <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-sm">
               <button
                 onClick={() => navigateTo('msp')}
-                className="text-yellow-600 hover:text-yellow-700 font-medium flex items-center"
+                className="text-yellow-600 hover:text-yellow-700 font-medium flex items-center py-1"
               >
                 <TrendingUp className="w-4 h-4 mr-1" />
                 {t('msp.title') || 'MSP Rates'}
               </button>
               <button
                 onClick={() => navigateTo('privacy')}
-                className="text-gray-600 hover:text-farm-green-600 flex items-center"
+                className="text-gray-600 hover:text-farm-green-600 flex items-center py-1"
               >
                 <Shield className="w-4 h-4 mr-1" />
                 {t('privacy.title') || 'Privacy'}
               </button>
               <button
                 onClick={() => navigateTo('terms')}
-                className="text-gray-600 hover:text-farm-green-600 flex items-center"
+                className="text-gray-600 hover:text-farm-green-600 flex items-center py-1"
               >
                 <FileText className="w-4 h-4 mr-1" />
                 {t('terms.title') || 'Terms'}
@@ -358,7 +358,7 @@ function App() {
 const TabButton = ({ icon: Icon, label, active, onClick, disabled }) => (
   <button
     onClick={disabled ? undefined : onClick}
-    className={`flex items-center px-3 sm:px-6 py-3 sm:py-4 font-semibold transition-all duration-300 border-b-4 whitespace-nowrap min-h-[48px] ${disabled
+    className={`flex items-center px-2.5 sm:px-5 py-3 font-semibold transition-all duration-300 border-b-3 whitespace-nowrap min-h-[48px] snap-start ${disabled
       ? 'border-transparent text-gray-300 cursor-not-allowed'
       : active
         ? 'border-farm-green-500 text-farm-green-600 bg-farm-green-50'
@@ -366,8 +366,8 @@ const TabButton = ({ icon: Icon, label, active, onClick, disabled }) => (
       }`}
     disabled={disabled}
   >
-    <Icon className={`w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2 ${disabled ? 'opacity-40' : ''}`} />
-    <span className="text-sm sm:text-base">{label}</span>
+    <Icon className={`w-4 h-4 sm:w-5 sm:h-5 mr-1.5 ${disabled ? 'opacity-40' : ''}`} />
+    <span className="text-xs sm:text-sm">{label}</span>
   </button>
 );
 

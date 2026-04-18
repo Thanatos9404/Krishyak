@@ -50,9 +50,8 @@ const LanguageSelector = ({ className = '' }) => {
       {/* Dropdown Menu */}
       {isOpen && (
         <div
-          className="absolute top-full mt-2 right-0 w-64 max-h-80 overflow-y-auto 
-                     bg-white rounded-xl shadow-xl border border-gray-200 z-50
-                     animate-in fade-in slide-in-from-top-2 duration-200"
+          className="absolute top-full mt-2 right-0 w-64 max-w-[calc(100vw-2rem)] max-h-80 overflow-y-auto 
+                     bg-white rounded-xl shadow-xl border border-gray-200 z-50"
         >
           <div className="p-2">
             <div className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">

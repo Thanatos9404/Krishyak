@@ -419,7 +419,12 @@ input[type="range"].slider-red::-moz-range-thumb {
     display: block !important;
   }
 
+  /* Disable hover lift on touch devices — prevents sticky hover states */
   .card-farm:hover {
+    transform: none;
+  }
+
+  .card-glow:hover {
     transform: none;
   }
 }
@@ -434,15 +439,27 @@ input[type="range"].slider-red::-moz-range-thumb {
   }
 }
 
-/* Mobile-specific improvements for 360px - 420px viewports */
+/* ===== MOBILE-FIRST FOUNDATION ===== */
+
+/* Prevent horizontal overflow globally */
+html {
+  overflow-x: hidden;
+}
+
+/* iOS safe area support */
+body {
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+
+/* Prevent iOS auto-zoom on input focus (must be 16px+) */
 @media (max-width: 640px) {
-  /* Prevent iOS auto-zoom on input focus */
   input, select, textarea {
     font-size: 16px !important;
   }
+}
 
-  /* Touch-friendly targets (min 44px) */
-  .btn-touch,
+/* Touch-friendly targets globally (min 44px for accessibility) */
+@media (max-width: 640px) {
   button,
   [role="button"] {
     min-height: 44px;
@@ -453,46 +470,6 @@ input[type="range"].slider-red::-moz-range-thumb {
     font-size: 16px;
     min-height: 48px;
     padding: 12px 16px;
-  }
-
-  /* Stack grids vertically */
-  .grid-cols-2,
-  .grid-cols-3,
-  .grid-cols-4 {
-    grid-template-columns: 1fr !important;
-  }
-
-  /* Full-width cards */
-  .card-farm {
-    border-radius: 16px;
-    margin-left: -8px;
-    margin-right: -8px;
-  }
-
-  /* Reduce padding on mobile */
-  .p-6 {
-    padding: 16px !important;
-  }
-
-  .p-8 {
-    padding: 20px !important;
-  }
-
-  /* Bottom sheet improvements */
-  .bottom-sheet {
-    max-height: 85vh;
-  }
-
-  /* FAB position adjustment */
-  .fab {
-    bottom: 20px;
-    right: 16px;
-  }
-
-  /* Tab button sizing */
-  .tab-button {
-    padding: 10px 12px;
-    font-size: 14px;
   }
 }
 

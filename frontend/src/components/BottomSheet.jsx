@@ -56,9 +56,10 @@ const BottomSheet = ({ isOpen, onClose, children, title }) => {
         ref={sheetRef}
         className="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-2xl z-50 animate-slide-up"
         style={{
-          maxHeight: '90vh',
+          maxHeight: '85vh',
           transform: `translateY(${dragY}px)`,
-          transition: isDragging ? 'none' : 'transform 0.3s ease-out'
+          transition: isDragging ? 'none' : 'transform 0.3s ease-out',
+          paddingBottom: 'env(safe-area-inset-bottom, 0px)'
         }}
       >
         {/* Drag Handle */}
@@ -72,18 +73,18 @@ const BottomSheet = ({ isOpen, onClose, children, title }) => {
         </div>
 
         {/* Header */}
-        <div className="flex items-center justify-between px-6 pb-4 border-b border-gray-100">
-          <h2 className="text-xl font-bold text-gray-800">{title || 'Farm Inputs'}</h2>
+        <div className="flex items-center justify-between px-4 sm:px-6 pb-3 border-b border-gray-100">
+          <h2 className="text-lg sm:text-xl font-bold text-gray-800">{title || 'Farm Inputs'}</h2>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+            className="p-2.5 hover:bg-gray-100 rounded-full transition-colors min-w-[44px] min-h-[44px] flex items-center justify-center"
           >
             <X className="w-5 h-5 text-gray-500" />
           </button>
         </div>
 
         {/* Content */}
-        <div className="overflow-y-auto p-6" style={{ maxHeight: 'calc(90vh - 100px)' }}>
+        <div className="overflow-y-auto px-4 sm:px-6 py-4" style={{ maxHeight: 'calc(85vh - 80px)' }}>
           {children}
         </div>
       </div>

@@ -69,7 +69,7 @@ const MSPFullView = ({ onBack }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50 py-6 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-yellow-50 to-orange-50 py-4 sm:py-6 px-3 sm:px-4">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
@@ -125,8 +125,34 @@ const MSPFullView = ({ onBack }) => {
           </div>
         </div>
 
-        {/* Table */}
-        <div className="bg-white rounded-xl shadow-md overflow-hidden">
+        {/* Mobile Card View */}
+        <div className="sm:hidden space-y-3">
+          {filteredAndSortedCrops.map((crop) => (
+            <div key={crop.name} className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
+              <div className="flex items-center justify-between mb-2">
+                <div className="min-w-0 flex-1">
+                  <p className="font-medium text-gray-900 truncate">{crop.translatedName}</p>
+                  <p className="text-xs text-gray-500">{crop.name}</p>
+                </div>
+                <span className={`px-2.5 py-0.5 rounded-full text-xs font-medium flex-shrink-0 ml-2 ${getSeasonColor(crop.season)}`}>
+                  {crop.translatedSeason}
+                </span>
+              </div>
+              <div className="flex items-baseline justify-between pt-2 border-t border-gray-100">
+                <span className="text-xs text-gray-500">{t('msp.mspRate') || 'MSP Rate'}</span>
+                <span className="text-lg font-bold text-yellow-600">₹{crop.msp.toLocaleString()}</span>
+              </div>
+            </div>
+          ))}
+          {filteredAndSortedCrops.length === 0 && (
+            <div className="text-center py-12 text-gray-500">
+              {t('common.noResults') || 'No crops found'}
+            </div>
+          )}
+        </div>
+
+        {/* Desktop Table View */}
+        <div className="hidden sm:block bg-white rounded-xl shadow-md overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="bg-yellow-50 border-b-2 border-yellow-100">

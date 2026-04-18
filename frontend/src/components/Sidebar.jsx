@@ -68,9 +68,9 @@ const Sidebar = ({ formData, setFormData, crops, soilTypes, onSimulate, loading 
 
   return (
     <>
-      <div className="w-full lg:w-96 bg-white rounded-2xl shadow-xl flex flex-col max-h-[calc(100vh-200px)] lg:sticky lg:top-6">
+      <div className="w-full lg:w-96 bg-white rounded-2xl shadow-xl flex flex-col lg:max-h-[calc(100vh-200px)] lg:sticky lg:top-6">
         {/* Header */}
-        <div className="text-center p-6 border-b-2 border-farm-green-100 flex-shrink-0">
+        <div className="text-center p-4 sm:p-6 border-b-2 border-farm-green-100 flex-shrink-0">
           <div className="flex items-center justify-center mb-2">
             <Sprout className="w-8 h-8 text-farm-green-600 mr-2" />
             <h2 className="text-2xl font-bold text-farm-green-800">{t('sidebar.title')}</h2>
@@ -204,7 +204,7 @@ const Sidebar = ({ formData, setFormData, crops, soilTypes, onSimulate, loading 
               <label className="text-sm font-semibold text-gray-700">
                 {t('sidebar.seedQuality') || 'Seed Quality'}
               </label>
-              <div className="grid grid-cols-4 gap-2">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 {[
                   { value: 0.4, labelKey: 'sidebar.poor', label: 'Poor', color: 'bg-red-100 border-red-300 text-red-700' },
                   { value: 0.6, labelKey: 'sidebar.fair', label: 'Fair', color: 'bg-yellow-100 border-yellow-300 text-yellow-700' },
@@ -293,7 +293,7 @@ const Sidebar = ({ formData, setFormData, crops, soilTypes, onSimulate, loading 
               <label className="text-sm font-semibold text-gray-700">
                 Pest Attack Risk
               </label>
-              <div className="grid grid-cols-4 gap-2">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 {[
                   { value: 0.1, label: 'Low', color: 'bg-green-100 border-green-300 text-green-700' },
                   { value: 0.3, label: 'Medium', color: 'bg-yellow-100 border-yellow-300 text-yellow-700' },
@@ -369,7 +369,7 @@ const Sidebar = ({ formData, setFormData, crops, soilTypes, onSimulate, loading 
         </div>
 
         {/* Sticky Simulate Button */}
-        <div className="p-4 border-t-2 border-farm-green-100 bg-white flex-shrink-0 rounded-b-2xl">
+        <div className="p-3 sm:p-4 border-t-2 border-farm-green-100 bg-white flex-shrink-0 rounded-b-2xl">
           <button
             onClick={onSimulate}
             disabled={loading}

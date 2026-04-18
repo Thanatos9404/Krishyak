@@ -51,13 +51,13 @@ const RecommendationPanel = ({ recommendationData, simulationData, formData }) =
   return (
     <div className="space-y-6">
       {/* AI Recommendation Card */}
-      <div className="card-farm card-glow p-8 bg-gradient-to-br from-farm-green-50 to-white animate-fade-in">
+      <div className="card-farm card-glow p-4 sm:p-8 bg-gradient-to-br from-farm-green-50 to-white animate-fade-in">
         <div className="flex items-start mb-6">
-          <div className="bg-gradient-to-r from-farm-green-500 to-farm-green-600 p-4 rounded-2xl mr-4">
+          <div className="bg-gradient-to-r from-farm-green-500 to-farm-green-600 p-3 sm:p-4 rounded-2xl mr-3 sm:mr-4 flex-shrink-0">
             <Lightbulb className="w-8 h-8 text-white" />
           </div>
-          <div>
-            <h2 className="text-3xl font-bold text-gray-800 mb-2">
+          <div className="min-w-0">
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-800 mb-1 sm:mb-2">
               AI-Powered Strategy Recommendation
             </h2>
             <p className="text-gray-600">
@@ -66,7 +66,7 @@ const RecommendationPanel = ({ recommendationData, simulationData, formData }) =
           </div>
         </div>
 
-        <div className="bg-white rounded-xl p-6 shadow-sm border-l-4 border-farm-green-500">
+        <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border-l-4 border-farm-green-500">
           <div className="prose max-w-none">
             {formatRecommendation(recommendationData.recommendation_text)}
           </div>
@@ -74,7 +74,7 @@ const RecommendationPanel = ({ recommendationData, simulationData, formData }) =
       </div>
 
       {/* Impact Summary */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
         {/* Profit Impact */}
         <div className="card-farm card-glow p-6 animate-fade-in">
           <div className="flex items-center mb-4">

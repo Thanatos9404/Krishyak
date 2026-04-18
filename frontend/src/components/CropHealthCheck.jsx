@@ -293,7 +293,7 @@ const CropHealthCheck = () => {
       </div>
 
       {/* Main Content */}
-      <div className="grid md:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
         {/* Left: Upload Section */}
         <div className="space-y-4">
           {/* Crop Selection - MANDATORY */}
@@ -332,7 +332,7 @@ const CropHealthCheck = () => {
             onDrop={handleDrop}
             onClick={() => fileInputRef.current?.click()}
             className={`
-              relative border-2 border-dashed rounded-2xl p-8 text-center cursor-pointer transition-all
+              relative border-2 border-dashed rounded-2xl p-4 sm:p-8 text-center cursor-pointer transition-all
               ${isDragging
                 ? 'border-green-500 bg-green-50'
                 : 'border-gray-300 hover:border-green-400 hover:bg-green-50/50'
@@ -378,7 +378,7 @@ const CropHealthCheck = () => {
           </div>
 
           {/* Camera Capture (Mobile) */}
-          <div className="flex gap-3">
+          <div className="flex flex-col sm:flex-row gap-3">
             <button
               onClick={() => cameraInputRef.current?.click()}
               className="flex-1 flex items-center justify-center gap-2 py-3 px-4 bg-blue-50 text-blue-600 rounded-xl hover:bg-blue-100 transition-colors font-medium"

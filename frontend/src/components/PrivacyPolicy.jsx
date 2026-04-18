@@ -3,7 +3,7 @@ import { Shield, ChevronLeft } from 'lucide-react';
 
 const PrivacyPolicy = ({ onBack }) => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-farm-green-50 to-white py-8 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-farm-green-50 to-white py-4 sm:py-8 px-3 sm:px-4">
       <div className="max-w-3xl mx-auto">
         {/* Header */}
         <div className="flex items-center mb-8">

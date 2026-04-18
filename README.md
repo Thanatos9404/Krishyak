@@ -33,7 +33,7 @@ Krishyak (कृष्यक - "The Cultivator") is a comprehensive full-stack w
 | 📍 **Location Auto-Fill** | Automatic soil type and rainfall detection via geolocation |
 | 🏛️ **Government Schemes** | Smart eligibility matcher for PM-KISAN, PMFBY, KCC and 8+ schemes with required documents |
 | 🌿 **Disease Detection** | Multi-source AI-powered crop disease identification with treatment recommendations |
-| 📱 **Mobile Responsive** | Floating action button and bottom sheet for mobile-first experience |
+| 📱 **Mobile-First UX** | Fully stabilized Android-first responsive architecture with Bottom Sheet, touch-safe FABs, & compact data views |
 | 🧪 **Soil Sensor Integration** | Manual soil data entry with NPK, pH, moisture, temperature tracking |
 
 ## 📸 Screenshots
