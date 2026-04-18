@@ -65,6 +65,10 @@ saved_model/
 # Data (keep structure, ignore large files)
 datasets/
 !datasets/.gitkeep
+backend/data/*.csv
+backend/data/*.db
+backend/data/*.sqlite3
+!backend/data/.gitkeep
 
 # React
 .eslintcache

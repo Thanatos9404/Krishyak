@@ -8,6 +8,7 @@ const WeatherCard = ({ onWeatherUpdate }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [locationData, setLocationData] = useState(null);
+  const [successToast, setSuccessToast] = useState(null);
 
   const detectLocation = async () => {
     setLoading(true);
@@ -17,6 +18,16 @@ const WeatherCard = ({ onWeatherUpdate }) => {
       // Get all location-based data (weather, soil, rainfall)
       const data = await getLocationBasedData();
       setLocationData(data);
+
+      // Build success feedback message
+      const cityName = data.location?.city || data.location?.district || 'your location';
+      const stateName = data.location?.state || '';
+      setSuccessToast(
+        `📍 Detected: ${cityName}${stateName ? `, ${stateName}` : ''} — Soil set to ${data.soil_type || 'Auto'}, Rainfall set to ${data.expected_rainfall || '—'} mm`
+      );
+
+      // Auto-hide toast after 8 seconds
+      setTimeout(() => setSuccessToast(null), 8000);
 
       // Update parent form with all detected data
       if (onWeatherUpdate) {
@@ -29,12 +40,15 @@ const WeatherCard = ({ onWeatherUpdate }) => {
 
     } catch (err) {
       console.error('Location error:', err);
+      setSuccessToast(null);
       if (err.code === 1) {
-        setError(t('weatherCard.errors.denied'));
+        setError(t('weatherCard.errors.denied') || 'Location permission denied. Please enable it in browser settings, or enter your location manually below.');
       } else if (err.message === 'Geolocation not supported') {
-        setError(t('weatherCard.errors.notSupported'));
+        setError(t('weatherCard.errors.notSupported') || 'Geolocation is not supported by your browser. Please enter your location manually.');
+      } else if (err.message?.includes('timed out')) {
+        setError('Location detection timed out. Please enter your district and state manually below.');
       } else {
-        setError(t('weatherCard.errors.failed'));
+        setError(t('weatherCard.errors.failed') || 'Could not detect location. Please enter your details manually.');
       }
     } finally {
       setLoading(false);
@@ -61,6 +75,14 @@ const WeatherCard = ({ onWeatherUpdate }) => {
           </>
         )}
       </button>
+
+      {/* Success Toast */}
+      {successToast && (
+        <div className="bg-green-50 text-green-700 rounded-xl p-3 text-sm border border-green-200 flex items-start gap-2 animate-fade-in">
+          <span className="text-green-500 font-bold">✓</span>
+          <span>{successToast}</span>
+        </div>
+      )}
 
       {/* Error Message */}
       {error && (

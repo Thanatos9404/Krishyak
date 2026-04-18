@@ -62,7 +62,11 @@ const getNestedTranslation = (obj, path, params = {}) => {
     if (result && typeof result === 'object' && key in result) {
       result = result[key];
     } else {
-      return path; // Return key if not found
+      // Return null instead of the key path to prevent raw key leakage in UI
+      if (process.env.NODE_ENV === 'development') {
+        console.warn(`[i18n] Missing translation: "${path}"`);
+      }
+      return null;
     }
   }
 
@@ -118,7 +122,7 @@ export const I18nProvider = ({ children }) => {
     const translation = getNestedTranslation(currentTranslations, key, params);
 
     // Fallback to English if not found in current language
-    if (translation === key && currentLanguage !== DEFAULT_LANGUAGE) {
+    if (translation === null && currentLanguage !== DEFAULT_LANGUAGE) {
       return getNestedTranslation(translations[DEFAULT_LANGUAGE], key, params);
     }
 

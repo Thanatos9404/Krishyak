@@ -50,11 +50,18 @@ const Sidebar = ({ formData, setFormData, crops, soilTypes, onSimulate, loading 
   };
 
   const handleWeatherUpdate = (weatherData) => {
-    setFormData(prev => ({
-      ...prev,
-      expected_rainfall: weatherData.expected_rainfall,
-      rainfall_delay: weatherData.rainfall_delay
-    }));
+    setFormData(prev => {
+      const updates = {
+        ...prev,
+        expected_rainfall: weatherData.expected_rainfall,
+        rainfall_delay: weatherData.rainfall_delay
+      };
+      // Only auto-fill soil_type if user hasn't changed from default or it's empty
+      if (weatherData.soil_type && (!prev.soil_type || prev.soil_type === 'Alluvial')) {
+        updates.soil_type = weatherData.soil_type;
+      }
+      return updates;
+    });
     // Auto-expand weather section to show updated values
     setExpandedSections(prev => ({ ...prev, weather: true }));
   };

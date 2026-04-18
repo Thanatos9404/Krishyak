@@ -310,15 +310,22 @@ const FarmerRegistrationForm = ({ onComplete }) => {
         error={errors.dateOfBirth}
       />
 
-      <InputField
-        label={t('registration.aadhaarNumber') || 'Aadhaar Number (आधार संख्या)'}
-        field="aadhaarNumber"
-        placeholder="XXXX XXXX XXXX"
-        maxLength={14}
-        value={formData.aadhaarNumber}
-        onChange={handleChange}
-        error={errors.aadhaarNumber}
-      />
+      {/* Optional Aadhaar Section */}
+      <div className="mt-2 pt-4 border-t border-dashed border-gray-200">
+        <p className="text-xs text-gray-500 mb-3 flex items-center">
+          <span className="bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full text-xs font-medium mr-2">Optional</span>
+          You can verify your Aadhaar later from your profile
+        </p>
+        <InputField
+          label={(t('registration.aadhaarNumber') || 'Aadhaar Number (आधार संख्या)') + ' — Optional'}
+          field="aadhaarNumber"
+          placeholder="XXXX XXXX XXXX"
+          maxLength={14}
+          value={formData.aadhaarNumber}
+          onChange={handleChange}
+          error={errors.aadhaarNumber}
+        />
+      </div>
     </div>
   );
 

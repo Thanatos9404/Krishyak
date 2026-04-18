@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { getRiskInfo, getRiskHexColor } from '../utils/riskHelper';
 
 const RiskScoreGauge = ({ score = 0 }) => {
   const [animatedScore, setAnimatedScore] = useState(0);
@@ -25,33 +26,17 @@ const RiskScoreGauge = ({ score = 0 }) => {
   // Calculate needle rotation (-90 to 90 degrees based on 0-100 score)
   const needleRotation = (animatedScore / 100) * 180 - 90;
 
-  // Get color based on score segments
-  const getScoreColor = (s) => {
-    if (s <= 20) return '#22c55e'; // Green
-    if (s <= 40) return '#84cc16'; // Lime
-    if (s <= 60) return '#facc15'; // Yellow
-    if (s <= 80) return '#f97316'; // Orange
-    return '#ef4444'; // Red
-  };
-
-  // Get risk category
-  const getRiskCategory = (s) => {
-    if (s <= 20) return { text: 'Low Risk', badge: '🟢', desc: 'Safe to Proceed', bgColor: 'bg-green-100', textColor: 'text-green-700' };
-    if (s <= 40) return { text: 'Moderate Risk', badge: '🟡', desc: 'Monitor Closely', bgColor: 'bg-yellow-100', textColor: 'text-yellow-700' };
-    if (s <= 60) return { text: 'High Risk', badge: '🟠', desc: 'Take Precautions', bgColor: 'bg-orange-100', textColor: 'text-orange-700' };
-    return { text: 'Very High Risk', badge: '🔴', desc: 'Reconsider Plan', bgColor: 'bg-red-100', textColor: 'text-red-700' };
-  };
-
-  const category = getRiskCategory(score);
-  const color = getScoreColor(animatedScore);
+  // Use centralized risk helper for color and label
+  const color = getRiskHexColor(animatedScore);
+  const category = getRiskInfo(score);
 
   return (
     <div className="flex flex-col items-center">
       {/* Gauge */}
       <div className="relative w-56 h-32 mb-2">
         <svg className="w-full h-full" viewBox="0 0 200 120" overflow="visible">
-          {/* Background arc segments with colors */}
-          {/* Green segment (0-20) */}
+          {/* Background arc segments — using standardized thresholds: 0-25, 26-50, 51-75, 76-100 */}
+          {/* Green segment (0-25) */}
           <path
             d="M 20 100 A 80 80 0 0 1 35.86 50.34"
             fill="none"
@@ -60,33 +45,25 @@ const RiskScoreGauge = ({ score = 0 }) => {
             strokeLinecap="round"
           />
 
-          {/* Lime segment (20-40) */}
+          {/* Yellow segment (26-50) */}
           <path
             d="M 38 47.5 A 80 80 0 0 1 66.94 24.5"
             fill="none"
-            stroke="#84cc16"
+            stroke="#eab308"
             strokeWidth="14"
           />
 
-          {/* Yellow segment (40-60) */}
+          {/* Orange segment (51-75) */}
           <path
             d="M 70 22.5 A 80 80 0 0 1 130 22.5"
-            fill="none"
-            stroke="#facc15"
-            strokeWidth="14"
-          />
-
-          {/* Orange segment (60-80) */}
-          <path
-            d="M 133.06 24.5 A 80 80 0 0 1 162 47.5"
             fill="none"
             stroke="#f97316"
             strokeWidth="14"
           />
 
-          {/* Red segment (80-100) */}
+          {/* Red segment (76-100) */}
           <path
-            d="M 164.14 50.34 A 80 80 0 0 1 180 100"
+            d="M 133.06 24.5 A 80 80 0 0 1 180 100"
             fill="none"
             stroke="#ef4444"
             strokeWidth="14"
@@ -129,12 +106,12 @@ const RiskScoreGauge = ({ score = 0 }) => {
         <span className="text-gray-400 text-lg ml-1">/100</span>
       </div>
 
-      {/* Risk badge */}
-      <div className={`${category.bgColor} ${category.textColor} px-6 py-3 rounded-xl text-center shadow-sm`}>
+      {/* Risk badge — using centralized thresholds */}
+      <div className={`${category.badgeBg} px-6 py-3 rounded-xl text-center shadow-sm`}>
         <div className="flex items-center justify-center space-x-2">
-          <span className="text-2xl">{category.badge}</span>
+          <span className="text-2xl">{category.emoji}</span>
           <div>
-            <p className="font-bold text-lg">{category.text}</p>
+            <p className="font-bold text-lg">{category.label}</p>
             <p className="text-sm opacity-80">{category.desc}</p>
           </div>
         </div>
@@ -143,7 +120,7 @@ const RiskScoreGauge = ({ score = 0 }) => {
       {/* Explanation */}
       <p className="text-xs text-gray-500 mt-3 text-center max-w-xs">
         Lower scores indicate safer farming conditions.
-        Your score is in the <span className={category.textColor + ' font-semibold'}>{score <= 40 ? 'safe' : 'elevated'}</span> range.
+        Your score is in the <span className={category.textClass + ' font-semibold'}>{score <= 50 ? 'safe' : 'elevated'}</span> range.
       </p>
     </div>
   );

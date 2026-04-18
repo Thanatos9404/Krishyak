@@ -9,10 +9,11 @@
  * - Recommended actions
  */
 
-import React, { useState } from 'react';
-import { Bug, AlertTriangle, Shield, ChevronDown, ChevronUp, Clock, MapPin } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { Bug, AlertTriangle, Shield, ChevronDown, ChevronUp, Clock, MapPin, Info } from 'lucide-react';
 import { useTranslation } from '../i18n';
 import { usePestIntelligence } from '../hooks/usePestIntelligence';
+import { filterAlertsByCrop, generateFallbackAlerts } from '../utils/pestMapping';
 
 const SEVERITY_COLORS = {
   low: { bg: 'bg-green-50', border: 'border-green-200', text: 'text-green-700', badge: 'bg-green-100 text-green-800' },
@@ -135,16 +136,27 @@ const PestAlertCard = ({ crop, location, state, district, weather }) => {
   const [view, setView] = useState('alerts'); // 'alerts' or 'predictions'
 
   const {
-    alerts,
+    alerts: rawAlerts,
     predictions,
     seasonalRisk,
     hasHighRisk,
-    activeAlertCount,
     loading,
     error,
     lastUpdated,
     refresh
   } = usePestIntelligence(crop, location, state, district, weather);
+
+  // Fix C: Filter alerts to only show pests relevant to the selected crop
+  const alerts = useMemo(() => {
+    const filtered = filterAlertsByCrop(rawAlerts, crop);
+    // If backend returned nothing useful & we have an error, generate crop-specific fallback
+    if (filtered.length === 0 && error && crop) {
+      return generateFallbackAlerts(crop, state);
+    }
+    return filtered;
+  }, [rawAlerts, crop, error, state]);
+
+  const activeAlertCount = alerts.length;
 
   const toggleAlert = (alertId) => {
     setExpandedAlert(expandedAlert === alertId ? null : alertId);
@@ -202,7 +214,7 @@ const PestAlertCard = ({ crop, location, state, district, weather }) => {
             : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
         >
-          Alerts ({alerts.length})
+          Alerts {alerts.length > 0 ? `(${alerts.length})` : ''}
         </button>
         <button
           onClick={() => setView('predictions')}
@@ -211,7 +223,7 @@ const PestAlertCard = ({ crop, location, state, district, weather }) => {
             : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
         >
-          Predictions ({predictions.length})
+          Predictions {predictions.length > 0 ? `(${predictions.length})` : ''}
         </button>
       </div>
 
@@ -225,21 +237,31 @@ const PestAlertCard = ({ crop, location, state, district, weather }) => {
         ) : error && alerts.length === 0 ? (
           <div className="text-center py-8 text-gray-500">
             <AlertTriangle className="w-8 h-8 mx-auto mb-2 text-yellow-500" />
-            <p className="text-sm">Could not load pest data</p>
+            <p className="text-sm font-medium text-gray-600">Pest monitoring unavailable</p>
+            <p className="text-xs text-gray-400 mt-1">Connect to the backend to get live alerts</p>
             <button
               onClick={refresh}
-              className="mt-2 text-sm text-farm-green-600 hover:underline"
+              className="mt-3 text-sm text-farm-green-600 hover:underline font-medium"
             >
-              Retry
+              Try again
             </button>
           </div>
         ) : view === 'alerts' ? (
           <>
+            {/* Fallback alert banner */}
+            {alerts.some(a => a.isFallback) && (
+              <div className="flex items-center gap-1.5 text-xs text-amber-600 bg-amber-50 px-3 py-1.5 rounded-lg mb-2">
+                <Info className="w-3 h-3" />
+                Showing common pests for {crop} (offline mode)
+              </div>
+            )}
             {alerts.length === 0 ? (
               <div className="text-center py-6 text-gray-500">
                 <Shield className="w-8 h-8 mx-auto mb-2 text-green-500" />
                 <p className="text-sm">No active pest alerts</p>
-                <p className="text-xs text-gray-400 mt-1">Your crop appears safe</p>
+                <p className="text-xs text-gray-400 mt-1">
+                  {crop ? `No known threats for ${crop} right now` : 'Select a crop to see alerts'}
+                </p>
               </div>
             ) : (
               alerts.map((alert) => (
@@ -257,9 +279,9 @@ const PestAlertCard = ({ crop, location, state, district, weather }) => {
             {predictions.length === 0 ? (
               <div className="text-center py-6 text-gray-500">
                 <Shield className="w-8 h-8 mx-auto mb-2 text-green-500" />
-                <p className="text-sm">No pest risk predictions</p>
+                <p className="text-sm">No outbreak predictions available</p>
                 <p className="text-xs text-gray-400 mt-1">
-                  {crop ? `Looking good for ${crop}` : 'Select a crop for predictions'}
+                  {crop ? `Prediction models require backend connection` : 'Select a crop for predictions'}
                 </p>
               </div>
             ) : (

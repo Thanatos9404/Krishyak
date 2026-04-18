@@ -81,7 +81,8 @@ export const useFormValidation = () => {
         } else if (!MOBILE_REGEX.test(formData.mobileNumber)) {
           addError('mobileNumber', t('validation.invalidMobile') || 'Please enter a valid 10-digit mobile number');
         }
-        if (formData.aadhaarNumber && !AADHAAR_REGEX.test(formData.aadhaarNumber.replace(/\s/g, ''))) {
+        // Aadhaar is optional — only validate format if provided
+        if (formData.aadhaarNumber && formData.aadhaarNumber.trim() && !AADHAAR_REGEX.test(formData.aadhaarNumber.replace(/\s/g, ''))) {
           addError('aadhaarNumber', t('validation.invalidAadhaar') || 'Please enter a valid 12-digit Aadhaar number');
         }
         break;

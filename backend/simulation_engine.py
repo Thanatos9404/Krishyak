@@ -138,34 +138,47 @@ class SimulationEngine:
         optimal["pest_control_intensity"] = min(0.9, base_params.get("pest_control_intensity", 0.5) + 0.3)
         optimal["pest_probability"] = max(0.05, base_params["pest_probability"] - 0.15)
         
-        # Optimize sale timing based on price forecast
-        optimal["sale_month"] = 2  # Typically optimal window
+        # Optimize sale timing — target the typical mid-season window
+        optimal["sale_month"] = 2
         
         return optimal
     
     def _generate_worst_case(self, base_params: Dict) -> Dict:
-        """Generate worst-case scenario parameters"""
+        """Generate worst-case scenario parameters
+        
+        Ensures worst case is ALWAYS worse than current plan by:
+        - Degrading yield inputs (seed quality, rainfall, irrigation, fertilizer)
+        - Increasing risk inputs (pest probability, less pest control)
+        - Forcing lower selling price via market price depression
+        - Poor sale timing
+        """
         worst = base_params.copy()
         
         # Poor seed quality
         worst["seed_quality"] = max(0.3, base_params["seed_quality"] - 0.3)
         
         # Inadequate rainfall with delays
-        worst["expected_rainfall"] = base_params["expected_rainfall"] * 0.7
-        worst["rainfall_delay"] = base_params["rainfall_delay"] + 15
+        worst["expected_rainfall"] = base_params["expected_rainfall"] * 0.6
+        worst["rainfall_delay"] = base_params["rainfall_delay"] + 20
         
         # Reduced irrigation
-        worst["irrigation_frequency"] = max(0, base_params["irrigation_frequency"] - 2)
+        worst["irrigation_frequency"] = max(0, base_params["irrigation_frequency"] - 3)
         
-        # Suboptimal fertilizer
-        worst["fertilizer_mix"] = {k: v * 0.6 for k, v in base_params["fertilizer_mix"].items()}
+        # Suboptimal fertilizer (40% reduction)
+        worst["fertilizer_mix"] = {k: v * 0.5 for k, v in base_params["fertilizer_mix"].items()}
         
         # High pest risk
-        worst["pest_probability"] = min(0.8, base_params["pest_probability"] + 0.3)
-        worst["pest_control_intensity"] = max(0.2, base_params.get("pest_control_intensity", 0.5) - 0.3)
+        worst["pest_probability"] = min(0.85, base_params["pest_probability"] + 0.35)
+        worst["pest_control_intensity"] = max(0.1, base_params.get("pest_control_intensity", 0.5) - 0.35)
         
-        # Poor sale timing
-        worst["sale_month"] = 0  # Immediate sale at lower prices
+        # Depressed market price (15% below current) — simulates distress/glut selling
+        worst["current_market_price"] = base_params.get("current_market_price", 2000) * 0.85
+        
+        # Worst sale timing — immediate distress sale
+        worst["sale_month"] = 0
+        
+        # Increased labour costs (delays, rework)
+        worst["labour_days"] = base_params.get("labour_days", 30) * 1.2
         
         return worst
     

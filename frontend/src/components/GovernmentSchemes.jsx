@@ -26,14 +26,19 @@ const SchemeCard = ({ scheme, index }) => {
           </div>
         </div>
         {scheme.isEligible ? (
-          <span className="bg-green-100 text-green-700 text-xs font-semibold px-2 py-1 rounded-full flex items-center">
-            <CheckCircle className="w-3 h-3 mr-1" />
-            {t('schemes.eligible') || 'Eligible'}
+          <span className={`text-xs font-semibold px-2 py-1 rounded-full flex items-center ${
+            scheme.hasChecks ? 'bg-green-100 text-green-700' : 'bg-blue-50 text-blue-600'
+          }`}>
+            {scheme.hasChecks ? (
+              <><CheckCircle className="w-3 h-3 mr-1" />{t('schemes.eligible') || 'Likely Eligible'}</>
+            ) : (
+              <><Info className="w-3 h-3 mr-1" />{t('schemes.mayBeEligible') || 'Needs Verification'}</>
+            )}
           </span>
         ) : (
           <span className="bg-gray-100 text-gray-600 text-xs font-semibold px-2 py-1 rounded-full flex items-center">
             <AlertCircle className="w-3 h-3 mr-1" />
-            {t('schemes.checkEligibility') || 'Check'}
+            {t('schemes.checkEligibility') || 'Not Matched'}
           </span>
         )}
       </div>
@@ -154,9 +159,11 @@ const GovernmentSchemes = ({ formData, simulationData }) => {
       let isEligible = true;
       let eligibilityNotes = [];
       let potentialBenefit = 0;
+      let hasChecks = false; // Track if any eligibility criteria were actually evaluated
 
       // Check area requirements
       if (scheme.eligibility.minArea !== undefined) {
+        hasChecks = true;
         if (formData.area_hectares < scheme.eligibility.minArea) {
           isEligible = false;
           eligibilityNotes.push(`Requires minimum ${scheme.eligibility.minArea} hectare`);
@@ -165,6 +172,7 @@ const GovernmentSchemes = ({ formData, simulationData }) => {
 
       // Check crop requirements
       if (scheme.eligibility.crops && !scheme.eligibility.allCrops) {
+        hasChecks = true;
         if (!scheme.eligibility.crops.includes(formData.crop)) {
           isEligible = false;
           eligibilityNotes.push(`Not available for ${formData.crop}`);
@@ -193,7 +201,8 @@ const GovernmentSchemes = ({ formData, simulationData }) => {
       return {
         ...scheme,
         isEligible,
-        eligibilityNotes: eligibilityNotes.length > 0 ? eligibilityNotes : ['✓ All criteria met'],
+        hasChecks,
+        eligibilityNotes: eligibilityNotes.length > 0 ? eligibilityNotes : (hasChecks ? ['Preliminary match — verify on official portal'] : ['Verify eligibility on official portal']),
         potentialBenefit
       };
     });
@@ -219,7 +228,7 @@ const GovernmentSchemes = ({ formData, simulationData }) => {
               💰 {t('schemes.title') || 'Government Benefits Available'}
             </h2>
             <p className="text-gray-600 mt-1">
-              {eligibleCount} {t('schemes.eligible') || 'eligible'} {t('common.of') || 'of'} {eligibleSchemes.length} schemes based on your profile
+              {eligibleCount} likely eligible of {eligibleSchemes.length} schemes based on your profile
             </p>
           </div>
           <div className="bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-xl shadow-lg">
@@ -238,10 +247,10 @@ const GovernmentSchemes = ({ formData, simulationData }) => {
           All ({eligibleSchemes.length})
         </span>
         <span className="px-3 py-1.5 bg-green-100 text-green-700 rounded-full text-sm font-medium">
-          ✓ Eligible ({eligibleCount})
+          Likely Eligible ({eligibleCount})
         </span>
         <span className="px-3 py-1.5 bg-gray-100 text-gray-600 rounded-full text-sm font-medium">
-          Check Eligibility ({eligibleSchemes.length - eligibleCount})
+          Needs Verification ({eligibleSchemes.length - eligibleCount})
         </span>
       </div>
 
@@ -255,7 +264,8 @@ const GovernmentSchemes = ({ formData, simulationData }) => {
       {/* Disclaimer */}
       <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4">
         <p className="text-xs text-yellow-800">
-          <strong>⚠️ Disclaimer:</strong> {schemesData.metadata.disclaimer}
+          <strong>⚠️ Important:</strong> Eligibility shown is a preliminary match based on your profile. 
+          Final eligibility depends on official verification. {schemesData.metadata.disclaimer} 
           Last updated: {schemesData.metadata.lastUpdated}
         </p>
       </div>

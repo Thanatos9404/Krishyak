@@ -196,7 +196,14 @@ Risk = Weather(30%) + Price Volatility(25%) + Pest Severity(25%) + Soil Mismatch
 5. **Disease Management** - Early detection and treatment recommendations
 6. **Scheme Eligibility** - Check government benefits
 
-## ✅ Recent Updates (January 2026)
+## ✅ Recent Updates (April 2026)
+
+- [x] **Mobile-First Redesign** - Comprehensive UI overhaul for touch-friendly mobile navigation with floating actions, bottom sheets, and responsive grids.
+- [x] **Enhanced Farmer Registration** - Streamlined onboarding flow with real-time validation.
+- [x] **Improved App Stability** - Fixed component rendering bugs and state management optimizations across the dashboard.
+- [x] **Styling Fixes** - Corrected layout overflows, optimized spacing, and refined typography for modern mobile displays.
+
+## ✅ Previous Updates (January 2026)
 
 - [x] **13 Indian Languages** - Full i18n with Hindi, Tamil, Telugu, Bengali, Marathi, Gujarati, Kannada, Malayalam, Punjabi, Assamese, Odia, Urdu (RTL)
 - [x] **Fertilizer Analyzer Engine** - Crop-specific NPK recommendations with organic alternatives and dosage schedules
@@ -208,7 +215,6 @@ Risk = Weather(30%) + Price Volatility(25%) + Pest Severity(25%) + Soil Mismatch
 - [x] Voice input in Hindi & English
 - [x] Location-based soil detection
 - [x] Circular risk gauge visualization
-- [x] Mobile-responsive design
 
 ## 📝 License
 

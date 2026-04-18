@@ -20,7 +20,7 @@ import farmingApi from './api/farmingApi';
 
 function App() {
   const { t } = useTranslation();
-  const { farmer, isRegistered, loading: sessionLoading, logout } = useFarmerSession();
+  const { farmer, isRegistered, loading: sessionLoading, logout, login } = useFarmerSession();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [currentPage, setCurrentPage] = useState('main'); // main, msp, privacy, terms, register
   const [crops, setCrops] = useState([]);
@@ -54,6 +54,21 @@ function App() {
     current_market_price: 2500,
     seed_quantity_kg: 100
   });
+
+  // Hydrate simulation data from sessionStorage on mount
+  useEffect(() => {
+    try {
+      const cached = JSON.parse(sessionStorage.getItem('krishyak_sim') || 'null');
+      if (cached && Date.now() - cached.timestamp < 30 * 60 * 1000) {
+        setSimulationData(cached.simulationData);
+        setComparisonData(cached.comparisonData);
+        setRecommendationData(cached.recommendationData);
+        setFormData(prev => ({ ...prev, ...cached.formData }));
+      }
+    } catch (e) {
+      // Ignore corrupt cache
+    }
+  }, []);
 
   // Update form data from farmer profile
   useEffect(() => {
@@ -130,6 +145,19 @@ function App() {
       setRecommendationData(recRes.data);
       setActiveTab('dashboard');
 
+      // Persist simulation data to sessionStorage
+      try {
+        sessionStorage.setItem('krishyak_sim', JSON.stringify({
+          simulationData: simRes.data,
+          comparisonData: compRes.data,
+          recommendationData: recRes.data,
+          formData,
+          timestamp: Date.now()
+        }));
+      } catch (e) {
+        // Ignore storage errors
+      }
+
       const profitImprovement = recRes.data.profit_improvement || 0;
       addToast({
         type: 'success',
@@ -153,6 +181,8 @@ function App() {
   };
 
   const handleRegistrationComplete = (profile) => {
+    // Sync App's own session state so isRegistered flips to true
+    login(profile);
     addToast({
       type: 'success',
       message: t('registration.success') || `Welcome, ${profile.fullName}! Registration complete.`
@@ -248,8 +278,8 @@ function App() {
         <div className="max-w-7xl mx-auto px-2 sm:px-6">
           <div className="flex overflow-x-auto scrollbar-hide">
             <TabButton icon={BarChart3} label={t('nav.dashboard')} active={activeTab === 'dashboard'} onClick={() => setActiveTab('dashboard')} />
-            <TabButton icon={TrendingUp} label={t('nav.scenarios')} active={activeTab === 'comparison'} onClick={() => setActiveTab('comparison')} />
-            <TabButton icon={Lightbulb} label={t('nav.aiInsights')} active={activeTab === 'recommendations'} onClick={() => setActiveTab('recommendations')} />
+            <TabButton icon={TrendingUp} label={t('nav.scenarios')} active={activeTab === 'comparison'} onClick={() => setActiveTab('comparison')} disabled={!simulationData} />
+            <TabButton icon={Lightbulb} label={t('nav.aiInsights')} active={activeTab === 'recommendations'} onClick={() => setActiveTab('recommendations')} disabled={!simulationData} />
             <TabButton icon={Leaf} label={t('nav.cropHealth')} active={activeTab === 'health'} onClick={() => setActiveTab('health')} />
           </div>
         </div>
@@ -325,15 +355,18 @@ function App() {
   );
 }
 
-const TabButton = ({ icon: Icon, label, active, onClick }) => (
+const TabButton = ({ icon: Icon, label, active, onClick, disabled }) => (
   <button
-    onClick={onClick}
-    className={`flex items-center px-3 sm:px-6 py-3 sm:py-4 font-semibold transition-all duration-300 border-b-4 whitespace-nowrap min-h-[48px] ${active
-      ? 'border-farm-green-500 text-farm-green-600 bg-farm-green-50'
-      : 'border-transparent text-gray-600 hover:text-farm-green-600 hover:bg-gray-50'
+    onClick={disabled ? undefined : onClick}
+    className={`flex items-center px-3 sm:px-6 py-3 sm:py-4 font-semibold transition-all duration-300 border-b-4 whitespace-nowrap min-h-[48px] ${disabled
+      ? 'border-transparent text-gray-300 cursor-not-allowed'
+      : active
+        ? 'border-farm-green-500 text-farm-green-600 bg-farm-green-50'
+        : 'border-transparent text-gray-600 hover:text-farm-green-600 hover:bg-gray-50'
       }`}
+    disabled={disabled}
   >
-    <Icon className="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" />
+    <Icon className={`w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2 ${disabled ? 'opacity-40' : ''}`} />
     <span className="text-sm sm:text-base">{label}</span>
   </button>
 );

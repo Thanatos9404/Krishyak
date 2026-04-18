@@ -92,15 +92,30 @@ const SoilDataCard = ({ deviceId = 'default', onDataUpdate }) => {
     return date.toLocaleDateString();
   };
 
-  // Connection status indicator
+  // Connection status indicator - show honest source labels
   const StatusIndicator = () => {
+    // If source is cached or unknown and there's no real sensor, show honest label
+    const isRealSensor = connectionStatus === 'connected' && source === 'sensor';
     const statusConfig = {
-      connected: { icon: Wifi, color: 'text-green-500', label: 'Connected' },
-      disconnected: { icon: WifiOff, color: 'text-red-500', label: 'Disconnected' },
-      offline: { icon: WifiOff, color: 'text-yellow-500', label: 'Offline' },
-      error: { icon: AlertCircle, color: 'text-red-500', label: 'Error' },
-      unknown: { icon: Wifi, color: 'text-gray-400', label: 'Unknown' },
+      connected: isRealSensor
+        ? { icon: Wifi, color: 'text-green-500', label: 'Live Sensor' }
+        : { icon: Leaf, color: 'text-blue-500', label: 'Sample Data' },
+      disconnected: { icon: WifiOff, color: 'text-gray-400', label: 'No Sensor' },
+      offline: { icon: WifiOff, color: 'text-yellow-500', label: 'Cached Data' },
+      error: { icon: AlertCircle, color: 'text-gray-400', label: 'No Sensor' },
+      unknown: { icon: Leaf, color: 'text-gray-400', label: 'Manual Entry' },
     };
+    // Override if source is manual
+    if (source === 'manual') {
+      const config = { icon: Leaf, color: 'text-blue-500', label: 'Manual Entry' };
+      const Icon = config.icon;
+      return (
+        <div className={`flex items-center gap-1 ${config.color}`}>
+          <Icon className="w-4 h-4" />
+          <span className="text-xs">{config.label}</span>
+        </div>
+      );
+    }
 
     const config = statusConfig[connectionStatus] || statusConfig.unknown;
     const Icon = config.icon;

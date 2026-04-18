@@ -8,6 +8,7 @@ import PestAlertCard from './PestAlertCard';
 import FertilizerRecommendationCard from './FertilizerRecommendationCard';
 import JAMTrinityVerification from './JAMTrinityVerification';
 import MSPRateCard from './MSPRateCard';
+import { getRiskInfo } from '../utils/riskHelper';
 import { useTranslation } from '../i18n';
 
 const Dashboard = ({ simulationData, formData }) => {
@@ -104,34 +105,31 @@ const Dashboard = ({ simulationData, formData }) => {
         </div>
 
         {/* Risk Card */}
-        <div className="card-farm card-glow p-6 animate-fade-in" style={{ animationDelay: '0.3s' }}>
-          <div className="flex items-start justify-between mb-3">
-            <div className={`p-3 rounded-xl ${risk.overall_risk_score < 40 ? 'bg-green-100' :
-              risk.overall_risk_score < 70 ? 'bg-yellow-100' : 'bg-red-100'
-              }`}>
-              <AlertCircle className={`w-6 h-6 ${risk.overall_risk_score < 40 ? 'text-green-600' :
-                risk.overall_risk_score < 70 ? 'text-yellow-600' : 'text-red-600'
-                }`} />
+        {(() => {
+          const riskInfo = getRiskInfo(risk.overall_risk_score);
+          return (
+            <div className="card-farm card-glow p-6 animate-fade-in" style={{ animationDelay: '0.3s' }}>
+              <div className="flex items-start justify-between mb-3">
+                <div className={`p-3 rounded-xl ${riskInfo.bgClass}`}>
+                  <AlertCircle className={`w-6 h-6 ${riskInfo.textClass}`} />
+                </div>
+              </div>
+              <h3 className="text-sm font-semibold text-gray-600 mb-1">{t('dashboard.riskScore')}</h3>
+              <p className={`text-3xl font-bold ${riskInfo.textClass}`}>
+                {risk.overall_risk_score.toFixed(0)}
+              </p>
+              <p className="text-sm text-gray-500 mt-1">{riskInfo.label}</p>
+              <div className="mt-3 pt-3 border-t border-gray-100">
+                <div className="w-full bg-gray-200 rounded-full h-2">
+                  <div
+                    className={`h-2 rounded-full ${riskInfo.barColor}`}
+                    style={{ width: `${risk.overall_risk_score}%` }}
+                  ></div>
+                </div>
+              </div>
             </div>
-          </div>
-          <h3 className="text-sm font-semibold text-gray-600 mb-1">{t('dashboard.riskScore')}</h3>
-          <p className={`text-3xl font-bold ${risk.overall_risk_score < 40 ? 'text-green-600' :
-            risk.overall_risk_score < 70 ? 'text-yellow-600' : 'text-red-600'
-            }`}>
-            {risk.overall_risk_score.toFixed(0)}
-          </p>
-          <p className="text-sm text-gray-500 mt-1">{risk.risk_category}</p>
-          <div className="mt-3 pt-3 border-t border-gray-100">
-            <div className="w-full bg-gray-200 rounded-full h-2">
-              <div
-                className={`h-2 rounded-full ${risk.overall_risk_score < 40 ? 'bg-green-500' :
-                  risk.overall_risk_score < 70 ? 'bg-yellow-500' : 'bg-red-500'
-                  }`}
-                style={{ width: `${risk.overall_risk_score}%` }}
-              ></div>
-            </div>
-          </div>
-        </div>
+          );
+        })()}
       </div>
 
       {/* Weather Alerts Section */}
@@ -177,12 +175,12 @@ const Dashboard = ({ simulationData, formData }) => {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <FertilizerRecommendationCard
-          crop={simulationData?.crop || ''}
-          areaHectares={simulationData?.area || 1}
+          crop={formData?.crop || simulationData?.crop || ''}
+          areaHectares={formData?.area_hectares || simulationData?.area || 1}
           soilData={null}
           growthStage="basal"
         />
-        <YieldChart yieldData={yieldData} />
+
       </div>
 
       {/* Risk Insights */}
@@ -222,11 +220,20 @@ const Dashboard = ({ simulationData, formData }) => {
 
       {/* JAM Trinity Farmer Verification Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <JAMTrinityVerification
-          onVerificationComplete={(profile) => {
-            console.log('Farmer profile verified:', profile);
-          }}
-        />
+        <div className="relative">
+          {/* Preview Feature Banner */}
+          <div className="absolute top-3 right-3 z-10 bg-amber-100 text-amber-800 text-xs font-semibold px-3 py-1 rounded-full border border-amber-300 flex items-center">
+            <span className="mr-1">🔬</span> Preview Feature
+          </div>
+          <JAMTrinityVerification
+            onVerificationComplete={(profile) => {
+              console.log('Farmer profile verified:', profile);
+            }}
+          />
+          <p className="text-xs text-gray-400 mt-2 text-center">
+            ⚠️ Demo only — no real government data is accessed
+          </p>
+        </div>
 
         {/* Verification Benefits Info */}
         <div className="card-farm card-glow p-6 animate-fade-in">

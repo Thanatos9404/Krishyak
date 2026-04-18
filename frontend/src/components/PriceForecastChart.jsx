@@ -1,18 +1,79 @@
 import React from 'react';
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from 'recharts';
-import { TrendingUp } from 'lucide-react';
+import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
+
+/**
+ * Analyze the actual forecast curve shape to derive an honest trend label.
+ * Compares first-third average vs last-third average.
+ */
+function analyzeForecastShape(prices) {
+  if (!prices || prices.length < 6) return { label: 'Insufficient Data', type: 'stable' };
+
+  const third = Math.floor(prices.length / 3);
+  const firstThirdAvg = prices.slice(0, third).reduce((a, b) => a + b, 0) / third;
+  const lastThirdAvg = prices.slice(-third).reduce((a, b) => a + b, 0) / third;
+  const peakPrice = Math.max(...prices);
+  const peakIdx = prices.indexOf(peakPrice);
+  const peakPct = (peakIdx / prices.length) * 100;
+
+  // Determine shape
+  if (peakPct < 40 && lastThirdAvg < firstThirdAvg * 0.95) {
+    return { label: 'Early Peak, Later Decline', type: 'peak_early' };
+  }
+  if (peakPct > 60 && lastThirdAvg > firstThirdAvg * 1.05) {
+    return { label: 'Late Season Rise', type: 'upward' };
+  }
+  if (lastThirdAvg > firstThirdAvg * 1.05) {
+    return { label: 'Upward Trend', type: 'upward' };
+  }
+  if (lastThirdAvg < firstThirdAvg * 0.95) {
+    return { label: 'Downward Trend', type: 'downward' };
+  }
+  return { label: 'Relatively Stable', type: 'stable' };
+}
 
 const PriceForecastChart = ({ forecastData }) => {
   if (!forecastData || !forecastData.forecast_prices) {
     return null;
   }
 
-  const data = forecastData.forecast_prices.map((price, idx) => ({
-    day: idx,
-    price: price,
-  }));
+  // Generate real calendar dates from today
+  const startDate = new Date();
+  const data = forecastData.forecast_prices.map((price, idx) => {
+    const date = new Date(startDate);
+    date.setDate(date.getDate() + idx);
+    return {
+      day: idx,
+      date: date.toLocaleDateString('en-IN', { month: 'short', day: 'numeric' }),
+      price: price,
+    };
+  });
 
   const optimalWindow = forecastData.optimal_selling_window;
+
+  // Derive honest trend from actual curve shape
+  const trendAnalysis = analyzeForecastShape(forecastData.forecast_prices);
+
+  // Build honest selling window text with real dates
+  const peakDate = new Date(startDate);
+  peakDate.setDate(peakDate.getDate() + (optimalWindow.recommended_day || 0));
+  const windowStartDate = new Date(startDate);
+  windowStartDate.setDate(windowStartDate.getDate() + (optimalWindow.window_start_day || 0));
+  const windowEndDate = new Date(startDate);
+  windowEndDate.setDate(windowEndDate.getDate() + (optimalWindow.window_end_day || 0));
+  const dateFormatter = { month: 'short', day: 'numeric' };
+
+  const sellingAdvice = `Best to sell around ${peakDate.toLocaleDateString('en-IN', dateFormatter)} (${windowStartDate.toLocaleDateString('en-IN', dateFormatter)} – ${windowEndDate.toLocaleDateString('en-IN', dateFormatter)} are favorable)`;
+
+  // Badge colors based on actual trend
+  const trendBadge = {
+    upward: { bg: 'bg-green-100 text-green-700', Icon: TrendingUp },
+    peak_early: { bg: 'bg-amber-100 text-amber-700', Icon: TrendingDown },
+    downward: { bg: 'bg-red-100 text-red-700', Icon: TrendingDown },
+    stable: { bg: 'bg-gray-100 text-gray-700', Icon: Minus },
+  }[trendAnalysis.type] || { bg: 'bg-gray-100 text-gray-700', Icon: Minus };
+
+  const BadgeIcon = trendBadge.Icon;
 
   return (
     <div className="card-farm card-glow p-6 animate-fade-in">
@@ -21,11 +82,9 @@ const PriceForecastChart = ({ forecastData }) => {
           <TrendingUp className="w-6 h-6 text-sky-blue-600 mr-2" />
           <h3 className="text-xl font-bold text-gray-800">Price Forecast</h3>
         </div>
-        <span className={`text-sm font-semibold px-4 py-2 rounded-full ${forecastData.trend === 'Upward' ? 'bg-green-100 text-green-700' :
-            forecastData.trend === 'Downward' ? 'bg-red-100 text-red-700' :
-              'bg-gray-100 text-gray-700'
-          }`}>
-          {forecastData.trend} Trend
+        <span className={`text-sm font-semibold px-4 py-2 rounded-full flex items-center gap-1.5 ${trendBadge.bg}`}>
+          <BadgeIcon className="w-4 h-4" />
+          {trendAnalysis.label}
         </span>
       </div>
 
@@ -39,11 +98,13 @@ const PriceForecastChart = ({ forecastData }) => {
           </defs>
           <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
           <XAxis
-            dataKey="day"
-            label={{ value: 'Days', position: 'insideBottom', offset: -5 }}
+            dataKey="date"
+            interval={Math.floor(data.length / 6)}
+            tick={{ fontSize: 11 }}
           />
           <YAxis
-            label={{ value: 'Price (₹/quintal)', angle: -90, position: 'insideLeft' }}
+            label={{ value: '₹/quintal', angle: -90, position: 'insideLeft', style: { fontSize: 11 } }}
+            tick={{ fontSize: 11 }}
           />
           <Tooltip
             contentStyle={{
@@ -52,7 +113,8 @@ const PriceForecastChart = ({ forecastData }) => {
               borderRadius: '12px',
               padding: '12px'
             }}
-            formatter={(value) => [`₹${value.toFixed(2)}`, 'Price']}
+            formatter={(value) => [`₹${value.toFixed(0)}/quintal`, 'Price']}
+            labelFormatter={(label) => `📅 ${label}`}
           />
           <Area
             type="monotone"
@@ -77,6 +139,7 @@ const PriceForecastChart = ({ forecastData }) => {
           <p className="text-2xl font-bold text-green-700">
             ₹{optimalWindow.expected_peak_price}
           </p>
+          <p className="text-xs text-gray-500">{peakDate.toLocaleDateString('en-IN', dateFormatter)}</p>
         </div>
       </div>
 
@@ -85,9 +148,14 @@ const PriceForecastChart = ({ forecastData }) => {
           Optimal Selling Window
         </p>
         <p className="text-xs text-yellow-700">
-          {optimalWindow.recommendation}
+          {sellingAdvice}
         </p>
       </div>
+
+      {/* Honest disclaimer */}
+      <p className="text-xs text-gray-400 mt-3 text-center">
+        Forecast based on mandi trend simulation · Actual prices may vary
+      </p>
     </div>
   );
 };

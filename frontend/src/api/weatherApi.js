@@ -104,9 +104,9 @@ const regionSoilMapping = {
   'Jammu': { soil: 'Alluvial', rainfall: 1100, zone: 'Jammu Region' }
 };
 
-// Get location from browser
+// Get location from browser with timeout protection
 export const getCurrentLocation = () => {
-  return new Promise((resolve, reject) => {
+  const locationPromise = new Promise((resolve, reject) => {
     if (!navigator.geolocation) {
       reject(new Error('Geolocation not supported'));
       return;
@@ -125,6 +125,13 @@ export const getCurrentLocation = () => {
       { enableHighAccuracy: true, timeout: 10000 }
     );
   });
+
+  // Race against a timeout to prevent infinite hang if user ignores permission dialog
+  const timeoutPromise = new Promise((_, reject) => {
+    setTimeout(() => reject(new Error('Location detection timed out. Please enter your location manually.')), 12000);
+  });
+
+  return Promise.race([locationPromise, timeoutPromise]);
 };
 
 // Reverse geocode to get city/district name
