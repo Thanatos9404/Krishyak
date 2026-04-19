@@ -9,8 +9,7 @@
       "benefitAmount": 6000,
       "benefitFrequency": "yearly",
       "eligibility": {
-        "minArea": 0,
-        "maxArea": 100,
+        "requiresLand": true,
         "allCrops": true,
         "allSoils": true
       },
@@ -114,7 +113,7 @@
       "benefitAmount": 50000,
       "benefitPeriod": "3 years",
       "eligibility": {
-        "minClusterSize": 50,
+        "requiresCluster": true,
         "minAreaPerFarmer": 1,
         "organicOnly": true
       },

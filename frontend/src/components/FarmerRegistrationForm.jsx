@@ -98,7 +98,7 @@ const SelectField = memo(({ label, field, options, required = false, placeholder
   </div>
 ));
 
-const FarmerRegistrationForm = ({ onComplete }) => {
+const FarmerRegistrationForm = ({ onComplete, onSkip }) => {
   const { t } = useTranslation();
   const { login, saveDraft, loadDraft, clearDraft } = useFarmerSession();
   const { errors, validateStep, clearFieldError } = useFormValidation();
@@ -594,7 +594,7 @@ const FarmerRegistrationForm = ({ onComplete }) => {
               {t('app.name') || 'Krishyak'}
             </h1>
             <p className="text-sm text-gray-600">
-              {t('app.tagline') || 'AI-Powered Farming Insights'}
+              {t('app.tagline') || 'Data-Driven Farming Insights'}
             </p>
           </div>
         </div>
@@ -605,7 +605,7 @@ const FarmerRegistrationForm = ({ onComplete }) => {
             {t('registration.title') || 'Farmer Registration'}
           </h2>
           <p className="text-gray-600 mt-1 text-sm sm:text-base">
-            {t('registration.subtitle') || 'Join Krishyak to access government schemes and AI-powered farming insights'}
+            {t('registration.subtitle') || 'Join Krishyak to access government schemes and data-driven farming insights'}
           </p>
         </div>
 
@@ -621,18 +621,24 @@ const FarmerRegistrationForm = ({ onComplete }) => {
 
           {/* Navigation Buttons */}
           <div className="flex justify-between mt-8 pt-6 border-t border-gray-200">
-            <button
-              type="button"
-              onClick={handlePrevious}
-              disabled={currentStep === 1}
-              className={`flex items-center px-6 py-3 rounded-xl font-semibold transition-all min-h-[48px] ${currentStep === 1
-                ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
-                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-            >
-              <ChevronLeft className="w-5 h-5 mr-1" />
-              {t('registration.previous') || 'Previous'}
-            </button>
+            {currentStep === 1 ? (
+              <button
+                type="button"
+                onClick={onSkip}
+                className="flex items-center px-6 py-3 rounded-xl font-semibold transition-all min-h-[48px] text-farm-green-700 bg-farm-green-50 hover:bg-farm-green-100 border border-farm-green-200"
+              >
+                Skip for now
+              </button>
+            ) : (
+              <button
+                type="button"
+                onClick={handlePrevious}
+                className="flex items-center px-6 py-3 rounded-xl font-semibold transition-all min-h-[48px] bg-gray-100 text-gray-700 hover:bg-gray-200"
+              >
+                <ChevronLeft className="w-5 h-5 mr-1" />
+                {t('registration.previous') || 'Previous'}
+              </button>
+            )}
 
             {currentStep < 4 ? (
               <button

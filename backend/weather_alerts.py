@@ -134,9 +134,7 @@ class WeatherAlertService:
     """
     
     def __init__(self):
-        self.openweather_key = os.getenv("OPENWEATHER_API_KEY", "")
-        self.imd_api_url = os.getenv("IMD_API_URL", "")  # India Meteorological Dept
-        self.base_url = "https://api.openweathermap.org/data/2.5"
+        self.base_url = "https://api.open-meteo.com/v1/forecast"
         self.timeout = 10.0
         self._cache: Dict[str, Dict] = {}  # Simple in-memory cache
     
@@ -145,35 +143,33 @@ class WeatherAlertService:
         lat: float, 
         lon: float
     ) -> Optional[Dict[str, Any]]:
-        """Fetch current weather from OpenWeather API"""
-        if not self.openweather_key:
-            logger.warning("OpenWeather API key not configured")
-            return self._get_mock_weather(lat, lon)
-        
+        """Fetch current weather from Open-Meteo API"""
         try:
             async with httpx.AsyncClient(timeout=self.timeout) as client:
                 response = await client.get(
-                    f"{self.base_url}/weather",
+                    self.base_url,
                     params={
-                        "lat": lat,
-                        "lon": lon,
-                        "appid": self.openweather_key,
-                        "units": "metric"
+                        "latitude": lat,
+                        "longitude": lon,
+                        "current": "temperature_2m,relative_humidity_2m,apparent_temperature,wind_speed_10m,weather_code",
+                        "timezone": "auto"
                     }
                 )
                 
                 if response.status_code == 200:
                     data = response.json()
+                    curr = data.get("current", {})
                     return {
-                        "temperature": data["main"]["temp"],
-                        "feels_like": data["main"]["feels_like"],
-                        "humidity": data["main"]["humidity"],
-                        "wind_speed": data["wind"]["speed"] * 3.6,  # m/s to km/h
-                        "condition": data["weather"][0]["main"],
-                        "description": data["weather"][0]["description"],
-                        "icon": data["weather"][0]["icon"],
-                        "location": data.get("name", "Unknown"),
-                        "timestamp": datetime.now().isoformat()
+                        "temperature": curr.get("temperature_2m", 25),
+                        "feels_like": curr.get("apparent_temperature", 25),
+                        "humidity": curr.get("relative_humidity_2m", 50),
+                        "wind_speed": curr.get("wind_speed_10m", 10),
+                        "condition": "Clear" if curr.get("weather_code", 0) <= 3 else "Cloudy",
+                        "description": "Open-Meteo Advisory",
+                        "icon": "02d",
+                        "location": "Local",
+                        "timestamp": datetime.now().isoformat(),
+                        "source": "Open-Meteo (Estimate)"
                     }
                     
         except Exception as e:
@@ -187,39 +183,40 @@ class WeatherAlertService:
         lon: float, 
         hours: int = 48
     ) -> List[WeatherForecast]:
-        """Get hourly/daily weather forecast"""
-        if not self.openweather_key:
-            return self._get_mock_forecast(lat, lon, hours)
-        
+        """Get hourly weather forecast from Open-Meteo"""
         try:
             async with httpx.AsyncClient(timeout=self.timeout) as client:
                 response = await client.get(
-                    f"{self.base_url}/forecast",
+                    self.base_url,
                     params={
-                        "lat": lat,
-                        "lon": lon,
-                        "appid": self.openweather_key,
-                        "units": "metric"
+                        "latitude": lat,
+                        "longitude": lon,
+                        "hourly": "temperature_2m,relative_humidity_2m,apparent_temperature,precipitation_probability,precipitation,wind_speed_10m,wind_direction_10m,cloud_cover,weather_code",
+                        "timezone": "auto"
                     }
                 )
                 
                 if response.status_code == 200:
                     data = response.json()
+                    hourly = data.get("hourly", {})
                     forecasts = []
                     
-                    for item in data["list"][:hours // 3]:  # 3-hour intervals
+                    limit = min(hours, len(hourly.get("time", [])))
+                    
+                    for i in range(limit):
+                        if i % 3 != 0: continue # emulate 3-hour intervals
                         forecasts.append(WeatherForecast(
-                            timestamp=datetime.fromisoformat(item["dt_txt"].replace(" ", "T")),
-                            temperature=item["main"]["temp"],
-                            feels_like=item["main"]["feels_like"],
-                            humidity=item["main"]["humidity"],
-                            wind_speed=item["wind"]["speed"] * 3.6,
-                            wind_direction=self._get_wind_direction(item["wind"].get("deg", 0)),
-                            precipitation=item.get("rain", {}).get("3h", 0),
-                            precipitation_probability=item.get("pop", 0) * 100,
-                            cloud_cover=item["clouds"]["all"],
-                            condition=item["weather"][0]["main"],
-                            icon=item["weather"][0]["icon"]
+                            timestamp=datetime.fromisoformat(hourly["time"][i]),
+                            temperature=hourly["temperature_2m"][i],
+                            feels_like=hourly["apparent_temperature"][i],
+                            humidity=hourly["relative_humidity_2m"][i],
+                            wind_speed=hourly["wind_speed_10m"][i],
+                            wind_direction=self._get_wind_direction(hourly["wind_direction_10m"][i]),
+                            precipitation=hourly["precipitation"][i],
+                            precipitation_probability=hourly["precipitation_probability"][i],
+                            cloud_cover=hourly["cloud_cover"][i],
+                            condition="Rain" if hourly["weather_code"][i] >= 60 else "Clear",
+                            icon="02d"
                         ))
                     
                     return forecasts
@@ -395,21 +392,21 @@ class WeatherAlertService:
         return directions[idx]
     
     def _get_mock_weather(self, lat: float, lon: float) -> Dict[str, Any]:
-        """Mock weather for development/demo"""
-        import random
+        """Deterministic seasonal fallback estimate"""
         is_north = lat > 23
-        base_temp = 15 + random.random() * 10 if is_north else 25 + random.random() * 8
+        base_temp = 20.0 if is_north else 28.0
         
         return {
-            "temperature": round(base_temp, 1),
-            "feels_like": round(base_temp - 2 + random.random() * 4, 1),
-            "humidity": round(40 + random.random() * 40),
-            "wind_speed": round(5 + random.random() * 15, 1),
-            "condition": random.choice(["Clear", "Clouds", "Partly Cloudy"]),
-            "description": "partly cloudy",
+            "temperature": base_temp,
+            "feels_like": base_temp + 1.0,
+            "humidity": 65.0,
+            "wind_speed": 10.0,
+            "condition": "Cloudy",
+            "description": "Fallback estimate (Network unavailable)",
             "icon": "02d",
-            "location": "Your Location",
-            "timestamp": datetime.now().isoformat()
+            "location": "Regional Fallback",
+            "timestamp": datetime.now().isoformat(),
+            "source": "Static Default"
         }
     
     def _get_mock_forecast(
@@ -418,26 +415,26 @@ class WeatherAlertService:
         lon: float, 
         hours: int
     ) -> List[WeatherForecast]:
-        """Mock forecast for development/demo"""
-        import random
+        """Deterministic forecast fallback"""
         forecasts = []
         base_time = datetime.now().replace(minute=0, second=0, microsecond=0)
         
         for i in range(hours // 3):
             timestamp = base_time + timedelta(hours=i * 3)
-            rain_prob = random.random() * 60
+            # Simple diurnal cycle simulate
+            is_day = 6 <= timestamp.hour <= 18
             
             forecasts.append(WeatherForecast(
                 timestamp=timestamp,
-                temperature=20 + random.random() * 15,
-                feels_like=18 + random.random() * 15,
-                humidity=50 + random.random() * 30,
-                wind_speed=5 + random.random() * 20,
-                wind_direction=random.choice(["N", "NE", "E", "SE", "S", "SW", "W", "NW"]),
-                precipitation=random.random() * 5 if rain_prob > 40 else 0,
-                precipitation_probability=rain_prob,
-                cloud_cover=random.random() * 80,
-                condition=random.choice(["Clear", "Clouds", "Rain"]),
+                temperature=28.0 if is_day else 22.0,
+                feels_like=29.0 if is_day else 21.0,
+                humidity=60.0,
+                wind_speed=8.0,
+                wind_direction="E",
+                precipitation=0.0,
+                precipitation_probability=20.0,
+                cloud_cover=50.0,
+                condition="Clouds",
                 icon="02d"
             ))
         

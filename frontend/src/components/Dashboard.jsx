@@ -67,8 +67,8 @@ const Dashboard = ({ simulationData, formData }) => {
             </div>
           </div>
           <h3 className="text-xs sm:text-sm font-semibold text-gray-600 mb-1">{t('dashboard.totalCost')}</h3>
-          <p className="text-xl sm:text-3xl font-bold text-gray-900">
-            ₹{(costs.total_cost / 1000).toFixed(1)}k
+          <p className="text-lg sm:text-2xl font-bold text-gray-900 break-words">
+            ₹{Math.round(costs.total_cost).toLocaleString('en-IN')}
           </p>
           <p className="text-sm text-gray-500 mt-1">{t('dashboard.cultivationCost') || 'cultivation cost'}</p>
           <div className="mt-3 pt-3 border-t border-gray-100">
@@ -90,13 +90,13 @@ const Dashboard = ({ simulationData, formData }) => {
             </div>
           </div>
           <h3 className="text-xs sm:text-sm font-semibold text-gray-600 mb-1">{t('dashboard.netProfit')}</h3>
-          <p className={`text-xl sm:text-3xl font-bold ${profit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-            ₹{(Math.abs(profit) / 1000).toFixed(1)}k
-            <span className="text-xs sm:text-base font-normal text-gray-500 ml-1">{profit >= 0 ? t('scenarios.profit') : t('common.loss') || 'loss'}</span>
+          <p className={`text-lg sm:text-2xl font-bold break-words ${profit >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+            ₹{Math.round(Math.abs(profit)).toLocaleString('en-IN')}
+            <span className="text-xs sm:text-sm font-normal text-gray-500 ml-1">{profit >= 0 ? t('scenarios.profit') : t('common.loss') || 'loss'}</span>
           </p>
           <div className="mt-3 pt-3 border-t border-gray-100 flex justify-between items-center">
             <p className="text-xs text-gray-600">
-              {t('dashboard.estimatedRevenue')}: ₹{(revenue / 1000).toFixed(1)}k
+              {t('dashboard.estimatedRevenue')}: ₹{Math.round(revenue).toLocaleString('en-IN')}
             </p>
             <span className={`text-xs font-semibold px-2 py-1 rounded ${profit >= 0 ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600'}`}>
               {roi_percentage.toFixed(1)}% ROI
@@ -210,8 +210,8 @@ const Dashboard = ({ simulationData, formData }) => {
               <p className="text-xs text-gray-600 mb-1 capitalize">
                 {key.replace(/_/g, ' ')}
               </p>
-              <p className="text-lg font-bold text-gray-900">
-                ₹{(value / 1000).toFixed(1)}k
+              <p className="text-base font-bold text-gray-900 break-words">
+                ₹{Math.round(value).toLocaleString('en-IN')}
               </p>
             </div>
           ))}
@@ -221,17 +221,13 @@ const Dashboard = ({ simulationData, formData }) => {
       {/* JAM Trinity Farmer Verification Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="relative">
-          {/* Preview Feature Banner */}
-          <div className="absolute top-3 right-3 z-10 bg-amber-100 text-amber-800 text-xs font-semibold px-3 py-1 rounded-full border border-amber-300 flex items-center">
-            <span className="mr-1">🔬</span> Preview Feature
-          </div>
           <JAMTrinityVerification
             onVerificationComplete={(profile) => {
               console.log('Farmer profile verified:', profile);
             }}
           />
-          <p className="text-xs text-gray-400 mt-2 text-center">
-            ⚠️ Demo only — no real government data is accessed
+          <p className="text-xs text-gray-500 mt-3 text-center px-4">
+            Note: This is a simulation using placeholder profiles. Real Aadhaar verification is not active.
           </p>
         </div>
 

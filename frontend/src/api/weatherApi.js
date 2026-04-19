@@ -182,7 +182,7 @@ export const getSoilTypeForLocation = (locationName) => {
     'Punjab': { soil: 'Alluvial', rainfall: 650 },
     'Haryana': { soil: 'Alluvial', rainfall: 550 },
     'Madhya Pradesh': { soil: 'Black', rainfall: 1100 },
-    'Rajasthan': { soil: 'Desert', rainfall: 500 },
+    'Rajasthan': { soil: 'Arid / Sandy', rainfall: 500 },
     'Gujarat': { soil: 'Black', rainfall: 800 },
     'Bihar': { soil: 'Alluvial', rainfall: 1100 },
     'West Bengal': { soil: 'Alluvial', rainfall: 1600 },
@@ -210,35 +210,45 @@ export const getSoilTypeForLocation = (locationName) => {
   return null;
 };
 
-// Get weather forecast
+// Get weather forecast using Open-Meteo (Free, No API Key required)
 export const getWeatherForecast = async (lat, lon) => {
-  if (!OPENWEATHER_API_KEY) {
-    // Return mock data for demo
-    return getMockWeatherData(lat, lon);
-  }
-
   try {
     const response = await axios.get(
-      `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=${OPENWEATHER_API_KEY}&units=metric`
+      `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code&hourly=temperature_2m,relative_humidity_2m,precipitation,weather_code&timezone=auto`
     );
 
     const data = response.data;
-    const forecasts = data.list.slice(0, 8); // Next 24 hours
+    const current = data.current;
+    
+    const getWeatherDescription = (code) => {
+      if (code <= 3) return 'Partly cloudy';
+      if (code < 50) return 'Foggy';
+      if (code < 70) return 'Rainy';
+      if (code >= 80) return 'Stormy';
+      return 'Clear';
+    };
+
+    const forecasts = [];
+    for (let i = 0; i < 8; i++) {
+        forecasts.push({
+            time: data.hourly.time[i],
+            temp: data.hourly.temperature_2m[i],
+            humidity: data.hourly.relative_humidity_2m[i],
+            rain: data.hourly.precipitation[i] || 0
+        });
+    }
 
     return {
       current: {
-        temp: forecasts[0].main.temp,
-        humidity: forecasts[0].main.humidity,
-        description: forecasts[0].weather[0].description,
-        icon: forecasts[0].weather[0].icon
+        temp: current.temperature_2m,
+        humidity: current.relative_humidity_2m,
+        description: getWeatherDescription(current.weather_code),
+        icon: current.weather_code > 50 ? '09d' : '02d' 
       },
-      location: data.city.name,
-      forecast: forecasts.map(f => ({
-        time: f.dt_txt,
-        temp: f.main.temp,
-        humidity: f.main.humidity,
-        rain: f.rain?.['3h'] || 0
-      }))
+      location: 'Local Region',
+      forecast: forecasts,
+      isMock: false,
+      source: "Open-Meteo (Estimate)"
     };
   } catch (error) {
     console.error('Weather API error:', error);
@@ -262,7 +272,8 @@ const getMockWeatherData = (lat, lon) => {
     },
     location: 'Your Location',
     forecast: [],
-    isMock: true
+    isMock: true,
+    source: "Static Default (No Location)"
   };
 };
 
@@ -305,6 +316,7 @@ export const getLocationBasedData = async () => {
       location: locationName,
       coordinates: coords,
       soil_type: soilData?.soil || 'Alluvial',
+      soil_source: soilData ? 'Estimated based on location (Regional Map)' : 'Static Fallback Default',
       expected_rainfall: soilData?.rainfall || estimateSeasonalRainfall(null),
       rainfall_delay: monsoonDelay,
       weather: weather,

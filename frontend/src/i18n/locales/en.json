@@ -2,7 +2,7 @@
   "app": {
     "name": "Krishyak",
     "tagline": "AI Farm Decision Simulator",
-    "subtitle": "Smart Farming • Data-Driven • AI-Powered"
+    "subtitle": "Smart Farming • Data-Driven • Scenario Simulator"
   },
   "nav": {
     "dashboard": "Dashboard",
@@ -90,7 +90,7 @@
     "title": "Scenario Comparison",
     "description": "Compare your current plan with AI-optimized strategy and worst-case scenario",
     "currentPlan": "Your Current Plan",
-    "aiOptimal": "AI Optimal Plan",
+    "aiOptimal": "Optimized Plan (Estimate)",
     "worstCase": "Worst Case",
     "profit": "Profit",
     "risk": "Risk",
@@ -102,7 +102,7 @@
     "riskScore": "Risk Score",
     "totalCost": "Total Cost",
     "keyInsights": "Key Insights",
-    "profitImprovement": "Profit Improvement",
+    "profitImprovement": "Projected Impact",
     "yieldBoost": "Yield Boost",
     "riskReduction": "Risk Reduction",
     "quintalsMore": "quintals more production",
@@ -110,24 +110,10 @@
   },
   "recommendations": {
     "title": "AI Recommendations",
-    "profitImprovement": "Potential Profit Improvement",
+    "profitImprovement": "Potential Impact",
     "riskReduction": "Risk Reduction",
     "keyInsights": "Key Insights",
     "optimalParameters": "Optimal Parameters"
-  },
-  "cropHealth": {
-    "title": "Crop Health Check",
-    "uploadImage": "Upload Image",
-    "dragDrop": "Drag and drop or click to upload",
-    "analyzing": "Analyzing image...",
-    "selectCrop": "Select crop type (optional)",
-    "detection": "Disease Detection",
-    "confidence": "Confidence",
-    "severity": "Severity",
-    "treatment": "Treatment",
-    "chemical": "Chemical Treatment",
-    "organic": "Organic Alternative",
-    "prevention": "Prevention"
   },
   "voice": {
     "title": "Voice Input",
@@ -286,8 +272,45 @@
     "disconnected": "Disconnected",
     "offline": "Offline"
   },
+  "cropHealth": {
+    "title": "Crop Health Check",
+    "subtitle": "Upload a plant image for visual disease detection",
+    "selectCrop": "Select Crop Type",
+    "selectCropPlaceholder": "-- Select Crop Type --",
+    "selectCropWarning": "⚠️ Please select a crop before uploading image",
+    "detectableDiseases": "Detectable diseases",
+    "dropImage": "Drop image here",
+    "dragDrop": "Drag & drop plant image",
+    "clickBrowse": "or click to browse",
+    "supportsText": "Supports: JPG, PNG, WebP (max 10MB)",
+    "takePhoto": "Take Photo",
+    "analyze": "Analyze",
+    "analyzing": "Analyzing...",
+    "trySampleDemo": "Try Sample Image (Demo)",
+    "simulatedFallbackMode": "Simulated Fallback Mode Active",
+    "simulatedFallbackDesc": "This is a localized demo diagnosis because the live backend is unreachable or Sample Mode was clicked. This is not a real analysis of your image.",
+    "plantHealthy": "Plant is Healthy!",
+    "noDiseaseDetected": "No significant disease detected in frame.",
+    "diseaseDetected": "Disease Detected",
+    "limitedModelSupport": "Limited Model Support for",
+    "severity": "SEVERITY",
+    "recommendations": "Recommendations",
+    "symptoms": "Symptoms",
+    "treatmentPrevention": "Treatment & Prevention",
+    "chemicalTreatment": "Chemical Treatment",
+    "organicOptions": "Organic Options",
+    "prevention": "Prevention",
+    "analyzeAnother": "Analyze Another Image",
+    "agronomicDisclaimer": "Agronomic Disclaimer: This tool utilizes computer vision heuristics to estimate crop health. It is not a substitute for laboratory testing or professional agricultural extension officers. Field verification is strictly required before initiating chemical treatments.",
+    "noAnalysisYet": "No Analysis Yet",
+    "uploadPrompt": "Upload a plant image to check for diseases",
+    "modelLimitationsTitle": "Model Limitations",
+    "modelLimitationsDesc": "Our model is primarily trained on 42 common crop diseases. While accurate for major blights and rusts, rare diseases or unsupported crops will yield low-confidence estimates.",
+    "supportedCrops": "Supported: Rice, Wheat, Cotton, Tomato, Potato, Grapes, Citrus.",
+    "limitedCrops": "Limited: Maize, Sugarcane (Heuristic fallback applies)."
+  },
   "footer": {
-    "tagline": "Empowering Indian farmers with AI-driven decision support",
+    "tagline": "Empowering Indian farmers with data-driven decision support",
     "builtWith": "Built with React, FastAPI, and advanced ML models"
   },
   "accessibility": {
@@ -385,7 +408,7 @@
   },
   "registration": {
     "title": "Farmer Registration",
-    "subtitle": "Join Krishyak to access government schemes and AI-powered farming insights",
+    "subtitle": "Join Krishyak to access government schemes and data-driven farming insights",
     "step1Title": "Personal Information",
     "step2Title": "Location Details",
     "step3Title": "Land Details",

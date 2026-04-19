@@ -97,8 +97,8 @@ const WhatToChangeCard = ({ currentParams, optimalParams, currentPlan, optimalPl
           <Lightbulb className="w-6 h-6 text-blue-600" />
         </div>
         <div>
-          <h3 className="text-lg font-bold text-gray-800">What to Change</h3>
-          <p className="text-sm text-gray-500">Actionable steps to reach the AI Optimal Plan</p>
+          <h3 className="text-lg font-bold text-gray-800">Parameters to Adjust</h3>
+          <p className="text-sm text-gray-500">Suggested steps to reach the Optimized Plan</p>
         </div>
       </div>
 
@@ -131,9 +131,9 @@ const WhatToChangeCard = ({ currentParams, optimalParams, currentPlan, optimalPl
         </div>
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <p className="text-xs text-gray-500">Profit Increase</p>
+            <p className="text-xs text-gray-500">{profitDelta >= 0 && currentPlan?.profit < 0 ? 'Loss Reduction' : 'Profit Impact'}</p>
             <p className={`text-lg font-bold ${profitDelta >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-              {profitDelta >= 0 ? '+' : ''}₹{(profitDelta / 1000).toFixed(1)}k
+              {profitDelta >= 0 ? '+' : ''}₹{Math.round(Math.abs(profitDelta)).toLocaleString('en-IN')}
             </p>
           </div>
           <div>
@@ -193,7 +193,7 @@ const ScenarioComparison = ({ comparisonData }) => {
             <div className="flex items-center">
               <p className={`text-xl font-bold ${data.profit >= 0 ? 'text-green-600' : 'text-red-600'
                 }`}>
-                ₹{(Math.abs(data.profit) / 1000).toFixed(1)}k
+                ₹{Math.round(Math.abs(data.profit)).toLocaleString('en-IN')}
               </p>
               {data.profit >= 0 ? (
                 <ArrowUpRight className="w-5 h-5 text-green-600 ml-2" />
@@ -227,7 +227,7 @@ const ScenarioComparison = ({ comparisonData }) => {
           <div className="bg-gray-50 rounded-lg p-3">
             <p className="text-xs text-gray-600 mb-1">{t('scenarios.totalCost') || 'Total Cost'}</p>
             <p className="text-lg font-bold text-gray-900">
-              ₹{(data.costs.total_cost / 1000).toFixed(1)}k
+              ₹{Math.round(data.costs.total_cost).toLocaleString('en-IN')}
             </p>
           </div>
         </div>
@@ -241,11 +241,23 @@ const ScenarioComparison = ({ comparisonData }) => {
       <div className="card-farm card-glow p-4 sm:p-6">
         <div className="flex items-center mb-3 sm:mb-4">
           <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6 text-farm-green-600 mr-2" />
-          <h2 className="text-xl sm:text-2xl font-bold text-gray-800">{t('scenarios.title') || 'Scenario Comparison'}</h2>
+          <h2 className="text-xl sm:text-2xl font-bold text-gray-800">{t('scenarios.title') || 'Scenario Comparison (Estimate)'}</h2>
         </div>
         <p className="text-sm sm:text-base text-gray-600">
-          {t('scenarios.description') || 'Compare your current plan with AI-optimized strategy and worst-case scenario'}
+          {t('scenarios.description') || 'Compare your current inputs with a heuristically optimized strategy and a simulated worst-case'}
         </p>
+
+        {/* Transparency Note for Farmers */}
+        <div className="bg-blue-50/50 rounded-xl p-4 mt-4 border border-blue-100/50">
+          <h4 className="text-xs font-bold text-blue-800 uppercase tracking-wide mb-2 flex items-center">
+            <Lightbulb className="w-3 h-3 mr-1" /> Parameter Assumptions
+          </h4>
+          <ul className="text-xs text-gray-600 space-y-1.5 leading-relaxed">
+            <li><strong>Current:</strong> Uses your exact specified inputs relying on typical weather conditions.</li>
+            <li><strong>Optimized:</strong> Fixes poor NPK ratios, isolates peak selling windows, and assumes intense preventative pest control.</li>
+            <li><strong>Worst Case:</strong> Assumes your input costs remain high, but yield crashes due to a simulated drought shock (50% less rain), 95% pest breach, and a distressing 20% drop in commodity prices.</li>
+          </ul>
+        </div>
       </div>
 
       {/* Scenario Cards */}
@@ -259,7 +271,7 @@ const ScenarioComparison = ({ comparisonData }) => {
           delay={0}
         />
         <ScenarioCard
-          title={t('scenarios.aiOptimal') || 'AI Optimal Plan'}
+          title={t('scenarios.aiOptimal') || 'Optimized Plan'}
           data={ai_optimal_plan}
           icon={CheckCircle}
           color="bg-farm-green-600"
@@ -289,12 +301,21 @@ const ScenarioComparison = ({ comparisonData }) => {
         <h3 className="text-xl font-bold text-gray-800 mb-4">{t('scenarios.keyInsights') || 'Key Insights'}</h3>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
           <div className="bg-green-50 rounded-xl p-3 sm:p-4 border-l-4 border-green-500">
-            <p className="text-xs sm:text-sm text-gray-600 mb-1 sm:mb-2">{t('scenarios.profitImprovement') || 'Profit Improvement'}</p>
+            <p className="text-xs sm:text-sm text-gray-600 mb-1 sm:mb-2 text-balance">
+              {current_plan.profit < 0 && ai_optimal_plan.profit < 0 
+                ? 'Projected Loss Mitigated' 
+                : current_plan.profit < 0 && ai_optimal_plan.profit >= 0 
+                ? 'Loss Turned to Profit' 
+                : 'Profit Improvement'}
+            </p>
             <p className="text-xl sm:text-2xl font-bold text-green-700">
-              +₹{((ai_optimal_plan.profit - current_plan.profit) / 1000).toFixed(1)}k
+              +₹{Math.round(ai_optimal_plan.profit - current_plan.profit).toLocaleString('en-IN')}
             </p>
             <p className="text-xs text-gray-600 mt-1">
-              {(((ai_optimal_plan.profit - current_plan.profit) / Math.max(Math.abs(current_plan.profit), 1)) * 100).toFixed(1)}% {t('common.increase') || 'increase'}
+              {current_plan.profit < 0 && ai_optimal_plan.profit < 0
+                 ? "Reduced losses"
+                 : `${(((ai_optimal_plan.profit - current_plan.profit) / Math.max(Math.abs(current_plan.profit), 1)) * 100).toFixed(1)}% ${t('common.increase') || 'increase'}`
+              }
             </p>
           </div>
 
@@ -313,6 +334,42 @@ const ScenarioComparison = ({ comparisonData }) => {
             </p>
             <p className="text-xs text-gray-600 mt-1">{t('scenarios.pointsLower') || 'points lower risk'}</p>
           </div>
+        </div>
+        
+        {/* Added assumptions & data sources note */}
+        <div className="mt-4 pt-4 border-t border-gray-100 flex flex-col gap-2">
+          {current_plan.price_forecast?.source_metadata && (
+            <div className="text-[10px] text-gray-500 font-mono uppercase bg-gray-100 p-2 rounded block">
+              <span className="font-bold">PRICE SOURCING:</span> {current_plan.price_forecast.source_metadata.source_label}
+              
+              <span className={`ml-2 px-1.5 py-0.5 rounded text-[9px] font-bold ${
+                current_plan.price_forecast.source_metadata.freshness_status === 'live' ? 'bg-green-200 text-green-800' : 
+                current_plan.price_forecast.source_metadata.freshness_status === 'stale' ? 'bg-yellow-200 text-yellow-800' : 
+                'bg-gray-300 text-gray-800'
+              }`}>
+                {current_plan.price_forecast.source_metadata.freshness_status}
+              </span>
+              
+              {current_plan.price_forecast.source_metadata.record_date && (
+                <span className="ml-2 text-gray-400 font-normal">
+                  (Rev: {current_plan.price_forecast.source_metadata.record_date})
+                </span>
+              )}
+              
+              {/* Redesigned Honesty Badge */}
+              <div className="mt-2 pt-2 border-t border-gray-200">
+                <p className="text-xs text-gray-500 font-sans normal-case">
+                  {current_plan.price_forecast.source_metadata.freshness_status === 'stale'
+                     ? "Prices based on historical mandi records. Live market feed not configured for this deployment."
+                     : current_plan.price_forecast.source_metadata.transparency_note || "Market estimates derived from live agricultural datasets."
+                  }
+                </p>
+              </div>
+            </div>
+          )}
+          <p className="text-xs text-gray-400 italic">
+            * Note: These are simulated heuristics and not guarantees. The "Worst Case" assumes multi-factor degradation (weather + pests + low prices). Real world conditions may vary significantly.
+          </p>
         </div>
       </div>
     </div>

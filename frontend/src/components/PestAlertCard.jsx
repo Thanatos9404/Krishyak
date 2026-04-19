@@ -148,13 +148,8 @@ const PestAlertCard = ({ crop, location, state, district, weather }) => {
 
   // Fix C: Filter alerts to only show pests relevant to the selected crop
   const alerts = useMemo(() => {
-    const filtered = filterAlertsByCrop(rawAlerts, crop);
-    // If backend returned nothing useful & we have an error, generate crop-specific fallback
-    if (filtered.length === 0 && error && crop) {
-      return generateFallbackAlerts(crop, state);
-    }
-    return filtered;
-  }, [rawAlerts, crop, error, state]);
+    return filterAlertsByCrop(rawAlerts, crop);
+  }, [rawAlerts, crop]);
 
   const activeAlertCount = alerts.length;
 
@@ -257,10 +252,10 @@ const PestAlertCard = ({ crop, location, state, district, weather }) => {
             )}
             {alerts.length === 0 ? (
               <div className="text-center py-6 text-gray-500">
-                <Shield className="w-8 h-8 mx-auto mb-2 text-green-500" />
-                <p className="text-sm">No active pest alerts</p>
-                <p className="text-xs text-gray-400 mt-1">
-                  {crop ? `No known threats for ${crop} right now` : 'Select a crop to see alerts'}
+                <Shield className="w-8 h-8 mx-auto mb-2 text-green-500 opacity-80" />
+                <p className="text-sm font-medium">Safe Zone</p>
+                <p className="text-xs text-gray-400 mt-1 px-4 leading-relaxed">
+                  {crop ? `No high-priority pest alerts matched your selected crop (${crop}) right now.` : 'Select a crop to monitor for threats.'}
                 </p>
               </div>
             ) : (

@@ -1,19 +1,25 @@
 import React, { useMemo, useState } from 'react';
-import { ExternalLink, CheckCircle, AlertCircle, IndianRupee, FileText, ChevronDown, ChevronUp, Calendar, Info } from 'lucide-react';
+import { ExternalLink, CheckCircle, AlertCircle, IndianRupee, FileText, ChevronDown, ChevronUp, Calendar, Info, ShieldAlert } from 'lucide-react';
 import schemesData from '../data/governmentSchemes.json';
 import { useTranslation } from '../i18n';
 
-// Individual scheme card with expandable details
+const MATCH_CATEGORIES = {
+  LIKELY_ELIGIBLE: { id: 'likely', labelKey: 'schemes.likelyEligible', defaultLabel: 'Likely Eligible', color: 'bg-green-100 text-green-800 border-green-500', icon: CheckCircle },
+  NEEDS_VERIFICATION: { id: 'verification', labelKey: 'schemes.needsVerification', defaultLabel: 'Needs Verification', color: 'bg-blue-100 text-blue-800 border-blue-500', icon: Info },
+  MORE_INFO_REQUIRED: { id: 'more_info', labelKey: 'schemes.moreInfo', defaultLabel: 'More Info Required', color: 'bg-yellow-100 text-yellow-800 border-yellow-500', icon: ShieldAlert },
+  INELIGIBLE: { id: 'ineligible', labelKey: 'schemes.notMatched', defaultLabel: 'Not Matched', color: 'bg-gray-100 text-gray-500 border-gray-300', icon: AlertCircle }
+};
+
 const SchemeCard = ({ scheme, index }) => {
   const { t } = useTranslation();
   const [expanded, setExpanded] = useState(false);
+  const CategoryIcon = scheme.categoryDef.icon;
 
   return (
     <div
-      className={`card-farm p-5 transition-all duration-300 animate-fade-in ${scheme.isEligible
-        ? 'border-l-4 border-farm-green-500 hover:shadow-xl'
-        : 'border-l-4 border-gray-300 opacity-70'
-        }`}
+      className={`card-farm p-5 transition-all duration-300 animate-fade-in border-l-4 ${scheme.categoryDef.border} ${
+        scheme.matchCategory === 'ineligible' ? 'opacity-60' : 'hover:shadow-xl'
+      }`}
       style={{ animationDelay: `${index * 0.1}s` }}
     >
       {/* Header */}
@@ -25,22 +31,11 @@ const SchemeCard = ({ scheme, index }) => {
             <p className="text-xs text-gray-500">{scheme.fullName}</p>
           </div>
         </div>
-        {scheme.isEligible ? (
-          <span className={`text-xs font-semibold px-2 py-1 rounded-full flex items-center ${
-            scheme.hasChecks ? 'bg-green-100 text-green-700' : 'bg-blue-50 text-blue-600'
-          }`}>
-            {scheme.hasChecks ? (
-              <><CheckCircle className="w-3 h-3 mr-1" />{t('schemes.eligible') || 'Likely Eligible'}</>
-            ) : (
-              <><Info className="w-3 h-3 mr-1" />{t('schemes.mayBeEligible') || 'Needs Verification'}</>
-            )}
-          </span>
-        ) : (
-          <span className="bg-gray-100 text-gray-600 text-xs font-semibold px-2 py-1 rounded-full flex items-center">
-            <AlertCircle className="w-3 h-3 mr-1" />
-            {t('schemes.checkEligibility') || 'Not Matched'}
-          </span>
-        )}
+        
+        <span className={`text-[10px] uppercase font-bold px-2 py-1 rounded-full flex items-center ${scheme.categoryDef.color}`}>
+          <CategoryIcon className="w-3 h-3 mr-1" />
+          {t(scheme.categoryDef.labelKey) || scheme.categoryDef.defaultLabel}
+        </span>
       </div>
 
       {/* Description */}
@@ -49,9 +44,9 @@ const SchemeCard = ({ scheme, index }) => {
       </p>
 
       {/* Benefit Amount */}
-      {scheme.potentialBenefit > 0 && (
-        <div className="bg-farm-green-50 rounded-lg p-3 mb-3">
-          <p className="text-xs text-farm-green-700">{t('schemes.benefits') || 'Potential Benefit'}</p>
+      {scheme.potentialBenefit > 0 && scheme.matchCategory !== 'ineligible' && (
+        <div className="bg-farm-green-50 rounded-lg p-3 mb-3 border border-farm-green-100">
+          <p className="text-xs text-farm-green-700 font-semibold">{t('schemes.benefits') || 'Potential Benefit'}</p>
           <p className="text-lg font-bold text-farm-green-800">
             ₹{scheme.potentialBenefit.toLocaleString()}
             {scheme.benefitFrequency && <span className="text-xs font-normal">/{scheme.benefitFrequency}</span>}
@@ -59,75 +54,72 @@ const SchemeCard = ({ scheme, index }) => {
         </div>
       )}
 
-      {/* Eligibility Notes */}
-      <div className="mb-3">
-        {scheme.eligibilityNotes.map((note, i) => (
-          <p key={i} className={`text-xs ${scheme.isEligible ? 'text-green-600' : 'text-orange-600'}`}>
-            {note}
-          </p>
-        ))}
+      {/* Match Insight Blocks */}
+      <div className="mb-3 space-y-2">
+        <div className="text-[10px] text-gray-500 font-mono uppercase bg-gray-100 p-2 rounded block">
+          <span className="font-bold">Basis of Match:</span> {scheme.basisOfMatch.join(' | ')}
+        </div>
+        
+        {scheme.whyMatched.length > 0 && (
+          <div className="text-xs text-gray-700 bg-gray-50 p-2 rounded">
+            <span className="font-bold text-green-700 flex items-center mb-1"><CheckCircle className="w-3 h-3 mr-1"/> Matches:</span>
+            <ul className="list-disc pl-4 opacity-90">
+              {scheme.whyMatched.map((note, i) => <li key={i}>{note}</li>)}
+            </ul>
+          </div>
+        )}
+        
+        {scheme.missingInfo.length > 0 && scheme.matchCategory !== 'ineligible' && (
+          <div className="text-xs text-gray-700 bg-orange-50 p-2 rounded">
+            <span className="font-bold text-orange-700 flex items-center mb-1"><ShieldAlert className="w-3 h-3 mr-1"/> Missing/Requires:</span>
+            <ul className="list-disc pl-4 opacity-90">
+              {scheme.missingInfo.map((note, i) => <li key={i}>{note}</li>)}
+            </ul>
+          </div>
+        )}
       </div>
 
       {/* Expandable Documents Section */}
       <button
         onClick={() => setExpanded(!expanded)}
-        className="w-full flex items-center justify-between py-2 px-3 mb-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition text-sm text-gray-700"
+        className="w-full flex items-center justify-between py-2 px-3 mb-3 bg-gray-50 hover:bg-gray-100 rounded-lg transition text-sm text-gray-700 border border-gray-200"
       >
-        <span className="flex items-center">
+        <span className="flex items-center font-semibold">
           <FileText className="w-4 h-4 mr-2 text-gray-500" />
-          {t('schemes.documents') || 'Required Documents'} ({scheme.documents?.length || 0})
+          {t('schemes.documents') || 'Official Source & Documents'}
         </span>
         {expanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
       </button>
 
       {expanded && (
         <div className="mb-3 animate-fade-in">
+          {/* Official Verification Notice */}
+          <div className="bg-blue-50 rounded-lg p-3 mb-3 border border-blue-100">
+            <p className="text-xs font-semibold text-blue-800 mb-2 flex items-center">
+              <ExternalLink className="w-3 h-3 mr-1" /> Source Truth:
+            </p>
+            <p className="text-[11px] text-blue-700 mb-2 leading-tight">
+              We estimate your eligibility based on partial data. You must visit the specific government portal to verify full rules.
+            </p>
+            <a href={scheme.applicationUrl} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-blue-600 hover:underline flex items-center bg-white px-2 py-1 rounded inline-flex border border-blue-200">
+              {scheme.applicationUrl.replace('https://', '')} <ExternalLink className="w-3 h-3 ml-1" />
+            </a>
+          </div>
+
           {/* Documents List */}
-          <div className="bg-blue-50 rounded-lg p-3 mb-3">
-            <p className="text-xs font-semibold text-blue-700 mb-2 flex items-center">
-              <FileText className="w-3 h-3 mr-1" />
-              {t('schemes.documents') || 'Required Documents'}:
+          <div className="bg-gray-50 rounded-lg p-3 mb-3">
+            <p className="text-xs font-semibold text-gray-700 mb-2 flex items-center">
+              <FileText className="w-3 h-3 mr-1" /> Required Documents:
             </p>
             <ul className="grid grid-cols-2 gap-1">
               {scheme.documents?.map((doc, i) => (
-                <li key={i} className="text-xs text-blue-600 flex items-center">
-                  <span className="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2"></span>
+                <li key={i} className="text-[11px] text-gray-600 flex items-center">
+                  <span className="w-1.5 h-1.5 bg-gray-400 rounded-full mr-2"></span>
                   {doc}
                 </li>
               ))}
             </ul>
           </div>
-
-          {/* How to Apply */}
-          <div className="bg-purple-50 rounded-lg p-3 mb-3">
-            <p className="text-xs font-semibold text-purple-700 mb-2 flex items-center">
-              <Info className="w-3 h-3 mr-1" />
-              {t('schemes.howToApply') || 'How to Apply'}:
-            </p>
-            <ol className="text-xs text-purple-600 space-y-1">
-              <li>1. Visit the official portal below</li>
-              <li>2. Register/Login with Aadhaar or mobile</li>
-              <li>3. Fill in your details and upload documents</li>
-              <li>4. Submit and track your application</li>
-            </ol>
-          </div>
-
-          {/* Deadline if available */}
-          {scheme.enrollmentDeadline && (
-            <div className="bg-orange-50 rounded-lg p-3 mb-3">
-              <p className="text-xs font-semibold text-orange-700 flex items-center">
-                <Calendar className="w-3 h-3 mr-1" />
-                {t('schemes.deadline') || 'Deadline'}: {scheme.enrollmentDeadline}
-              </p>
-            </div>
-          )}
-
-          {/* Last Updated */}
-          {scheme.lastUpdated && (
-            <p className="text-xs text-gray-500 mb-2">
-              Last updated: {scheme.lastUpdated}
-            </p>
-          )}
         </div>
       )}
 
@@ -136,12 +128,13 @@ const SchemeCard = ({ scheme, index }) => {
         href={scheme.applicationUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className={`w-full flex items-center justify-center py-2 px-4 rounded-lg text-sm font-semibold transition-all ${scheme.isEligible
-          ? 'bg-farm-green-500 text-white hover:bg-farm-green-600'
-          : 'bg-gray-200 text-gray-600 hover:bg-gray-300'
-          }`}
+        className={`w-full flex items-center justify-center py-2 px-4 rounded-lg text-sm font-bold transition-all ${
+          scheme.matchCategory === 'ineligible' 
+          ? 'bg-gray-200 text-gray-500 hover:bg-gray-300' 
+          : 'bg-gradient-to-r from-farm-green-600 to-farm-green-700 text-white shadow-md hover:shadow-lg'
+        }`}
       >
-        {t('schemes.howToApply') || 'Apply Now'}
+        {t('schemes.howToApply') || 'Go to Official Portal'}
         <ExternalLink className="w-4 h-4 ml-2" />
       </a>
     </div>
@@ -151,122 +144,166 @@ const SchemeCard = ({ scheme, index }) => {
 const GovernmentSchemes = ({ formData, simulationData }) => {
   const { t } = useTranslation();
 
-  // Calculate eligible schemes based on farmer inputs
-  const eligibleSchemes = useMemo(() => {
+  const evaluatedSchemes = useMemo(() => {
     if (!formData) return [];
+    
+    // Safety check - If user hasn't put in basic land details, they need more info broadly
+    const hasBasicData = !!(formData.area_hectares && formData.crop);
 
     return schemesData.schemes.map(scheme => {
-      let isEligible = true;
-      let eligibilityNotes = [];
+      let whyMatched = [];
+      let missingInfo = [];
+      let basisOfMatch = [];
+      let matchCategory = hasBasicData ? MATCH_CATEGORIES.LIKELY_ELIGIBLE.id : MATCH_CATEGORIES.MORE_INFO_REQUIRED.id;
       let potentialBenefit = 0;
-      let hasChecks = false; // Track if any eligibility criteria were actually evaluated
 
-      // Check area requirements
-      if (scheme.eligibility.minArea !== undefined) {
-        hasChecks = true;
-        if (formData.area_hectares < scheme.eligibility.minArea) {
-          isEligible = false;
-          eligibilityNotes.push(`Requires minimum ${scheme.eligibility.minArea} hectare`);
+      if (!hasBasicData) {
+        missingInfo.push("Please set your Crop and Farm Area in the sidebar to assess eligibility.");
+        basisOfMatch.push("No data provided");
+      } else {
+        basisOfMatch.push(`Area: ${formData.area_hectares} ha`);
+        basisOfMatch.push(`Crop: ${formData.crop}`);
+        
+        // 1. Evaluate Area Matches
+        if (scheme.eligibility.minArea !== undefined) {
+          if (formData.area_hectares < scheme.eligibility.minArea) {
+            matchCategory = MATCH_CATEGORIES.INELIGIBLE.id;
+            missingInfo.push(`Requires minimum ${scheme.eligibility.minArea} hectare (You have ${formData.area_hectares}).`);
+          } else {
+            whyMatched.push(`Land area (${formData.area_hectares} ha) meets the requirement.`);
+          }
+        }
+        
+        if (scheme.eligibility.requiresLand) {
+          if (formData.area_hectares <= 0) {
+            matchCategory = MATCH_CATEGORIES.INELIGIBLE.id;
+            missingInfo.push("Scheme officially requires processing valid agricultural land holding size.");
+          } else {
+            whyMatched.push("Valid active agricultural landholding detected.");
+          }
+        }
+        
+        // 2. Evaluate Crop Matches
+        if (scheme.eligibility.crops && !scheme.eligibility.allCrops) {
+          if (!scheme.eligibility.crops.includes(formData.crop)) {
+            matchCategory = MATCH_CATEGORIES.INELIGIBLE.id;
+            missingInfo.push(`Scheme does not support ${formData.crop}.`);
+          } else {
+            whyMatched.push(`Crop (${formData.crop}) is explicitly supported.`);
+          }
+        } else if (scheme.eligibility.allCrops) {
+           whyMatched.push("Supports all crop types.");
+        }
+
+        // 3. Evaluate Soft Variables (Flags that trigger "Needs Verification")
+        if (matchCategory !== MATCH_CATEGORIES.INELIGIBLE.id) {
+          if (scheme.eligibility.requiresCluster) {
+            matchCategory = MATCH_CATEGORIES.NEEDS_VERIFICATION.id;
+            missingInfo.push("Verification required: Generally requires participating in a local farmer cluster (exact cluster size varies by state).");
+          }
+          if (scheme.eligibility.irrigationType) {
+            matchCategory = MATCH_CATEGORIES.NEEDS_VERIFICATION.id;
+            missingInfo.push(`Requires verified installation of [${scheme.eligibility.irrigationType.join(', ')}] systems.`);
+          }
+          if (scheme.eligibility.loanee !== undefined) {
+            matchCategory = MATCH_CATEGORIES.NEEDS_VERIFICATION.id;
+            missingInfo.push("Requires official verification of Loanee/Non-Loanee bank status.");
+          }
+        }
+
+        // 4. Benefit calculations string
+        if (matchCategory !== MATCH_CATEGORIES.INELIGIBLE.id && scheme.benefitAmount > 0) {
+          if (scheme.id === 'organic-farming') {
+            potentialBenefit = scheme.benefitAmount * formData.area_hectares;
+          } else {
+            potentialBenefit = scheme.benefitAmount;
+          }
         }
       }
 
-      // Check crop requirements
-      if (scheme.eligibility.crops && !scheme.eligibility.allCrops) {
-        hasChecks = true;
-        if (!scheme.eligibility.crops.includes(formData.crop)) {
-          isEligible = false;
-          eligibilityNotes.push(`Not available for ${formData.crop}`);
-        }
-      }
-
-      // Calculate potential benefit
-      if (scheme.benefitAmount > 0) {
-        if (scheme.id === 'organic-farming') {
-          potentialBenefit = scheme.benefitAmount * formData.area_hectares;
-        } else {
-          potentialBenefit = scheme.benefitAmount;
-        }
-      } else if (scheme.id === 'msp' && scheme.mspRates2025 && scheme.mspRates2025[formData.crop]) {
-        // Calculate MSP benefit compared to current market price
-        const mspRate = scheme.mspRates2025[formData.crop];
-        if (mspRate > formData.current_market_price) {
-          potentialBenefit = (mspRate - formData.current_market_price) *
-            (simulationData?.yield?.total_production_quintals || formData.area_hectares * 25);
-        }
-      } else if (scheme.subsidyRate) {
-        // Estimate subsidy benefit
-        potentialBenefit = 10000 * (scheme.subsidyRate.smallFarmer || scheme.subsidyRate.general || 40) / 100;
-      }
+      const categoryDef = Object.values(MATCH_CATEGORIES).find(c => c.id === matchCategory);
 
       return {
         ...scheme,
-        isEligible,
-        hasChecks,
-        eligibilityNotes: eligibilityNotes.length > 0 ? eligibilityNotes : (hasChecks ? ['Preliminary match — verify on official portal'] : ['Verify eligibility on official portal']),
+        matchCategory,
+        categoryDef,
+        basisOfMatch,
+        whyMatched,
+        missingInfo,
         potentialBenefit
       };
     });
   }, [formData, simulationData]);
 
-  // Calculate total benefits
   const totalBenefits = useMemo(() => {
-    return eligibleSchemes
-      .filter(s => s.isEligible && s.potentialBenefit > 0)
+    return evaluatedSchemes
+      .filter(s => s.matchCategory === MATCH_CATEGORIES.LIKELY_ELIGIBLE.id || s.matchCategory === MATCH_CATEGORIES.NEEDS_VERIFICATION.id)
       .reduce((sum, s) => sum + s.potentialBenefit, 0);
-  }, [eligibleSchemes]);
+  }, [evaluatedSchemes]);
 
-  // Count eligible schemes
-  const eligibleCount = eligibleSchemes.filter(s => s.isEligible).length;
+  const categoryCounts = evaluatedSchemes.reduce((acc, s) => {
+    acc[s.matchCategory] = (acc[s.matchCategory] || 0) + 1;
+    return acc;
+  }, {});
 
   return (
     <div className="space-y-6 animate-fade-in">
       {/* Header */}
-      <div className="card-farm card-glow p-6 bg-gradient-to-r from-yellow-50 to-orange-50">
+      <div className="card-farm card-glow p-6 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100">
         <div className="flex items-center justify-between flex-wrap gap-4">
           <div>
             <h2 className="text-2xl font-bold text-gray-800 flex items-center">
-              💰 {t('schemes.title') || 'Government Benefits Available'}
+              🏫 Official Schemes & Funding
             </h2>
-            <p className="text-gray-600 mt-1">
-              {eligibleCount} likely eligible of {eligibleSchemes.length} schemes based on your profile
+            <p className="text-sm text-gray-600 mt-1 max-w-xl">
+              We have explicitly matched your profile against national databases. These are verified government programs that can fund your transition risk.
             </p>
           </div>
-          <div className="bg-gradient-to-r from-green-500 to-green-600 text-white px-6 py-3 rounded-xl shadow-lg">
-            <p className="text-xs opacity-80">{t('schemes.benefits') || 'Total Potential Benefits'}</p>
-            <p className="text-2xl font-bold flex items-center">
-              <IndianRupee className="w-5 h-5 mr-1" />
+          <div className="bg-white border-2 border-green-500 text-gray-800 px-6 py-3 rounded-xl shadow-sm">
+            <p className="text-xs font-bold text-green-600 uppercase">Est. Financial Backing</p>
+            <p className="text-2xl font-black flex items-center">
+              <IndianRupee className="w-5 h-5 mr-1 text-green-600" />
               {(totalBenefits / 1000).toFixed(1)}k
             </p>
           </div>
         </div>
       </div>
 
-      {/* Quick Filter Tabs */}
+      {/* Honest Filter Tabs */}
       <div className="flex gap-2 flex-wrap">
-        <span className="px-3 py-1.5 bg-farm-green-100 text-farm-green-700 rounded-full text-sm font-medium">
-          All ({eligibleSchemes.length})
+        <span className="px-3 py-1.5 bg-gray-800 text-white rounded-full text-xs font-bold shadow-sm">
+          Tracking {evaluatedSchemes.length} Schemes
         </span>
-        <span className="px-3 py-1.5 bg-green-100 text-green-700 rounded-full text-sm font-medium">
-          Likely Eligible ({eligibleCount})
+        <span className="px-3 py-1.5 bg-green-100 text-green-800 border border-green-200 rounded-full text-xs font-bold">
+          Likely Eligible ({categoryCounts[MATCH_CATEGORIES.LIKELY_ELIGIBLE.id] || 0})
         </span>
-        <span className="px-3 py-1.5 bg-gray-100 text-gray-600 rounded-full text-sm font-medium">
-          Needs Verification ({eligibleSchemes.length - eligibleCount})
+        <span className="px-3 py-1.5 bg-blue-100 text-blue-800 border border-blue-200 rounded-full text-xs font-bold">
+          Needs Verification ({categoryCounts[MATCH_CATEGORIES.NEEDS_VERIFICATION.id] || 0})
+        </span>
+        <span className="px-3 py-1.5 bg-yellow-100 text-yellow-800 border border-yellow-200 rounded-full text-xs font-bold">
+          More Info ({categoryCounts[MATCH_CATEGORIES.MORE_INFO_REQUIRED.id] || 0})
+        </span>
+        <span className="px-3 py-1.5 bg-gray-100 text-gray-800 border border-gray-200 rounded-full text-xs font-bold">
+          Not Matched ({categoryCounts[MATCH_CATEGORIES.INELIGIBLE.id] || 0})
         </span>
       </div>
 
       {/* Schemes Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {eligibleSchemes.map((scheme, index) => (
+        {evaluatedSchemes.sort((a,b) => {
+          // Sort Likely -> Verification -> More Info -> Ineligible
+          const sortOrder = { 'likely': 1, 'verification': 2, 'more_info': 3, 'ineligible': 4 };
+          return sortOrder[a.matchCategory] - sortOrder[b.matchCategory];
+        }).map((scheme, index) => (
           <SchemeCard key={scheme.id} scheme={scheme} index={index} />
         ))}
       </div>
 
       {/* Disclaimer */}
-      <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-4">
-        <p className="text-xs text-yellow-800">
-          <strong>⚠️ Important:</strong> Eligibility shown is a preliminary match based on your profile. 
-          Final eligibility depends on official verification. {schemesData.metadata.disclaimer} 
-          Last updated: {schemesData.metadata.lastUpdated}
+      <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 flex gap-3 items-start">
+        <ShieldAlert className="w-5 h-5 text-gray-500 flex-shrink-0 mt-0.5" />
+        <p className="text-[11px] leading-relaxed text-gray-600">
+          <strong>Transparency Note:</strong> Eligibility shown is a heuristic estimate based on the limited profile data provided. Krishyak does not guarantee enrollment. Final eligibility is determined strictly by official field officers. {schemesData.metadata.disclaimer} 
         </p>
       </div>
     </div>

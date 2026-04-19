@@ -144,7 +144,9 @@ const WeatherCard = ({ onWeatherUpdate }) => {
               <p className="text-lg font-bold text-farm-green-700">
                 {locationData.soil_type}
               </p>
-              <p className="text-xs text-green-600">{t('weatherCard.autoFilled')}</p>
+              <p className="text-[10px] uppercase text-gray-500 mt-1 leading-tight">
+                {locationData.soil_source || t('weatherCard.autoFilled')}
+              </p>
             </div>
 
             {/* Rainfall */}

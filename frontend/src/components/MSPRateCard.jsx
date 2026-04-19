@@ -66,7 +66,7 @@ const MSPRateCard = ({ primaryCrop, currentMarketPrice }) => {
             </p>
           </div>
           <div className="text-right">
-            <p className="text-3xl font-bold text-yellow-600">₹{mspRate}</p>
+            <p className="text-3xl font-bold text-yellow-600">₹{Math.round(mspRate).toLocaleString('en-IN')}</p>
             <p className="text-sm text-gray-500">{t('msp.perQuintal') || 'per quintal'}</p>
           </div>
         </div>
@@ -78,7 +78,7 @@ const MSPRateCard = ({ primaryCrop, currentMarketPrice }) => {
           <div className="flex justify-between items-center">
             <div>
               <p className="text-sm text-gray-600">{t('sidebar.marketInfo') || 'Market Price'}</p>
-              <p className="text-xl font-semibold text-gray-800">₹{currentMarketPrice}</p>
+              <p className="text-xl font-semibold text-gray-800">₹{Math.round(currentMarketPrice).toLocaleString('en-IN')}</p>
             </div>
             <div className={`text-right px-3 py-1 rounded-lg ${isAboveMsp ? 'bg-green-100' : 'bg-red-100'
               }`}>

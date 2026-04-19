@@ -144,41 +144,38 @@ class SimulationEngine:
         return optimal
     
     def _generate_worst_case(self, base_params: Dict) -> Dict:
-        """Generate worst-case scenario parameters
+        \"\"\"Generate worst-case scenario parameters
         
-        Ensures worst case is ALWAYS worse than current plan by:
-        - Degrading yield inputs (seed quality, rainfall, irrigation, fertilizer)
-        - Increasing risk inputs (pest probability, less pest control)
-        - Forcing lower selling price via market price depression
-        - Poor sale timing
-        """
+        Ensures worst case represents an economic/environmental crisis:
+        - Farmer spends standard money (fertilizer unchanged) or more (emergency labor/pump costs).
+        - But yield crashes due to extreme weather (drought mask) and acute pest attacks.
+        - And revenue degrades via distress market price collapse.
+        \"\"\"
         worst = base_params.copy()
         
-        # Poor seed quality
-        worst["seed_quality"] = max(0.3, base_params["seed_quality"] - 0.3)
+        # Poor seed germination impact (but paid full price)
+        worst["seed_quality"] = max(0.3, base_params["seed_quality"] - 0.4)
         
-        # Inadequate rainfall with delays
-        worst["expected_rainfall"] = base_params["expected_rainfall"] * 0.6
-        worst["rainfall_delay"] = base_params["rainfall_delay"] + 20
+        # Severe rainfall crisis
+        worst["expected_rainfall"] = base_params["expected_rainfall"] * 0.5
+        worst["rainfall_delay"] = base_params["rainfall_delay"] + 30
         
-        # Reduced irrigation
-        worst["irrigation_frequency"] = max(0, base_params["irrigation_frequency"] - 3)
+        # Emergency pumping increases costs
+        worst["irrigation_frequency"] = base_params["irrigation_frequency"] + 2
         
-        # Suboptimal fertilizer (40% reduction)
-        worst["fertilizer_mix"] = {k: v * 0.5 for k, v in base_params["fertilizer_mix"].items()}
+        # Fertilizer costs fully retained, but washed away/ineffective 
+        worst["fertilizer_mix"] = base_params["fertilizer_mix"].copy()
         
-        # High pest risk
-        worst["pest_probability"] = min(0.85, base_params["pest_probability"] + 0.35)
-        worst["pest_control_intensity"] = max(0.1, base_params.get("pest_control_intensity", 0.5) - 0.35)
+        # Severe pest outbreak
+        worst["pest_probability"] = min(0.95, base_params["pest_probability"] + 0.40)
+        worst["pest_control_intensity"] = max(0.05, base_params.get("pest_control_intensity", 0.5) - 0.45)
         
-        # Depressed market price (15% below current) — simulates distress/glut selling
-        worst["current_market_price"] = base_params.get("current_market_price", 2000) * 0.85
+        # Market collapse (Distress sale at 20% drop)
+        worst["current_market_price"] = base_params.get("current_market_price", 2000) * 0.80
+        worst["sale_month"] = 0 
         
-        # Worst sale timing — immediate distress sale
-        worst["sale_month"] = 0
-        
-        # Increased labour costs (delays, rework)
-        worst["labour_days"] = base_params.get("labour_days", 30) * 1.2
+        # High emergency labour costs
+        worst["labour_days"] = base_params.get("labour_days", 30) * 1.5
         
         return worst
     
@@ -246,34 +243,41 @@ class SimulationEngine:
         profit_improvement = optimal["profit"] - current["profit"]
         risk_reduction = current["risk"]["overall_risk_score"] - optimal["risk"]["overall_risk_score"]
         
-        recommendation = f"🌾 **AI-Powered Farming Strategy Recommendation**\n\n"
+        recommendation = f"🌾 **Simulation-Estimated Strategy**\n\n"
         
         if profit_improvement > 0:
-            improvement_pct = (profit_improvement / max(abs(current["profit"]), 1)) * 100
-            recommendation += f"✅ By adopting the AI-optimized strategy, you can increase profit by ₹{profit_improvement:,.2f} ({improvement_pct:.1f}% improvement).\n\n"
+            if current["profit"] < 0 and optimal["profit"] < 0:
+                recommendation += f"⚠️ **Loss reduction estimate:** The optimized simulation suggests adapting these parameters may reduce projected losses by ₹{profit_improvement:,.2f}.\n\n"
+            elif current["profit"] < 0 and optimal["profit"] >= 0:
+                recommendation += f"✅ **Turnaround estimate:** The optimized simulation suggests these changes might turn a projected loss into a potential profit of ₹{optimal['profit']:,.2f}.\n\n"
+            else:
+                improvement_pct = (profit_improvement / max(abs(current["profit"]), 1)) * 100
+                recommendation += f"✅ **Profitability estimate:** Based on heuristic modeling, adopting this strategy projects an estimated profit increase of ₹{profit_improvement:,.2f} ({improvement_pct:.1f}%).\n\n"
         
         if risk_reduction > 0:
-            recommendation += f"🛡️ The optimized plan reduces your risk score by {risk_reduction:.1f} points, making your farming more stable.\n\n"
+            recommendation += f"🛡️ **Risk mitigation:** The simulated adjustments lower the scenario risk score by {risk_reduction:.1f} points.\n\n"
         
-        recommendation += "**Key Recommendations:**\n"
+        recommendation += "**Simulated Adjustments:**\n"
         
         # Seed quality
         if optimal["parameters_used"]["seed_quality"] > current["parameters_used"]["seed_quality"]:
-            recommendation += "• Invest in higher quality seeds for better yields\n"
+            recommendation += "• Seed Quality: Upgraded in simulation to improve baseline yield stability.\n"
         
         # Irrigation
         if optimal["parameters_used"]["irrigation_frequency"] > current["parameters_used"]["irrigation_frequency"]:
-            recommendation += "• Increase irrigation frequency to compensate for rainfall uncertainty\n"
+            recommendation += "• Irrigation: Frequency artificially increased to buffer against projected rainfall deficits.\n"
         
         # Fertilizer
-        recommendation += "• Optimize fertilizer mix for balanced NPK nutrition\n"
+        recommendation += "• Nutrition: Fertilizer mix mathematically rebalanced closer to ideal NPK baseline.\n"
         
         # Pest control
         if optimal["parameters_used"]["pest_control_intensity"] > current["parameters_used"].get("pest_control_intensity", 0.5):
-            recommendation += "• Strengthen pest management to protect yield\n"
+            recommendation += "• Pest Control: Intensity increased in model to mitigate high-risk outbreak scenarios.\n"
         
         # Sale timing
         selling_day = optimal["price_forecast"]["optimal_selling_window"]["recommended_day"]
-        recommendation += f"• Plan to sell around day {selling_day} for maximum price\n"
+        recommendation += f"• Market Timing: To capture peak projected pricing, consider timing sales around {selling_day} days from today (derived from 60-day statistical market trend).\n"
+        
+        recommendation += "\n*Why am I seeing this?* These recommendations are calculated heuristically using localized baseline assumptions and statistical weather/price models. They are directional advisory estimates, not guaranteed real-world outcomes."
         
         return recommendation

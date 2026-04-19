@@ -263,10 +263,16 @@ const WeatherAlertCard = ({ crop = 'default' }) => {
           )
         )}
 
-        {/* Last updated */}
         {lastUpdated && (
-          <div className="mt-4 pt-3 border-t border-gray-100 text-xs text-gray-400 text-center">
-            {t('common.lastUpdated') || 'Last updated'}: {formatTime(lastUpdated)}
+          <div className="mt-4 pt-3 border-t border-gray-100 text-center">
+            <p className="text-xs text-gray-400">
+              {t('common.lastUpdated') || 'Last updated'}: {formatTime(lastUpdated)}
+            </p>
+            {currentWeather?.source && (
+              <p className="text-[10px] text-gray-400 mt-1 uppercase tracking-wide">
+                SOURCE: {currentWeather.source}
+              </p>
+            )}
           </div>
         )}
       </div>

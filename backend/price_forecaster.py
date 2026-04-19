@@ -4,6 +4,7 @@ import pandas as pd
 from typing import Dict, List
 from datetime import datetime, timedelta
 from data_loader import DataLoader
+from mandi_adapter import mandi_adapter
 
 class PriceForecaster:
     """Forecast commodity prices using statistical methods"""
@@ -34,9 +35,13 @@ class PriceForecaster:
             volatility = 0.15
             prices = np.array([current_price] * 30)
         
+        # Fetch live mandi price logic
+        mandi_data = mandi_adapter.get_current_mandi_price(commodity)
+        actual_current_price = mandi_data["price"] if mandi_data else current_price
+        
         # Generate forecast
         forecast = self._generate_forecast(
-            current_price, trend, volatility, forecast_days
+            actual_current_price, trend, volatility, forecast_days
         )
         
         # Find optimal selling window
@@ -53,11 +58,18 @@ class PriceForecaster:
         return {
             "forecast_prices": [round(p, 2) for p in forecast],
             "forecast_dates": self._generate_date_range(forecast_days),
-            "current_price": current_price,
+            "current_price": actual_current_price,
             "statistics": stats,
             "optimal_selling_window": selling_window,
             "trend": "Upward" if trend > 0.005 else "Downward" if trend < -0.005 else "Stable",
-            "volatility_level": "High" if volatility > 0.25 else "Moderate" if volatility > 0.15 else "Low"
+            "volatility_level": "High" if volatility > 0.25 else "Moderate" if volatility > 0.15 else "Low",
+            "source_metadata": {
+                "source_type": mandi_data.get("source_type", "static_fallback") if mandi_data else "static_fallback",
+                "source_label": mandi_data.get("source_label", "System Default") if mandi_data else "System Default",
+                "freshness_status": mandi_data.get("freshness_status", "static") if mandi_data else "static",
+                "record_date": mandi_data.get("record_date", None) if mandi_data else None,
+                "transparency_note": mandi_data.get("transparency_note", "") if mandi_data else ""
+            }
         }
     
     def _calculate_trend_and_volatility(self, prices: np.ndarray) -> tuple:
@@ -135,7 +147,7 @@ class PriceForecaster:
             "window_start_day": start_day,
             "window_end_day": end_day,
             "expected_peak_price": round(float(peak_price), 2),
-            "recommendation": f"Best to sell around day {recommended_day} (days {start_day}-{end_day} are favorable)"
+            "recommendation": f"Current statistical models project a 60-day market peak around {recommended_day} days from today (a favorable selling window is estimated between {start_day} and {end_day} days from today)."
         }
     
     def _generate_date_range(self, days: int) -> List[str]:

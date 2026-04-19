@@ -203,6 +203,13 @@ Risk = Weather(30%) + Price Volatility(25%) + Pest Severity(25%) + Soil Mismatch
 - [x] **Improved App Stability** - Fixed component rendering bugs and state management optimizations across the dashboard.
 - [x] **Styling Fixes** - Corrected layout overflows, optimized spacing, and refined typography for modern mobile displays.
 
+## ✅ April 2026 Resilience & Trust Updates (Final Polish)
+
+- [x] **Scenario Logic Hardening** - Worst-case simulations now accurately model economic/climatic crises (input sinks paired with yield crashes).
+- [x] **Truth-First AI Insights** - Replaced opaque "AI" buzzwords with explicit heuristic, simulation, or statistical descriptors. 
+- [x] **Pest Intelligence Relevancy** - Fully patched case-sensitive cross-crop contamination, ensuring strict crop-aware alerts and honest empty states.
+- [x] **UX Stability** - Patched loading states falling into 100% frozen cycles, preserving user-friendly flow.
+
 ## ✅ Previous Updates (January 2026)
 
 - [x] **13 Indian Languages** - Full i18n with Hindi, Tamil, Telugu, Bengali, Marathi, Gujarati, Kannada, Malayalam, Punjabi, Assamese, Odia, Urdu (RTL)

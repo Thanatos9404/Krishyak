@@ -29,8 +29,8 @@ const PrivacyPolicy = ({ onBack }) => {
           {/* Introduction */}
           <section>
             <p className="text-gray-700 leading-relaxed">
-              Krishyak ("we", "our", or "the app") is an AI-powered farming decision-support tool 
-              built to help Indian farmers make better crop, input, and market decisions. We take 
+              Krishyak ("we", "our", or "the app") is a farming decision-support tool 
+              designed to assist Indian farmers with crop planning, risk assessment, and market decisions. We take 
               your privacy seriously. This document explains, in plain language, what data we collect, 
               why we collect it, and how we protect it.
             </p>
@@ -60,7 +60,7 @@ const PrivacyPolicy = ({ onBack }) => {
           <section>
             <h2 className="text-lg font-bold text-gray-800 mb-3">2. How We Use Your Data</h2>
             <ul className="list-disc list-inside space-y-2 text-gray-700">
-              <li>Running AI-powered yield simulations, risk assessments, and price forecasts.</li>
+              <li>Running data-driven yield simulations, risk assessments, and price forecasts.</li>
               <li>Matching you with eligible government schemes (PM-KISAN, PM-FASAL Bima, etc.).</li>
               <li>Providing personalized fertilizer and pest management recommendations.</li>
               <li>Detecting crop diseases from uploaded images.</li>

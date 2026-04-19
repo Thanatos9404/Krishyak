@@ -82,9 +82,9 @@ async def lifespan(app: FastAPI):
 
 # Initialize FastAPI app
 app = FastAPI(
-    title="Krishyak - AI Farm Decision Simulator",
-    description="AI-powered farming decision support system for Indian farmers",
-    version="1.1.0",
+    title="Krishyak API",
+    description="Farming decision support system for Indian farmers",
+    version="1.0.0",
     lifespan=lifespan,
     docs_url="/docs" if security_config.is_development else None,
     redoc_url="/redoc" if security_config.is_development else None,
@@ -411,8 +411,8 @@ async def forecast_commodity_prices(request: PriceForecastRequest):
 @app.post("/compare_scenarios")
 async def compare_scenarios(request: SimulationRequest):
     """
-    Compare Current Plan vs AI Optimal Plan vs Worst Case
-    Returns detailed comparison with What-If analysis
+    Compare Current Plan vs Optimized Plan vs Worst Case
+    Runs multiple scenarios and returns comparative data.
     """
     try:
         params = request.farming_input.dict()
@@ -437,8 +437,8 @@ async def compare_scenarios(request: SimulationRequest):
 @app.post("/recommend")
 async def get_recommendations(request: SimulationRequest):
     """
-    Get AI-powered recommendations for optimal farming strategy
-    Returns actionable insights and optimization suggestions
+    Get model-based recommendations for optimal farming strategy
+    Analyzes parameters and suggests optimizations for better yield/profit.
     """
     try:
         params = request.farming_input.dict()

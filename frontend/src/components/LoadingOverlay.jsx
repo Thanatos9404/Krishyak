@@ -28,8 +28,9 @@ const LoadingOverlay = ({ isLoading, onComplete }) => {
     stepRef.current = 0;
 
     const stepInterval = setInterval(() => {
-      stepRef.current += 1;
-      if (stepRef.current < steps.length) {
+      // Prevent completing the final step until the actual network call finishes
+      if (stepRef.current < steps.length - 1) {
+        stepRef.current += 1;
         setCurrentStep(stepRef.current);
       } else {
         clearInterval(stepInterval);
@@ -42,10 +43,17 @@ const LoadingOverlay = ({ isLoading, onComplete }) => {
     const progressIncrement = 100 / (totalDuration / 50);
 
     const progressInterval = setInterval(() => {
-      progressValue = Math.min(progressValue + progressIncrement, 100);
-      setProgress(progressValue);
+      if (progressValue < 90) {
+        // Fast, linear progress for the first 90%
+        progressValue += progressIncrement;
+      } else {
+        // Asymptotic Zeno curve: slowly approach 99% but never hit 100%
+        progressValue += (99 - progressValue) * 0.05;
+      }
+      
+      setProgress(Math.min(progressValue, 99));
 
-      if (progressValue >= 100) {
+      if (progressValue >= 99) {
         clearInterval(progressInterval);
       }
     }, 50);

@@ -26,6 +26,8 @@ function App() {
   const [crops, setCrops] = useState([]);
   const [soilTypes, setSoilTypes] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [isOffline, setIsOffline] = useState(false);
+  const [guestMode, setGuestMode] = useState(false);
   const [simulationData, setSimulationData] = useState(null);
   const [comparisonData, setComparisonData] = useState(null);
   const [recommendationData, setRecommendationData] = useState(null);
@@ -55,11 +57,13 @@ function App() {
     seed_quantity_kg: 100
   });
 
-  // Hydrate simulation data from sessionStorage on mount
+  // Hydrate simulation data from localStorage on mount (Offline Resilience)
   useEffect(() => {
     try {
-      const cached = JSON.parse(sessionStorage.getItem('krishyak_sim') || 'null');
-      if (cached && Date.now() - cached.timestamp < 30 * 60 * 1000) {
+      const cached = JSON.parse(localStorage.getItem('krishyak_sim_cache') || 'null');
+      if (cached) {
+        // We load it silently as a baseline jumpstart.
+        // If we are strictly offline later, we will use it as the main data source.
         setSimulationData(cached.simulationData);
         setComparisonData(cached.comparisonData);
         setRecommendationData(cached.recommendationData);
@@ -125,13 +129,14 @@ function App() {
     } catch (error) {
       console.error('Error loading initial data:', error);
       setCrops(['Rice', 'Wheat', 'Maize', 'Cotton', 'Sugarcane']);
-      setSoilTypes(['Alluvial', 'Black', 'Red', 'Laterite', 'Desert']);
+      setSoilTypes(['Alluvial', 'Black', 'Red', 'Laterite', 'Arid / Sandy']);
     }
   };
 
   const runSimulation = async () => {
     setLoading(true);
     setMobileInputsOpen(false);
+    setIsOffline(false);
 
     try {
       const [simRes, compRes, recRes] = await Promise.all([
@@ -145,17 +150,18 @@ function App() {
       setRecommendationData(recRes.data);
       setActiveTab('dashboard');
 
-      // Persist simulation data to sessionStorage
+      // Persist heavily to local storage for true offline usage
       try {
-        sessionStorage.setItem('krishyak_sim', JSON.stringify({
+        localStorage.setItem('krishyak_sim_cache', JSON.stringify({
           simulationData: simRes.data,
           comparisonData: compRes.data,
           recommendationData: recRes.data,
           formData,
-          timestamp: Date.now()
+          cached_at: new Date().toISOString(),
+          source: 'cached'
         }));
       } catch (e) {
-        // Ignore storage errors
+        console.warn('Could not cache to local storage');
       }
 
       const profitImprovement = recRes.data.profit_improvement || 0;
@@ -168,13 +174,47 @@ function App() {
       });
 
     } catch (error) {
-      console.error('Simulation error:', error);
-      addToast({
-        type: 'error',
-        message: t('errors.simulationFailed') || 'Failed to run simulation. Please check if backend is running.',
-        actionText: t('common.retry') || 'Retry',
-        onAction: runSimulation
-      });
+      console.error('Simulation error / Offline:', error);
+      
+      // Offline fallback pipeline!
+      try {
+        const cached = JSON.parse(localStorage.getItem('krishyak_sim_cache') || 'null');
+        if (cached) {
+          setIsOffline(true);
+          setSimulationData(cached.simulationData);
+          setComparisonData(cached.comparisonData);
+          setRecommendationData(cached.recommendationData);
+          
+          // Calculate freshness label safely
+          let freshnessMsg = 'Recently cached state';
+          if (cached.cached_at) {
+            const cachedDate = new Date(cached.cached_at);
+            const hrs = Math.floor((Date.now() - cachedDate) / (1000 * 60 * 60));
+            if (hrs < 1) freshnessMsg = 'Saved less than an hour ago';
+            else if (hrs < 24) freshnessMsg = `Saved ${hrs} hour(s) ago`;
+            else freshnessMsg = `Saved ${Math.floor(hrs/24)} day(s) ago`;
+          }
+
+          setActiveTab('dashboard');
+          
+          addToast({
+             type: 'error',
+             message: `Network offline. Loaded fallback scenario (${freshnessMsg}).`,
+          });
+        } else {
+          addToast({
+            type: 'error',
+            message: 'Network offline and no cached session found.',
+            actionText: 'Retry',
+            onAction: runSimulation
+          });
+        }
+      } catch (e) {
+        addToast({
+          type: 'error',
+          message: 'Failed to run simulation. Backend unreachable.',
+        });
+      }
     } finally {
       setLoading(false);
     }
@@ -202,9 +242,9 @@ function App() {
     );
   }
 
-  // Show registration form for new users
-  if (!isRegistered && currentPage === 'main') {
-    return <FarmerRegistrationForm onComplete={handleRegistrationComplete} />;
+  // Show registration form for new users, unless they opted to skip
+  if (!isRegistered && !guestMode && currentPage === 'main') {
+    return <FarmerRegistrationForm onComplete={handleRegistrationComplete} onSkip={() => setGuestMode(true)} />;
   }
 
   // Render page based on current route
@@ -259,15 +299,28 @@ function App() {
                   </p>
                 </div>
               )}
+              {isOffline && (
+                <div className="bg-orange-500/90 backdrop-blur-sm px-2 py-1.5 rounded-lg border border-orange-400 flex items-center shadow-sm">
+                   <div className="w-2 h-2 rounded-full bg-red-200 animate-pulse mr-1.5"></div>
+                   <p className="text-[10px] sm:text-xs text-white font-bold whitespace-nowrap">Offline Mode</p>
+                </div>
+              )}
               <LanguageSelector />
-              {isRegistered && (
+              {isRegistered ? (
                 <button
                   onClick={logout}
                   className="text-white/80 hover:text-white text-xs sm:text-sm px-2 sm:px-3 py-1.5 rounded hover:bg-white/10 whitespace-nowrap"
                 >
                   {t('common.logout') || 'Logout'}
                 </button>
-              )}
+              ) : guestMode ? (
+                <button
+                  onClick={() => { setGuestMode(false); navigateTo('main'); }}
+                  className="text-white/80 hover:text-white text-xs sm:text-sm px-2 sm:px-3 py-1.5 rounded bg-white/10 hover:bg-white/20 whitespace-nowrap font-medium"
+                >
+                  Sign In
+                </button>
+              ) : null}
             </div>
           </div>
         </div>
@@ -319,10 +372,7 @@ function App() {
           <div className="flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4">
             <div className="text-center sm:text-left text-gray-600 text-sm">
               <p className="mb-1">
-                <span className="font-semibold text-farm-green-600">Krishyak</span> - {t('footer.tagline') || 'Empowering Indian farmers with AI-driven decision support'}
-              </p>
-              <p className="text-xs text-gray-500 hidden sm:block">
-                {t('footer.builtWith') || 'Built with React, FastAPI, and advanced ML models'}
+                <span className="font-semibold text-farm-green-600">Krishyak</span> - {t('footer.tagline') || 'Empowering Indian farmers with data-driven decision support'}
               </p>
             </div>
             <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-sm">

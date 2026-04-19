@@ -73,7 +73,10 @@ export const CROP_PEST_MAP = {
 export function filterAlertsByCrop(alerts, crop) {
   if (!crop || !alerts || alerts.length === 0) return alerts || [];
   
-  const relevantPests = CROP_PEST_MAP[crop];
+  // Case-insensitive key lookup
+  const cropKey = Object.keys(CROP_PEST_MAP).find(k => k.toLowerCase() === crop.toLowerCase());
+  const relevantPests = cropKey ? CROP_PEST_MAP[cropKey] : null;
+  
   if (!relevantPests) return alerts; // Unknown crop — don't filter
   
   // Case-insensitive partial match

@@ -58,10 +58,10 @@ const RecommendationPanel = ({ recommendationData, simulationData, formData }) =
           </div>
           <div className="min-w-0">
             <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-800 mb-1 sm:mb-2">
-              AI-Powered Strategy Recommendation
+              Optimized Strategy Estimate
             </h2>
             <p className="text-gray-600">
-              Based on advanced simulation and market analysis
+              Based on localized simulation and market models
             </p>
           </div>
         </div>
@@ -98,9 +98,14 @@ const RecommendationPanel = ({ recommendationData, simulationData, formData }) =
               </p>
             </div>
             <div className="pt-3 border-t border-gray-200">
-              <p className="text-sm text-gray-600 mb-1">Improvement</p>
-              <p className="text-xl font-bold text-green-500">
-                +₹{(recommendationData.profit_improvement / 1000).toFixed(1)}k
+              <p className="text-sm text-gray-600 mb-1">
+                {recommendationData.current_profit < 0 && recommendationData.optimal_profit < 0 
+                  ? 'Loss Mitigated' 
+                  : 'Profit Impact'}
+              </p>
+              <p className={`text-xl font-bold ${recommendationData.profit_improvement >= 0 ? "text-green-500" : "text-gray-700"}`}>
+                {recommendationData.profit_improvement >= 0 ? "+" : ""}
+                ₹{(recommendationData.profit_improvement / 1000).toFixed(1)}k
               </p>
             </div>
           </div>
