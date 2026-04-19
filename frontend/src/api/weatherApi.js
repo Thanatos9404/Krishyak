@@ -1,7 +1,5 @@
 import axios from 'axios';
 
-const OPENWEATHER_API_KEY = process.env.REACT_APP_OPENWEATHER_API_KEY;
-
 // Indian district/region to soil type mapping based on geography
 const regionSoilMapping = {
   // Maharashtra

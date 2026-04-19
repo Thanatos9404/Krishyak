@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { ExternalLink, CheckCircle, AlertCircle, IndianRupee, FileText, ChevronDown, ChevronUp, Calendar, Info, ShieldAlert } from 'lucide-react';
+import { ExternalLink, CheckCircle, AlertCircle, IndianRupee, FileText, ChevronDown, ChevronUp, Info, ShieldAlert } from 'lucide-react';
 import schemesData from '../data/governmentSchemes.json';
 import { useTranslation } from '../i18n';
 
@@ -142,8 +142,6 @@ const SchemeCard = ({ scheme, index }) => {
 };
 
 const GovernmentSchemes = ({ formData, simulationData }) => {
-  const { t } = useTranslation();
-
   const evaluatedSchemes = useMemo(() => {
     if (!formData) return [];
     
@@ -233,7 +231,7 @@ const GovernmentSchemes = ({ formData, simulationData }) => {
         potentialBenefit
       };
     });
-  }, [formData, simulationData]);
+  }, [formData]);
 
   const totalBenefits = useMemo(() => {
     return evaluatedSchemes

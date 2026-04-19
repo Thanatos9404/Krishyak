@@ -13,7 +13,7 @@ import React, { useState, useMemo } from 'react';
 import { Bug, AlertTriangle, Shield, ChevronDown, ChevronUp, Clock, MapPin, Info } from 'lucide-react';
 import { useTranslation } from '../i18n';
 import { usePestIntelligence } from '../hooks/usePestIntelligence';
-import { filterAlertsByCrop, generateFallbackAlerts } from '../utils/pestMapping';
+import { filterAlertsByCrop } from '../utils/pestMapping';
 
 const SEVERITY_COLORS = {
   low: { bg: 'bg-green-50', border: 'border-green-200', text: 'text-green-700', badge: 'bg-green-100 text-green-800' },
