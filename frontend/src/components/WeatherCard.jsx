@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { MapPin, CloudRain, Thermometer, Droplets, RefreshCw, Loader2, Leaf } from 'lucide-react';
+import React, { useEffect, useRef, useState } from 'react';
+import { MapPin, CloudRain, Thermometer, Droplets, RefreshCw, Loader2, Leaf, CheckCircle } from 'lucide-react';
 import { getLocationBasedData } from '../api/weatherApi';
 import { useTranslation } from '../i18n';
 
@@ -9,49 +9,63 @@ const WeatherCard = ({ onWeatherUpdate }) => {
   const [error, setError] = useState(null);
   const [locationData, setLocationData] = useState(null);
   const [successToast, setSuccessToast] = useState(null);
+  const request = useRef(0);
+  const toastTimer = useRef(null);
+  useEffect(() => () => {
+    request.current += 1;
+    clearTimeout(toastTimer.current);
+  }, []);
 
   const detectLocation = async () => {
+    const sequence = ++request.current;
+    clearTimeout(toastTimer.current);
+    setSuccessToast(null);
+    setLocationData(null);
     setLoading(true);
     setError(null);
 
     try {
       // Get all location-based data (weather, soil, rainfall)
       const data = await getLocationBasedData();
+      if (sequence !== request.current) return;
       setLocationData(data);
 
       // Build success feedback message
-      const cityName = data.location?.city || data.location?.district || 'your location';
+      const cityName = data.location?.city || data.location?.district || t('weatherCard.detectedLocation');
       const stateName = data.location?.state || '';
-      setSuccessToast(
-        `📍 Detected: ${cityName}${stateName ? `, ${stateName}` : ''} — Soil set to ${data.soil_type || 'Auto'}, Rainfall set to ${data.expected_rainfall || '—'} mm`
-      );
+      setSuccessToast(t('weatherCard.detectedSummary', {
+        location: `${cityName}${stateName ? `, ${stateName}` : ''}`,
+        soil: data.soil_type ? t(`soils.${data.soil_type.toLowerCase()}`) : t('common.notAvailable'),
+        rainfall: data.expected_rainfall ?? '-',
+      }));
 
       // Auto-hide toast after 8 seconds
-      setTimeout(() => setSuccessToast(null), 8000);
+      toastTimer.current = setTimeout(() => setSuccessToast(null), 8000);
 
       // Update parent form with all detected data
       if (onWeatherUpdate) {
         onWeatherUpdate({
           expected_rainfall: data.expected_rainfall,
           rainfall_delay: data.rainfall_delay,
-          soil_type: data.soil_type
+          soil_type: data.soil_type,
+          soil_source: data.soil_source
         });
       }
 
     } catch (err) {
-      console.error('Location error:', err);
+      if (sequence !== request.current) return;
       setSuccessToast(null);
       if (err.code === 1) {
         setError(t('weatherCard.errors.denied') || 'Location permission denied. Please enable it in browser settings, or enter your location manually below.');
       } else if (err.message === 'Geolocation not supported') {
         setError(t('weatherCard.errors.notSupported') || 'Geolocation is not supported by your browser. Please enter your location manually.');
       } else if (err.message?.includes('timed out')) {
-        setError('Location detection timed out. Please enter your district and state manually below.');
+        setError(t('weatherCard.errors.timeout'));
       } else {
         setError(t('weatherCard.errors.failed') || 'Could not detect location. Please enter your details manually.');
       }
     } finally {
-      setLoading(false);
+      if (sequence === request.current) setLoading(false);
     }
   };
 
@@ -71,7 +85,7 @@ const WeatherCard = ({ onWeatherUpdate }) => {
         ) : (
           <>
             <MapPin className="w-5 h-5 mr-2" />
-            {t('weatherCard.autoDetect')}
+            {t('weatherCard.detectLocation')}
           </>
         )}
       </button>
@@ -79,7 +93,7 @@ const WeatherCard = ({ onWeatherUpdate }) => {
       {/* Success Toast */}
       {successToast && (
         <div className="bg-green-50 text-green-700 rounded-xl p-3 text-sm border border-green-200 flex items-start gap-2 animate-fade-in">
-          <span className="text-green-500 font-bold">✓</span>
+          <CheckCircle className="mt-0.5 h-4 w-4 flex-none text-green-600" aria-hidden="true" />
           <span>{successToast}</span>
         </div>
       )}
@@ -87,7 +101,7 @@ const WeatherCard = ({ onWeatherUpdate }) => {
       {/* Error Message */}
       {error && (
         <div className="bg-red-50 text-red-600 rounded-xl p-3 text-sm border border-red-200">
-          ⚠️ {error}
+          {error}
         </div>
       )}
 
@@ -99,7 +113,7 @@ const WeatherCard = ({ onWeatherUpdate }) => {
             <div className="flex items-center">
               <MapPin className="w-4 h-4 text-sky-blue-600 mr-2" />
               <span className="font-semibold text-gray-800">
-                {locationData.location?.city || locationData.location?.district || 'Detected'}, {locationData.location?.state || 'India'}
+                {[locationData.location?.city || locationData.location?.district || t('weatherCard.detectedLocation'), locationData.location?.state].filter(Boolean).join(', ')}
               </span>
             </div>
             <button
@@ -124,11 +138,11 @@ const WeatherCard = ({ onWeatherUpdate }) => {
             <div className="flex items-center justify-between bg-white/50 rounded-lg p-3">
               <div className="flex items-center">
                 <Thermometer className="w-5 h-5 text-orange-500 mr-2" />
-                <span className="text-2xl font-bold text-gray-800">{locationData.weather.current?.temp || '--'}°C</span>
+                <span className="text-2xl font-bold text-gray-800">{locationData.weather.current?.temp ?? '--'}°C</span>
               </div>
               <div className="flex items-center">
                 <Droplets className="w-4 h-4 text-sky-blue-500 mr-1" />
-                <span className="text-sm text-gray-600">{locationData.weather.current?.humidity || '--'}%</span>
+                <span className="text-sm text-gray-600">{locationData.weather.current?.humidity ?? '--'}%</span>
               </div>
             </div>
           )}
@@ -142,10 +156,10 @@ const WeatherCard = ({ onWeatherUpdate }) => {
                 <span className="text-xs font-semibold text-gray-600">{t('weatherCard.soilType')}</span>
               </div>
               <p className="text-lg font-bold text-farm-green-700">
-                {locationData.soil_type}
+                {locationData.soil_type ? t(`soils.${locationData.soil_type.toLowerCase()}`) : t('common.notAvailable')}
               </p>
               <p className="text-[10px] uppercase text-gray-500 mt-1 leading-tight">
-                {locationData.soil_source || t('weatherCard.autoFilled')}
+                {t('soilSensor.manualEntry')}
               </p>
             </div>
 
@@ -156,9 +170,9 @@ const WeatherCard = ({ onWeatherUpdate }) => {
                 <span className="text-xs font-semibold text-gray-600">{t('weatherCard.avgRainfall')}</span>
               </div>
               <p className="text-lg font-bold text-sky-blue-700">
-                {locationData.expected_rainfall} mm
+                {locationData.expected_rainfall == null ? t('common.notAvailable') : `${locationData.expected_rainfall} ${t('sidebar.mm')}`}
               </p>
-              <p className="text-xs text-green-600">{t('weatherCard.autoFilled')}</p>
+              <p className="text-xs text-green-600">{t('soilSensor.manualEntry')}</p>
             </div>
           </div>
 
@@ -174,7 +188,7 @@ const WeatherCard = ({ onWeatherUpdate }) => {
           {/* Mock Data Notice */}
           {locationData.weather?.isMock && (
             <p className="text-xs text-gray-400 text-center">
-              {t('weatherCard.demoData')}
+              {t('common.notAvailable')}
             </p>
           )}
         </div>
@@ -183,7 +197,7 @@ const WeatherCard = ({ onWeatherUpdate }) => {
       {/* Helper Text */}
       {!locationData && !error && (
         <p className="text-xs text-gray-500 text-center">
-          {t('weatherCard.clickToDetect')}
+          {t('weatherCard.detectLocation')}
         </p>
       )}
     </div>

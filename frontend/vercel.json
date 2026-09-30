@@ -2,8 +2,8 @@
   "buildCommand": "npm run build",
   "outputDirectory": "build",
   "devCommand": "npm start",
-  "installCommand": "npm install",
-  "framework": "create-react-app",
+  "installCommand": "npm ci",
+  "framework": "vite",
   "rewrites": [
     {
       "source": "/(.*)",

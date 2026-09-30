@@ -1,16 +1,7 @@
 """
-Multi-Source Disease Detection Module
-Combines:
-1. Local trained ML model (primary)
-2. Google reverse image search simulation
-3. Disease database matching
+Disease detection through the installed classifier.
+Unavailable and uncertain predictions remain explicit.
 """
-import os
-import json
-import random
-import base64
-import hashlib
-from pathlib import Path
 from typing import Dict, List, Any, Optional
 
 # Disease keywords for matching with image search results
@@ -160,177 +151,29 @@ CROP_DISEASES = {
 }
 
 
-def simulate_reverse_image_search(image_data: bytes, crop_type: str) -> Dict[str, Any]:
-    """
-    Simulate reverse image search by analyzing image characteristics
-    and matching with known disease patterns.
-    
-    In production, this would call a real image search API.
-    For hackathon, we simulate intelligent matching based on:
-    - Image hash for consistency
-    - Crop type for disease filtering
-    - Random but weighted selection
-    """
-    # Create deterministic hash from image for consistent results
-    image_hash = hashlib.md5(image_data).hexdigest()
-    seed = int(image_hash[:8], 16)
-    rng = random.Random(seed)
-    
-    # Get diseases for this crop
-    crop_lower = crop_type.lower() if crop_type else "rice"
-    possible_diseases = CROP_DISEASES.get(crop_lower, CROP_DISEASES["rice"])
-    
-    # Select a disease based on image hash (deterministic per image)
-    selected_disease_id = rng.choice(possible_diseases)
-    
-    # Get treatment info
-    treatment = TREATMENTS.get(selected_disease_id, {
-        "name": selected_disease_id.replace("_", " ").title(),
-        "severity": "medium",
-        "chemical": ["Consult local agricultural officer"],
-        "organic": ["Neem oil spray"],
-        "prevention": ["Regular monitoring"]
-    })
-    
-    # Generate confidence based on image characteristics
-    confidence = 0.75 + (rng.random() * 0.20)  # 75-95%
-    
-    # Simulate visual matches found
-    visual_matches = [
-        {"source": "Agricultural Research Database", "match_score": confidence * 100},
-        {"source": "PlantVillage Dataset", "match_score": (confidence - 0.05) * 100},
-        {"source": "ICAR Disease Repository", "match_score": (confidence - 0.10) * 100},
-    ]
-    
-    return {
-        "disease_id": selected_disease_id,
-        "disease_name": treatment.get("name", selected_disease_id),
-        "confidence": round(confidence, 2),
-        "severity": treatment.get("severity", "medium"),
-        "visual_matches": visual_matches,
-        "keywords_matched": DISEASE_KEYWORDS.get(selected_disease_id, [])[:3],
-        "treatment": treatment,
-    }
-
-
-def detect_disease_multisource(image_data: bytes, crop_type: str) -> Dict[str, Any]:
-    """
-    Multi-source disease detection combining:
-    1. Local ML model (if trained and available)
-    2. Simulated reverse image search
-    3. Disease database matching
-    
-    Returns combined results with confidence scores from each source.
-    """
-    results = {
-        "status": "disease_detected",
-        "sources": [],
-        "combined_confidence": 0,
-        "disease": None,
-        "treatment": None,
-    }
-    
-    # Source 1: Try local ML model
-    model_result = None
-    try:
-        from model_inference import predict_from_image, is_model_available
-        if is_model_available():
-            model_result = predict_from_image(image_data)
-            if model_result.get("status") == "disease_detected":
-                results["sources"].append({
-                    "name": "Trained ML Model",
-                    "disease": model_result.get("disease", {}).get("name", "Unknown"),
-                    "confidence": model_result.get("disease", {}).get("confidence", 0),
-                    "icon": "🤖"
-                })
-    except ImportError:
-        pass  # Model not available
-    
-    # Source 2: Reverse image search simulation
-    search_result = simulate_reverse_image_search(image_data, crop_type)
-    results["sources"].append({
-        "name": "Visual Search Database",
-        "disease": search_result["disease_name"],
-        "confidence": search_result["confidence"],
-        "icon": "🔍",
-        "visual_matches": search_result["visual_matches"]
-    })
-    
-    # Source 3: Disease pattern matching
-    pattern_confidence = search_result["confidence"] * 0.9  # Slightly lower
-    results["sources"].append({
-        "name": "Disease Pattern Library",
-        "disease": search_result["disease_name"],
-        "confidence": pattern_confidence,
-        "icon": "📚",
-        "keywords": search_result["keywords_matched"]
-    })
-    
-    # Combine results (weighted average)
-    if model_result and model_result.get("status") == "disease_detected":
-        # If model available, weight it higher
-        model_conf = model_result.get("disease", {}).get("confidence", 0)
-        combined = (model_conf * 0.5) + (search_result["confidence"] * 0.3) + (pattern_confidence * 0.2)
-        primary_disease = model_result.get("disease", {}).get("name", search_result["disease_name"])
-    else:
-        # Otherwise use search results
-        combined = (search_result["confidence"] * 0.6) + (pattern_confidence * 0.4)
-        primary_disease = search_result["disease_name"]
-    
-    results["combined_confidence"] = round(combined, 2)
-    results["disease"] = {
-        "id": search_result["disease_id"],
-        "name": primary_disease,
-        "severity": search_result["severity"],
-        "confidence": results["combined_confidence"]
-    }
-    results["treatment"] = search_result["treatment"]
-    results["message"] = f"Detected: {primary_disease} ({search_result['severity'].upper()} severity)"
-    
-    return results
+def detect_disease_multisource(image_data: bytes, crop_type: str = None) -> Dict[str, Any]:
+    """Only a real classifier can produce a diagnosis. Never synthesize sources."""
+    from model_inference import predict_from_image, get_model_identity
+    result = predict_from_image(image_data, crop_type=crop_type)
+    result['model_version'] = get_model_identity()
+    result["sources"] = []
+    if result.get("status") in ("healthy", "disease_detected", "uncertain"):
+        confidence = result.get("confidence", (result.get("disease") or {}).get("confidence"))
+        result["sources"] = [{"name": "Trained ML Model", "confidence": confidence, "icon": "🌿"}]
+        result["combined_confidence"] = confidence
+    return result
 
 
 def detect_disease_mock(crop_type: str = None) -> Dict[str, Any]:
-    """
-    Simple mock detection for when multi-source isn't needed.
-    Always returns a disease for the selected crop.
-    """
-    crop_lower = (crop_type or "rice").lower()
-    diseases = CROP_DISEASES.get(crop_lower, CROP_DISEASES["rice"])
-    
-    disease_id = diseases[0]  # First disease is most common
-    treatment = TREATMENTS.get(disease_id, {})
-    
-    confidence = random.uniform(0.80, 0.95)
-    
-    return {
-        "status": "disease_detected",
-        "disease": {
-            "id": disease_id,
-            "name": treatment.get("name", disease_id.replace("_", " ").title()),
-            "severity": treatment.get("severity", "medium"),
-            "confidence": round(confidence, 2)
-        },
-        "treatment": treatment,
-        "message": f"Detected: {treatment.get('name', disease_id)}",
-        "crop_detected": crop_lower.capitalize()
-    }
+    return {"status": "unavailable", "disease": None, "sources": [],
+            "message": "A working trained classifier is required for image diagnosis."}
 
 
 def get_detection_status() -> Dict[str, Any]:
-    """Get status of disease detection capabilities"""
-    status = {
-        "model_available": False,
-        "multi_source_available": True,
-        "sources": ["Visual Search", "Disease Pattern Library"]
-    }
-    
-    try:
-        from model_inference import is_model_available
-        status["model_available"] = is_model_available()
-        if status["model_available"]:
-            status["sources"].insert(0, "Trained ML Model")
-    except ImportError:
-        pass
-    
-    return status
+    from model_inference import is_model_available, get_available_classes, class_crop, get_model_identity
+    classes = get_available_classes()
+    available = is_model_available()
+    return {"model_available": available, "multi_source_available": False,
+            "model_version": get_model_identity(),
+            "sources": ["Trained ML Model"] if available else [],
+            "classes": classes, "supported_crops": sorted(set(filter(None, map(class_crop, classes))))}

@@ -47,14 +47,14 @@ const BottomSheet = ({ isOpen, onClose, children, title }) => {
     <>
       {/* Overlay */}
       <div
-        className="fixed inset-0 bg-black/50 z-40 backdrop-blur-sm animate-fade-in"
+        className="overlay animate-fade-in"
         onClick={onClose}
       />
 
       {/* Bottom Sheet */}
       <div
         ref={sheetRef}
-        className="fixed bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-2xl z-50 animate-slide-up"
+        className="bottom-sheet animate-slide-up"
         style={{
           maxHeight: '85vh',
           transform: `translateY(${dragY}px)`,
@@ -69,7 +69,7 @@ const BottomSheet = ({ isOpen, onClose, children, title }) => {
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
         >
-          <div className="w-12 h-1.5 bg-gray-300 rounded-full mx-auto" />
+          <div className="bottom-sheet-handle" />
         </div>
 
         {/* Header */}

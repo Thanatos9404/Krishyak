@@ -38,8 +38,15 @@ export const useFormValidation = () => {
         }
         break;
       case 'totalLandArea':
-        if (value !== undefined && (isNaN(value) || parseFloat(value) <= 0)) {
+        if (value !== undefined && (!Number.isFinite(Number(value)) || Number(value) <= 0 || Number(value) > 1000000)) {
           error = t('validation.invalidArea') || 'Please enter a valid land area';
+        }
+        break;
+      case 'irrigatedLand':
+      case 'rainfedLand':
+        if (value !== undefined && value !== null && String(value).trim() !== '' &&
+            (!Number.isFinite(Number(value)) || Number(value) < 0 || Number(value) > 1000000)) {
+          error = t('validation.invalidArea');
         }
         break;
       default:
@@ -81,7 +88,7 @@ export const useFormValidation = () => {
         } else if (!MOBILE_REGEX.test(formData.mobileNumber)) {
           addError('mobileNumber', t('validation.invalidMobile') || 'Please enter a valid 10-digit mobile number');
         }
-        // Aadhaar is optional — only validate format if provided
+        // Aadhaar is optional - only validate format if provided
         if (formData.aadhaarNumber && formData.aadhaarNumber.trim() && !AADHAAR_REGEX.test(formData.aadhaarNumber.replace(/\s/g, ''))) {
           addError('aadhaarNumber', t('validation.invalidAadhaar') || 'Please enter a valid 12-digit Aadhaar number');
         }
@@ -101,8 +108,19 @@ export const useFormValidation = () => {
 
       case 3: // Land Details
         if (!formData.khasraNumber?.trim()) addError('khasraNumber', t('validation.required') || 'This field is required');
-        if (!formData.totalLandArea || parseFloat(formData.totalLandArea) <= 0) {
+        if (!Number.isFinite(Number(formData.totalLandArea)) || Number(formData.totalLandArea) <= 0 || Number(formData.totalLandArea) > 1000000) {
           addError('totalLandArea', t('validation.invalidArea') || 'Please enter a valid land area');
+        }
+        for (const field of ['irrigatedLand', 'rainfedLand']) {
+          const raw = formData[field];
+          if (raw !== undefined && raw !== null && String(raw).trim() !== '' &&
+              (!Number.isFinite(Number(raw)) || Number(raw) < 0 || Number(raw) > 1000000)) {
+            addError(field, t('validation.invalidArea'));
+          }
+        }
+        if (Number(formData.irrigatedLand || 0) + Number(formData.rainfedLand || 0) > Number(formData.totalLandArea) + 1e-9) {
+          addError('irrigatedLand', t('validation.invalidArea'));
+          addError('rainfedLand', t('validation.invalidArea'));
         }
         if (!formData.ownershipType) addError('ownershipType', t('validation.required') || 'This field is required');
         break;

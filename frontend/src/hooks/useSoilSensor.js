@@ -9,20 +9,36 @@
  * - Manual input mode when sensors unavailable
  */
 
-import { useState, useEffect, useCallback } from 'react';
-
-const API_BASE = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { API_BASE_URL as API_BASE } from '../config/api';
 
 // Local storage key for offline cache
 const SOIL_CACHE_KEY = 'krishyak_soil_data';
+
+const isSoilReading = (data, deviceId) => {
+  if (!data || typeof data !== 'object' || data.device_id !== deviceId ||
+      typeof data.timestamp !== 'string' || !Number.isFinite(Date.parse(data.timestamp))) return false;
+  const bounds = {nitrogen: [0, 500], phosphorus: [0, 200], potassium: [0, 500],
+    ph: [0, 14], moisture: [0, 100], temperature: [-10, 60]};
+  if (!Object.entries(bounds).every(([key, [min, max]]) =>
+    Number.isFinite(data[key]) && data[key] >= min && data[key] <= max)) return false;
+  return [['organic_carbon', 100], ['electrical_conductivity', Infinity]].every(([key, max]) =>
+    data[key] == null || (Number.isFinite(data[key]) && data[key] >= 0 && data[key] <= max));
+};
+
+const readCache = () => {
+  const parsed = JSON.parse(localStorage.getItem(SOIL_CACHE_KEY) || '{}');
+  return parsed && typeof parsed === 'object' && !Array.isArray(parsed) ? parsed : {};
+};
 
 /**
  * Get cached soil data from localStorage
  */
 const getCachedData = (deviceId) => {
   try {
-    const cache = JSON.parse(localStorage.getItem(SOIL_CACHE_KEY) || '{}');
-    return cache[deviceId] || null;
+    const cache = readCache();
+    return Object.prototype.hasOwnProperty.call(cache, deviceId) && isSoilReading(cache[deviceId], deviceId)
+      ? cache[deviceId] : null;
   } catch {
     return null;
   }
@@ -33,11 +49,10 @@ const getCachedData = (deviceId) => {
  */
 const setCachedData = (deviceId, data) => {
   try {
-    const cache = JSON.parse(localStorage.getItem(SOIL_CACHE_KEY) || '{}');
-    cache[deviceId] = {
+    const cache = {...readCache(), [deviceId]: {
       ...data,
       cachedAt: new Date().toISOString()
-    };
+    }};
     localStorage.setItem(SOIL_CACHE_KEY, JSON.stringify(cache));
   } catch (e) {
     console.error('Failed to cache soil data:', e);
@@ -56,6 +71,8 @@ const useSoilSensor = (deviceId = 'default', options = {}) => {
     useFallbackCache = true,
   } = options;
 
+  const requestSequence = useRef(0);
+  const saving = useRef(false);
   // State
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -69,68 +86,33 @@ const useSoilSensor = (deviceId = 'default', options = {}) => {
    * Fetch soil data from backend API
    */
   const fetchData = useCallback(async () => {
-    if (!deviceId) return;
-
+    if (!deviceId || saving.current === deviceId) return;
+    const sequence = ++requestSequence.current;
     setLoading(true);
     setError(null);
-
     try {
-      const response = await fetch(`${API_BASE}/sensors/${deviceId}/data?use_cache=true`);
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch soil data');
-      }
-
-      const responseData = await response.json();
-
-      if (responseData.success && responseData.data) {
-        const soilData = responseData.data;
-        setData(soilData);
-        setSource(responseData.source || 'sensor');
-        setIsStale(responseData.is_stale || false);
-        setLastUpdated(new Date(soilData.timestamp));
-        setConnectionStatus('connected');
-
-        // Cache locally for offline access
-        if (useFallbackCache) {
-          setCachedData(deviceId, soilData);
-        }
-      } else {
-        // No data from API, try local cache
-        if (useFallbackCache) {
-          const cached = getCachedData(deviceId);
-          if (cached) {
-            setData(cached);
-            setSource('cached');
-            setIsStale(true);
-            setLastUpdated(new Date(cached.cachedAt || cached.timestamp));
-            setConnectionStatus('offline');
-          } else {
-            setError('No soil data available');
-            setConnectionStatus('disconnected');
-          }
-        }
-      }
+      const response = await fetch(`${API_BASE}/sensors/${encodeURIComponent(deviceId)}/data?use_cache=${useFallbackCache}`);
+      if (!response.ok) throw new Error('common.error');
+      const result = await response.json();
+      if (sequence !== requestSequence.current) return;
+      if (!result.success || !isSoilReading(result.data, deviceId)) throw new Error('common.noResults');
+      setData(result.data);
+      setSource(result.source || 'unknown');
+      setIsStale(Boolean(result.is_stale));
+      setLastUpdated(new Date(result.data.timestamp));
+      setConnectionStatus(result.is_stale ? 'stale' : result.source === 'cached' ? 'offline' : 'connected');
+      if (useFallbackCache) setCachedData(deviceId, result.data);
     } catch (err) {
-      console.error('Soil sensor fetch error:', err);
-      setConnectionStatus('error');
-
-      // Fallback to local cache on error
-      if (useFallbackCache) {
-        const cached = getCachedData(deviceId);
-        if (cached) {
-          setData(cached);
-          setSource('cached');
-          setIsStale(true);
-          setLastUpdated(new Date(cached.cachedAt || cached.timestamp));
-        } else {
-          setError(err.message || 'Failed to fetch soil data');
-        }
-      } else {
-        setError(err.message || 'Failed to fetch soil data');
-      }
+      if (sequence !== requestSequence.current) return;
+      const cached = useFallbackCache ? getCachedData(deviceId) : null;
+      setData(cached);
+      setSource(cached ? 'cached' : 'unknown');
+      setIsStale(Boolean(cached));
+      setLastUpdated(cached?.timestamp ? new Date(cached.timestamp) : null);
+      setConnectionStatus(cached ? 'offline' : 'disconnected');
+      setError(err.message === 'common.noResults' ? 'common.noResults' : 'common.error');
     } finally {
-      setLoading(false);
+      if (sequence === requestSequence.current) setLoading(false);
     }
   }, [deviceId, useFallbackCache]);
 
@@ -138,6 +120,8 @@ const useSoilSensor = (deviceId = 'default', options = {}) => {
    * Submit manual soil data input
    */
   const submitManualData = useCallback(async (manualData) => {
+    const sequence = ++requestSequence.current;
+    saving.current = deviceId;
     setLoading(true);
     setError(null);
 
@@ -146,8 +130,8 @@ const useSoilSensor = (deviceId = 'default', options = {}) => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          device_id: deviceId,
-          ...manualData
+          ...manualData,
+          device_id: deviceId
         })
       });
 
@@ -157,12 +141,14 @@ const useSoilSensor = (deviceId = 'default', options = {}) => {
 
       const responseData = await response.json();
 
+      if (!responseData.success || !isSoilReading(responseData.data, deviceId)) throw new Error('Failed to save data');
+      if (sequence !== requestSequence.current) return { success: true, data: responseData.data };
       if (responseData.success) {
         const soilData = responseData.data;
         setData(soilData);
         setSource('manual');
         setIsStale(false);
-        setLastUpdated(new Date());
+        setLastUpdated(new Date(soilData.timestamp));
         setConnectionStatus('connected');
 
         // Cache locally
@@ -175,11 +161,11 @@ const useSoilSensor = (deviceId = 'default', options = {}) => {
         throw new Error(responseData.error || 'Failed to save data');
       }
     } catch (err) {
-      const errorMsg = err.message || 'Failed to save soil data';
-      setError(errorMsg);
-      return { success: false, error: errorMsg };
+      if (sequence === requestSequence.current) setError('validation.saveFailed');
+      return { success: false, error: 'validation.saveFailed' };
     } finally {
-      setLoading(false);
+      if (saving.current === deviceId) saving.current = false;
+      if (sequence === requestSequence.current) setLoading(false);
     }
   }, [deviceId, useFallbackCache]);
 
@@ -188,7 +174,7 @@ const useSoilSensor = (deviceId = 'default', options = {}) => {
    */
   const fetchHistory = useCallback(async (days = 7) => {
     try {
-      const response = await fetch(`${API_BASE}/sensors/${deviceId}/history?days=${days}`);
+      const response = await fetch(`${API_BASE}/sensors/${encodeURIComponent(deviceId)}/history?days=${days}`);
 
       if (!response.ok) {
         throw new Error('Failed to fetch history');
@@ -197,7 +183,7 @@ const useSoilSensor = (deviceId = 'default', options = {}) => {
       const responseData = await response.json();
 
       if (responseData.success) {
-        return responseData.readings;
+        return Array.isArray(responseData.readings) ? responseData.readings.filter(reading => isSoilReading(reading, deviceId)) : [];
       }
       return [];
     } catch (err) {
@@ -210,15 +196,22 @@ const useSoilSensor = (deviceId = 'default', options = {}) => {
    * Force refresh data
    */
   const refresh = useCallback(() => {
-    fetchData();
+    return fetchData();
   }, [fetchData]);
 
   /**
    * Clear local cache
    */
   const clearCache = useCallback(() => {
+    requestSequence.current += 1;
+    setData(null);
+    setSource('unknown');
+    setLastUpdated(null);
+    setIsStale(false);
+    setLoading(false);
+    setConnectionStatus('unknown');
     try {
-      const cache = JSON.parse(localStorage.getItem(SOIL_CACHE_KEY) || '{}');
+      const cache = readCache();
       delete cache[deviceId];
       localStorage.setItem(SOIL_CACHE_KEY, JSON.stringify(cache));
       setData(null);
@@ -228,16 +221,20 @@ const useSoilSensor = (deviceId = 'default', options = {}) => {
     }
   }, [deviceId]);
 
-  // Initial fetch and auto-refresh setup
+  // Invalidate old-plot requests even when no refresh timer is enabled.
   useEffect(() => {
-    if (deviceId) {
-      fetchData();
-    }
-
-    if (autoRefresh && deviceId) {
-      const interval = setInterval(fetchData, refreshInterval);
-      return () => clearInterval(interval);
-    }
+    setData(null);
+    setSource('unknown');
+    setLastUpdated(null);
+    setIsStale(false);
+    setLoading(false);
+    setConnectionStatus('unknown');
+    if (deviceId) fetchData();
+    const interval = autoRefresh && deviceId ? setInterval(fetchData, refreshInterval) : null;
+    return () => {
+      if (interval) clearInterval(interval);
+      requestSequence.current += 1;
+    };
   }, [deviceId, autoRefresh, refreshInterval, fetchData]);
 
   // Computed values

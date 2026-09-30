@@ -9,9 +9,8 @@
  * - Local caching for offline access
  */
 
-import { useState, useEffect, useCallback } from 'react';
-
-const API_BASE = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+import { useState, useEffect, useCallback, useRef } from 'react';
+import { API_BASE_URL as API_BASE } from '../config/api';
 
 /**
  * Custom hook for fertilizer analysis
@@ -21,6 +20,13 @@ const API_BASE = process.env.REACT_APP_API_URL || 'http://localhost:8000';
  * @param {string} growthStage - Current growth stage
  */
 export function useFertilizerAnalysis(crop, areaHectares = 1, soilData = null, growthStage = 'basal') {
+  const requestSequence = useRef(0);
+  const scheduleSequence = useRef(0);
+  const alternativesSequence = useRef(0);
+  const soilN = soilData?.N ?? soilData?.nitrogen ?? null;
+  const soilP = soilData?.P ?? soilData?.phosphorus ?? null;
+  const soilK = soilData?.K ?? soilData?.potassium ?? null;
+  const soilPH = soilData?.pH ?? soilData?.ph ?? null;
   // State
   const [recommendation, setRecommendation] = useState(null);
   const [schedule, setSchedule] = useState(null);
@@ -35,7 +41,11 @@ export function useFertilizerAnalysis(crop, areaHectares = 1, soilData = null, g
   // ============================================================================
 
   const fetchRecommendation = useCallback(async () => {
+    const sequence = ++requestSequence.current;
+    setRecommendation(null);
+    setLastUpdated(null);
     if (!crop) return;
+    const context = JSON.stringify({ crop, areaHectares, growthStage, preferOrganic, soilN, soilP, soilK, soilPH });
 
     setLoading(true);
     setError(null);
@@ -48,13 +58,10 @@ export function useFertilizerAnalysis(crop, areaHectares = 1, soilData = null, g
         prefer_organic: preferOrganic
       };
 
-      // Add soil data if available
-      if (soilData) {
-        body.soil_n = soilData.N || soilData.nitrogen || null;
-        body.soil_p = soilData.P || soilData.phosphorus || null;
-        body.soil_k = soilData.K || soilData.potassium || null;
-        body.soil_ph = soilData.pH || null;
-      }
+      body.soil_n = soilN;
+      body.soil_p = soilP;
+      body.soil_k = soilK;
+      body.soil_ph = soilPH;
 
       const response = await fetch(`${API_BASE}/fertilizer/recommendation`, {
         method: 'POST',
@@ -66,44 +73,41 @@ export function useFertilizerAnalysis(crop, areaHectares = 1, soilData = null, g
 
       const data = await response.json();
 
+      if (sequence !== requestSequence.current) return;
+      if (!data.success) throw new Error('Fertilizer recommendation unavailable');
       if (data.success) {
         setRecommendation(data);
         setLastUpdated(new Date());
 
-        // Cache to localStorage
-        localStorage.setItem('fertilizerRecommendation', JSON.stringify({
-          ...data,
-          timestamp: new Date().toISOString()
-        }));
+        try {
+          localStorage.setItem('fertilizerRecommendation', JSON.stringify({
+            schemaVersion: 3, context, data, timestamp: Date.now()
+          }));
+        } catch { /* A cache write failure does not invalidate a live response. */ }
       }
     } catch (err) {
-      console.error('Error fetching fertilizer recommendation:', err);
-
-      // Try to load from cache
-      const cached = localStorage.getItem('fertilizerRecommendation');
-      if (cached) {
-        try {
-          const cachedData = JSON.parse(cached);
-          if (cachedData.crop === crop) {
-            setRecommendation(cachedData);
-            console.log('Loaded fertilizer recommendation from cache');
-          }
-        } catch (e) {
-          // Ignore cache errors
+      if (sequence !== requestSequence.current) return;
+      try {
+        const cached = JSON.parse(localStorage.getItem('fertilizerRecommendation'));
+        const age = Date.now() - cached?.timestamp;
+        if (cached?.schemaVersion === 3 && cached.context === context && age >= 0 && age < 86400000) {
+          setRecommendation(cached.data);
         }
-      }
+      } catch { /* Unavailable or corrupt browser storage is optional. */ }
 
       setError(err.message);
     } finally {
-      setLoading(false);
+      if (sequence === requestSequence.current) setLoading(false);
     }
-  }, [crop, areaHectares, soilData, growthStage, preferOrganic]);
+  }, [crop, areaHectares, soilN, soilP, soilK, soilPH, growthStage, preferOrganic]);
 
   // ============================================================================
   // FETCH SCHEDULE
   // ============================================================================
 
   const fetchSchedule = useCallback(async () => {
+    const sequence = ++scheduleSequence.current;
+    setSchedule(null);
     if (!crop) return;
 
     try {
@@ -115,7 +119,7 @@ export function useFertilizerAnalysis(crop, areaHectares = 1, soilData = null, g
 
       const data = await response.json();
 
-      if (data.success) {
+      if (sequence === scheduleSequence.current && data.success) {
         setSchedule(data);
       }
     } catch (err) {
@@ -128,6 +132,8 @@ export function useFertilizerAnalysis(crop, areaHectares = 1, soilData = null, g
   // ============================================================================
 
   const fetchOrganicAlternatives = useCallback(async () => {
+    const sequence = ++alternativesSequence.current;
+    setOrganicAlternatives(null);
     if (!crop) return;
 
     try {
@@ -139,7 +145,7 @@ export function useFertilizerAnalysis(crop, areaHectares = 1, soilData = null, g
 
       const data = await response.json();
 
-      if (data.success) {
+      if (sequence === alternativesSequence.current && data.success) {
         setOrganicAlternatives(data);
       }
     } catch (err) {
@@ -177,16 +183,22 @@ export function useFertilizerAnalysis(crop, areaHectares = 1, soilData = null, g
       fetchRecommendation();
       fetchSchedule();
       fetchOrganicAlternatives();
+    } else {
+      requestSequence.current += 1;
+      scheduleSequence.current += 1;
+      alternativesSequence.current += 1;
+      setRecommendation(null);
+      setSchedule(null);
+      setOrganicAlternatives(null);
+      setLoading(false);
     }
   }, [crop, fetchRecommendation, fetchSchedule, fetchOrganicAlternatives]);
 
-  // Refetch when organic preference changes - dependencies intentionally limited
-  useEffect(() => {
-    if (crop && recommendation) {
-      fetchRecommendation();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [preferOrganic]);
+  useEffect(() => () => {
+    requestSequence.current += 1;
+    scheduleSequence.current += 1;
+    alternativesSequence.current += 1;
+  }, []);
 
   // ============================================================================
   // COMPUTED VALUES
@@ -194,7 +206,7 @@ export function useFertilizerAnalysis(crop, areaHectares = 1, soilData = null, g
 
   const totalCost = recommendation?.total_cost_inr || 0;
   const costPerHectare = recommendation?.cost_per_hectare || 0;
-  const hasRecommendation = recommendation?.recommendations?.length > 0;
+  const hasRecommendation = recommendation?.success === true;
 
   return {
     // Data

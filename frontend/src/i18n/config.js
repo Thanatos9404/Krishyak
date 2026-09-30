@@ -1,225 +1,82 @@
 /**
- * Krishyak Internationalization (i18n) Configuration
- * Supports 12+ Indian languages with accessibility-first design
- * 
- * Language codes follow BCP 47 and are compatible with:
- * - Web Speech API (TTS/STT)
- * - Google Translate
- * - Government of India's Bhashini API
+ * All 22 languages in the Eighth Schedule, plus Indian English.
+ * Locale packs are loaded only after selection to keep the first mobile load small.
  */
 
-// Supported languages with metadata
+function language(code, name, nativeName, speechCode, script, region, options = {}) {
+  return {
+    code,
+    name,
+    nativeName,
+    direction: options.direction || 'ltr',
+    speechCode,
+    speechFallbackCodes: options.speechFallbackCodes || [],
+    ttsVoice: speechCode,
+    script,
+    region,
+    scheduled: options.scheduled !== false,
+    isDefault: Boolean(options.isDefault),
+  };
+}
+
 export const SUPPORTED_LANGUAGES = {
-  en: {
-    code: 'en',
-    name: 'English',
-    nativeName: 'English',
-    direction: 'ltr',
-    speechCode: 'en-IN', // Web Speech API code
-    ttsVoice: 'en-IN',
-    script: 'Latin',
-    region: 'All India',
-    isDefault: true,
-  },
-  hi: {
-    code: 'hi',
-    name: 'Hindi',
-    nativeName: 'हिन्दी',
-    direction: 'ltr',
-    speechCode: 'hi-IN',
-    ttsVoice: 'hi-IN',
-    script: 'Devanagari',
-    region: 'North India, Central India',
-    isDefault: false,
-  },
-  mr: {
-    code: 'mr',
-    name: 'Marathi',
-    nativeName: 'मराठी',
-    direction: 'ltr',
-    speechCode: 'mr-IN',
-    ttsVoice: 'mr-IN',
-    script: 'Devanagari',
-    region: 'Maharashtra',
-  },
-  ta: {
-    code: 'ta',
-    name: 'Tamil',
-    nativeName: 'தமிழ்',
-    direction: 'ltr',
-    speechCode: 'ta-IN',
-    ttsVoice: 'ta-IN',
-    script: 'Tamil',
-    region: 'Tamil Nadu',
-  },
-  te: {
-    code: 'te',
-    name: 'Telugu',
-    nativeName: 'తెలుగు',
-    direction: 'ltr',
-    speechCode: 'te-IN',
-    ttsVoice: 'te-IN',
-    script: 'Telugu',
-    region: 'Andhra Pradesh, Telangana',
-  },
-  bn: {
-    code: 'bn',
-    name: 'Bengali',
-    nativeName: 'বাংলা',
-    direction: 'ltr',
-    speechCode: 'bn-IN',
-    ttsVoice: 'bn-IN',
-    script: 'Bengali',
-    region: 'West Bengal',
-  },
-  gu: {
-    code: 'gu',
-    name: 'Gujarati',
-    nativeName: 'ગુજરાતી',
-    direction: 'ltr',
-    speechCode: 'gu-IN',
-    ttsVoice: 'gu-IN',
-    script: 'Gujarati',
-    region: 'Gujarat',
-  },
-  kn: {
-    code: 'kn',
-    name: 'Kannada',
-    nativeName: 'ಕನ್ನಡ',
-    direction: 'ltr',
-    speechCode: 'kn-IN',
-    ttsVoice: 'kn-IN',
-    script: 'Kannada',
-    region: 'Karnataka',
-  },
-  ml: {
-    code: 'ml',
-    name: 'Malayalam',
-    nativeName: 'മലയാളം',
-    direction: 'ltr',
-    speechCode: 'ml-IN',
-    ttsVoice: 'ml-IN',
-    script: 'Malayalam',
-    region: 'Kerala',
-  },
-  pa: {
-    code: 'pa',
-    name: 'Punjabi',
-    nativeName: 'ਪੰਜਾਬੀ',
-    direction: 'ltr',
-    speechCode: 'pa-IN',
-    ttsVoice: 'pa-IN',
-    script: 'Gurmukhi',
-    region: 'Punjab',
-  },
-  or: {
-    code: 'or',
-    name: 'Odia',
-    nativeName: 'ଓଡ଼ିଆ',
-    direction: 'ltr',
-    speechCode: 'or-IN',
-    ttsVoice: 'or-IN',
-    script: 'Odia',
-    region: 'Odisha',
-  },
-  as: {
-    code: 'as',
-    name: 'Assamese',
-    nativeName: 'অসমীয়া',
-    direction: 'ltr',
-    speechCode: 'as-IN',
-    ttsVoice: 'as-IN',
-    script: 'Bengali',
-    region: 'Assam',
-  },
-  ur: {
-    code: 'ur',
-    name: 'Urdu',
-    nativeName: 'اردو',
-    direction: 'rtl',
-    speechCode: 'ur-IN',
-    ttsVoice: 'ur-IN',
-    script: 'Arabic',
-    region: 'Uttar Pradesh, Jammu & Kashmir',
-  },
+  en: language('en', 'English', 'English', 'en-IN', 'Latin', 'All India', { isDefault: true, scheduled: false }),
+  as: language('as', 'Assamese', 'অসমীয়া', 'as-IN', 'Bengali–Assamese', 'Assam'),
+  bn: language('bn', 'Bengali', 'বাংলা', 'bn-IN', 'Bengali–Assamese', 'West Bengal, Tripura'),
+  brx: language('brx', 'Bodo', 'बर’ राव', 'brx-IN', 'Devanagari', 'Assam', { speechFallbackCodes: ['hi-IN', 'as-IN'] }),
+  doi: language('doi', 'Dogri', 'डोगरी', 'doi-IN', 'Devanagari', 'Jammu region', { speechFallbackCodes: ['hi-IN', 'pa-IN'] }),
+  gu: language('gu', 'Gujarati', 'ગુજરાતી', 'gu-IN', 'Gujarati', 'Gujarat'),
+  hi: language('hi', 'Hindi', 'हिन्दी', 'hi-IN', 'Devanagari', 'North and Central India'),
+  kn: language('kn', 'Kannada', 'ಕನ್ನಡ', 'kn-IN', 'Kannada', 'Karnataka'),
+  ks: language('ks', 'Kashmiri', 'کٲشُر', 'ks-IN', 'Perso-Arabic', 'Jammu and Kashmir', { direction: 'rtl', speechFallbackCodes: ['ur-IN', 'hi-IN'] }),
+  kok: language('kok', 'Konkani', 'कोंकणी', 'kok-IN', 'Devanagari', 'Goa and Konkan', { speechFallbackCodes: ['mr-IN', 'hi-IN'] }),
+  mai: language('mai', 'Maithili', 'मैथिली', 'mai-IN', 'Devanagari', 'Bihar and Jharkhand', { speechFallbackCodes: ['hi-IN', 'bn-IN'] }),
+  ml: language('ml', 'Malayalam', 'മലയാളം', 'ml-IN', 'Malayalam', 'Kerala'),
+  mni: language('mni', 'Manipuri', 'ꯃꯤꯇꯩ ꯂꯣꯟ', 'mni-IN', 'Meitei Mayek', 'Manipur', { speechFallbackCodes: ['bn-IN', 'en-IN'] }),
+  mr: language('mr', 'Marathi', 'मराठी', 'mr-IN', 'Devanagari', 'Maharashtra'),
+  ne: language('ne', 'Nepali', 'नेपाली', 'ne-IN', 'Devanagari', 'Sikkim and North Bengal'),
+  or: language('or', 'Odia', 'ଓଡ଼ିଆ', 'or-IN', 'Odia', 'Odisha'),
+  pa: language('pa', 'Punjabi', 'ਪੰਜਾਬੀ', 'pa-IN', 'Gurmukhi', 'Punjab'),
+  sa: language('sa', 'Sanskrit', 'संस्कृतम्', 'sa-IN', 'Devanagari', 'All India', { speechFallbackCodes: ['hi-IN'] }),
+  sat: language('sat', 'Santali', 'ᱥᱟᱱᱛᱟᱲᱤ', 'sat-IN', 'Ol Chiki', 'Jharkhand, Odisha, West Bengal', { speechFallbackCodes: ['hi-IN', 'bn-IN'] }),
+  sd: language('sd', 'Sindhi', 'سنڌي', 'sd-IN', 'Perso-Arabic', 'All India', { direction: 'rtl', speechFallbackCodes: ['ur-IN', 'hi-IN'] }),
+  ta: language('ta', 'Tamil', 'தமிழ்', 'ta-IN', 'Tamil', 'Tamil Nadu'),
+  te: language('te', 'Telugu', 'తెలుగు', 'te-IN', 'Telugu', 'Andhra Pradesh, Telangana'),
+  ur: language('ur', 'Urdu', 'اردو', 'ur-IN', 'Perso-Arabic', 'All India', { direction: 'rtl' }),
 };
 
-// Default language
 export const DEFAULT_LANGUAGE = 'en';
-
-// Get language by code
-export const getLanguage = (code) => {
-  return SUPPORTED_LANGUAGES[code] || SUPPORTED_LANGUAGES[DEFAULT_LANGUAGE];
-};
-
-// Get all language codes
+export const getLanguage = (code) => SUPPORTED_LANGUAGES[code] || SUPPORTED_LANGUAGES[DEFAULT_LANGUAGE];
 export const getLanguageCodes = () => Object.keys(SUPPORTED_LANGUAGES);
-
-// Get languages as array for dropdowns
-export const getLanguageList = () => {
-  return Object.values(SUPPORTED_LANGUAGES).map(lang => ({
-    value: lang.code,
-    label: `${lang.nativeName} (${lang.name})`,
-    ...lang,
-  }));
+export const getLanguageList = () => Object.values(SUPPORTED_LANGUAGES).map((lang) => ({ value: lang.code, label: `${lang.nativeName} (${lang.name})`, ...lang }));
+export const isRTL = (code) => getLanguage(code).direction === 'rtl';
+export const getSpeechCode = (code) => getLanguage(code).speechCode || 'en-IN';
+export const getSpeechCodes = (code) => {
+  const selected = getLanguage(code);
+  return [...new Set([selected.speechCode, ...selected.speechFallbackCodes, 'en-IN'].filter(Boolean))];
 };
 
-// Check if language is RTL
-export const isRTL = (code) => {
-  const lang = getLanguage(code);
-  return lang.direction === 'rtl';
-};
-
-// Get speech recognition code for a language
-export const getSpeechCode = (code) => {
-  const lang = getLanguage(code);
-  return lang.speechCode || 'en-IN';
-};
-
-// Language detection from browser
 export const detectBrowserLanguage = () => {
   if (typeof navigator === 'undefined') return DEFAULT_LANGUAGE;
-
-  const browserLang = navigator.language || navigator.userLanguage;
-  const langCode = browserLang.split('-')[0];
-
-  if (SUPPORTED_LANGUAGES[langCode]) {
-    return langCode;
-  }
-
-  return DEFAULT_LANGUAGE;
+  const browserTag = navigator.language || navigator.userLanguage || DEFAULT_LANGUAGE;
+  const normalized = browserTag.toLowerCase();
+  const exact = Object.values(SUPPORTED_LANGUAGES).find((lang) => lang.speechCode.toLowerCase() === normalized);
+  if (exact) return exact.code;
+  const base = normalized.split('-')[0];
+  return SUPPORTED_LANGUAGES[base] ? base : DEFAULT_LANGUAGE;
 };
 
-// Persist language preference
 export const saveLanguagePreference = (code) => {
-  if (typeof localStorage !== 'undefined') {
-    localStorage.setItem('krishyak_language', code);
-  }
+  if (typeof localStorage !== 'undefined' && SUPPORTED_LANGUAGES[code]) localStorage.setItem('krishyak_language', code);
 };
 
-// Load language preference
 export const loadLanguagePreference = () => {
   if (typeof localStorage !== 'undefined') {
     const saved = localStorage.getItem('krishyak_language');
-    if (saved && SUPPORTED_LANGUAGES[saved]) {
-      return saved;
-    }
+    if (saved && SUPPORTED_LANGUAGES[saved]) return saved;
   }
   return detectBrowserLanguage();
 };
 
-// Named export object for eslint compliance
-const i18nConfig = {
-  SUPPORTED_LANGUAGES,
-  DEFAULT_LANGUAGE,
-  getLanguage,
-  getLanguageCodes,
-  getLanguageList,
-  isRTL,
-  getSpeechCode,
-  detectBrowserLanguage,
-  saveLanguagePreference,
-  loadLanguagePreference,
-};
-
+const i18nConfig = { SUPPORTED_LANGUAGES, DEFAULT_LANGUAGE, getLanguage, getLanguageCodes, getLanguageList, isRTL, getSpeechCode, getSpeechCodes, detectBrowserLanguage, saveLanguagePreference, loadLanguagePreference };
 export default i18nConfig;

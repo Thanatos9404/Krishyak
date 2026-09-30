@@ -13,6 +13,7 @@ from typing import Dict, List, Optional
 from dataclasses import dataclass
 from enum import Enum
 import logging
+import math
 
 logger = logging.getLogger(__name__)
 
@@ -300,6 +301,10 @@ class FertilizerAnalyzer:
         Returns:
             Recommendation with dosages, costs, and safety notes
         """
+        if isinstance(area_hectares, bool) or not math.isfinite(area_hectares) or not 0 < area_hectares <= 1000:
+            raise ValueError("area_hectares must be positive and at most 1000")
+        if growth_stage not in {stage.value for stage in GrowthStage}:
+            raise ValueError("Unknown growth stage")
         # Get crop requirements
         requirements = self.crop_requirements.get(crop, DEFAULT_NPK)
         
@@ -311,7 +316,7 @@ class FertilizerAnalyzer:
         
         # Generate fertilizer doses
         if prefer_organic:
-            doses = self._calculate_organic_doses(stage_requirements, area_hectares)
+            doses = self._calculate_organic_doses(stage_requirements, area_hectares) if growth_stage == "basal" else []
         else:
             doses = self._calculate_chemical_doses(stage_requirements, area_hectares)
         
@@ -329,6 +334,12 @@ class FertilizerAnalyzer:
             "crop": crop,
             "area_hectares": area_hectares,
             "growth_stage": growth_stage,
+            "method": "generic_crop_stage_recipe_not_soil_test_calibrated",
+            "crop_specific_recipe": crop in self.crop_requirements,
+            "stage_scheduled": growth_stage in requirements.get('stage_split', {}) and (not prefer_organic or growth_stage == 'basal'),
+            "application_note": ("Organic quantities are a basal amendment plan; plant-available nutrient release is not estimated."
+                                 if prefer_organic else "Use the complete schedule; a stage without a listed dose has no additional scheduled application."),
+            "nutrient_basis": {"N": "N", "P": "P2O5", "K": "K2O", "units": "kg/ha"},
             "soil_status": self._get_soil_status(soil_data),
             "nutrient_gaps": gaps,
             "requirements": {
@@ -339,7 +350,7 @@ class FertilizerAnalyzer:
             "recommendations": [d.to_dict() for d in doses],
             "total_npk_applied": {k: round(v, 1) for k, v in total_npk.items()},
             "total_cost_inr": round(total_cost, 2),
-            "cost_per_hectare": round(total_cost / max(area_hectares, 1), 2),
+            "cost_per_hectare": round(total_cost / area_hectares, 2),
             "safety_notes": safety,
             "organic_mode": prefer_organic
         }
@@ -348,6 +359,8 @@ class FertilizerAnalyzer:
         """
         Get complete fertilizer application schedule for the crop
         """
+        if isinstance(area_hectares, bool) or not math.isfinite(area_hectares) or not 0 < area_hectares <= 1000:
+            raise ValueError("area_hectares must be positive and at most 1000")
         requirements = self.crop_requirements.get(crop, DEFAULT_NPK)
         stage_split = requirements.get("stage_split", {})
         
@@ -383,7 +396,7 @@ class FertilizerAnalyzer:
             },
             "schedule": [s.to_dict() for s in schedule],
             "total_cost_inr": round(total_cost, 2),
-            "cost_per_hectare": round(total_cost / max(area_hectares, 1), 2)
+            "cost_per_hectare": round(total_cost / area_hectares, 2)
         }
     
     def get_organic_alternatives(self, crop: str) -> Dict:
@@ -430,18 +443,28 @@ class FertilizerAnalyzer:
         
         gaps = {}
         for nutrient in ["N", "P", "K"]:
-            soil_val = soil_data.get(nutrient, 0)
+            soil_val = soil_data.get(nutrient)
+            if soil_val is None:
+                gaps[nutrient] = {"soil_available": None, "required": requirements.get(nutrient, 0),
+                                  "gap": None, "status": "unknown"}
+                continue
+            if nutrient in ('P', 'K') and soil_data.get('nutrient_basis') != 'N_P2O5_K2O':
+                gaps[nutrient] = {"soil_available": soil_val, "required": requirements.get(nutrient, 0),
+                                  "gap": None, "status": "unknown", "reason": "Soil nutrient chemical basis is unspecified; fertilizer uses P2O5 and K2O."}
+                continue
             req_val = requirements.get(nutrient, 0)
             
-            # Convert soil readings (ppm) to kg/ha estimate (rough conversion)
-            soil_available = soil_val * 2.24  # Approximate conversion factor
+            # Compare only matching units and chemical bases; no assumed ppm conversion.
+            soil_available = soil_val  # Inputs use kg/ha, consistent with manual soil entry.
             gap = max(0, req_val - soil_available)
             
             gaps[nutrient] = {
                 "soil_available": round(soil_available, 1),
                 "required": req_val,
                 "gap": round(gap, 1),
-                "status": "deficient" if gap > req_val * 0.3 else "adequate"
+                "status": "deficient" if gap > req_val * 0.3 else "adequate",
+                "units": "kg/ha",
+                "basis": "arithmetic comparison, not a calibrated soil-test fertilizer prescription"
             }
         
         return gaps
@@ -449,7 +472,7 @@ class FertilizerAnalyzer:
     def _get_stage_requirements(self, requirements: Dict, growth_stage: str) -> Dict:
         """Get requirements for specific growth stage"""
         stage_split = requirements.get("stage_split", {})
-        split = stage_split.get(growth_stage, {"N": 0.33, "P": 0.33, "K": 0.33})
+        split = stage_split.get(growth_stage, {"N": 0, "P": 0, "K": 0})
         
         return {
             "N": requirements["N"] * split.get("N", 0),
@@ -467,7 +490,7 @@ class FertilizerAnalyzer:
         # 1. DAP for phosphorus (primary P source)
         if remaining["P"] > 0:
             dap_kg = remaining["P"] / 0.46  # DAP is 46% P
-            dap_kg = min(dap_kg, 150)  # Cap at practical limit
+            dap_kg = min(dap_kg, 150, max(0, remaining['N']) / .18)
             
             n_from_dap = dap_kg * 0.18
             p_from_dap = dap_kg * 0.46
@@ -484,6 +507,15 @@ class FertilizerAnalyzer:
             
             remaining["P"] -= p_from_dap
             remaining["N"] -= n_from_dap
+        # Supply remaining phosphorus without adding unwanted nitrogen.
+        if remaining['P'] > 0:
+            ssp_kg = remaining['P'] / .16
+            doses.append(FertilizerDose(
+                fertilizer_name='SSP', quantity_kg_per_hectare=ssp_kg,
+                npk_contribution={'N': 0, 'P': remaining['P'], 'K': 0},
+                cost_per_hectare=ssp_kg * self.fertilizers['SSP']['cost_per_kg'],
+                application_method='Basal incorporation; confirm rates with a local soil-test recommendation'))
+            remaining['P'] = 0
         
         # 2. Urea for remaining nitrogen
         if remaining["N"] > 0:
@@ -560,7 +592,10 @@ class FertilizerAnalyzer:
         thresholds = {"N": {"low": 150, "high": 280}, "P": {"low": 10, "high": 25}, "K": {"low": 100, "high": 200}}
         
         for nutrient in ["N", "P", "K"]:
-            val = soil_data.get(nutrient, 0)
+            val = soil_data.get(nutrient)
+            if val is None:
+                status[nutrient] = "Unknown"
+                continue
             if val < thresholds[nutrient]["low"]:
                 status[nutrient] = "Low"
             elif val > thresholds[nutrient]["high"]:
@@ -568,14 +603,14 @@ class FertilizerAnalyzer:
             else:
                 status[nutrient] = "Medium"
         
-        if soil_data.get("pH"):
+        if soil_data.get("pH") is not None:
             ph = soil_data["pH"]
             if ph < 5.5:
-                status["pH"] = "Acidic (apply lime)"
+                status["pH"] = "Acidic; amendment requires a soil-test recommendation"
             elif ph > 8.0:
-                status["pH"] = "Alkaline (apply gypsum)"
+                status["pH"] = "Alkaline; amendment requires a soil-test recommendation"
             else:
-                status["pH"] = "Neutral (optimal)"
+                status["pH"] = "Within the reference pH range; crop suitability varies"
         
         return status
     
@@ -595,7 +630,7 @@ class FertilizerAnalyzer:
                 elif "mop" in name and "mop" in SAFETY_NOTES:
                     notes.extend(SAFETY_NOTES["mop"])
         
-        return list(set(notes))[:6]  # Limit to 6 notes
+        return list(dict.fromkeys(notes))[:6]  # Limit to 6 notes
     
     def _get_timing(self, stage: str) -> str:
         """Get timing description for growth stage"""

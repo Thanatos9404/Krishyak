@@ -1,0 +1,15 @@
+{
+  "samples": 3173,
+  "classes": 42,
+  "top_1_accuracy": 0.7809643870154428,
+  "top_3_accuracy": 0.9095493224078159,
+  "balanced_accuracy": 0.6510074581047647,
+  "precision_macro": 0.6037162506637443,
+  "recall_macro": 0.6510074581047647,
+  "f1_macro": 0.5978507334794498,
+  "precision_weighted": 0.8062117706768737,
+  "recall_weighted": 0.7809643870154428,
+  "f1_weighted": 0.7768808391510714,
+  "rouge": null,
+  "rouge_note": "Not applicable: this is a single-label image classification model, not text generation or summarisation."
+}

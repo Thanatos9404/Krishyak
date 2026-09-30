@@ -1,0 +1,9 @@
+{
+  "provider": "Sarvam",
+  "model": "sarvam-translate:v1",
+  "source_sha256": "76ba947ccd8d9e29ff018a99ead555387b007a2bcf3cb78314fe759b1294d2fd",
+  "pack_sha256": "d2906e1d28fb33a4005201e75dc6ca9a64249014ca78244087941f4d93c6c49a",
+  "strings": 981,
+  "review_status": "machine_translated_needs_native_review",
+  "editorial_normalization": "Em dashes replaced with hyphens."
+}

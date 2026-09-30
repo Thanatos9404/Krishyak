@@ -1,31 +1,12 @@
-# Krishyak Backend Dependencies
-# For production deployment, use requirements-render.txt (lighter weight)
-
-# Core Framework
-fastapi==0.104.1
-uvicorn[standard]==0.24.0
-pydantic==2.5.0
-python-multipart==0.0.6
-
-# Data Processing
+# Krishyak runtime dependencies (kept serverless-friendly).
+# Training/evaluation dependencies live in requirements-eval.txt.
+-c requirements-security.txt
+fastapi==0.141.1
+starlette==1.6.0
+uvicorn[standard]==0.52.4
+pydantic==2.13.5
+python-multipart==0.0.32
 pandas==2.2.0
 numpy==1.26.3
-openpyxl==3.1.2
-
-# Machine Learning
-scikit-learn==1.4.0
-tensorflow==2.15.0
-keras==2.15.0
-pillow==10.1.0
-
-# HTTP Client
-httpx==0.25.1
-
-# Configuration
-python-dotenv==1.0.0
-
-# Security (optional - for enhanced security features)
-# slowapi==0.1.9  # For Redis-based rate limiting in production
-
-# Logging (optional)
-# python-json-logger==2.0.7
+httpx==0.28.1
+python-dotenv==1.2.3

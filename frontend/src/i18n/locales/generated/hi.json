@@ -1,0 +1,44 @@
+{
+  "common": {
+    "notAvailable": "उपलब्ध नहीं है।",
+    "offline": "ऑफ़लाइन",
+    "on": "पर",
+    "saving": "बचत...",
+    "select": "चुनें...",
+    "selected": "चुना गया",
+    "submitting": "जमा कर रहे हैं..."
+  },
+  "cropHealth": {
+    "confidenceLevels": {
+      "high": "उच्च आत्मविश्वास",
+      "highDesc": "मजबूत दृश्य मैच",
+      "low": "आत्मविश्वास में कमी",
+      "lowDesc": "कमजोर मैच। केवल इस परिणाम पर भरोसा न करें।",
+      "medium": "मध्यम आत्मविश्वास",
+      "mediumDesc": "संभावित मिलान; खेत में फसल की जाँच करें"
+    }
+  },
+  "language": {
+    "available": "उपलब्ध भाषाएँ",
+    "choose": "अपनी भाषा चुनें",
+    "coverage": "22 भारतीय भाषाएँ-इंटरफेस और आवाज",
+    "search": "भाषा या क्षेत्र खोजें"
+  },
+  "registration": {
+    "aadhaarHelp": "वैकल्पिक। योजना जाँच के लिए केवल आपकी सहमति से उपयोग किया जाता है।",
+    "skip": "अभी के लिए छोड़ दें"
+  },
+  "units": {
+    "bigha": "बीघा",
+    "per": "प्रति"
+  },
+  "weatherCard": {
+    "detectLocation": "स्थान का पता लगाएँ"
+  },
+  "privacy": {
+    "contact": "गोपनीयता नीति: privacy@krishyak.app"
+  },
+  "terms": {
+    "contact": "सेवा की शर्तें: support@krishyak.app"
+  }
+}

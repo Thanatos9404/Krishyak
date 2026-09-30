@@ -49,7 +49,7 @@ export const getValidationStatus = (value, ranges) => {
       color: 'border-green-500',
       bgColor: 'bg-green-50',
       textColor: 'text-green-700',
-      message: '✅ Optimal range'
+      message: 'Optimal range'
     };
   } else if (value >= ranges.acceptable[0] && value <= ranges.acceptable[1]) {
     return {
@@ -57,7 +57,7 @@ export const getValidationStatus = (value, ranges) => {
       color: 'border-yellow-500',
       bgColor: 'bg-yellow-50',
       textColor: 'text-yellow-700',
-      message: '⚠️ Acceptable, but not optimal'
+      message: 'Acceptable, but not optimal'
     };
   } else if (value >= ranges.warning[0] && value <= ranges.warning[1]) {
     return {
@@ -65,7 +65,7 @@ export const getValidationStatus = (value, ranges) => {
       color: 'border-orange-500',
       bgColor: 'bg-orange-50',
       textColor: 'text-orange-700',
-      message: '⚠️ May affect yield or cost'
+      message: 'May affect yield or cost'
     };
   } else {
     return {
@@ -73,7 +73,7 @@ export const getValidationStatus = (value, ranges) => {
       color: 'border-red-500',
       bgColor: 'bg-red-50',
       textColor: 'text-red-700',
-      message: '❌ Outside recommended range'
+      message: 'Outside recommended range'
     };
   }
 };
@@ -87,18 +87,17 @@ export const getFertilizerMessage = (fertilizer, value, crop) => {
   const status = getValidationStatus(value, fertRanges);
 
   if (status.status === 'optimal') {
-    return { ...status, message: `✅ Optimal for ${crop} cultivation` };
+    return { ...status, message: `Optimal for ${crop} cultivation` };
   } else if (value > fertRanges.optimal[1]) {
     const excess = value - fertRanges.optimal[1];
     return {
       ...status,
-      message: `⚠️ High ${fertilizer}. Consider reducing by ${excess.toFixed(0)} kg to avoid waste`
+      message: `High ${fertilizer}. Consider reducing by ${excess.toFixed(0)} kg to avoid waste`
     };
   } else if (value < fertRanges.optimal[0]) {
-    const deficit = fertRanges.optimal[0] - value;
     return {
       ...status,
-      message: `⚠️ Below recommended. May reduce yield by 10-15%`
+      message: 'Below reference range. Confirm the dose using a crop-specific soil test.'
     };
   }
 

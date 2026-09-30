@@ -4,7 +4,7 @@ import { useTranslation } from '../i18n';
 import mspData from '../data/msp_data.json';
 
 const MSPFullView = ({ onBack }) => {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const [searchTerm, setSearchTerm] = useState('');
   const [seasonFilter, setSeasonFilter] = useState('all');
   const [sortConfig, setSortConfig] = useState({ key: 'crop', direction: 'asc' });
@@ -24,11 +24,11 @@ const MSPFullView = ({ onBack }) => {
     let result = [...crops];
 
     // Filter by search
-    if (searchTerm) {
-      const searchLower = searchTerm.toLowerCase();
+    if (searchTerm.trim()) {
+      const searchLower = searchTerm.trim().normalize('NFC').toLowerCase();
       result = result.filter(crop =>
-        crop.name.toLowerCase().includes(searchLower) ||
-        crop.translatedName.toLowerCase().includes(searchLower)
+        crop.name.normalize('NFC').toLowerCase().includes(searchLower) ||
+        crop.translatedName.normalize('NFC').toLowerCase().includes(searchLower)
       );
     }
 
@@ -38,19 +38,15 @@ const MSPFullView = ({ onBack }) => {
     }
 
     // Sort
+    const collator = new Intl.Collator(language || 'en', {sensitivity:'base',numeric:true});
     result.sort((a, b) => {
-      let aValue = sortConfig.key === 'crop' ? a.name : a.msp;
-      let bValue = sortConfig.key === 'crop' ? b.name : b.msp;
-
-      if (sortConfig.direction === 'asc') {
-        return aValue > bValue ? 1 : -1;
-      } else {
-        return aValue < bValue ? 1 : -1;
-      }
+      const comparison = sortConfig.key === 'crop'
+        ? collator.compare(a.translatedName, b.translatedName) : a.msp - b.msp;
+      return sortConfig.direction === 'asc' ? comparison : -comparison;
     });
 
     return result;
-  }, [crops, searchTerm, seasonFilter, sortConfig]);
+  }, [crops, searchTerm, seasonFilter, sortConfig, language]);
 
   const handleSort = (key) => {
     setSortConfig(prev => ({
@@ -76,6 +72,8 @@ const MSPFullView = ({ onBack }) => {
           <div className="flex items-center">
             {onBack && (
               <button
+                type="button"
+                aria-label={t('common.back')}
                 onClick={onBack}
                 className="mr-4 p-2 hover:bg-white rounded-lg transition-colors"
               >
@@ -100,6 +98,7 @@ const MSPFullView = ({ onBack }) => {
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
               <input
                 type="text"
+                aria-label={t('common.search')}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder={t('common.search') || 'Search crops...'}
@@ -112,6 +111,7 @@ const MSPFullView = ({ onBack }) => {
             <div className="flex items-center gap-2">
               <Filter className="w-5 h-5 text-gray-400" />
               <select
+                aria-label={t('msp.season')}
                 value={seasonFilter}
                 onChange={(e) => setSeasonFilter(e.target.value)}
                 className="px-4 py-3 border-2 border-gray-200 rounded-xl focus:border-yellow-500 focus:outline-none"
@@ -158,25 +158,27 @@ const MSPFullView = ({ onBack }) => {
               <thead className="bg-yellow-50 border-b-2 border-yellow-100">
                 <tr>
                   <th
+                    scope="col"
+                    aria-sort={sortConfig.key === 'crop' ? (sortConfig.direction === 'asc' ? 'ascending' : 'descending') : 'none'}
                     className="px-6 py-4 text-left cursor-pointer hover:bg-yellow-100 transition-colors"
-                    onClick={() => handleSort('crop')}
                   >
-                    <div className="flex items-center font-semibold text-gray-700">
+                    <button type="button" onClick={() => handleSort('crop')} className="flex items-center font-semibold text-gray-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-green-700">
                       {t('msp.cropName') || 'Crop Name'}
                       <ArrowUpDown className="w-4 h-4 ml-1 text-gray-400" />
-                    </div>
+                    </button>
                   </th>
-                  <th className="px-6 py-4 text-left font-semibold text-gray-700">
+                  <th scope="col" className="px-6 py-4 text-left font-semibold text-gray-700">
                     {t('msp.season') || 'Season'}
                   </th>
                   <th
+                    scope="col"
+                    aria-sort={sortConfig.key === 'msp' ? (sortConfig.direction === 'asc' ? 'ascending' : 'descending') : 'none'}
                     className="px-6 py-4 text-right cursor-pointer hover:bg-yellow-100 transition-colors"
-                    onClick={() => handleSort('msp')}
                   >
-                    <div className="flex items-center justify-end font-semibold text-gray-700">
+                    <button type="button" onClick={() => handleSort('msp')} className="flex items-center justify-end w-full font-semibold text-gray-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-green-700">
                       {t('msp.mspRate') || 'MSP Rate (₹/quintal)'}
                       <ArrowUpDown className="w-4 h-4 ml-1 text-gray-400" />
-                    </div>
+                    </button>
                   </th>
                 </tr>
               </thead>

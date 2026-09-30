@@ -4,9 +4,10 @@ import { useTranslation } from '../i18n';
 import mspData from '../data/msp_data.json';
 
 const MSPRateCard = ({ primaryCrop, currentMarketPrice }) => {
-  const { t } = useTranslation();
+  const { t, languageInfo } = useTranslation();
 
-  const cropMspData = mspData.crops[primaryCrop];
+  const aliases = { Arhar: 'Tur', Chickpea: 'Gram', Sesamum: 'Sesame' };
+  const cropMspData = mspData.crops[aliases[primaryCrop] || primaryCrop];
   const mspRate = cropMspData?.msp || null;
 
   const priceDifference = mspRate && currentMarketPrice
@@ -44,12 +45,12 @@ const MSPRateCard = ({ primaryCrop, currentMarketPrice }) => {
             <h3 className="text-lg font-bold text-gray-800">
               {t('msp.title') || 'MSP Rate Card'}
             </h3>
-            <p className="text-xs text-gray-500">{t(`seasons.${mspData.season?.toLowerCase()}`) || mspData.season}</p>
+            <p className="text-xs text-gray-500">{cropMspData.year} · {cropMspData.price_type}</p>
           </div>
         </div>
         <a
           href="/msp"
-          className="text-sm text-yellow-700 hover:text-yellow-800 flex items-center"
+          className="min-h-11 px-2 text-sm text-yellow-700 hover:text-yellow-800 flex items-center"
         >
           {t('msp.viewAll') || 'View All'}
           <ExternalLink className="w-4 h-4 ml-1" />
@@ -66,7 +67,7 @@ const MSPRateCard = ({ primaryCrop, currentMarketPrice }) => {
             </p>
           </div>
           <div className="text-right">
-            <p className="text-3xl font-bold text-yellow-600">₹{Math.round(mspRate).toLocaleString('en-IN')}</p>
+            <p className="text-3xl font-bold text-yellow-600">₹{Math.round(mspRate).toLocaleString(languageInfo.speechCode)}</p>
             <p className="text-sm text-gray-500">{t('msp.perQuintal') || 'per quintal'}</p>
           </div>
         </div>
@@ -78,7 +79,7 @@ const MSPRateCard = ({ primaryCrop, currentMarketPrice }) => {
           <div className="flex justify-between items-center">
             <div>
               <p className="text-sm text-gray-600">{t('sidebar.marketInfo') || 'Market Price'}</p>
-              <p className="text-xl font-semibold text-gray-800">₹{Math.round(currentMarketPrice).toLocaleString('en-IN')}</p>
+              <p className="text-xl font-semibold text-gray-800">₹{Math.round(currentMarketPrice).toLocaleString(languageInfo.speechCode)}</p>
             </div>
             <div className={`text-right px-3 py-1 rounded-lg ${isAboveMsp ? 'bg-green-100' : 'bg-red-100'
               }`}>

@@ -134,31 +134,31 @@ const JAMTrinityVerification = ({ onVerificationComplete }) => {
           {/* Scopes */}
           <div className="bg-gray-50 rounded-xl p-4 mb-6 space-y-3">
             <p className="text-xs font-semibold text-gray-700 mb-3">
-              We will access:
+              {t('jam.willAccess')}
             </p>
             <div className="flex items-center text-sm text-gray-600">
               <Shield className="w-4 h-4 mr-2 text-blue-500" />
-              Aadhaar verification (last 4 digits only)
+              {t('jam.aadhaarScope')}
             </div>
             <div className="flex items-center text-sm text-gray-600">
               <MapPin className="w-4 h-4 mr-2 text-green-500" />
-              Land records from state database
+              {t('jam.landScope')}
             </div>
             <div className="flex items-center text-sm text-gray-600">
               <Building2 className="w-4 h-4 mr-2 text-purple-500" />
-              Bank account linkage status
+              {t('jam.bankScope')}
             </div>
             <div className="flex items-center text-sm text-gray-600">
               <Leaf className="w-4 h-4 mr-2 text-farm-green-500" />
-              PM-KISAN enrollment status
+              {t('jam.pmKisanScope')}
             </div>
           </div>
 
           {/* Privacy note */}
-          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-6">
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-6 flex items-start gap-2">
+            <Lock className="mt-0.5 h-4 w-4 flex-none text-yellow-800" aria-hidden="true" />
             <p className="text-xs text-yellow-800">
-              <strong>🔒 Privacy:</strong> Your full Aadhaar number is never stored.
-              We only use a tokenized reference for verification.
+              {t('jam.privacyBenefit')}
             </p>
           </div>
 
@@ -196,7 +196,7 @@ const JAMTrinityVerification = ({ onVerificationComplete }) => {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center">
-          <div className="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl flex items-center justify-center mr-4">
+          <div className="w-12 h-12 bg-green-800 rounded-xl flex items-center justify-center mr-4">
             <Shield className="w-6 h-6 text-white" />
           </div>
           <div>
@@ -204,7 +204,7 @@ const JAMTrinityVerification = ({ onVerificationComplete }) => {
               {t('jam.title') || 'Farmer Verification'}
             </h2>
             <p className="text-sm text-gray-500">
-              JAM Trinity + Land Records
+              {t('jam.subtitle')}
             </p>
           </div>
         </div>
@@ -215,7 +215,7 @@ const JAMTrinityVerification = ({ onVerificationComplete }) => {
             className="text-sm text-gray-500 hover:text-gray-700 flex items-center"
           >
             <RefreshCw className="w-4 h-4 mr-1" />
-            Reset
+            {t('common.retry')}
           </button>
         )}
       </div>
@@ -225,7 +225,7 @@ const JAMTrinityVerification = ({ onVerificationComplete }) => {
         <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-4 flex items-start">
           <AlertTriangle className="w-5 h-5 text-red-500 mr-3 flex-shrink-0 mt-0.5" />
           <div className="flex-1">
-            <p className="text-sm text-red-700">{error}</p>
+            <p className="text-sm text-red-700">{t(error)}</p>
           </div>
           <button onClick={clearError} className="text-red-500 hover:text-red-700">
             <XCircle className="w-5 h-5" />
@@ -240,22 +240,22 @@ const JAMTrinityVerification = ({ onVerificationComplete }) => {
             <User className="w-12 h-12 text-gray-400" />
           </div>
           <h3 className="text-lg font-semibold text-gray-700 mb-2">
-            Verify Your Identity
+            {t('jam.verifyIdentity')}
           </h3>
           <p className="text-sm text-gray-500 mb-6 max-w-sm mx-auto">
-            Link your Aadhaar, land records, and bank account to check scheme eligibility
+            {t('jam.verifyIdentityHint')}
           </p>
           <button
             onClick={handleStartVerification}
             disabled={loading}
-            className="bg-gradient-to-r from-blue-500 to-purple-500 text-white px-8 py-3 rounded-xl font-semibold hover:opacity-90 transition flex items-center mx-auto"
+            className="bg-green-800 text-white px-8 py-3 rounded-xl font-semibold hover:bg-green-900 transition flex items-center mx-auto"
           >
             {loading ? (
               <Loader2 className="w-5 h-5 animate-spin mr-2" />
             ) : (
               <Shield className="w-5 h-5 mr-2" />
             )}
-            Start Verification
+            {t('jam.startVerification')}
           </button>
         </div>
       )}
@@ -266,14 +266,14 @@ const JAMTrinityVerification = ({ onVerificationComplete }) => {
           <div className="bg-green-50 border border-green-200 rounded-xl p-3 mb-4">
             <p className="text-sm text-green-700 flex items-center">
               <CheckCircle className="w-4 h-4 mr-2" />
-              Consent granted. Your data is protected.
+              {t('jam.consentGranted')}
             </p>
           </div>
 
           {/* Aadhaar Input */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Enter Last 4 Digits of Aadhaar
+              {t('jam.enterAadhaar')}
             </label>
             <div className="relative">
               <input
@@ -293,20 +293,20 @@ const JAMTrinityVerification = ({ onVerificationComplete }) => {
               </button>
             </div>
             <p className="text-xs text-gray-500 mt-1">
-              For demo, try: 1234, 5678, 9012, or 3456
+              {t('jam.demoDigits')}
             </p>
           </div>
 
           {/* Name Input (optional) */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Name (Optional - for verification)
+              {t('jam.nameOptional')}
             </label>
             <input
               type="text"
               value={nameInput}
               onChange={(e) => setNameInput(e.target.value)}
-              placeholder="As per Aadhaar"
+              placeholder={t('jam.namePlaceholder')}
               className="w-full px-4 py-3 border-2 border-gray-300 rounded-xl focus:border-blue-500 focus:ring-2 focus:ring-blue-200"
             />
           </div>
@@ -323,11 +323,11 @@ const JAMTrinityVerification = ({ onVerificationComplete }) => {
             {loading ? (
               <>
                 <Loader2 className="w-5 h-5 animate-spin mr-2" />
-                Verifying...
+                {t('jam.verifying')}
               </>
             ) : (
               <>
-                Verify & Fetch Records
+                {t('jam.verifyAndFetch')}
                 <ChevronRight className="w-5 h-5 ml-2" />
               </>
             )}
@@ -343,41 +343,41 @@ const JAMTrinityVerification = ({ onVerificationComplete }) => {
             {/* Aadhaar */}
             <div className="bg-gray-50 rounded-xl p-4">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs text-gray-500">Aadhaar</span>
+                <span className="text-xs text-gray-500">{t('jam.aadhaarVerify')}</span>
                 <StatusIcon status={verificationStatus.aadhaar} />
               </div>
               <p className="font-semibold text-gray-800">
-                {aadhaarResult?.verified ? 'Verified' : 'Pending'}
+                {aadhaarResult?.verified ? t('jam.verified') : t('jam.pending')}
               </p>
               {aadhaarResult?.name_verified && (
-                <p className="text-xs text-green-600">Name matched</p>
+                <p className="text-xs text-green-600">{t('jam.nameMatched')}</p>
               )}
             </div>
 
             {/* Land Records */}
             <div className="bg-gray-50 rounded-xl p-4">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs text-gray-500">Land Records</span>
+                <span className="text-xs text-gray-500">{t('jam.landRecords')}</span>
                 <StatusIcon status={verificationStatus.land} />
               </div>
               {landRecords ? (
                 <>
                   <p className="font-semibold text-gray-800">
-                    {landRecords.total_area_hectares} ha
+                    {landRecords.total_area_hectares} {t('units.hectare')}
                   </p>
                   <p className="text-xs text-gray-600">
                     {landRecords.district}, {landRecords.state}
                   </p>
                 </>
               ) : (
-                <p className="text-gray-400">Not found</p>
+                <p className="text-gray-400">{t('common.noResults')}</p>
               )}
             </div>
 
             {/* Bank Account */}
             <div className="bg-gray-50 rounded-xl p-4">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs text-gray-500">Jan Dhan</span>
+                <span className="text-xs text-gray-500">{t('jam.janDhan')}</span>
                 <StatusIcon status={verificationStatus.bank} />
               </div>
               {bankDetails ? (
@@ -388,7 +388,7 @@ const JAMTrinityVerification = ({ onVerificationComplete }) => {
                   <p className="text-xs text-gray-600">{bankDetails.bank_name}</p>
                 </>
               ) : (
-                <p className="text-gray-400">Not linked</p>
+                <p className="text-gray-400">{t('jam.notLinked')}</p>
               )}
             </div>
 
@@ -404,11 +404,11 @@ const JAMTrinityVerification = ({ onVerificationComplete }) => {
                     {pmKisanStatus.installments_received} रु
                   </p>
                   <p className="text-xs text-green-600">
-                    ₹{pmKisanStatus.installments_received * 2000} received
+                    ₹{pmKisanStatus.installments_received * 2000} {t('jam.received')}
                   </p>
                 </>
               ) : (
-                <p className="text-gray-400">Not enrolled</p>
+                <p className="text-gray-400">{t('jam.notEnrolled')}</p>
               )}
             </div>
           </div>
@@ -418,9 +418,9 @@ const JAMTrinityVerification = ({ onVerificationComplete }) => {
             <div className="bg-gradient-to-r from-farm-green-50 to-green-50 rounded-xl p-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-xs text-gray-500 mb-1">Farmer Category</p>
+                  <p className="text-xs text-gray-500 mb-1">{t('jam.farmerCategory')}</p>
                   <p className="font-bold text-lg text-farm-green-700 capitalize">
-                    {farmerProfile.farmer_category} Farmer
+                    {t(`jam.categories.${farmerProfile.farmer_category}`)}
                   </p>
                 </div>
                 <div className="w-12 h-12 bg-farm-green-100 rounded-full flex items-center justify-center">
@@ -434,7 +434,7 @@ const JAMTrinityVerification = ({ onVerificationComplete }) => {
           {farmerProfile.scheme_eligibility && (
             <div className="bg-blue-50 rounded-xl p-4">
               <p className="text-sm font-semibold text-blue-800 mb-3">
-                Scheme Eligibility (Based on Verified Data)
+                {t('jam.schemeEligibility')}
               </p>
               <div className="grid grid-cols-2 gap-2">
                 {Object.entries(farmerProfile.scheme_eligibility).map(([scheme, eligible]) => (
@@ -460,9 +460,11 @@ const JAMTrinityVerification = ({ onVerificationComplete }) => {
             <div className="bg-green-100 border border-green-300 rounded-xl p-4 flex items-center">
               <IndianRupee className="w-8 h-8 text-green-600 mr-3" />
               <div>
-                <p className="font-semibold text-green-800">DBT Ready ✓</p>
+                <p className="font-semibold text-green-800 flex items-center gap-1.5">
+                  {t('jam.dbtReady')} <CheckCircle className="h-4 w-4" aria-hidden="true" />
+                </p>
                 <p className="text-xs text-green-700">
-                  Direct Benefit Transfer enabled for your account
+                  {t('jam.dbtBenefit')}
                 </p>
               </div>
             </div>

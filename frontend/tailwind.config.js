@@ -48,7 +48,7 @@ module.exports = {
         'earth-gradient': 'linear-gradient(135deg, #faf8f5 0%, #e8dcc7 100%)',
       },
       fontFamily: {
-        'sans': ['Inter', 'system-ui', 'sans-serif'],
+        'sans': ['Segoe UI', 'Tahoma', 'Arial', 'sans-serif'],
       }
     },
   },

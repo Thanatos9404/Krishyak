@@ -9,7 +9,8 @@
     "scenarios": "Scenarios",
     "aiInsights": "AI Insights",
     "cropHealth": "Crop Health",
-    "schemes": "Schemes"
+    "schemes": "Schemes",
+    "market": "Market"
   },
   "sidebar": {
     "title": "Farm Inputs",
@@ -42,6 +43,7 @@
     "severe": "Severe",
     "fertilizers": "Fertilizers (kg/hectare)",
     "runSimulation": "Run Simulation",
+    "adjustInputs": "Adjust inputs",
     "analyzing": "Analyzing...",
     "weatherConditions": "Weather Conditions",
     "fertilizerMix": "Fertilizer Mix (kg/ha)",
@@ -79,12 +81,66 @@
     "riskDistribution": "Risk Distribution",
     "riskInsights": "Risk Insights",
     "costBreakdown": "Cost Breakdown",
+    "confidence": "confidence",
+    "roi": "return",
     "seeds": "Seeds",
     "fertilizers": "Fertilizers",
     "labour": "Labour",
     "irrigation": "Irrigation",
     "pestControl": "Pest Control",
     "logistics": "Logistics"
+  },
+  "risk": {
+    "levels": {
+      "low": "Low risk",
+      "moderate": "Moderate risk",
+      "high": "High risk",
+      "severe": "Severe risk"
+    },
+    "guidance": {
+      "low": "Safe to proceed",
+      "moderate": "Monitor closely",
+      "high": "Take precautions",
+      "severe": "Reconsider this plan"
+    },
+    "range": {
+      "safe": "safe",
+      "elevated": "elevated"
+    },
+    "explanation": "Lower scores are safer. Your risk is {{level}}.",
+    "components": {
+      "weather": "Weather risk",
+      "price": "Price risk",
+      "pest": "Pest risk",
+      "soil": "Soil risk"
+    },
+    "insights": {
+      "weatherHigh": "Rainfall is uncertain. Keep a backup irrigation plan.",
+      "weatherModerate": "Watch the forecast and keep irrigation ready.",
+      "weatherLow": "Weather conditions look suitable.",
+      "priceHigh": "Prices may change sharply. Check mandi prices before selling.",
+      "priceModerate": "Some price movement is expected.",
+      "priceLow": "Market prices look stable.",
+      "pestHigh": "Pest risk is high. Start preventive control.",
+      "pestModerate": "Check the crop regularly for pests.",
+      "pestLow": "Pest risk is low this season.",
+      "soilHigh": "This soil is a poor match. Consider another crop or soil treatment.",
+      "soilModerate": "The soil is usable; adjust fertilizer carefully.",
+      "soilLow": "This soil is a strong match for the crop.",
+      "reviewInputs": "Review this result with your local agriculture officer."
+    }
+  },
+  "costs": {
+    "seed_cost": "Seed",
+    "fertilizer_cost": "Fertilizer",
+    "irrigation_cost": "Irrigation",
+    "labour_cost": "Labour",
+    "pesticide_cost": "Pest control",
+    "land_preparation": "Land preparation",
+    "harvesting_cost": "Harvesting",
+    "market_fees": "Market fees",
+    "logistics_cost": "Transport",
+    "miscellaneous": "Other costs"
   },
   "scenarios": {
     "title": "Scenario Comparison",
@@ -108,23 +164,74 @@
     "quintalsMore": "quintals more production",
     "pointsLower": "points lower risk"
   },
+  "scenarioDetails": {
+    "seedCost": "About ₹800–1,500 more per hectare",
+    "moreWater": "More regular water supply",
+    "lessWater": "Reduced water use",
+    "pumpCost": "Pump cost may increase slightly",
+    "saveWater": "May reduce water cost",
+    "pestReduction": "May reduce crop-loss risk by about {{value}}%",
+    "sprayCost": "About ₹500–1,000 more per hectare if spraying is needed",
+    "fertilizerBalance": "Fertilizer balance",
+    "currentMix": "Current mix",
+    "betterNpk": "Recommended NPK",
+    "costVaries": "Cost changes with quantity",
+    "storageCost": "Storage cost may apply",
+    "changeTitle": "What to change",
+    "changeSubtitle": "Practical steps toward the better plan",
+    "expectedImpact": "Expected impact",
+    "lossReduction": "Loss reduction",
+    "extraYield": "Extra yield",
+    "estimateNotice": "These are estimates. Weather and market conditions can change the result.",
+    "assumptions": "What each plan assumes",
+    "currentAssumption": "Current plan: uses the farm details you entered.",
+    "optimizedAssumption": "Better plan: improves NPK, selling time, and preventive pest control.",
+    "worstAssumption": "Worst case: tests lower rain, more pests, and lower prices.",
+    "lossToProfit": "Loss changed to profit",
+    "priceSource": "Price source",
+    "stalePriceNotice": "Prices come from older mandi records because a live feed is unavailable.",
+    "livePriceNotice": "Prices come from the current agricultural data feed.",
+    "disclaimer": "Simulation estimates are not guarantees. Check important decisions locally."
+  },
   "recommendations": {
     "title": "AI Recommendations",
+    "strategyTitle": "Better farm plan",
+    "strategySubtitle": "Based on your farm, weather, and mandi data",
+    "strategySummary": "Use the changes below as a practical plan. Check important decisions with your local agriculture officer.",
     "profitImprovement": "Potential Impact",
     "riskReduction": "Risk Reduction",
     "keyInsights": "Key Insights",
-    "optimalParameters": "Optimal Parameters"
+    "optimalParameters": "Optimal Parameters",
+    "currentProfit": "Current profit",
+    "optimizedProfit": "Improved profit",
+    "lossMitigated": "Loss reduced",
+    "currentRisk": "Current risk",
+    "optimizedRisk": "Reduced risk",
+    "reduction": "Reduction",
+    "points": "points",
+    "keyChanges": "What to change",
+    "timesPerMonth": "times/month",
+    "actionItems": "Next actions"
   },
   "voice": {
     "title": "Voice Input",
     "startListening": "Start Listening",
     "stopListening": "Stop Listening",
     "listening": "Listening...",
-    "speakNow": "Speak now in Hindi or English",
+    "speakNow": "Speak in your selected language, then press Stop.",
     "example": "Example: \"दो हेक्टेयर धान की खेती\"",
     "detected": "Detected Parameters",
     "apply": "Apply to Form",
     "notSupported": "Voice recognition not supported in this browser"
+  },
+  "voiceErrors": {
+    "microphoneDenied": "Microphone permission is off. Allow it in browser settings, or type below.",
+    "noMicrophone": "No microphone was found. Type the same details below.",
+    "network": "Voice recognition needs a stable connection. Type below for now.",
+    "serviceUnavailable": "Voice recognition is unavailable. Type the details below.",
+    "languageUnavailable": "Voice recognition is unavailable for {{language}}. You can still type below.",
+    "notAvailable": "Voice input is unavailable in this browser. Type the details below.",
+    "noMatch": "I could not understand that. Speak again slowly or correct the text."
   },
   "weather": {
     "title": "Weather",
@@ -141,7 +248,19 @@
     "goodConditions": "Conditions are favorable for farming",
     "rainForecast": "7-Day Rain Forecast",
     "totalRain": "Total Rain",
-    "rainyDays": "Rainy Days"
+    "rainyDays": "Rainy Days",
+    "dismissAlert": "Dismiss weather alert",
+    "kmPerHour": "km/h",
+    "rainSummary": "{{rain}} mm of rain is expected across {{days}} days.",
+    "dataSource": "weather service",
+    "conditions": {
+      "clear": "Clear",
+      "clouds": "Cloudy",
+      "cloudy": "Cloudy",
+      "rain": "Rain",
+      "drizzle": "Light rain",
+      "unknown": "Weather update"
+    }
   },
   "common": {
     "loading": "Loading...",
@@ -166,7 +285,16 @@
     "stale": "Stale",
     "and": "and",
     "logout": "Logout",
-    "select": "Select..."
+    "select": "Select...",
+    "optional": "Optional",
+    "information": "Information",
+    "live": "Live",
+    "notAvailable": "Not available",
+    "offline": "Offline",
+    "on": "On",
+    "saving": "Saving...",
+    "selected": "Selected",
+    "submitting": "Submitting..."
   },
   "crops": {
     "rice": "Rice",
@@ -250,6 +378,8 @@
     "quintal": "quintal",
     "quintals": "quintals",
     "kg": "kg",
+    "per": "per",
+    "bigha": "bigha",
     "rupees": "₹",
     "percent": "%",
     "kgPerHectare": "kg/hectare"
@@ -270,14 +400,38 @@
     "plotId": "Plot/Device ID",
     "connected": "Connected",
     "disconnected": "Disconnected",
-    "offline": "Offline"
+    "offline": "Offline",
+    "liveSensor": "Live sensor",
+    "sampleData": "Sample data",
+    "noSensor": "No sensor",
+    "cachedData": "Cached data",
+    "manualEntry": "Manual entry",
+    "sources": {
+      "sensor": "Sensor",
+      "sample": "Sample",
+      "cache": "Saved copy",
+      "manual": "Manual entry",
+      "unknown": "Not available"
+    },
+    "timeAgo": {
+      "seconds": "{{count}} seconds ago",
+      "minutes": "{{count}} minutes ago",
+      "hours": "{{count}} hours ago"
+    },
+    "help": {
+      "nitrogen": "Available nitrogen in the soil. Many crops need about 100–150 kg/hectare.",
+      "phosphorus": "Available phosphorus. A common target is 30–50 kg/hectare.",
+      "potassium": "Available potassium. A common target is 80–120 kg/hectare.",
+      "ph": "Soil acidity or alkalinity. Many crops grow well near pH 6–7.",
+      "organicCarbon": "Organic carbon supports soil fertility; higher is generally better."
+    }
   },
   "cropHealth": {
     "title": "Crop Health Check",
     "subtitle": "Upload a plant image for visual disease detection",
     "selectCrop": "Select Crop Type",
     "selectCropPlaceholder": "-- Select Crop Type --",
-    "selectCropWarning": "⚠️ Please select a crop before uploading image",
+    "selectCropWarning": "Please select a crop before uploading an image",
     "detectableDiseases": "Detectable diseases",
     "dropImage": "Drop image here",
     "dragDrop": "Drag & drop plant image",
@@ -307,7 +461,32 @@
     "modelLimitationsTitle": "Model Limitations",
     "modelLimitationsDesc": "Our model is primarily trained on 42 common crop diseases. While accurate for major blights and rusts, rare diseases or unsupported crops will yield low-confidence estimates.",
     "supportedCrops": "Supported: Rice, Wheat, Cotton, Tomato, Potato, Grapes, Citrus.",
-    "limitedCrops": "Limited: Maize, Sugarcane (Heuristic fallback applies)."
+    "limitedCrops": "Limited: Maize, Sugarcane (Heuristic fallback applies).",
+    "selectedPlant": "Selected crop leaf",
+    "invalidImage": "Choose a JPG, PNG, or WebP image.",
+    "imageTooLarge": "The image is too large. Choose one under 10 MB.",
+    "healthySummary": "Keep checking both sides of leaves and continue the current care routine.",
+    "symptomsSummary": "Check the visible marks against the disease name and inspect nearby plants.",
+    "chemicalSummary": "Ask a local agricultural officer before applying a chemical, and follow the product label exactly.",
+    "organicSummary": "Remove badly affected leaves, keep tools clean, and ask an agricultural officer about a suitable biological treatment.",
+    "preventionSummary": "Keep the field clean, avoid excess leaf moisture, and inspect the crop regularly.",
+    "sampleUnavailable": "A sample image is not available for {{crop}}. Choose a fully supported crop such as rice or tomato.",
+    "confidence": {
+      "high": "High confidence",
+      "highDesc": "Strong visual match",
+      "medium": "Medium confidence",
+      "mediumDesc": "Possible match; check the crop in the field",
+      "low": "Low confidence",
+      "lowDesc": "Weak match. Do not rely only on this result."
+    },
+    "confidenceLevels": {
+      "high": "High confidence",
+      "highDesc": "Strong visual match",
+      "medium": "Medium confidence",
+      "mediumDesc": "Possible match; check the crop in the field",
+      "low": "Low confidence",
+      "lowDesc": "Weak match. Do not rely only on this result."
+    }
   },
   "footer": {
     "tagline": "Empowering Indian farmers with data-driven decision support",
@@ -319,7 +498,9 @@
     "selectLanguage": "Select language",
     "voiceInput": "Voice input",
     "uploadImage": "Upload image",
-    "viewDetails": "View details"
+    "viewDetails": "View details",
+    "primaryNavigation": "Main navigation",
+    "mobileNavigation": "Mobile navigation"
   },
   "pest": {
     "title": "Pest Intelligence",
@@ -344,7 +525,21 @@
     "detectLocation": "Detect Location",
     "submitReport": "Submit Report",
     "reportSuccess": "Report submitted successfully",
-    "thankYou": "Thank you for contributing to pest monitoring"
+    "thankYou": "Thank you for contributing to pest monitoring",
+    "refresh": "Refresh pest alerts",
+    "loading": "Loading pest data...",
+    "unavailable": "Pest monitoring is unavailable",
+    "connectionHint": "Reconnect to load live pest data",
+    "offlineFallback": "Showing common pests for {{crop}} from saved data",
+    "safeZone": "No urgent pest risk",
+    "noCropAlerts": "No urgent pest alert matches {{crop}} right now.",
+    "alertDescription": "A pest has been reported nearby. Inspect the crop before taking action.",
+    "predictionFactor": "Weather and seasonal conditions affect this estimate.",
+    "actions": {
+      "1": "Inspect leaves and stems closely.",
+      "2": "Use traps or biological control first.",
+      "3": "Ask an agriculture officer before chemical spraying."
+    }
   },
   "fertilizer": {
     "title": "Fertilizer Recommendation",
@@ -364,10 +559,90 @@
     "grainFilling": "Fruit/Grain Development",
     "organic": "Organic",
     "chemical": "Chemical",
-    "costPerHectare": "Cost per hectare"
+    "costPerHectare": "per hectare",
+    "forCrop": "For {{crop}}",
+    "refresh": "Refresh fertilizer advice",
+    "loadError": "Could not load fertilizer advice",
+    "followSchedule": "Apply at the recommended crop stage",
+    "methods": {
+      "basal": "Apply in the soil at sowing",
+      "topDress": "Apply on top, then mix into soil",
+      "split": "Split into smaller applications",
+      "beforeSowing": "Mix into soil two weeks before sowing",
+      "atSowing": "Mix into soil while sowing"
+    },
+    "stages": {
+      "basal": "At sowing",
+      "earlyvegetative": "Early growth",
+      "latevegetative": "Mid growth",
+      "flowering": "Flowering",
+      "grainfilling": "Fruit or grain development"
+    },
+    "products": {
+      "urea": "Urea",
+      "dap": "DAP",
+      "mop": "MOP",
+      "npk": "NPK",
+      "organic": "Organic"
+    },
+    "tooltips": {
+      "urea": "Nitrogen fertilizer for leaf growth. Typical guide: 100–120 kg/hectare.",
+      "dap": "Phosphorus fertilizer for root development. Typical guide: 40–60 kg/hectare.",
+      "mop": "Potassium fertilizer that supports crop resilience. Typical guide: 30–50 kg/hectare.",
+      "npk": "Balanced NPK fertilizer. Use it only when separate nutrients are not already being applied.",
+      "organic": "Compost or manure supports soil health. Typical guide: 15–25 kg/hectare."
+    },
+    "safety": {
+      "1": "Wear gloves and keep fertilizer away from children.",
+      "2": "Do not apply before heavy rain.",
+      "3": "Use only the recommended quantity.",
+      "4": "Wash hands after handling fertilizer."
+    }
   },
   "schemes": {
     "title": "Government Benefits Available",
+    "catalog": {
+      "pm-kisan": {
+        "name": "PM-KISAN",
+        "fullName": "Prime Minister Farmer Income Support"
+      },
+      "pmfby": {
+        "name": "PMFBY",
+        "fullName": "Prime Minister Crop Insurance Scheme"
+      },
+      "soil-health-card": {
+        "name": "Soil Health Card",
+        "fullName": "Soil Health Card Scheme"
+      },
+      "micro-irrigation": {
+        "name": "Micro-irrigation subsidy",
+        "fullName": "Per Drop More Crop irrigation support"
+      },
+      "organic-farming": {
+        "name": "Organic farming mission",
+        "fullName": "Traditional Agriculture Development Scheme"
+      },
+      "kcc": {
+        "name": "Kisan Credit Card",
+        "fullName": "Kisan Credit Card Scheme"
+      },
+      "msp": {
+        "name": "MSP 2025–26",
+        "fullName": "Minimum Support Price procurement"
+      },
+      "smam": {
+        "name": "Farm mechanization",
+        "fullName": "Agricultural Mechanization Sub-Mission"
+      },
+      "aif": {
+        "name": "Agriculture Infrastructure Fund",
+        "fullName": "Agriculture Infrastructure Fund"
+      },
+      "enam": {
+        "name": "e-NAM",
+        "fullName": "National online agriculture market"
+      }
+    },
     "eligible": "Eligible",
     "checkEligibility": "Check Eligibility",
     "benefits": "Total Potential Benefits",
@@ -380,7 +655,87 @@
     "eligibleSchemes": "Eligible Schemes",
     "potentialBenefit": "Potential Benefit",
     "documentsList": "Documents Required",
-    "steps": "Steps to Apply"
+    "steps": "Steps to Apply",
+    "likelyEligible": "Likely eligible",
+    "needsVerification": "Needs verification",
+    "moreInfo": "More information needed",
+    "notMatched": "Not matched",
+    "programDescription": "Official farmer support programme. Verify the final rules on the government portal.",
+    "frequency": {
+      "yearly": "year"
+    },
+    "basisOfMatch": "Why it matches",
+    "matches": "Matches",
+    "missing": "Needs attention",
+    "officialSource": "Official source",
+    "verifyNotice": "This is an estimate from the information provided. Confirm the final rules on the official portal.",
+    "headerTitle": "Government schemes and support",
+    "headerSubtitle": "See programmes that may match your farm information.",
+    "estimatedSupport": "Estimated support",
+    "tracking": "Checking {{count}} schemes",
+    "transparencyNote": "Eligibility is an estimate, not a guarantee. Government officers make the final decision.",
+    "notes": {
+      "enterFarmData": "Enter crop and farm area to check eligibility.",
+      "noData": "Farm information is missing",
+      "area": "Area: {{area}} hectare",
+      "crop": "Crop: {{crop}}",
+      "minimumArea": "Requires at least {{minimum}} hectare; entered area is {{area}}.",
+      "areaMatches": "The entered area meets this requirement.",
+      "landRequired": "Verified agricultural land is required.",
+      "landMatches": "Agricultural land information is available.",
+      "cropNotSupported": "{{crop}} is not covered by this scheme.",
+      "cropMatches": "{{crop}} is covered.",
+      "allCrops": "All crops are covered.",
+      "clusterRequired": "Local farmer-group verification is required.",
+      "irrigationRequired": "A verified irrigation system is required.",
+      "bankVerification": "Bank loan status must be verified."
+    },
+    "documentNames": {
+      "aadhaarcard": "Aadhaar card",
+      "bankaccount": "Bank account",
+      "bankaccountdetails": "Bank account details",
+      "castecertificateifapplicable": "Caste certificate, if applicable",
+      "clusterformation": "Farmer group details",
+      "cropinsuranceapp": "Crop insurance app",
+      "ekyccompletion": "Completed eKYC",
+      "idproof": "Identity proof",
+      "landdetails": "Land details",
+      "landrecords": "Land records",
+      "landleasedocuments": "Land or lease papers",
+      "mandiregistration": "Mandi registration",
+      "organicplan": "Organic farming plan",
+      "passportphoto": "Passport photo",
+      "producequalitycertificate": "Produce quality certificate",
+      "projectreport": "Project report",
+      "sowingcertificate": "Sowing certificate",
+      "watersourceproof": "Water source proof"
+    }
+  },
+  "diseases": {
+    "blast": "Blast",
+    "bacterialblight": "Bacterial blight",
+    "brownspot": "Brown spot",
+    "tungro": "Tungro",
+    "yellowrust": "Yellow rust",
+    "brownrust": "Brown rust",
+    "blackrust": "Black rust",
+    "leafblight": "Leaf blight",
+    "leafcurl": "Leaf curl",
+    "anthracnose": "Anthracnose",
+    "aphid": "Aphid",
+    "commonrust": "Common rust",
+    "grayleafspot": "Gray leaf spot",
+    "earrot": "Ear rot",
+    "fallarmyworm": "Fall armyworm",
+    "mosaic": "Mosaic",
+    "redrot": "Red rot",
+    "earlyblight": "Early blight",
+    "lateblight": "Late blight",
+    "leafmold": "Leaf mold",
+    "powderymildew": "Powdery mildew",
+    "downymildew": "Downy mildew",
+    "canker": "Canker",
+    "greening": "Greening"
   },
   "jam": {
     "title": "Farmer Verification",
@@ -404,7 +759,38 @@
     "enterAadhaar": "Enter Last 4 Digits of Aadhaar",
     "nameOptional": "Name (Optional - for verification)",
     "schemeEligibility": "Scheme Eligibility",
-    "farmerCategory": "Farmer Category"
+    "farmerCategory": "Farmer Category",
+    "demoNotice": "Demo only: real Aadhaar verification is not active.",
+    "pmKisanEligibility": "PM-KISAN eligibility",
+    "pmKisanBenefit": "Verify land records to check eligibility.",
+    "dbtReady": "DBT ready",
+    "dbtBenefit": "Link a bank account for direct benefit transfer.",
+    "schemeMatching": "Scheme matching",
+    "schemeBenefit": "See schemes that match verified farm data.",
+    "privacyProtected": "Privacy protected",
+    "privacyBenefit": "The full Aadhaar number is never stored.",
+    "subtitle": "JAM Trinity and land records",
+    "willAccess": "With your consent, we will check:",
+    "aadhaarScope": "Aadhaar verification using only the last 4 digits",
+    "landScope": "Land records from the state database",
+    "bankScope": "Bank account linkage status",
+    "pmKisanScope": "PM-KISAN enrollment status",
+    "verifyIdentity": "Verify your identity",
+    "verifyIdentityHint": "Link Aadhaar, land records, and bank status to check scheme eligibility.",
+    "consentGranted": "Consent recorded. Your data is protected.",
+    "demoDigits": "Demo numbers: 1234, 5678, 9012, or 3456",
+    "namePlaceholder": "Name on Aadhaar",
+    "verifying": "Checking...",
+    "nameMatched": "Name matched",
+    "janDhan": "Jan Dhan",
+    "received": "received",
+    "notEnrolled": "Not enrolled",
+    "categories": {
+      "small": "Small farmer",
+      "marginal": "Marginal farmer",
+      "medium": "Medium farmer",
+      "large": "Large farmer"
+    }
   },
   "registration": {
     "title": "Farmer Registration",
@@ -421,6 +807,7 @@
     "mobileNumber": "Mobile Number (मोबाइल नंबर)",
     "dateOfBirth": "Date of Birth (जन्म तिथि)",
     "aadhaarNumber": "Aadhaar Number (आधार संख्या)",
+    "aadhaarHelp": "Optional. Used only with your consent for scheme checks.",
     "state": "State (राज्य)",
     "selectState": "Select State",
     "district": "District (जिला)",
@@ -445,8 +832,9 @@
     "consentTerms": "I agree to the",
     "previous": "Previous",
     "next": "Next",
+    "skip": "Skip for now",
     "submit": "Register",
-    "autoSave": "💾 Your progress is automatically saved",
+    "autoSave": "Your progress is automatically saved",
     "success": "Welcome! Registration complete."
   },
   "ownership": {
@@ -478,15 +866,56 @@
     "selectCrop": "Run a simulation to see MSP for your selected crop",
     "infoText": "MSP is the minimum price at which the government purchases crops from farmers.",
     "source": "Source",
-    "lastUpdated": "Last Updated"
+    "lastUpdated": "Last Updated",
+    "seasonSummary": "Kharif 2025–26 and Rabi 2025–26"
   },
   "privacy": {
     "title": "Privacy Policy",
-    "lastUpdated": "Last Updated: January 2026"
+    "lastUpdated": "Last updated: September 2026",
+    "summary": "Krishyak collects only the information needed to provide farm estimates, weather, scheme checks, and crop-health tools.",
+    "sections": {
+      "1": {
+        "title": "Information we use",
+        "body": "Registration details, farm inputs, optional location, and crop photos are used only for the feature you choose."
+      },
+      "2": {
+        "title": "Location and photos",
+        "body": "Location and crop photos are optional. Voice recordings and text selected for read-aloud are sent to Sarvam for speech processing. Manual text input remains available."
+      },
+      "3": {
+        "title": "Aadhaar and sharing",
+        "body": "Aadhaar is optional. The full Aadhaar number is never stored. Krishyak does not sell personal information."
+      },
+      "4": {
+        "title": "Control your data",
+        "body": "You can skip registration, clear local data by logging out, and request deletion of server records."
+      }
+    },
+    "contact": "Privacy questions or deletion requests: privacy@krishyak.app"
   },
   "terms": {
     "title": "Terms of Service",
-    "lastUpdated": "Last Updated: January 2026"
+    "lastUpdated": "Last updated: September 2026",
+    "summary": "Krishyak is a decision-support tool. It does not replace an agriculture officer, laboratory test, bank, insurer, or government portal.",
+    "sections": {
+      "1": {
+        "title": "Use accurate farm details",
+        "body": "Enter correct crop, soil, area, and cost information. Better inputs produce more useful estimates."
+      },
+      "2": {
+        "title": "Estimates are not guarantees",
+        "body": "Yield, profit, risk, weather, disease, and price results can differ from real field conditions."
+      },
+      "3": {
+        "title": "Government schemes",
+        "body": "Scheme eligibility and benefit amounts must be confirmed on the official government portal or with an authorized officer."
+      },
+      "4": {
+        "title": "Safe farming decisions",
+        "body": "Check chemical treatment, irrigation, credit, and selling decisions with a qualified local expert."
+      }
+    },
+    "contact": "Support questions: support@krishyak.app"
   },
   "errors": {
     "simulationFailed": "Failed to run simulation. Please check if backend is running.",
@@ -509,7 +938,15 @@
   },
   "weatherAlert": {
     "title": "Weather Alerts",
-    "recommendation": "Recommendation"
+    "recommendation": "Recommendation",
+    "checkForecast": "Check the current forecast before working in the field.",
+    "followAdvice": "Delay risky field work and follow local agriculture advice.",
+    "severity": {
+      "critical": "Urgent weather alert",
+      "warning": "Weather warning",
+      "advisory": "Weather advice",
+      "info": "Weather update"
+    }
   },
   "pests": {
     "brown_planthopper": "Brown Planthopper (BPH)",
@@ -568,33 +1005,40 @@
     "termsRequired": "You must agree to Terms and Privacy Policy",
     "fillAll": "Please fill in all required fields",
     "enterLocation": "Please detect or enter your location",
-    "submitFailed": "Failed to submit report"
+    "submitFailed": "Failed to submit report",
+    "range": "{{label}} must be between {{min}} and {{max}}",
+    "saveFailed": "Could not save the soil data. Please try again."
   },
   "weatherCard": {
+    "detectedLocation": "Detected location",
+    "detectLocation": "Detect location",
+    "india": "India",
+    "detectedSummary": "Location found: {{location}}. Soil: {{soil}}.",
     "detecting": "Detecting Location...",
-    "autoDetect": "📍 Auto-Detect Location & Soil",
+    "autoDetect": "Auto-Detect Location & Soil",
     "region": "Region",
     "soilType": "Soil Type",
     "avgRainfall": "Avg. Rainfall",
-    "autoFilled": "✓ Auto-filled",
-    "monsoonWarning": "⚠️ Monsoon may be delayed by ~{{days}} days this season",
-    "demoData": "🌤️ Weather demo data • Add API key for real-time data",
+    "autoFilled": "Auto-filled",
+    "monsoonWarning": "Monsoon may be delayed by ~{{days}} days this season",
+    "demoData": "Weather demo data • Add API key for real-time data",
     "clickToDetect": "Click above to auto-detect your location, soil type, and rainfall",
     "errors": {
       "denied": "Location access denied. Please enable location permissions in your browser.",
       "notSupported": "Your browser does not support location detection.",
-      "failed": "Failed to detect location. Please try again."
+      "failed": "Failed to detect location. Please try again.",
+      "timeout": "Location detection took too long. Please try again or enter the location manually."
     }
   },
   "voiceNew": {
-    "hint": "Speak in Hindi or English",
+    "hint": "Speak in your selected language",
     "browserHint": "Please use Chrome, Edge, or Safari",
     "listeningClickStop": "Listening... Click to stop",
     "clickToStart": "Click to start speaking",
-    "statusListening": "🎙️ Listening...",
-    "statusPlaceholder": "📝 Your speech will appear here",
+    "statusListening": "Listening...",
+    "statusPlaceholder": "Your speech will appear here",
     "micHint": "Press the mic button to start",
-    "trySaying": "💡 Try saying:",
+    "trySaying": "Try saying:",
     "examples": {
       "1": "Rice farming 2 hectare in Nashik",
       "2": "Dhaan ki kheti do hectare black soil",
@@ -605,24 +1049,33 @@
     "noParamsHint": "Try including specific terms like crop names (rice, wheat), area (2 hectare), or soil type (black, alluvial).",
     "tryAgain": "Try Again",
     "params": {
-      "crop": "🌾 Crop",
-      "area": "📐 Area",
-      "location": "📍 Location",
-      "rainfall": "🌧️ Rainfall",
-      "pestRisk": "🐛 Pest Risk",
-      "seedQuality": "🌱 Seed Quality",
-      "soilType": "🏔️ Soil Type"
+      "crop": "Crop",
+      "area": "Area",
+      "location": "Location",
+      "rainfall": "Rainfall",
+      "pestRisk": "Pest Risk",
+      "seedQuality": "Seed Quality",
+      "soilType": "Soil Type"
     },
     "textInput": "Text Input",
     "voiceMode": "Voice",
     "textMode": "Type",
     "typeCommand": "Type your farming details",
     "textPlaceholder": "e.g., Rice 2 hectare black soil Nashik",
-    "parseText": "Parse Text →",
+    "parseText": "Read details",
     "useTextInstead": "Use text input instead",
     "youTyped": "You typed:",
     "noParams": "No parameters detected",
-    "notSupported": "Voice input not supported in this browser"
+    "notSupported": "Voice input not supported in this browser",
+    "recognitionUsing": "Recognized language: {{code}}",
+    "correctTranscript": "Correct any word before applying",
+    "confidence": "Speech confidence"
+  },
+  "language": {
+    "choose": "Choose your language",
+    "coverage": "22 Indian languages • interface and voice",
+    "search": "Search language or region",
+    "available": "Available languages"
   },
   "mandi": {
     "title": "Live Mandi Prices",
@@ -634,5 +1087,87 @@
     "showLess": "Show less",
     "more": "more",
     "source": "Source: data.gov.in • National Agriculture Market"
+  },
+  "priceForecast": {
+    "title": "Price forecast",
+    "price": "Price",
+    "currentPrice": "Current price",
+    "expectedPeak": "Expected high",
+    "optimalWindow": "Better time to sell",
+    "sellingAdvice": "Consider selling around {{peak}}. {{start}} to {{end}} may be favorable.",
+    "disclaimer": "Estimate from mandi trends. Actual prices may change.",
+    "trends": {
+      "insufficient": "Not enough data",
+      "earlyPeak": "Early high, then lower",
+      "lateRise": "Prices may rise later",
+      "upward": "Rising trend",
+      "downward": "Falling trend",
+      "stable": "Mostly stable"
+    }
+  },
+  "speech": {
+    "readAloud": "Read aloud",
+    "stop": "Stop reading",
+    "unavailable": "Read-aloud is unavailable for this language or connection.",
+    "summary": "Estimated yield: {{yield}} kilograms per hectare. Estimated cultivation cost: {{cost}} rupees. Estimated profit: {{profit}} rupees. Risk score: {{risk}} out of 100.",
+    "limitReached": "Speech usage limit reached. Please try later or use text input.",
+    "privacyNotice": "Voice recordings and text you choose to hear are sent to Sarvam for speech processing.",
+    "tooLong": "Select a shorter passage to read aloud (up to 10,000 characters)."
+  },
+  "landing": {
+    "skipContent": "Skip to content",
+    "tools": "Your farming toolkit",
+    "how": "How it works",
+    "languages": "Your language",
+    "eyebrow": "Rooted in the field. Guided by insight.",
+    "title": "Every season.",
+    "titleAccent": "A better beginning.",
+    "intro": "Your hard work deserves a well-informed plan. Understand crop health, compare farming choices, and see what your next harvest could look like - all in one place.",
+    "start": "Start your farm plan",
+    "languageNote": "22 Indian languages, plus English",
+    "builtFor": "For the people who know their land best.",
+    "photoAlt": "A farmer carrying young rice plants through a flooded paddy field in India",
+    "rooted": "Made for Indian agriculture",
+    "fieldNote": "A little clarity goes a long way",
+    "fieldNoteTitle": "Your land. Your decisions.",
+    "fieldNoteCopy": "Bring your experience. Let the numbers help.",
+    "principle1": "Plan before you plant",
+    "principle2": "Understand the risks",
+    "principle3": "Work in your own language",
+    "toolsEyebrow": "From the first seed to the next sale",
+    "toolsTitle": "A clearer picture of your farm.",
+    "toolsCopy": "Useful information, brought together. Explore every estimate and comparison at your own pace.",
+    "planTitle": "Make a plan that adds up.",
+    "planCopy": "Explore estimated yield, cultivation costs, revenue, profit and return on investment using your own farm inputs.",
+    "healthTitle": "Give your crops a closer look.",
+    "healthCopy": "Upload a leaf photo to check for supported crop diseases. Review confidence, uncertainty and the available guidance.",
+    "marketTitle": "Know the market before you sell.",
+    "marketCopy": "Check mandi prices, minimum support prices and price forecasts to help you think through when to sell.",
+    "weatherTitle": "Be ready for what may change.",
+    "weatherCopy": "Review weather alerts, pest information and risk estimates. Compare scenarios and explore alternative farm plans.",
+    "howTitle": "A few details. A more informed decision.",
+    "howCopy": "Start with what you know about your farm. Krishyak helps you see the possibilities.",
+    "stepOneTitle": "Tell us about your farm",
+    "stepOneCopy": "Register with your farm details, or explore as a guest. Choose your language and enter your crop, soil and land area.",
+    "stepTwoTitle": "Explore your farm plan",
+    "stepTwoCopy": "Add your costs and farming inputs. Run the simulation to see estimated outcomes, risks and possible alternatives.",
+    "stepThreeTitle": "Compare. Adjust. Decide.",
+    "stepThreeCopy": "Review the detailed analysis, change your inputs and compare again. You remain in charge of every farming decision.",
+    "languageTitle": "Good advice starts with understanding.",
+    "languageCopy": "Read the interface in your own language. Use voice input or type your details. Read-aloud is available in 11 supported languages.",
+    "ctaEyebrow": "Your next season starts here",
+    "ctaTitle": "Put a little more insight into every acre.",
+    "ctaCopy": "Bring your farm details. Explore the possibilities. Make the next decision with a clearer view.",
+    "explore": "Explore as a guest",
+    "faqTitle": "Before you get started",
+    "faqOneTitle": "Do I need to register to explore?",
+    "faqOneCopy": "You can explore as a guest. Registration adds your farm profile to the existing workflow. You can review and edit the farm inputs before running a simulation.",
+    "faqTwoTitle": "Are the results guaranteed?",
+    "faqTwoCopy": "No. Yield, cost, profit, price and risk results are estimates based on your inputs and the available data. Actual field outcomes can differ. Use local expertise alongside the analysis.",
+    "faqThreeTitle": "Can I use it on my phone?",
+    "faqThreeCopy": "Yes. Open farm inputs from the mobile controls and use the tabs to reach every analysis. Voice input requires microphone permission and an internet connection; typed input is also available.",
+    "more": "More information",
+    "workspaceEyebrow": "Your farm, in focus",
+    "workspaceCopy": "Explore the details. Compare your choices. Plan your next step."
   }
 }

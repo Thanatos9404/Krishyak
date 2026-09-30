@@ -51,7 +51,7 @@ const NutrientBar = ({ label, value, max, unit, color }) => {
 };
 
 const SoilDataCard = ({ deviceId = 'default', onDataUpdate }) => {
-  const { t } = useTranslation();
+  const { t, languageInfo } = useTranslation();
   const [expanded, setExpanded] = useState(true);
   const [showManualInput, setShowManualInput] = useState(false);
 
@@ -82,14 +82,14 @@ const SoilDataCard = ({ deviceId = 'default', onDataUpdate }) => {
 
   // Format last updated time
   const formatLastUpdated = (date) => {
-    if (!date) return 'N/A';
+    if (!date) return t('common.notAvailable');
     const now = new Date();
     const diff = Math.floor((now - date) / 1000);
 
-    if (diff < 60) return `${diff}s ago`;
-    if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
-    if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
-    return date.toLocaleDateString();
+    if (diff < 60) return t('soilSensor.timeAgo.seconds', { count: diff });
+    if (diff < 3600) return t('soilSensor.timeAgo.minutes', { count: Math.floor(diff / 60) });
+    if (diff < 86400) return t('soilSensor.timeAgo.hours', { count: Math.floor(diff / 3600) });
+    return date.toLocaleDateString(languageInfo?.speechCode);
   };
 
   // Connection status indicator - show honest source labels
@@ -98,16 +98,16 @@ const SoilDataCard = ({ deviceId = 'default', onDataUpdate }) => {
     const isRealSensor = connectionStatus === 'connected' && source === 'sensor';
     const statusConfig = {
       connected: isRealSensor
-        ? { icon: Wifi, color: 'text-green-500', label: 'Live Sensor' }
-        : { icon: Leaf, color: 'text-blue-500', label: 'Sample Data' },
-      disconnected: { icon: WifiOff, color: 'text-gray-400', label: 'No Sensor' },
-      offline: { icon: WifiOff, color: 'text-yellow-500', label: 'Cached Data' },
-      error: { icon: AlertCircle, color: 'text-gray-400', label: 'No Sensor' },
-      unknown: { icon: Leaf, color: 'text-gray-400', label: 'Manual Entry' },
+        ? { icon: Wifi, color: 'text-green-500', label: t('soilSensor.liveSensor') }
+        : { icon: Leaf, color: 'text-blue-500', label: t('soilSensor.sampleData') },
+      disconnected: { icon: WifiOff, color: 'text-gray-400', label: t('soilSensor.noSensor') },
+      offline: { icon: WifiOff, color: 'text-yellow-500', label: t('soilSensor.cachedData') },
+      error: { icon: AlertCircle, color: 'text-gray-400', label: t('soilSensor.noSensor') },
+      unknown: { icon: Leaf, color: 'text-gray-400', label: t('soilSensor.manualEntry') },
     };
     // Override if source is manual
     if (source === 'manual') {
-      const config = { icon: Leaf, color: 'text-blue-500', label: 'Manual Entry' };
+      const config = { icon: Leaf, color: 'text-blue-500', label: t('soilSensor.manualEntry') };
       const Icon = config.icon;
       return (
         <div className={`flex items-center gap-1 ${config.color}`}>
@@ -165,7 +165,7 @@ const SoilDataCard = ({ deviceId = 'default', onDataUpdate }) => {
           {error && !hasData && (
             <div className="text-center py-6">
               <AlertCircle className="w-10 h-10 text-yellow-500 mx-auto mb-2" />
-              <p className="text-gray-600 mb-4">{error}</p>
+              <p className="text-gray-600 mb-4">{t(error)}</p>
               <button
                 onClick={() => setShowManualInput(true)}
                 className="bg-farm-green-500 text-white px-4 py-2 rounded-lg hover:bg-farm-green-600 transition"
@@ -181,28 +181,28 @@ const SoilDataCard = ({ deviceId = 'default', onDataUpdate }) => {
               <div className="mb-4">
                 <h4 className="text-sm font-semibold text-gray-600 mb-3 flex items-center gap-2">
                   <span>NPK {t('soilSensor.levels') || 'Levels'}</span>
-                  <span className="text-xs font-normal text-gray-400">(kg/ha)</span>
+                  <span className="text-xs font-normal text-gray-400">({t('units.kgPerHectare')})</span>
                 </h4>
 
                 <NutrientBar
                   label={t('soilSensor.nitrogen') || 'Nitrogen (N)'}
                   value={data.nitrogen || 0}
                   max={300}
-                  unit="kg/ha"
+                  unit={t('units.kgPerHectare')}
                   color="bg-blue-500"
                 />
                 <NutrientBar
                   label={t('soilSensor.phosphorus') || 'Phosphorus (P)'}
                   value={data.phosphorus || 0}
                   max={100}
-                  unit="kg/ha"
+                  unit={t('units.kgPerHectare')}
                   color="bg-orange-500"
                 />
                 <NutrientBar
                   label={t('soilSensor.potassium') || 'Potassium (K)'}
                   value={data.potassium || 0}
                   max={300}
-                  unit="kg/ha"
+                  unit={t('units.kgPerHectare')}
                   color="bg-purple-500"
                 />
               </div>
@@ -234,7 +234,7 @@ const SoilDataCard = ({ deviceId = 'default', onDataUpdate }) => {
               {/* Footer - Source and Actions */}
               <div className="flex justify-between items-center pt-3 border-t border-gray-100">
                 <div className="text-xs text-gray-500">
-                  <span className="capitalize">{source}</span>
+                  <span>{t(`soilSensor.sources.${source || 'unknown'}`)}</span>
                   {lastUpdated && (
                     <span className="ml-2">• {formatLastUpdated(lastUpdated)}</span>
                   )}
@@ -244,7 +244,7 @@ const SoilDataCard = ({ deviceId = 'default', onDataUpdate }) => {
                     onClick={refresh}
                     disabled={loading}
                     className="p-2 text-gray-500 hover:text-farm-green-600 hover:bg-farm-green-50 rounded-lg transition"
-                    title="Refresh"
+                    title={t('common.refresh')}
                   >
                     <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
                   </button>

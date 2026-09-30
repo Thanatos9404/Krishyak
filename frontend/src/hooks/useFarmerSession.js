@@ -3,132 +3,113 @@ import { useState, useEffect, useCallback } from 'react';
 const STORAGE_KEY = 'krishyak_farmer_session';
 const DRAFT_KEY = 'krishyak_registration_draft';
 const GUEST_KEY = 'krishyak_guest_session';
-
-// Strict array of fields safe for offline persistent storage
 const SAFE_DRAFT_FIELDS = [
-  'state', 'district', 'tehsil', 'village', 'pinCode', 
-  'totalLandArea', 'landUnit', 'irrigatedLand', 'rainfedLand', 
-  'ownershipType', 'primaryCrop', 'secondaryCrops', 
-  'farmingType', 'experience'
+  'state', 'district', 'tehsil', 'village', 'pinCode',
+  'totalLandArea', 'landUnit', 'irrigatedLand', 'rainfedLand',
+  'ownershipType', 'primaryCrop', 'secondaryCrops', 'farmingType', 'experience'
 ];
+
+// Storage may be unavailable in private browsing or when the quota is exhausted.
+const storage = (kind, action, key, value) => {
+  try { return window[kind][action](key, value); } catch { return null; }
+};
+const record = value => value && typeof value === 'object' && !Array.isArray(value);
+const scrubProfile = value => Object.fromEntries(Object.entries(value).filter(
+  ([key]) => !/aadhaar|aadhar/i.test(key)
+));
+const readRecord = (kind, key) => {
+  try {
+    const value = JSON.parse(storage(kind, 'getItem', key));
+    if (record(value)) return value;
+  } catch { /* Remove malformed legacy storage below. */ }
+  storage(kind, 'removeItem', key);
+  return null;
+};
+const safeDraft = value => Object.fromEntries(
+  [...SAFE_DRAFT_FIELDS, 'savedAt'].filter(key => value[key] !== undefined)
+    .map(key => [key, value[key]])
+);
 
 export const useFarmerSession = () => {
   const [farmer, setFarmer] = useState(null);
   const [isRegistered, setIsRegistered] = useState(false);
   const [loading, setLoading] = useState(true);
 
-  // Load session on mount
   useEffect(() => {
-    const authSession = sessionStorage.getItem(STORAGE_KEY);
-    const guestSession = localStorage.getItem(GUEST_KEY);
-    
-    if (authSession) {
-      try {
-        const parsed = JSON.parse(authSession);
-        setFarmer(parsed);
-        setIsRegistered(true);
-      } catch (e) {
-        sessionStorage.removeItem(STORAGE_KEY);
+    const auth = readRecord('sessionStorage', STORAGE_KEY);
+    if (auth && auth.isGuest !== true) {
+      const clean = scrubProfile(auth);
+      storage('sessionStorage', 'setItem', STORAGE_KEY, JSON.stringify(clean));
+      setFarmer(clean);
+      setIsRegistered(true);
+    } else {
+      const guest = readRecord('localStorage', GUEST_KEY);
+      if (guest?.isGuest === true) {
+        const clean = { isGuest: true, fullName: 'Guest Farmer', primaryCrop: 'Rice' };
+        storage('localStorage', 'setItem', GUEST_KEY, JSON.stringify(clean));
+        setFarmer(clean);
       }
-    } else if (guestSession) {
-      setFarmer(JSON.parse(guestSession));
-      setIsRegistered(false);
     }
     setLoading(false);
   }, []);
 
-  // Save farmer session after registration (Secure: Session Storage only)
   const login = useCallback((farmerData) => {
     const sessionData = {
-      ...farmerData,
-      registeredAt: new Date().toISOString(),
-      lastLoginAt: new Date().toISOString(),
-      isGuest: false
+      ...scrubProfile(farmerData), registeredAt: new Date().toISOString(),
+      lastLoginAt: new Date().toISOString(), isGuest: false
     };
-    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(sessionData));
-    localStorage.removeItem(GUEST_KEY); // Kill guest status
-    localStorage.removeItem(DRAFT_KEY); // Clear draft after successful registration
+    storage('sessionStorage', 'setItem', STORAGE_KEY, JSON.stringify(sessionData));
+    storage('localStorage', 'removeItem', GUEST_KEY);
+    storage('localStorage', 'removeItem', DRAFT_KEY);
     setFarmer(sessionData);
     setIsRegistered(true);
     return sessionData;
   }, []);
 
-  // Set Guest Session (Persistent: Local Storage)
   const guestLogin = useCallback(() => {
     const guestData = { isGuest: true, fullName: 'Guest Farmer', primaryCrop: 'Rice' };
-    localStorage.setItem(GUEST_KEY, JSON.stringify(guestData));
-    sessionStorage.removeItem(STORAGE_KEY);
+    storage('localStorage', 'setItem', GUEST_KEY, JSON.stringify(guestData));
+    storage('sessionStorage', 'removeItem', STORAGE_KEY);
     setFarmer(guestData);
     setIsRegistered(false);
     return guestData;
   }, []);
 
-  // Logout
   const logout = useCallback(() => {
-    sessionStorage.removeItem(STORAGE_KEY);
-    localStorage.removeItem(GUEST_KEY);
+    storage('sessionStorage', 'removeItem', STORAGE_KEY);
+    [GUEST_KEY, DRAFT_KEY, 'krishyak_sim_cache', 'pestAlerts', 'pestPredictions',
+      'krishyak_soil_data', 'fertilizerRecommendation'].forEach(key => storage('localStorage', 'removeItem', key));
     setFarmer(null);
     setIsRegistered(false);
   }, []);
 
-  // Update farmer profile
   const updateProfile = useCallback((updates) => {
     if (!farmer || farmer.isGuest) return null;
-    const updatedFarmer = {
-      ...farmer,
-      ...updates,
+    const updated = {
+      ...scrubProfile({ ...farmer, ...updates }), isGuest: false,
       updatedAt: new Date().toISOString()
     };
-    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(updatedFarmer));
-    setFarmer(updatedFarmer);
-    return updatedFarmer;
+    storage('sessionStorage', 'setItem', STORAGE_KEY, JSON.stringify(updated));
+    setFarmer(updated);
+    return updated;
   }, [farmer]);
 
-  // Draft management for auto-save (PII Scrubbed)
   const saveDraft = useCallback((formData) => {
-    const safeData = {};
-    SAFE_DRAFT_FIELDS.forEach(field => {
-      if (formData[field] !== undefined) {
-        safeData[field] = formData[field];
-      }
-    });
-    
-    const draftData = {
-      ...safeData,
-      savedAt: new Date().toISOString()
-    };
-    localStorage.setItem(DRAFT_KEY, JSON.stringify(draftData));
+    const draft = { ...safeDraft(formData), savedAt: new Date().toISOString() };
+    storage('localStorage', 'setItem', DRAFT_KEY, JSON.stringify(draft));
   }, []);
-
   const loadDraft = useCallback(() => {
-    const draft = localStorage.getItem(DRAFT_KEY);
-    if (draft) {
-      try {
-        return JSON.parse(draft);
-      } catch (e) {
-        console.error('Failed to parse draft:', e);
-        return null;
-      }
-    }
-    return null;
+    const draft = readRecord('localStorage', DRAFT_KEY);
+    if (!draft) return null;
+    const clean = safeDraft(draft);
+    storage('localStorage', 'setItem', DRAFT_KEY, JSON.stringify(clean));
+    return clean;
   }, []);
-
   const clearDraft = useCallback(() => {
-    localStorage.removeItem(DRAFT_KEY);
+    storage('localStorage', 'removeItem', DRAFT_KEY);
   }, []);
 
-  return {
-    farmer,
-    isRegistered,
-    loading,
-    login,
-    guestLogin,
-    logout,
-    updateProfile,
-    saveDraft,
-    loadDraft,
-    clearDraft
-  };
+  return { farmer, isRegistered, loading, login, guestLogin, logout,
+    updateProfile, saveDraft, loadDraft, clearDraft };
 };
-
 export default useFarmerSession;

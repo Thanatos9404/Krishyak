@@ -1,8 +1,8 @@
 """
 Government API Service for Krishyak
 Integrates with:
-- LG Directory API for location data
-- data.gov.in for MSP prices
+- Local location suggestions (not an LG Directory integration)
+- Source-linked official MSP publications
 - data.gov.in for live mandi prices
 """
 
@@ -13,11 +13,15 @@ from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Any
 from functools import lru_cache
 import asyncio
+import os
+import math
+from pathlib import Path
+from copy import deepcopy
 
 logger = logging.getLogger(__name__)
 
 # API Configuration
-DATA_GOV_API_KEY = "579b464db66ec23bdd000001c0b342ce86264f806fba2e185300b9bc"
+DATA_GOV_API_KEY = os.environ.get("DATA_GOV_IN_API_KEY", "")
 MSP_API_URL = "https://api.data.gov.in/resource/1832c7b4-82ef-4734-b2b4-c2e3a38a28d3"
 MANDI_PRICES_API_URL = "https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070"
 
@@ -37,13 +41,13 @@ def _get_cache(key: str, cache_type: str = "msp") -> Optional[Any]:
     if key in _cache and key in _cache_times:
         expiry = _cache_times[key] + CACHE_DURATIONS.get(cache_type, timedelta(hours=1))
         if datetime.now() < expiry:
-            return _cache[key]
+            return deepcopy(_cache[key])
     return None
 
 
 def _set_cache(key: str, value: Any):
     """Set cache value with current timestamp"""
-    _cache[key] = value
+    _cache[key] = deepcopy(value)
     _cache_times[key] = datetime.now()
 
 
@@ -51,124 +55,32 @@ def _set_cache(key: str, value: Any):
 # MSP (Minimum Support Price) Service
 # ============================================================================
 
-# Updated MSP data for 2025-26 (from official sources)
-MSP_DATA_2025_26 = {
-    "season": "Kharif 2025-26 & Rabi 2025-26",
-    "lastUpdated": "2025-07-01",
-    "source": "Ministry of Agriculture & Farmers Welfare, Government of India",
-    "crops": {
-        # Kharif Crops 2025-26
-        "Rice": {"msp": 2320, "unit": "quintal", "season": "Kharif", "common_variety": "Common Grade"},
-        "Rice (Grade A)": {"msp": 2370, "unit": "quintal", "season": "Kharif", "common_variety": "Grade A"},
-        "Jowar": {"msp": 3371, "unit": "quintal", "season": "Kharif", "common_variety": "Hybrid"},
-        "Bajra": {"msp": 2625, "unit": "quintal", "season": "Kharif", "common_variety": "Pearl Millet"},
-        "Ragi": {"msp": 4290, "unit": "quintal", "season": "Kharif", "common_variety": "Finger Millet"},
-        "Maize": {"msp": 2225, "unit": "quintal", "season": "Kharif", "common_variety": "Common"},
-        "Tur": {"msp": 7550, "unit": "quintal", "season": "Kharif", "common_variety": "Arhar/Red Gram"},
-        "Moong": {"msp": 8682, "unit": "quintal", "season": "Kharif", "common_variety": "Green Gram"},
-        "Urad": {"msp": 7400, "unit": "quintal", "season": "Kharif", "common_variety": "Black Gram"},
-        "Cotton": {"msp": 7521, "unit": "quintal", "season": "Kharif", "common_variety": "Medium Staple"},
-        "Cotton (Long Staple)": {"msp": 7971, "unit": "quintal", "season": "Kharif", "common_variety": "Long Staple"},
-        "Groundnut": {"msp": 6783, "unit": "quintal", "season": "Kharif", "common_variety": "In Shell"},
-        "Sunflower": {"msp": 7280, "unit": "quintal", "season": "Kharif", "common_variety": "Seed"},
-        "Soybean": {"msp": 4892, "unit": "quintal", "season": "Kharif", "common_variety": "Yellow"},
-        "Sesame": {"msp": 9267, "unit": "quintal", "season": "Kharif", "common_variety": "Sesamum"},
-        "Niger Seed": {"msp": 8717, "unit": "quintal", "season": "Kharif", "common_variety": "Niger"},
-        
-        # Rabi Crops 2025-26
-        "Wheat": {"msp": 2425, "unit": "quintal", "season": "Rabi", "common_variety": "Common"},
-        "Barley": {"msp": 1980, "unit": "quintal", "season": "Rabi", "common_variety": "Common"},
-        "Gram": {"msp": 5650, "unit": "quintal", "season": "Rabi", "common_variety": "Chana"},
-        "Lentil": {"msp": 6700, "unit": "quintal", "season": "Rabi", "common_variety": "Masoor"},
-        "Mustard": {"msp": 5950, "unit": "quintal", "season": "Rabi", "common_variety": "Rapeseed"},
-        "Safflower": {"msp": 5940, "unit": "quintal", "season": "Rabi", "common_variety": "Carthamus"},
-        
-        # Other/Annual Crops
-        "Sugarcane": {"msp": 340, "unit": "quintal", "season": "Annual", "common_variety": "FRP"},
-        "Jute": {"msp": 5335, "unit": "quintal", "season": "Kharif", "common_variety": "Raw"},
-        "Copra": {"msp": 11582, "unit": "quintal", "season": "Annual", "common_variety": "Milling"},
-        "Copra (Ball)": {"msp": 12100, "unit": "quintal", "season": "Annual", "common_variety": "Ball"},
-        "De-husked Coconut": {"msp": 3200, "unit": "per 1000 nuts", "season": "Annual", "common_variety": "Dehusked"},
-    }
-}
-
-
-async def fetch_msp_from_api(crop: Optional[str] = None) -> Dict:
-    """
-    Fetch MSP prices from data.gov.in API
-    Falls back to static data if API fails
-    """
-    cache_key = f"msp_{crop or 'all'}"
-    cached = _get_cache(cache_key, "msp")
-    if cached:
-        return cached
-    
-    try:
-        async with httpx.AsyncClient(timeout=10.0) as client:
-            params = {
-                "api-key": DATA_GOV_API_KEY,
-                "format": "json",
-                "limit": 100
-            }
-            
-            response = await client.get(MSP_API_URL, params=params)
-            
-            if response.status_code == 200:
-                data = response.json()
-                if data.get("records"):
-                    # Process API response
-                    result = {
-                        "source": "data.gov.in API",
-                        "fetched_at": datetime.now().isoformat(),
-                        "crops": {}
-                    }
-                    
-                    for record in data["records"]:
-                        crop_name = record.get("commodity", "")
-                        if crop_name:
-                            result["crops"][crop_name] = {
-                                "msp": float(record.get("msp_price", 0)),
-                                "unit": "quintal",
-                                "season": record.get("season", "Unknown"),
-                                "year": record.get("year", "2025-26")
-                            }
-                    
-                    if result["crops"]:
-                        _set_cache(cache_key, result)
-                        logger.info(f"Fetched MSP data from API: {len(result['crops'])} crops")
-                        return result
-    
-    except Exception as e:
-        logger.warning(f"Failed to fetch MSP from API: {e}")
-    
-    # Fallback to static data
-    logger.info("Using static MSP data (2025-26)")
-    return MSP_DATA_2025_26
+# Versioned, source-linked official publications; both API and offline UI use this dataset.
+MSP_DATA = json.loads((Path(__file__).resolve().parent / 'data/msp_data.json').read_text(encoding='utf-8'))
 
 
 def get_msp_for_crop(crop: str) -> Optional[Dict]:
-    """Get MSP for a specific crop from static data"""
-    # Normalize crop name
-    crop_normalized = crop.strip().title()
-    
-    # Direct match
-    if crop_normalized in MSP_DATA_2025_26["crops"]:
-        return {
-            "crop": crop_normalized,
-            **MSP_DATA_2025_26["crops"][crop_normalized]
-        }
-    
-    # Try partial match
-    for crop_name, data in MSP_DATA_2025_26["crops"].items():
-        if crop_normalized.lower() in crop_name.lower():
-            return {"crop": crop_name, **data}
-    
+    """Match a complete crop name or a documented alias, never a substring."""
+    aliases = {'paddy': 'rice', 'arhar': 'tur', 'chickpea': 'gram', 'chana': 'gram',
+               'masur': 'lentil', 'sesamum': 'sesame'}
+    key = aliases.get(crop.strip().casefold(), crop.strip().casefold())
+    for name, entry in MSP_DATA['crops'].items():
+        if name.casefold() == key:
+            return {'crop': name, **deepcopy(entry)}
     return None
 
 
 def get_all_msp() -> Dict:
-    """Get all MSP prices"""
-    return MSP_DATA_2025_26
+    """Return the verified publication snapshot with record-specific year and source."""
+    return deepcopy(MSP_DATA)
+
+
+async def fetch_msp_from_api(crop: Optional[str] = None) -> Dict:
+    """Compatibility entry: serve verified publications rather than an unverified API schema."""
+    if crop is None:
+        return get_all_msp()
+    record = get_msp_for_crop(crop)
+    return {**get_all_msp(), 'crops': {record['crop']: record} if record else {}}
 
 
 # ============================================================================
@@ -184,11 +96,17 @@ async def fetch_mandi_prices(
     """
     Fetch live mandi prices from data.gov.in
     """
-    cache_key = f"mandi_{commodity}_{state}_{district}"
+    if isinstance(limit, bool) or not isinstance(limit, int) or not 1 <= limit <= 100:
+        raise ValueError("limit must be between 1 and 100")
+    cache_key = f"mandi_{commodity}_{state}_{district}_{limit}"
     cached = _get_cache(cache_key, "mandi")
     if cached:
         return cached
     
+    if not DATA_GOV_API_KEY:
+        return {"available": False, "source": "data.gov.in API", "prices": [], "total": 0,
+                "error": "Live mandi prices are not configured.", "error_code": "not_configured"}
+
     try:
         async with httpx.AsyncClient(timeout=15.0) as client:
             params = {
@@ -197,31 +115,38 @@ async def fetch_mandi_prices(
                 "limit": limit
             }
             
-            # Add filters
-            filters = []
-            if commodity:
-                filters.append(f"commodity={commodity}")
-            if state:
-                filters.append(f"state={state}")
-            if district:
-                filters.append(f"district={district}")
-            
-            if filters:
-                params["filters[" + "][".join(filters) + "]"] = ""
-            
+            for name, value in [('commodity', commodity), ('state', state), ('district', district)]:
+                if value:
+                    params[f'filters[{name}]'] = value
+
             response = await client.get(MANDI_PRICES_API_URL, params=params)
             
             if response.status_code == 200:
                 data = response.json()
                 
+                if not isinstance(data, dict) or not isinstance(data.get("records"), list):
+                    raise ValueError("Invalid mandi response schema")
                 result = {
+                    "available": True,
                     "source": "data.gov.in API",
+                    "source_type": "official_api",
                     "fetched_at": datetime.now().isoformat(),
                     "total": data.get("total", 0),
                     "prices": []
                 }
                 
-                for record in data.get("records", []):
+                for record in data["records"]:
+                    if not isinstance(record, dict):
+                        continue
+                    if any(value and str(record.get(name, '')).casefold() != value.casefold()
+                           for name, value in [('commodity', commodity), ('state', state), ('district', district)]):
+                        continue
+                    try:
+                        prices = [float(record.get(name)) for name in ('min_price', 'modal_price', 'max_price')]
+                    except (TypeError, ValueError):
+                        continue
+                    if not all(math.isfinite(v) and v > 0 for v in prices) or not prices[0] <= prices[1] <= prices[2]:
+                        continue
                     result["prices"].append({
                         "state": record.get("state", ""),
                         "district": record.get("district", ""),
@@ -234,7 +159,7 @@ async def fetch_mandi_prices(
                         "modal_price": float(record.get("modal_price", 0)),
                     })
                 
-                if result["prices"]:
+                if result["prices"] or not data["records"]:
                     _set_cache(cache_key, result)
                     logger.info(f"Fetched {len(result['prices'])} mandi prices")
                     return result
@@ -244,6 +169,7 @@ async def fetch_mandi_prices(
     
     # Return empty result on failure
     return {
+        "available": False,
         "source": "API unavailable",
         "fetched_at": datetime.now().isoformat(),
         "total": 0,
@@ -289,8 +215,7 @@ INDIAN_STATES = [
     {"code": "WB", "name": "West Bengal", "nameHi": "पश्चिम बंगाल"},
     {"code": "AN", "name": "Andaman and Nicobar Islands", "nameHi": "अंडमान और निकोबार द्वीप"},
     {"code": "CH", "name": "Chandigarh", "nameHi": "चंडीगढ़"},
-    {"code": "DN", "name": "Dadra and Nagar Haveli", "nameHi": "दादरा और नगर हवेली"},
-    {"code": "DD", "name": "Daman and Diu", "nameHi": "दमन और दीव"},
+    {"code": "DN", "name": "Dadra and Nagar Haveli and Daman and Diu", "nameHi": "Dadra and Nagar Haveli and Daman and Diu"},
     {"code": "DL", "name": "Delhi", "nameHi": "दिल्ली"},
     {"code": "LD", "name": "Lakshadweep", "nameHi": "लक्षद्वीप"},
     {"code": "PY", "name": "Puducherry", "nameHi": "पुडुचेरी"},
@@ -300,39 +225,35 @@ INDIAN_STATES = [
 
 def get_all_states() -> List[Dict]:
     """Get all Indian states"""
-    return INDIAN_STATES
+    return deepcopy(INDIAN_STATES)
+
+
+LOCATION_SUGGESTIONS = json.loads(
+    (Path(__file__).resolve().parent / 'data/location_suggestions.json').read_text(encoding='utf-8'))
+
+
+def _location_state(state: str) -> Optional[Dict]:
+    key = state.strip().casefold()
+    for entry in INDIAN_STATES:
+        if entry['code'].casefold() == key:
+            key = entry['name'].casefold()
+            break
+    return next((entry for entry in LOCATION_SUGGESTIONS['states']
+                 if entry['name'].casefold() == key), None)
 
 
 async def fetch_districts(state: str) -> List[Dict]:
-    """
-    Fetch districts for a state
-    Currently uses static data; can be extended to use LG Directory API
-    """
-    # Import static data as fallback
-    # In future, this can call LG Directory API
-    from data_loader import load_districts_for_state
-    
-    try:
-        districts = load_districts_for_state(state)
-        return districts
-    except Exception as e:
-        logger.warning(f"Failed to load districts for {state}: {e}")
-        return []
+    """Return partial registration suggestions, not verified administrative records."""
+    entry = _location_state(state)
+    return deepcopy(entry['districts']) if entry else []
 
 
 async def fetch_tehsils(state: str, district: str) -> List[str]:
-    """
-    Fetch tehsils for a district
-    Currently uses static data; can be extended to use LG Directory API
-    """
-    from data_loader import load_tehsils_for_district
-    
-    try:
-        tehsils = load_tehsils_for_district(state, district)
-        return tehsils
-    except Exception as e:
-        logger.warning(f"Failed to load tehsils for {state}/{district}: {e}")
-        return []
+    """Return partial suggestions for a district; unknown locations remain enterable."""
+    entries = await fetch_districts(state)
+    match = next((entry for entry in entries
+                  if entry['name'].casefold() == district.strip().casefold()), None)
+    return deepcopy(match['tehsils']) if match else []
 
 
 # ============================================================================

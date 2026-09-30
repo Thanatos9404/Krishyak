@@ -1,9 +1,10 @@
 @echo off
 echo Starting KrishiSaarthi Frontend...
-cd frontend
+cd /d "%~dp0frontend"
 if not exist node_modules (
     echo Installing dependencies...
-    npm install
+    call npm ci
+    if errorlevel 1 exit /b 1
 )
 echo Starting React development server...
-npm start
+call npm start

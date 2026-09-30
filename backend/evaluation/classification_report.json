@@ -1,0 +1,267 @@
+{
+  "American Bollworm on Cotton": {
+    "precision": 0.44680851063829785,
+    "recall": 0.7,
+    "f1-score": 0.5454545454545453,
+    "support": 30.0
+  },
+  "Anthracnose on Cotton": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1-score": 0.0,
+    "support": 10.0
+  },
+  "Army worm": {
+    "precision": 0.9501915708812261,
+    "recall": 0.7065527065527065,
+    "f1-score": 0.8104575163398693,
+    "support": 351.0
+  },
+  "Becterial Blight in Rice": {
+    "precision": 0.3,
+    "recall": 0.2727272727272727,
+    "f1-score": 0.28571428571428564,
+    "support": 22.0
+  },
+  "Brownspot": {
+    "precision": 0.5,
+    "recall": 0.6666666666666666,
+    "f1-score": 0.5714285714285715,
+    "support": 9.0
+  },
+  "Common_Rust": {
+    "precision": 0.4583333333333333,
+    "recall": 0.6111111111111112,
+    "f1-score": 0.5238095238095238,
+    "support": 18.0
+  },
+  "Cotton Aphid": {
+    "precision": 0.9695121951219512,
+    "recall": 0.554006968641115,
+    "f1-score": 0.7050997782705101,
+    "support": 287.0
+  },
+  "Flag Smut": {
+    "precision": 0.6388888888888888,
+    "recall": 0.9583333333333334,
+    "f1-score": 0.7666666666666666,
+    "support": 24.0
+  },
+  "Gray_Leaf_Spot": {
+    "precision": 0.6071428571428571,
+    "recall": 0.85,
+    "f1-score": 0.7083333333333333,
+    "support": 20.0
+  },
+  "Healthy Maize": {
+    "precision": 0.9922480620155039,
+    "recall": 0.9309090909090909,
+    "f1-score": 0.9606003752345216,
+    "support": 275.0
+  },
+  "Healthy Wheat": {
+    "precision": 0.48484848484848486,
+    "recall": 0.48484848484848486,
+    "f1-score": 0.48484848484848486,
+    "support": 33.0
+  },
+  "Healthy cotton": {
+    "precision": 0.835820895522388,
+    "recall": 0.9545454545454546,
+    "f1-score": 0.8912466843501327,
+    "support": 176.0
+  },
+  "Leaf Curl": {
+    "precision": 0.6517857142857143,
+    "recall": 0.9012345679012346,
+    "f1-score": 0.7564766839378239,
+    "support": 81.0
+  },
+  "Leaf smut": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1-score": 0.0,
+    "support": 16.0
+  },
+  "Mosaic sugarcane": {
+    "precision": 0.9347826086956522,
+    "recall": 0.6515151515151515,
+    "f1-score": 0.7678571428571428,
+    "support": 66.0
+  },
+  "RedRot sugarcane": {
+    "precision": 0.9395973154362416,
+    "recall": 0.9150326797385621,
+    "f1-score": 0.9271523178807947,
+    "support": 153.0
+  },
+  "RedRust sugarcane": {
+    "precision": 0.8378378378378378,
+    "recall": 1.0,
+    "f1-score": 0.911764705882353,
+    "support": 31.0
+  },
+  "Rice Blast": {
+    "precision": 0.7115384615384616,
+    "recall": 0.8409090909090909,
+    "f1-score": 0.7708333333333333,
+    "support": 44.0
+  },
+  "Sugarcane Healthy": {
+    "precision": 0.881578947368421,
+    "recall": 0.7127659574468085,
+    "f1-score": 0.788235294117647,
+    "support": 94.0
+  },
+  "Tungro": {
+    "precision": 0.375,
+    "recall": 1.0,
+    "f1-score": 0.5454545454545454,
+    "support": 9.0
+  },
+  "Wheat Brown leaf Rust": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1-score": 0.0,
+    "support": 15.0
+  },
+  "Wheat Stem fly": {
+    "precision": 0.6091954022988506,
+    "recall": 0.8548387096774194,
+    "f1-score": 0.7114093959731543,
+    "support": 62.0
+  },
+  "Wheat aphid": {
+    "precision": 0.40625,
+    "recall": 0.34210526315789475,
+    "f1-score": 0.3714285714285715,
+    "support": 38.0
+  },
+  "Wheat black rust": {
+    "precision": 0.6805555555555556,
+    "recall": 0.7,
+    "f1-score": 0.6901408450704225,
+    "support": 70.0
+  },
+  "Wheat leaf blight": {
+    "precision": 0.7,
+    "recall": 0.6,
+    "f1-score": 0.6461538461538462,
+    "support": 35.0
+  },
+  "Wheat mite": {
+    "precision": 0.7894736842105263,
+    "recall": 0.7894736842105263,
+    "f1-score": 0.7894736842105263,
+    "support": 38.0
+  },
+  "Wheat powdery mildew": {
+    "precision": 0.373134328358209,
+    "recall": 0.5952380952380952,
+    "f1-score": 0.4587155963302752,
+    "support": 42.0
+  },
+  "Wheat scab": {
+    "precision": 0.6666666666666666,
+    "recall": 0.9565217391304348,
+    "f1-score": 0.7857142857142856,
+    "support": 23.0
+  },
+  "Wheat___Yellow_Rust": {
+    "precision": 0.75,
+    "recall": 0.47368421052631576,
+    "f1-score": 0.5806451612903226,
+    "support": 19.0
+  },
+  "Wilt": {
+    "precision": 0.9327354260089686,
+    "recall": 0.9928400954653938,
+    "f1-score": 0.9618497109826589,
+    "support": 419.0
+  },
+  "Yellow Rust Sugarcane": {
+    "precision": 0.1,
+    "recall": 0.75,
+    "f1-score": 0.17647058823529416,
+    "support": 4.0
+  },
+  "bacterial_blight in Cotton": {
+    "precision": 0.7150837988826816,
+    "recall": 0.9014084507042254,
+    "f1-score": 0.7975077881619937,
+    "support": 284.0
+  },
+  "bollrot on Cotton": {
+    "precision": 0.0,
+    "recall": 0.0,
+    "f1-score": 0.0,
+    "support": 2.0
+  },
+  "bollworm on Cotton": {
+    "precision": 0.5,
+    "recall": 0.1,
+    "f1-score": 0.16666666666666669,
+    "support": 10.0
+  },
+  "cotton mealy bug": {
+    "precision": 0.7096774193548387,
+    "recall": 0.7586206896551724,
+    "f1-score": 0.7333333333333333,
+    "support": 58.0
+  },
+  "cotton whitefly": {
+    "precision": 0.6333333333333333,
+    "recall": 0.8444444444444444,
+    "f1-score": 0.7238095238095237,
+    "support": 45.0
+  },
+  "maize ear rot": {
+    "precision": 0.5294117647058824,
+    "recall": 1.0,
+    "f1-score": 0.6923076923076924,
+    "support": 18.0
+  },
+  "maize fall armyworm": {
+    "precision": 0.5148514851485149,
+    "recall": 0.6842105263157895,
+    "f1-score": 0.5875706214689266,
+    "support": 76.0
+  },
+  "maize stem borer": {
+    "precision": 0.6590909090909091,
+    "recall": 0.5087719298245614,
+    "f1-score": 0.5742574257425743,
+    "support": 57.0
+  },
+  "pink bollworm in cotton": {
+    "precision": 0.8888888888888888,
+    "recall": 0.5517241379310345,
+    "f1-score": 0.6808510638297872,
+    "support": 29.0
+  },
+  "red cotton bug": {
+    "precision": 0.7818181818181819,
+    "recall": 0.9772727272727273,
+    "f1-score": 0.8686868686868686,
+    "support": 44.0
+  },
+  "thirps on  cotton": {
+    "precision": 0.9,
+    "recall": 0.25,
+    "f1-score": 0.391304347826087,
+    "support": 36.0
+  },
+  "accuracy": 0.7809643870154428,
+  "macro avg": {
+    "precision": 0.6037162506637443,
+    "recall": 0.6510074581047647,
+    "f1-score": 0.5978507334794498,
+    "support": 3173.0
+  },
+  "weighted avg": {
+    "precision": 0.8062117706768737,
+    "recall": 0.7809643870154428,
+    "f1-score": 0.7768808391510714,
+    "support": 3173.0
+  }
+}

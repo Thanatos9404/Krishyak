@@ -1,6 +1,5 @@
 import { useState, useCallback } from 'react';
-
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+import { API_BASE_URL as API_URL } from '../config/api';
 
 /**
  * useJAMTrinity - React hook for JAM Trinity verification
@@ -58,7 +57,7 @@ const useJAMTrinity = () => {
         throw new Error(data.error || 'Failed to request consent');
       }
     } catch (err) {
-      setError(err.message);
+      setError('common.error');
       return null;
     } finally {
       setLoading(false);
@@ -71,7 +70,7 @@ const useJAMTrinity = () => {
   const grantConsent = useCallback(async (consentIdToGrant) => {
     const id = consentIdToGrant || consentId;
     if (!id) {
-      setError('No consent ID to grant');
+      setError('jam.consentTitle');
       return false;
     }
 
@@ -93,7 +92,7 @@ const useJAMTrinity = () => {
         throw new Error(data.error || 'Failed to grant consent');
       }
     } catch (err) {
-      setError(err.message);
+      setError('common.error');
       return false;
     } finally {
       setLoading(false);
@@ -105,7 +104,7 @@ const useJAMTrinity = () => {
    */
   const revokeConsent = useCallback(async () => {
     if (!consentId) {
-      setError('No consent to revoke');
+      setError('jam.consentTitle');
       return false;
     }
 
@@ -130,7 +129,7 @@ const useJAMTrinity = () => {
         throw new Error(data.error || 'Failed to revoke consent');
       }
     } catch (err) {
-      setError(err.message);
+      setError('common.error');
       return false;
     } finally {
       setLoading(false);
@@ -143,12 +142,12 @@ const useJAMTrinity = () => {
    */
   const verifyAadhaar = useCallback(async (aadhaarLast4, name = null) => {
     if (!consentId || consentStatus !== 'granted') {
-      setError('Consent required before verification');
+      setError('jam.consentTitle');
       return null;
     }
 
     if (!aadhaarLast4 || aadhaarLast4.length !== 4) {
-      setError('Please enter last 4 digits of Aadhaar');
+      setError('jam.enterAadhaar');
       return null;
     }
 
@@ -178,7 +177,7 @@ const useJAMTrinity = () => {
         throw new Error(data.error || 'Aadhaar verification failed');
       }
     } catch (err) {
-      setError(err.message);
+      setError('common.error');
       return null;
     } finally {
       setLoading(false);
@@ -190,7 +189,7 @@ const useJAMTrinity = () => {
    */
   const verifyLandRecords = useCallback(async () => {
     if (!aadhaarToken || !consentId) {
-      setError('Aadhaar verification required first');
+      setError('jam.aadhaarVerify');
       return null;
     }
 
@@ -218,7 +217,7 @@ const useJAMTrinity = () => {
         throw new Error(data.error || 'Land records verification failed');
       }
     } catch (err) {
-      setError(err.message);
+      setError('common.error');
       return null;
     } finally {
       setLoading(false);
@@ -230,7 +229,7 @@ const useJAMTrinity = () => {
    */
   const verifyJanDhan = useCallback(async () => {
     if (!aadhaarToken || !consentId) {
-      setError('Aadhaar verification required first');
+      setError('jam.aadhaarVerify');
       return null;
     }
 
@@ -258,7 +257,7 @@ const useJAMTrinity = () => {
         throw new Error(data.error || 'Bank verification failed');
       }
     } catch (err) {
-      setError(err.message);
+      setError('common.error');
       return null;
     } finally {
       setLoading(false);
@@ -270,7 +269,7 @@ const useJAMTrinity = () => {
    */
   const getPmKisanStatus = useCallback(async () => {
     if (!aadhaarToken || !consentId) {
-      setError('Aadhaar verification required first');
+      setError('jam.aadhaarVerify');
       return null;
     }
 
@@ -300,7 +299,7 @@ const useJAMTrinity = () => {
         throw new Error(data.error || 'Failed to fetch PM-KISAN status');
       }
     } catch (err) {
-      setError(err.message);
+      setError('common.error');
       return null;
     } finally {
       setLoading(false);
@@ -312,7 +311,7 @@ const useJAMTrinity = () => {
    */
   const getFarmerProfile = useCallback(async () => {
     if (!aadhaarToken || !consentId) {
-      setError('Aadhaar verification required first');
+      setError('jam.aadhaarVerify');
       return null;
     }
 
@@ -353,7 +352,7 @@ const useJAMTrinity = () => {
         throw new Error(data.error || 'Failed to fetch farmer profile');
       }
     } catch (err) {
-      setError(err.message);
+      setError('common.error');
       return null;
     } finally {
       setLoading(false);

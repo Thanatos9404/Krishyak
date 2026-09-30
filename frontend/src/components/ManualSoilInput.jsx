@@ -114,7 +114,7 @@ const ManualSoilInput = ({
     for (const [field, rules] of Object.entries(validationRules)) {
       const value = formData[field];
       if (value < rules.min || value > rules.max) {
-        newErrors[field] = `${rules.label} must be between ${rules.min} and ${rules.max}`;
+        newErrors[field] = t('validation.range', { label: rules.label, min: rules.min, max: rules.max });
       }
     }
 
@@ -135,10 +135,10 @@ const ManualSoilInput = ({
       const result = await onSubmit(formData);
 
       if (!result.success) {
-        setSubmitError(result.error || 'Failed to save data');
+        setSubmitError(t('validation.saveFailed'));
       }
-    } catch (err) {
-      setSubmitError(err.message || 'An error occurred');
+    } catch {
+      setSubmitError(t('validation.saveFailed'));
     } finally {
       setSubmitting(false);
     }
@@ -155,6 +155,7 @@ const ManualSoilInput = ({
           <button
             onClick={onClose}
             className="p-2 hover:bg-gray-100 rounded-lg transition"
+            aria-label={t('common.close')}
           >
             <X className="w-5 h-5 text-gray-500" />
           </button>
@@ -183,8 +184,8 @@ const ManualSoilInput = ({
               min={0}
               max={500}
               step={1}
-              unit="kg/ha"
-              tooltip="Available nitrogen in soil. Ideal: 100-150 kg/ha for most crops."
+              unit={t('units.kgPerHectare')}
+              tooltip={t('soilSensor.help.nitrogen')}
               error={errors.nitrogen}
             />
 
@@ -196,8 +197,8 @@ const ManualSoilInput = ({
               min={0}
               max={200}
               step={1}
-              unit="kg/ha"
-              tooltip="Available phosphorus. Ideal: 30-50 kg/ha."
+              unit={t('units.kgPerHectare')}
+              tooltip={t('soilSensor.help.phosphorus')}
               error={errors.phosphorus}
             />
 
@@ -209,8 +210,8 @@ const ManualSoilInput = ({
               min={0}
               max={500}
               step={1}
-              unit="kg/ha"
-              tooltip="Available potassium. Ideal: 80-120 kg/ha."
+              unit={t('units.kgPerHectare')}
+              tooltip={t('soilSensor.help.potassium')}
               error={errors.potassium}
             />
           </div>
@@ -230,7 +231,7 @@ const ManualSoilInput = ({
                 min={0}
                 max={14}
                 step={0.1}
-                tooltip="Soil acidity/alkalinity. Ideal: 6.0-7.0 for most crops."
+                tooltip={t('soilSensor.help.ph')}
                 error={errors.ph}
               />
 
@@ -267,7 +268,7 @@ const ManualSoilInput = ({
                 max={20}
                 step={0.1}
                 unit="%"
-                tooltip="Organic carbon content. Higher is better for fertility."
+                tooltip={t('soilSensor.help.organicCarbon')}
                 error={errors.organic_carbon}
               />
             </div>

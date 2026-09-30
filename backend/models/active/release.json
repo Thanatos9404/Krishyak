@@ -1,0 +1,51 @@
+{
+  "model_id": "publisher-efficientnet-colab-v1",
+  "architecture": "EfficientNetV2B0",
+  "classes": 38,
+  "activated_on": "2026-09-28",
+  "selection": "User-selected default; external evaluation retained unchanged.",
+  "model_sha256": "5d8b08e61feae381a7bf05f0dea8fe77527e0dcc2dd7b5714f5160eb5341a591",
+  "class_indices_sha256": "7460d3d6f10fec3d84ab8dd26ad842598d3c969cb38fc55f90a766f944e5378c",
+  "metrics": {
+    "validation": {
+      "samples": 5416,
+      "accuracy": 0.9438700147710487,
+      "accuracy_wilson_95": [
+        0.9374193615110371,
+        0.949691435232543
+      ],
+      "balanced_accuracy": 0.9274068102494871,
+      "macro_f1": 0.9225701720000764
+    },
+    "test": {
+      "samples": 8566,
+      "accuracy": 0.937076815316367,
+      "accuracy_wilson_95": [
+        0.9317359772851954,
+        0.9420257967947363
+      ],
+      "balanced_accuracy": 0.9152119435209142,
+      "macro_f1": 0.9154929408875666
+    },
+    "external_test": {
+      "samples": 229,
+      "accuracy": 0.5720524017467249,
+      "accuracy_wilson_95": [
+        0.5072990796741207,
+        0.6344281718135859
+      ],
+      "balanced_accuracy": 0.5758136924803591,
+      "macro_f1": 0.5682792785957561
+    },
+    "legacy_validation": {
+      "samples": 512,
+      "accuracy": 0.96875,
+      "accuracy_wilson_95": [
+        0.9498435216776454,
+        0.9806746839110471
+      ],
+      "balanced_accuracy": 0.47149564050972503,
+      "macro_f1": 0.530634278002699
+    }
+  }
+}

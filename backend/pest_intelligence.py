@@ -8,7 +8,7 @@ Provides:
 
 import os
 import json
-import random
+import math
 import hashlib
 from datetime import datetime, timedelta
 from dataclasses import dataclass, field, asdict
@@ -89,13 +89,16 @@ class OutbreakPrediction:
     risk_level: PestSeverity
     factors: List[str]
     recommended_actions: List[str]
-    confidence: float
+    confidence: Optional[float]
     valid_until: datetime
     
     def to_dict(self) -> dict:
         return {
             **asdict(self),
             "risk_level": self.risk_level.value,
+            "score_kind": "heuristic_suitability_index_not_calibrated_probability",
+            "regional_data_available": False,
+            "method_version": "weather_season_v2",
             "valid_until": self.valid_until.isoformat()
         }
 
@@ -284,84 +287,12 @@ class PestDataCollector:
         self.icar_api_key = os.getenv("ICAR_API_KEY", "")
     
     def get_government_alerts(self, state: str, district: str = None) -> List[PestAlert]:
-        """
-        Get pest alerts from government sources.
-        In production: Call ICAR/NCIPM/Krishi Portal APIs
-        For hackathon: Return mock data based on state hotspots
-        """
-        alerts = []
-        current_month = datetime.now().month
-        
-        # Get hotspot pests for the state
-        hotspot_pests = STATE_PEST_HOTSPOTS.get(state, [])
-        
-        for pest_key in hotspot_pests[:2]:  # Limit to 2 active alerts
-            # Parse pest key
-            parts = pest_key.split("_", 1)
-            if len(parts) != 2:
-                continue
-                
-            crop, pest_short = parts
-            
-            # Find pest in database
-            if crop in PEST_DATABASE:
-                for pest_id, pest_info in PEST_DATABASE[crop].items():
-                    if pest_short in pest_id:
-                        # Check if pest is active this month
-                        if current_month in pest_info.get("peak_months", []):
-                            severity = PestSeverity.HIGH if random.random() > 0.5 else PestSeverity.MEDIUM
-                        else:
-                            severity = PestSeverity.LOW
-                        
-                        alert = PestAlert(
-                            id=hashlib.md5(f"{pest_key}_{state}_{datetime.now().date()}".encode()).hexdigest()[:12],
-                            pest_name=pest_info["common_name"],
-                            scientific_name=pest_info["scientific_name"],
-                            crop=crop.title(),
-                            severity=severity,
-                            region=state,
-                            district=district or "All Districts",
-                            source=AlertSource.GOVERNMENT,
-                            description=f"Active {pest_info['common_name']} infestation reported. Symptoms: {', '.join(pest_info['damage_symptoms'][:2])}",
-                            recommendations=pest_info["control_measures"][:3],
-                            timestamp=datetime.now() - timedelta(hours=random.randint(1, 48)),
-                            expires=datetime.now() + timedelta(days=7)
-                        )
-                        alerts.append(alert)
-                        break
-        
-        return alerts
-    
+        """No verified government feed is integrated. An empty list means unavailable."""
+        return []
+
     def get_historical_outbreaks(self, crop: str, state: str, years: int = 3) -> List[Dict]:
-        """
-        Get historical outbreak data for trend analysis.
-        Returns mock data simulating historical records.
-        """
-        outbreaks = []
-        current_year = datetime.now().year
-        
-        crop_lower = crop.lower()
-        if crop_lower not in PEST_DATABASE:
-            return outbreaks
-        
-        for pest_id, pest_info in PEST_DATABASE[crop_lower].items():
-            for year_offset in range(years):
-                year = current_year - year_offset
-                for month in pest_info.get("peak_months", []):
-                    # Generate mock historical data
-                    outbreak = {
-                        "pest_name": pest_info["common_name"],
-                        "crop": crop,
-                        "year": year,
-                        "month": month,
-                        "severity": random.choice(["low", "medium", "high"]),
-                        "affected_area_hectares": random.randint(100, 5000),
-                        "state": state,
-                        "yield_loss_percent": random.uniform(5, 25)
-                    }
-                    outbreaks.append(outbreak)
-        
-        return outbreaks
+        """Do not manufacture historical outbreaks from seasonal rules."""
+        return []
 
 
 # ============================================================================
@@ -419,7 +350,7 @@ class PestAnalyzer:
         crop_lower = crop.lower()
         
         if crop_lower not in PEST_DATABASE:
-            return {"risk_level": "low", "active_pests": []}
+            return {"crop": crop, "available": False, "risk_level": None, "active_pests": []}
         
         active_pests = []
         max_risk = "low"
@@ -433,7 +364,7 @@ class PestAnalyzer:
                     "controls": pest_info["control_measures"][:2]
                 })
                 max_risk = "high"
-            elif any(abs(current_month - m) <= 1 for m in pest_info.get("peak_months", [])):
+            elif any(min(abs(current_month - m), 12 - abs(current_month - m)) <= 1 for m in pest_info.get("peak_months", [])):
                 # Near peak season
                 if max_risk != "high":
                     max_risk = "medium"
@@ -450,56 +381,16 @@ class PestAnalyzer:
         Get pest risk based on geographic location.
         Uses approximate state detection from coordinates.
         """
-        # Simplified state detection based on coordinates (India-centric)
-        state = self._detect_state(lat, lng)
-        
-        hotspot_pests = STATE_PEST_HOTSPOTS.get(state, [])
-        crop_lower = crop.lower()
-        
-        relevant_pests = [p for p in hotspot_pests if crop_lower in p]
-        
-        risk_level = "low"
-        if len(relevant_pests) >= 2:
-            risk_level = "high"
-        elif len(relevant_pests) == 1:
-            risk_level = "medium"
-        
         return {
-            "state": state,
-            "crop": crop,
-            "location_risk": risk_level,
-            "regional_threats": relevant_pests,
-            "coordinates": {"lat": lat, "lng": lng}
+            "state": None, "crop": crop, "available": False,
+            "location_risk": None, "regional_threats": [],
+            "coordinates": {"lat": lat, "lng": lng},
+            "reason": "Verified regional outbreak observations are not integrated."
         }
-    
-    def _detect_state(self, lat: float, lng: float) -> str:
-        """
-        Approximate state detection from coordinates.
-        Simplified for hackathon - uses bounding boxes.
-        """
-        # Simplified state detection
-        if 28 <= lat <= 32 and 74 <= lng <= 77:
-            return "Punjab"
-        elif 28 <= lat <= 30 and 74 <= lng <= 77:
-            return "Haryana"
-        elif 24 <= lat <= 31 and 77 <= lng <= 85:
-            return "Uttar Pradesh"
-        elif 18 <= lat <= 22 and 72 <= lng <= 80:
-            return "Maharashtra"
-        elif 20 <= lat <= 24 and 68 <= lng <= 75:
-            return "Gujarat"
-        elif 12 <= lat <= 19 and 77 <= lng <= 84:
-            return "Andhra Pradesh"
-        elif 8 <= lat <= 13 and 76 <= lng <= 80:
-            return "Tamil Nadu"
-        elif 11 <= lat <= 18 and 74 <= lng <= 78:
-            return "Karnataka"
-        elif 20 <= lat <= 27 and 85 <= lng <= 90:
-            return "West Bengal"
-        elif 21 <= lat <= 27 and 74 <= lng <= 82:
-            return "Madhya Pradesh"
-        else:
-            return "Other"
+
+    def _detect_state(self, lat: float, lng: float) -> Optional[str]:
+        """No state assertion without an administrative boundary/geocoding source."""
+        return None
 
 
 # ============================================================================
@@ -524,19 +415,23 @@ class OutbreakPredictor:
         if crop_lower not in PEST_DATABASE:
             return predictions
         
-        temperature = weather.get("temperature", 25)
-        humidity = weather.get("humidity", 60)
-        rainfall = weather.get("rainfall", 0)
+        for key, lower, upper in [('temperature', -10, 60), ('humidity', 0, 100), ('rainfall', 0, 10000)]:
+            value = weather.get(key)
+            if (isinstance(value, bool) or not isinstance(value, (int, float))
+                    or not math.isfinite(value) or not lower <= value <= upper):
+                raise ValueError(f"A valid observed {key} is required")
+        temperature = weather['temperature']
+        humidity = weather['humidity']
+        rainfall = weather['rainfall']
         
         current_month = datetime.now().month
-        location_risk = self.analyzer.get_risk_by_location(lat, lng, crop)
         
         for pest_id, pest_info in PEST_DATABASE[crop_lower].items():
             # Factor 1: Seasonal risk
             seasonal_risk = 0.3
             if current_month in pest_info.get("peak_months", []):
                 seasonal_risk = 0.8
-            elif any(abs(current_month - m) <= 1 for m in pest_info.get("peak_months", [])):
+            elif any(min(abs(current_month - m), 12 - abs(current_month - m)) <= 1 for m in pest_info.get("peak_months", [])):
                 seasonal_risk = 0.5
             
             # Factor 2: Weather correlation
@@ -544,25 +439,17 @@ class OutbreakPredictor:
                 crop, pest_info["common_name"], temperature, humidity
             )
             
-            # Factor 3: Location risk
-            geo_risk = 0.3
-            if location_risk["location_risk"] == "high":
-                geo_risk = 0.7
-            elif location_risk["location_risk"] == "medium":
-                geo_risk = 0.5
-            
             # Factor 4: Recent rainfall impact
             rain_risk = 0.3
             if rainfall > 50:
                 rain_risk = 0.7 if pest_info.get("favorable_conditions", {}).get("humidity_min", 50) > 70 else 0.4
             
-            # Combined probability (weighted average)
+            # Weather/season suitability only; normalized after removing mock regional risk.
             probability = (
                 seasonal_risk * 0.35 +
                 weather_risk * 0.30 +
-                geo_risk * 0.20 +
                 rain_risk * 0.15
-            )
+            ) / 0.80
             
             # Determine risk level
             if probability >= 0.7:
@@ -578,8 +465,6 @@ class OutbreakPredictor:
                 factors.append(f"Peak season for {pest_info['common_name']}")
             if weather_risk >= 0.6:
                 factors.append(f"Favorable weather conditions (Temp: {temperature}°C, Humidity: {humidity}%)")
-            if geo_risk >= 0.5:
-                factors.append(f"High regional risk in {location_risk['state']}")
             if rain_risk >= 0.5:
                 factors.append(f"Recent rainfall ({rainfall}mm) increases pest activity")
             
@@ -593,7 +478,7 @@ class OutbreakPredictor:
                 risk_level=risk_level,
                 factors=factors,
                 recommended_actions=pest_info["control_measures"][:3],
-                confidence=0.75 + random.uniform(-0.1, 0.15),  # 65-90% confidence
+                confidence=None,  # No empirical calibration data
                 valid_until=datetime.now() + timedelta(days=3)
             )
             predictions.append(prediction)

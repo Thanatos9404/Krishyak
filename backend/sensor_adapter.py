@@ -11,8 +11,9 @@ Vendors:
 
 import os
 import logging
+import math
 from abc import ABC, abstractmethod
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Optional, List, Dict, Any
 from dataclasses import dataclass, asdict
 from enum import Enum
@@ -64,19 +65,23 @@ class SoilData:
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> 'SoilData':
         """Create from dictionary"""
+        data = dict(data)
         if isinstance(data.get('timestamp'), str):
             data['timestamp'] = datetime.fromisoformat(data['timestamp'])
         return cls(**data)
     
     def is_valid(self) -> bool:
         """Validate soil data ranges"""
-        return (
-            0 <= self.nitrogen <= 500 and
-            0 <= self.phosphorus <= 200 and
-            0 <= self.potassium <= 500 and
-            0 <= self.ph <= 14 and
-            0 <= self.moisture <= 100 and
-            -10 <= self.temperature <= 60
+        bounds = ((self.nitrogen, 0, 500), (self.phosphorus, 0, 200),
+                  (self.potassium, 0, 500), (self.ph, 0, 14),
+                  (self.moisture, 0, 100), (self.temperature, -10, 60),
+                  (self.organic_carbon, 0, 100),
+                  (self.electrical_conductivity, 0, float('inf')))
+        return all(
+            (value is None and index >= 6) or
+            (isinstance(value, (int, float)) and not isinstance(value, bool)
+             and math.isfinite(value) and lower <= value <= upper)
+            for index, (value, lower, upper) in enumerate(bounds)
         )
 
 
@@ -157,19 +162,20 @@ class FasalAdapter(SensorAdapter):
                     return None
                 
                 data = response.json()
-                return SoilData(
+                reading = SoilData(
                     device_id=device_id,
                     timestamp=datetime.fromisoformat(data['timestamp']),
-                    nitrogen=data.get('nitrogen', 0),
-                    phosphorus=data.get('phosphorus', 0),
-                    potassium=data.get('potassium', 0),
-                    ph=data.get('ph', 7.0),
-                    moisture=data.get('moisture', 0),
-                    temperature=data.get('soil_temp', 25),
+                    nitrogen=data['nitrogen'],
+                    phosphorus=data['phosphorus'],
+                    potassium=data['potassium'],
+                    ph=data['ph'],
+                    moisture=data['moisture'],
+                    temperature=data['soil_temp'],
                     organic_carbon=data.get('organic_carbon'),
                     source="sensor",
                     vendor=self.vendor.value
                 )
+                return reading if reading.is_valid() else None
                 
         except Exception as e:
             logger.error(f"Fasal adapter error: {e}")
@@ -253,19 +259,20 @@ class CropInAdapter(SensorAdapter):
                     return None
                 
                 data = response.json()
-                return SoilData(
+                reading = SoilData(
                     device_id=device_id,
                     timestamp=datetime.fromisoformat(data['recorded_at']),
-                    nitrogen=data.get('n_value', 0),
-                    phosphorus=data.get('p_value', 0),
-                    potassium=data.get('k_value', 0),
-                    ph=data.get('ph_level', 7.0),
-                    moisture=data.get('soil_moisture', 0),
-                    temperature=data.get('soil_temperature', 25),
+                    nitrogen=data['n_value'],
+                    phosphorus=data['p_value'],
+                    potassium=data['k_value'],
+                    ph=data['ph_level'],
+                    moisture=data['soil_moisture'],
+                    temperature=data['soil_temperature'],
                     electrical_conductivity=data.get('ec_value'),
                     source="sensor",
                     vendor=self.vendor.value
                 )
+                return reading if reading.is_valid() else None
                 
         except Exception as e:
             logger.error(f"CropIn adapter error: {e}")
@@ -274,8 +281,15 @@ class CropInAdapter(SensorAdapter):
     async def get_connection_status(self, device_id: str) -> ConnectionStatus:
         if not self.api_key:
             return ConnectionStatus.NOT_CONFIGURED
-        # Simplified - real implementation would check API
-        return ConnectionStatus.CONNECTED
+        reading = await self.get_soil_data(device_id)
+        if reading is None:
+            return ConnectionStatus.ERROR
+        observed = reading.timestamp
+        if observed.tzinfo is None:
+            # A vendor timestamp without an offset cannot establish freshness.
+            return ConnectionStatus.STALE
+        age = (datetime.now(timezone.utc) - observed).total_seconds()
+        return ConnectionStatus.CONNECTED if 0 <= age <= 86400 else ConnectionStatus.STALE
     
     async def list_devices(self) -> List[SensorInfo]:
         # Simplified implementation

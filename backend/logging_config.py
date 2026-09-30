@@ -44,7 +44,7 @@ class JSONFormatter(logging.Formatter):
         if hasattr(record, "status_code"):
             log_data["status_code"] = record.status_code
         
-        return json.dumps(log_data, ensure_ascii=False)
+        return json.dumps(log_data, ensure_ascii=True)
 
 
 class ColoredFormatter(logging.Formatter):
@@ -184,9 +184,9 @@ class RequestLogger:
     ):
         """Log error with context"""
         self.logger.error(
-            f"Error: {context} - {str(error)}",
+            f"Error: {context} ({type(error).__name__})",
             extra={"request_id": request_id},
-            exc_info=True
+            exc_info=False
         )
 
 

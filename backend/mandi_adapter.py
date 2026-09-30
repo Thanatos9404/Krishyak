@@ -7,6 +7,7 @@ import logging
 import httpx
 from typing import Dict, Any, Optional
 import os
+import math
 from datetime import datetime
 from data_loader import DataLoader
 
@@ -28,20 +29,39 @@ class MandiPriceAdapter:
         if self.enable_live_fetch and self.api_key:
             try:
                 with httpx.Client(timeout=self.timeout) as client:
-                    response = client.get(self.public_api_url, params={"api-key": self.api_key, "filters[commodity]": commodity})
+                    params = {"api-key": self.api_key, "format": "json", "limit": 100}
+                    for key, value in [('commodity', commodity), ('state', state), ('district', district)]:
+                        if value:
+                            params[f'filters[{key}]'] = value
+                    response = client.get(self.public_api_url, params=params)
                     response.raise_for_status()
                     data = response.json()
-                    
-                    if data.get("records") and len(data["records"]) > 0:
-                        # Success path
-                        latest = data["records"][0]
+                    candidates = []
+                    for record in data.get('records', []):
+                        if not isinstance(record, dict):
+                            continue
+                        if any(value and str(record.get(key, '')).strip().casefold() != value.strip().casefold()
+                               for key, value in [('commodity', commodity), ('state', state), ('district', district)]):
+                            continue
+                        try:
+                            price = float(record['modal_price'])
+                            observed = datetime.strptime(record['arrival_date'], '%d/%m/%Y').date()
+                        except (KeyError, ValueError, TypeError):
+                            continue
+                        if math.isfinite(price) and price > 0 and observed <= datetime.now().date():
+                            candidates.append((observed, price, record))
+                    if candidates:
+                        observed, price, record = max(candidates, key=lambda item: item[0])
                         return {
-                            "price": float(latest.get("modal_price", 2000.0)),
+                            "price": price,
                             "source_type": "live_api",
                             "source_label": "Agmarknet (data.gov.in)",
-                            "freshness_status": "live",
-                            "record_date": latest.get("arrival_date"),
-                            "transparency_note": "Live price fetched directly from public Mandi API."
+                            "freshness_status": "live" if observed == datetime.now().date() else "stale",
+                            "record_date": observed.isoformat(),
+                            "market": record.get('market'),
+                            "state": record.get('state'),
+                            "district": record.get('district'),
+                            "transparency_note": "Latest dated record returned for the requested location; not a guaranteed sale price."
                         }
             except Exception as e:
                 logger.warning(f"Mandi API fetch failed ({e}), falling back to historical dataset.")
@@ -54,7 +74,7 @@ class MandiPriceAdapter:
         stats = self.data_loader.get_price_statistics(commodity)
         
         # Determine if we actually found data in the CSV or if it's a completely static fallback
-        if stats["mean"] != 2000 or stats.get("max") != 5000:
+        if stats.get("observations", 0) > 0:
             return {
                 "price": stats["mean"],
                 "source_type": "historical_dataset",

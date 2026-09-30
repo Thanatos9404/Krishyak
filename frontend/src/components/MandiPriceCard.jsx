@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation } from '../i18n';
 import { TrendingUp, TrendingDown, MapPin, RefreshCw, AlertCircle, ChevronDown, ChevronUp } from 'lucide-react';
 import { fetchMandiPrices, formatIndianPrice } from '../services/govApiService';
 
@@ -11,11 +11,10 @@ const MandiPriceCard = ({
   commodity = null,
   state = null,
   district = null,
-  showFilters = true,
   maxItems = 5,
   className = ''
 }) => {
-  const { t, i18n } = useTranslation();
+  const { t, languageInfo } = useTranslation();
   const [prices, setPrices] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -38,7 +37,7 @@ const MandiPriceCard = ({
         setPrices(result.prices);
         setLastUpdated(new Date(result.fetched_at || Date.now()));
       } else {
-        setError(result.error || t('mandi.fetchError'));
+        setError(t('mandi.fetchError'));
         setPrices([]);
       }
     } catch (err) {
@@ -131,7 +130,7 @@ const MandiPriceCard = ({
         </div>
         {lastUpdated && (
           <p className="text-green-100 text-xs mt-1">
-            {t('mandi.lastUpdated')}: {lastUpdated.toLocaleTimeString(i18n.language === 'hi' ? 'hi-IN' : 'en-IN')}
+            {t('mandi.lastUpdated')}: {lastUpdated.toLocaleTimeString(languageInfo.speechCode)}
           </p>
         )}
       </div>

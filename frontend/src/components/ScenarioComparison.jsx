@@ -1,39 +1,41 @@
 import React from 'react';
-import { ArrowUpRight, ArrowDownRight, AlertTriangle, CheckCircle, TrendingUp, ArrowRight, Lightbulb, Zap } from 'lucide-react';
+import ScenarioPriceSource from './ScenarioPriceSource';
+import { ArrowUpRight, ArrowDownRight, AlertTriangle, CheckCircle, TrendingUp, ArrowRight, CalendarDays, Droplets, FlaskConical, Lightbulb, ShieldCheck, Sprout, Zap } from 'lucide-react';
 import { useTranslation } from '../i18n';
 import { getRiskInfo } from '../utils/riskHelper';
 
 /**
- * WhatToChangeCard — Fix G
+ * WhatToChangeCard - Fix G
  * Shows actionable deltas between current inputs and AI optimal inputs.
  */
 const WhatToChangeCard = ({ currentParams, optimalParams, currentPlan, optimalPlan }) => {
+  const { t, languageInfo } = useTranslation();
   if (!currentParams || !optimalParams) return null;
 
   const changes = [];
 
   // Seed quality
   if (optimalParams.seed_quality > currentParams.seed_quality) {
-    const qualityLabel = (q) => q >= 0.9 ? 'Premium' : q >= 0.7 ? 'Good' : q >= 0.5 ? 'Average' : 'Low';
+    const qualityLabel = (q) => q >= 0.9 ? t('sidebar.premium') : q >= 0.7 ? t('sidebar.good') : q >= 0.5 ? t('sidebar.fair') : t('sidebar.low');
     changes.push({
-      label: 'Seed Quality',
+      label: t('sidebar.seedQuality'),
       from: qualityLabel(currentParams.seed_quality),
       to: qualityLabel(optimalParams.seed_quality),
-      impact: `+${((optimalParams.seed_quality - currentParams.seed_quality) * 100).toFixed(0)}% quality`,
-      icon: '🌱',
-      costNote: 'Approx. +₹800–1,500/hectare',
+      impact: `+${((optimalParams.seed_quality - currentParams.seed_quality) * 100).toFixed(0)}%`,
+      icon: Sprout,
+      costNote: t('scenarioDetails.seedCost'),
     });
   }
 
   // Irrigation frequency
   if (optimalParams.irrigation_frequency !== currentParams.irrigation_frequency) {
     changes.push({
-      label: 'Irrigation',
-      from: `${currentParams.irrigation_frequency}x/month`,
-      to: `${optimalParams.irrigation_frequency}x/month`,
-      impact: `${optimalParams.irrigation_frequency > currentParams.irrigation_frequency ? 'Better' : 'Reduced'} water supply`,
-      icon: '💧',
-      costNote: optimalParams.irrigation_frequency > currentParams.irrigation_frequency ? 'Minor pump cost increase' : 'Saves water cost',
+      label: t('dashboard.irrigation'),
+      from: `${currentParams.irrigation_frequency} ${t('sidebar.timesPerMonth')}`,
+      to: `${optimalParams.irrigation_frequency} ${t('sidebar.timesPerMonth')}`,
+      impact: optimalParams.irrigation_frequency > currentParams.irrigation_frequency ? t('scenarioDetails.moreWater') : t('scenarioDetails.lessWater'),
+      icon: Droplets,
+      costNote: optimalParams.irrigation_frequency > currentParams.irrigation_frequency ? t('scenarioDetails.pumpCost') : t('scenarioDetails.saveWater'),
     });
   }
 
@@ -42,12 +44,12 @@ const WhatToChangeCard = ({ currentParams, optimalParams, currentPlan, optimalPl
     const pctFrom = ((currentParams.pest_control_intensity || 0.5) * 100).toFixed(0);
     const pctTo = (optimalParams.pest_control_intensity * 100).toFixed(0);
     changes.push({
-      label: 'Pest Protection',
-      from: `${pctFrom}% coverage`,
-      to: `${pctTo}% coverage`,
-      impact: `Reduces crop loss risk by ~${pctTo - pctFrom}%`,
-      icon: '🛡️',
-      costNote: 'Approx. +₹500–1,000/hectare for sprays',
+      label: t('dashboard.pestControl'),
+      from: `${pctFrom}%`,
+      to: `${pctTo}%`,
+      impact: t('scenarioDetails.pestReduction', { value: pctTo - pctFrom }),
+      icon: ShieldCheck,
+      costNote: t('scenarioDetails.sprayCost'),
     });
   }
 
@@ -57,17 +59,17 @@ const WhatToChangeCard = ({ currentParams, optimalParams, currentPlan, optimalPl
     for (const [key, optValue] of Object.entries(optimalParams.fertilizer_mix)) {
       const currValue = currentParams.fertilizer_mix?.[key] || 0;
       if (Math.abs(optValue - currValue) > 5) {
-        fertChanges.push(`${key}: ${currValue}→${optValue} kg/ha`);
+        fertChanges.push(`${t(`fertilizer.products.${key.toLowerCase()}`) || key}: ${currValue}→${optValue} ${t('units.kgPerHectare')}`);
       }
     }
     if (fertChanges.length > 0) {
       changes.push({
-        label: 'Fertilizer Balance',
-        from: 'Current mix',
-        to: 'Optimized NPK',
+        label: t('scenarioDetails.fertilizerBalance'),
+        from: t('scenarioDetails.currentMix'),
+        to: t('scenarioDetails.betterNpk'),
         impact: fertChanges.join(', '),
-        icon: '⚗️',
-        costNote: 'Cost varies by quantity change',
+        icon: FlaskConical,
+        costNote: t('scenarioDetails.costVaries'),
       });
     }
   }
@@ -75,12 +77,12 @@ const WhatToChangeCard = ({ currentParams, optimalParams, currentPlan, optimalPl
   // Sale timing
   if (optimalParams.sale_month !== currentParams.sale_month) {
     changes.push({
-      label: 'Sale Timing',
-      from: `Month ${currentParams.sale_month || 'immediate'}`,
-      to: `Month ${optimalParams.sale_month}`,
-      impact: 'Better price window',
-      icon: '📅',
-      costNote: 'Storage cost may apply',
+      label: t('sidebar.saleMonth'),
+      from: currentParams.sale_month ? `${t('sidebar.month')} ${currentParams.sale_month}` : t('sidebar.immediate'),
+      to: `${t('sidebar.month')} ${optimalParams.sale_month}`,
+      impact: t('priceForecast.optimalWindow'),
+      icon: CalendarDays,
+      costNote: t('scenarioDetails.storageCost'),
     });
   }
 
@@ -97,18 +99,20 @@ const WhatToChangeCard = ({ currentParams, optimalParams, currentPlan, optimalPl
           <Lightbulb className="w-6 h-6 text-blue-600" />
         </div>
         <div>
-          <h3 className="text-lg font-bold text-gray-800">Parameters to Adjust</h3>
-          <p className="text-sm text-gray-500">Suggested steps to reach the Optimized Plan</p>
+          <h3 className="text-lg font-bold text-gray-800">{t('scenarioDetails.changeTitle')}</h3>
+          <p className="text-sm text-gray-500">{t('scenarioDetails.changeSubtitle')}</p>
         </div>
       </div>
 
       {/* Changes list */}
       <div className="space-y-3 mb-4">
-        {changes.map((change, idx) => (
+        {changes.map((change, idx) => {
+          const ChangeIcon = change.icon;
+          return (
           <div key={idx} className="bg-gray-50 rounded-xl p-3 sm:p-4">
             <div className="flex items-center justify-between mb-2">
               <span className="font-semibold text-gray-800 flex items-center gap-2 text-sm sm:text-base">
-                <span className="text-lg">{change.icon}</span>
+                <ChangeIcon className="w-5 h-5 text-farm-green-700" aria-hidden="true" />
                 {change.label}
               </span>
             </div>
@@ -120,31 +124,32 @@ const WhatToChangeCard = ({ currentParams, optimalParams, currentPlan, optimalPl
             <p className="text-xs text-gray-600">{change.impact}</p>
             <p className="text-xs text-gray-400 mt-1">{change.costNote}</p>
           </div>
-        ))}
+          );
+        })}
       </div>
 
       {/* Expected impact summary */}
       <div className="bg-gradient-to-r from-blue-50 to-green-50 rounded-xl p-4 border border-blue-100">
         <div className="flex items-center gap-2 mb-2">
           <Zap className="w-4 h-4 text-blue-600" />
-          <span className="text-sm font-semibold text-gray-700">Expected Impact</span>
+          <span className="text-sm font-semibold text-gray-700">{t('scenarioDetails.expectedImpact')}</span>
         </div>
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <p className="text-xs text-gray-500">{profitDelta >= 0 && currentPlan?.profit < 0 ? 'Loss Reduction' : 'Profit Impact'}</p>
+            <p className="text-xs text-gray-500">{profitDelta >= 0 && currentPlan?.profit < 0 ? t('scenarioDetails.lossReduction') : t('recommendations.profitImprovement')}</p>
             <p className={`text-lg font-bold ${profitDelta >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-              {profitDelta >= 0 ? '+' : ''}₹{Math.round(Math.abs(profitDelta)).toLocaleString('en-IN')}
+              {profitDelta >= 0 ? '+' : ''}₹{Math.round(Math.abs(profitDelta)).toLocaleString(languageInfo.speechCode)}
             </p>
           </div>
           <div>
-            <p className="text-xs text-gray-500">Extra Yield</p>
+            <p className="text-xs text-gray-500">{t('scenarioDetails.extraYield')}</p>
             <p className={`text-lg font-bold ${yieldDelta >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-              {yieldDelta >= 0 ? '+' : ''}{yieldDelta.toFixed(1)} quintals
+              {yieldDelta >= 0 ? '+' : ''}{yieldDelta.toFixed(1)} {t('units.quintals')}
             </p>
           </div>
         </div>
         <p className="text-xs text-gray-400 mt-2">
-          Estimates based on simulation model. Actual results depend on weather and market conditions.
+          {t('scenarioDetails.estimateNotice')}
         </p>
       </div>
     </div>
@@ -152,7 +157,7 @@ const WhatToChangeCard = ({ currentParams, optimalParams, currentPlan, optimalPl
 };
 
 const ScenarioComparison = ({ comparisonData }) => {
-  const { t } = useTranslation();
+  const { t, languageInfo } = useTranslation();
 
   if (!comparisonData) return null;
 
@@ -193,7 +198,7 @@ const ScenarioComparison = ({ comparisonData }) => {
             <div className="flex items-center">
               <p className={`text-xl font-bold ${data.profit >= 0 ? 'text-green-600' : 'text-red-600'
                 }`}>
-                ₹{Math.round(Math.abs(data.profit)).toLocaleString('en-IN')}
+                ₹{Math.round(Math.abs(data.profit)).toLocaleString(languageInfo.speechCode)}
               </p>
               {data.profit >= 0 ? (
                 <ArrowUpRight className="w-5 h-5 text-green-600 ml-2" />
@@ -202,18 +207,18 @@ const ScenarioComparison = ({ comparisonData }) => {
               )}
             </div>
             <p className="text-xs text-gray-500 mt-1">
-              ROI: {data.roi_percentage.toFixed(1)}%
+              {t('dashboard.roi')}: {data.roi_percentage.toFixed(1)}%
             </p>
           </div>
 
-          {/* Risk — using centralized thresholds */}
+          {/* Risk - using centralized thresholds */}
           <div className="bg-gray-50 rounded-lg p-3">
             <p className="text-xs text-gray-600 mb-1">{t('scenarios.riskScore') || 'Risk Score'}</p>
             <p className={`text-xl font-bold ${riskInfo.textClass}`}>
               {data.risk.overall_risk_score.toFixed(0)}/100
             </p>
             <p className="text-xs text-gray-500 mt-1">
-              {riskInfo.label}
+              {riskInfo.id === 'unknown' ? t('common.notAvailable') : t(`risk.levels.${riskInfo.id}`)}
             </p>
             <div className="w-full bg-gray-200 rounded-full h-2 mt-2">
               <div
@@ -227,7 +232,7 @@ const ScenarioComparison = ({ comparisonData }) => {
           <div className="bg-gray-50 rounded-lg p-3">
             <p className="text-xs text-gray-600 mb-1">{t('scenarios.totalCost') || 'Total Cost'}</p>
             <p className="text-lg font-bold text-gray-900">
-              ₹{Math.round(data.costs.total_cost).toLocaleString('en-IN')}
+              ₹{Math.round(data.costs.total_cost).toLocaleString(languageInfo.speechCode)}
             </p>
           </div>
         </div>
@@ -250,12 +255,12 @@ const ScenarioComparison = ({ comparisonData }) => {
         {/* Transparency Note for Farmers */}
         <div className="bg-blue-50/50 rounded-xl p-4 mt-4 border border-blue-100/50">
           <h4 className="text-xs font-bold text-blue-800 uppercase tracking-wide mb-2 flex items-center">
-            <Lightbulb className="w-3 h-3 mr-1" /> Parameter Assumptions
+            <Lightbulb className="w-3 h-3 mr-1" /> {t('scenarioDetails.assumptions')}
           </h4>
           <ul className="text-xs text-gray-600 space-y-1.5 leading-relaxed">
-            <li><strong>Current:</strong> Uses your exact specified inputs relying on typical weather conditions.</li>
-            <li><strong>Optimized:</strong> Fixes poor NPK ratios, isolates peak selling windows, and assumes intense preventative pest control.</li>
-            <li><strong>Worst Case:</strong> Assumes your input costs remain high, but yield crashes due to a simulated drought shock (50% less rain), 95% pest breach, and a distressing 20% drop in commodity prices.</li>
+            <li>{t('scenarioDetails.currentAssumption')}</li>
+            <li>{t('scenarioDetails.optimizedAssumption')}</li>
+            <li>{t('scenarioDetails.worstAssumption')}</li>
           </ul>
         </div>
       </div>
@@ -288,7 +293,7 @@ const ScenarioComparison = ({ comparisonData }) => {
         />
       </div>
 
-      {/* Fix G: What to Change — actionable bridge */}
+      {/* Fix G: What to Change - actionable bridge */}
       <WhatToChangeCard
         currentParams={current_plan.parameters_used}
         optimalParams={ai_optimal_plan.parameters_used}
@@ -303,17 +308,17 @@ const ScenarioComparison = ({ comparisonData }) => {
           <div className="bg-green-50 rounded-xl p-3 sm:p-4 border-l-4 border-green-500">
             <p className="text-xs sm:text-sm text-gray-600 mb-1 sm:mb-2 text-balance">
               {current_plan.profit < 0 && ai_optimal_plan.profit < 0 
-                ? 'Projected Loss Mitigated' 
+                ? t('scenarioDetails.lossReduction')
                 : current_plan.profit < 0 && ai_optimal_plan.profit >= 0 
-                ? 'Loss Turned to Profit' 
-                : 'Profit Improvement'}
+                ? t('scenarioDetails.lossToProfit')
+                : t('recommendations.profitImprovement')}
             </p>
             <p className="text-xl sm:text-2xl font-bold text-green-700">
-              +₹{Math.round(ai_optimal_plan.profit - current_plan.profit).toLocaleString('en-IN')}
+              +₹{Math.round(ai_optimal_plan.profit - current_plan.profit).toLocaleString(languageInfo.speechCode)}
             </p>
             <p className="text-xs text-gray-600 mt-1">
               {current_plan.profit < 0 && ai_optimal_plan.profit < 0
-                 ? "Reduced losses"
+                 ? t('scenarioDetails.lossReduction')
                  : `${(((ai_optimal_plan.profit - current_plan.profit) / Math.max(Math.abs(current_plan.profit), 1)) * 100).toFixed(1)}% ${t('common.increase') || 'increase'}`
               }
             </p>
@@ -338,37 +343,9 @@ const ScenarioComparison = ({ comparisonData }) => {
         
         {/* Added assumptions & data sources note */}
         <div className="mt-4 pt-4 border-t border-gray-100 flex flex-col gap-2">
-          {current_plan.price_forecast?.source_metadata && (
-            <div className="text-[10px] text-gray-500 font-mono uppercase bg-gray-100 p-2 rounded block">
-              <span className="font-bold">PRICE SOURCING:</span> {current_plan.price_forecast.source_metadata.source_label}
-              
-              <span className={`ml-2 px-1.5 py-0.5 rounded text-[9px] font-bold ${
-                current_plan.price_forecast.source_metadata.freshness_status === 'live' ? 'bg-green-200 text-green-800' : 
-                current_plan.price_forecast.source_metadata.freshness_status === 'stale' ? 'bg-yellow-200 text-yellow-800' : 
-                'bg-gray-300 text-gray-800'
-              }`}>
-                {current_plan.price_forecast.source_metadata.freshness_status}
-              </span>
-              
-              {current_plan.price_forecast.source_metadata.record_date && (
-                <span className="ml-2 text-gray-400 font-normal">
-                  (Rev: {current_plan.price_forecast.source_metadata.record_date})
-                </span>
-              )}
-              
-              {/* Redesigned Honesty Badge */}
-              <div className="mt-2 pt-2 border-t border-gray-200">
-                <p className="text-xs text-gray-500 font-sans normal-case">
-                  {current_plan.price_forecast.source_metadata.freshness_status === 'stale'
-                     ? "Prices based on historical mandi records. Live market feed not configured for this deployment."
-                     : current_plan.price_forecast.source_metadata.transparency_note || "Market estimates derived from live agricultural datasets."
-                  }
-                </p>
-              </div>
-            </div>
-          )}
+          <ScenarioPriceSource forecast={current_plan.price_forecast} />
           <p className="text-xs text-gray-400 italic">
-            * Note: These are simulated heuristics and not guarantees. The "Worst Case" assumes multi-factor degradation (weather + pests + low prices). Real world conditions may vary significantly.
+            {t('scenarioDetails.disclaimer')}
           </p>
         </div>
       </div>

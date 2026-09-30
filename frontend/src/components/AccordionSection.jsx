@@ -9,14 +9,14 @@ const AccordionSection = ({
   children
 }) => {
   return (
-    <div className="border-b border-farm-green-100 last:border-b-0">
+    <div className="border-b border-gray-200 last:border-b-0">
       {/* Accordion Header */}
       <button
         onClick={onToggle}
-        className="w-full flex items-center justify-between px-4 py-3 bg-gradient-to-r from-farm-green-50 to-white hover:from-farm-green-100 hover:to-farm-green-50 transition-all duration-300 rounded-lg"
+        className="w-full flex items-center justify-between px-4 py-3 bg-white hover:bg-farm-green-50 transition-colors duration-150 rounded-lg"
       >
         <div className="flex items-center">
-          <span className="text-xl mr-3">{icon}</span>
+          {icon ? <span className="text-xl mr-3" aria-hidden="true">{icon}</span> : null}
           <span className="text-base font-bold text-gray-800">{title}</span>
         </div>
         <ChevronDown

@@ -1,13 +1,14 @@
 import React from 'react';
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Area, AreaChart } from 'recharts';
 import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import { useTranslation } from '../i18n';
 
 /**
  * Analyze the actual forecast curve shape to derive an honest trend label.
  * Compares first-third average vs last-third average.
  */
 function analyzeForecastShape(prices) {
-  if (!prices || prices.length < 6) return { label: 'Insufficient Data', type: 'stable' };
+  if (!prices || prices.length < 6) return { labelKey: 'insufficient', type: 'stable' };
 
   const third = Math.floor(prices.length / 3);
   const firstThirdAvg = prices.slice(0, third).reduce((a, b) => a + b, 0) / third;
@@ -18,21 +19,22 @@ function analyzeForecastShape(prices) {
 
   // Determine shape
   if (peakPct < 40 && lastThirdAvg < firstThirdAvg * 0.95) {
-    return { label: 'Early Peak, Later Decline', type: 'peak_early' };
+    return { labelKey: 'earlyPeak', type: 'peak_early' };
   }
   if (peakPct > 60 && lastThirdAvg > firstThirdAvg * 1.05) {
-    return { label: 'Late Season Rise', type: 'upward' };
+    return { labelKey: 'lateRise', type: 'upward' };
   }
   if (lastThirdAvg > firstThirdAvg * 1.05) {
-    return { label: 'Upward Trend', type: 'upward' };
+    return { labelKey: 'upward', type: 'upward' };
   }
   if (lastThirdAvg < firstThirdAvg * 0.95) {
-    return { label: 'Downward Trend', type: 'downward' };
+    return { labelKey: 'downward', type: 'downward' };
   }
-  return { label: 'Relatively Stable', type: 'stable' };
+  return { labelKey: 'stable', type: 'stable' };
 }
 
 const PriceForecastChart = ({ forecastData }) => {
+  const { t, languageInfo } = useTranslation();
   if (!forecastData || !forecastData.forecast_prices) {
     return null;
   }
@@ -44,7 +46,7 @@ const PriceForecastChart = ({ forecastData }) => {
     date.setDate(date.getDate() + idx);
     return {
       day: idx,
-      date: date.toLocaleDateString('en-IN', { month: 'short', day: 'numeric' }),
+      date: date.toLocaleDateString(languageInfo.speechCode, { month: 'short', day: 'numeric' }),
       price: price,
     };
   });
@@ -63,7 +65,11 @@ const PriceForecastChart = ({ forecastData }) => {
   windowEndDate.setDate(windowEndDate.getDate() + (optimalWindow.window_end_day || 0));
   const dateFormatter = { month: 'short', day: 'numeric' };
 
-  const sellingAdvice = `Best to sell around ${peakDate.toLocaleDateString('en-IN', dateFormatter)} (${windowStartDate.toLocaleDateString('en-IN', dateFormatter)} – ${windowEndDate.toLocaleDateString('en-IN', dateFormatter)} are favorable)`;
+  const sellingAdvice = optimalWindow.timing_supported === false ? t('priceForecast.disclaimer') : t('priceForecast.sellingAdvice', {
+    peak: peakDate.toLocaleDateString(languageInfo.speechCode, dateFormatter),
+    start: windowStartDate.toLocaleDateString(languageInfo.speechCode, dateFormatter),
+    end: windowEndDate.toLocaleDateString(languageInfo.speechCode, dateFormatter),
+  });
 
   // Badge colors based on actual trend
   const trendBadge = {
@@ -80,11 +86,11 @@ const PriceForecastChart = ({ forecastData }) => {
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center">
           <TrendingUp className="w-6 h-6 text-sky-blue-600 mr-2" />
-          <h3 className="text-xl font-bold text-gray-800">Price Forecast</h3>
+          <h3 className="text-xl font-bold text-gray-800">{t('priceForecast.title')}</h3>
         </div>
         <span className={`text-sm font-semibold px-4 py-2 rounded-full flex items-center gap-1.5 ${trendBadge.bg}`}>
           <BadgeIcon className="w-4 h-4" />
-          {trendAnalysis.label}
+          {t(`priceForecast.trends.${trendAnalysis.labelKey}`)}
         </span>
       </div>
 
@@ -103,7 +109,7 @@ const PriceForecastChart = ({ forecastData }) => {
             tick={{ fontSize: 11 }}
           />
           <YAxis
-            label={{ value: '₹/quintal', angle: -90, position: 'insideLeft', style: { fontSize: 11 } }}
+            label={{ value: t('msp.perQuintal'), angle: -90, position: 'insideLeft', style: { fontSize: 11 } }}
             tick={{ fontSize: 11 }}
           />
           <Tooltip
@@ -113,8 +119,8 @@ const PriceForecastChart = ({ forecastData }) => {
               borderRadius: '12px',
               padding: '12px'
             }}
-            formatter={(value) => [`₹${value.toFixed(0)}/quintal`, 'Price']}
-            labelFormatter={(label) => `📅 ${label}`}
+            formatter={(value) => [`₹${value.toFixed(0)} ${t('msp.perQuintal')}`, t('priceForecast.price')]}
+            labelFormatter={(label) => label}
           />
           <Area
             type="monotone"
@@ -129,23 +135,23 @@ const PriceForecastChart = ({ forecastData }) => {
 
       <div className="mt-4 grid grid-cols-2 gap-4">
         <div className="bg-sky-blue-50 rounded-xl p-4">
-          <p className="text-xs text-gray-600 mb-1">Current Price</p>
+          <p className="text-xs text-gray-600 mb-1">{t('priceForecast.currentPrice')}</p>
           <p className="text-2xl font-bold text-sky-blue-700">
-            ₹{forecastData.current_price}
+            ₹{Number(forecastData.current_price).toLocaleString(languageInfo.speechCode, { maximumFractionDigits: 0 })}
           </p>
         </div>
         <div className="bg-green-50 rounded-xl p-4">
-          <p className="text-xs text-gray-600 mb-1">Expected Peak</p>
+          <p className="text-xs text-gray-600 mb-1">{t(optimalWindow.timing_supported === false ? 'priceForecast.currentPrice' : 'priceForecast.expectedPeak')}</p>
           <p className="text-2xl font-bold text-green-700">
-            ₹{optimalWindow.expected_peak_price}
+            ₹{Number(optimalWindow.expected_peak_price).toLocaleString(languageInfo.speechCode, { maximumFractionDigits: 0 })}
           </p>
-          <p className="text-xs text-gray-500">{peakDate.toLocaleDateString('en-IN', dateFormatter)}</p>
+          {optimalWindow.timing_supported !== false && <p className="text-xs text-gray-500">{peakDate.toLocaleDateString(languageInfo.speechCode, dateFormatter)}</p>}
         </div>
       </div>
 
       <div className="mt-4 p-4 bg-yellow-50 border-l-4 border-yellow-500 rounded-lg">
         <p className="text-sm font-semibold text-yellow-800 mb-1">
-          Optimal Selling Window
+          {t(optimalWindow.timing_supported === false ? 'common.information' : 'priceForecast.optimalWindow')}
         </p>
         <p className="text-xs text-yellow-700">
           {sellingAdvice}
@@ -154,7 +160,7 @@ const PriceForecastChart = ({ forecastData }) => {
 
       {/* Honest disclaimer */}
       <p className="text-xs text-gray-400 mt-3 text-center">
-        Forecast based on mandi trend simulation · Actual prices may vary
+        {t('priceForecast.disclaimer')}
       </p>
     </div>
   );

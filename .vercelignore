@@ -1,0 +1,13 @@
+backend/
+datasets/
+design-audit/
+screenshots/
+Krishyak_SIH2026/
+Krishyak_SIH2026_Metrics/
+*.pptx
+*.md
+.codex-tmp/
+.agents/
+.codex/
+frontend/node_modules/
+frontend/build/

@@ -15,7 +15,9 @@ class CostCalculator:
         expected_rainfall: float,
         labour_days: float,
         pest_control_intensity: float,  # 0-1 scale
-        total_production_quintals: float
+        total_production_quintals: float,
+        selling_price_per_quintal: float = 0.0,
+        season_months: float = 1.0
     ) -> Dict:
         """
         Calculate comprehensive cultivation costs
@@ -29,7 +31,7 @@ class CostCalculator:
         
         # Irrigation cost
         irrigation_cost = self._calculate_irrigation_cost(
-            irrigation_frequency, area_hectares, expected_rainfall
+            irrigation_frequency * season_months, area_hectares, expected_rainfall
         )
         
         # Labour cost
@@ -47,7 +49,7 @@ class CostCalculator:
         harvesting_cost = area_hectares * 4000
         
         # Market fees and logistics
-        market_fees = total_production_quintals * 50 * config.COST_PARAMS["market_fee_percent"] / 100
+        market_fees = total_production_quintals * selling_price_per_quintal * config.COST_PARAMS["market_fee_percent"] / 100
         logistics_cost = total_production_quintals * config.COST_PARAMS["logistics_cost_per_quintal"]
         
         # Miscellaneous (10% of direct costs)

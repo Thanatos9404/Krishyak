@@ -11,8 +11,7 @@
  */
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-
-const API_BASE = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+import { API_BASE_URL as API_BASE } from '../config/api';
 
 /**
  * Custom hook for pest intelligence data
@@ -31,6 +30,7 @@ export function usePestIntelligence(crop, location, state, district = null, weat
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [lastUpdated, setLastUpdated] = useState(null);
+  const [governmentFeedStatus, setGovernmentFeedStatus] = useState('unavailable');
 
   // Refs for interval management
   const refreshIntervalRef = useRef(null);
@@ -58,6 +58,7 @@ export function usePestIntelligence(crop, location, state, district = null, weat
       const data = await response.json();
 
       if (data.success) {
+        setGovernmentFeedStatus(data.government_feed_status || 'unavailable');
         setAlerts(data.alerts || []);
         setFarmerReports(data.farmer_reports || []);
         if (data.seasonal_risk) {
@@ -66,6 +67,8 @@ export function usePestIntelligence(crop, location, state, district = null, weat
 
         // Cache to localStorage
         localStorage.setItem('pestAlerts', JSON.stringify({
+          schemaVersion: 3,
+          region: { state, district, crop },
           alerts: data.alerts,
           farmerReports: data.farmer_reports,
           seasonalRisk: data.seasonal_risk,
@@ -74,15 +77,20 @@ export function usePestIntelligence(crop, location, state, district = null, weat
       }
     } catch (err) {
       console.error('Error fetching pest alerts:', err);
+      setError(err.message);
+      setAlerts([]);
+      setGovernmentFeedStatus('unavailable');
 
       // Try to load from cache
       const cached = localStorage.getItem('pestAlerts');
       if (cached) {
         try {
           const cachedData = JSON.parse(cached);
+          if (cachedData.schemaVersion !== 3 || JSON.stringify(cachedData.region) !== JSON.stringify({ state, district, crop })) return;
           setAlerts(cachedData.alerts || []);
           setFarmerReports(cachedData.farmerReports || []);
           setSeasonalRisk(cachedData.seasonalRisk);
+          setGovernmentFeedStatus('cached');
           console.log('Loaded pest alerts from cache');
         } catch (e) {
           // Ignore cache errors
@@ -98,7 +106,11 @@ export function usePestIntelligence(crop, location, state, district = null, weat
   // ============================================================================
 
   const fetchPredictions = useCallback(async () => {
-    if (!crop || !location?.lat || !location?.lon) return;
+    if (!crop || !Number.isFinite(location?.lat) || !Number.isFinite(location?.lon) ||
+        !Number.isFinite(weather.temperature) || !Number.isFinite(weather.humidity) || !Number.isFinite(weather.rainfall)) {
+      setPredictions([]);
+      return;
+    }
 
     try {
       const response = await fetch(`${API_BASE}/pest/prediction`, {
@@ -108,9 +120,9 @@ export function usePestIntelligence(crop, location, state, district = null, weat
           crop,
           lat: location.lat,
           lon: location.lon,
-          temperature: weather.temperature || 25,
-          humidity: weather.humidity || 60,
-          rainfall: weather.rainfall || 0
+          temperature: weather.temperature,
+          humidity: weather.humidity,
+          rainfall: weather.rainfall
         })
       });
 
@@ -126,6 +138,8 @@ export function usePestIntelligence(crop, location, state, district = null, weat
 
         // Cache predictions
         localStorage.setItem('pestPredictions', JSON.stringify({
+          schemaVersion: 3,
+          context: { crop, location, weather },
           predictions: data.predictions,
           seasonalContext: data.seasonal_context,
           timestamp: new Date().toISOString()
@@ -133,19 +147,22 @@ export function usePestIntelligence(crop, location, state, district = null, weat
       }
     } catch (err) {
       console.error('Error fetching pest predictions:', err);
+      setPredictions([]);
 
       // Try to load from cache
       const cached = localStorage.getItem('pestPredictions');
       if (cached) {
         try {
           const cachedData = JSON.parse(cached);
+          if (cachedData.schemaVersion !== 3 || JSON.stringify(cachedData.context) !== JSON.stringify({ crop, location, weather })) return;
           setPredictions(cachedData.predictions || []);
         } catch (e) {
           // Ignore cache errors
         }
       }
     }
-  }, [crop, location, weather]);
+  // Coordinate and weather values determine requests, not parent object identity.
+  }, [crop, location?.lat, location?.lon, weather.temperature, weather.humidity, weather.rainfall]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ============================================================================
   // REFRESH ALL DATA
@@ -236,7 +253,7 @@ export function usePestIntelligence(crop, location, state, district = null, weat
     if (crop && location) {
       fetchPredictions();
     }
-  }, [crop, location, fetchPredictions]);
+  }, [crop, location?.lat, location?.lon, fetchPredictions]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // ============================================================================
   // COMPUTED VALUES
@@ -262,6 +279,7 @@ export function usePestIntelligence(crop, location, state, district = null, weat
     loading,
     error,
     lastUpdated,
+    governmentFeedStatus,
 
     // Actions
     refresh,

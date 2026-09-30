@@ -87,14 +87,14 @@ const AlertItem = ({ alert, expanded, onClick }) => {
       <div className="flex items-start gap-2">
         <Icon className={`w-5 h-5 ${style.iconColor} flex-shrink-0 mt-0.5`} />
         <div className="flex-1 min-w-0">
-          <h4 className={`font-semibold ${style.text} text-sm`}>{alert.title}</h4>
+          <h4 className={`font-semibold ${style.text} text-sm`}>{t(`weatherAlert.severity.${alert.severity}`)}</h4>
           {expanded && (
             <div className="mt-2 space-y-2">
-              <p className="text-sm text-gray-600">{alert.message}</p>
+              <p className="text-sm text-gray-600">{t('weatherAlert.checkForecast')}</p>
               {alert.recommendation && (
                 <div className="bg-white/50 rounded p-2">
                   <p className="text-xs font-medium text-gray-500">{t('weatherAlert.recommendation')}:</p>
-                  <p className="text-sm text-gray-700">{alert.recommendation}</p>
+                  <p className="text-sm text-gray-700">{t('weatherAlert.followAdvice')}</p>
                 </div>
               )}
             </div>
@@ -111,7 +111,7 @@ const AlertItem = ({ alert, expanded, onClick }) => {
 };
 
 const WeatherAlertCard = ({ crop = 'default' }) => {
-  const { t } = useTranslation();
+  const { t, languageInfo } = useTranslation();
   const [expandedAlert, setExpandedAlert] = useState(null);
 
   const {
@@ -130,8 +130,8 @@ const WeatherAlertCard = ({ crop = 'default' }) => {
 
   // Format time
   const formatTime = (date) => {
-    if (!date) return 'N/A';
-    return new Date(date).toLocaleTimeString('en-IN', {
+    if (!date) return t('common.noResults');
+    return new Date(date).toLocaleTimeString(languageInfo.speechCode, {
       hour: '2-digit',
       minute: '2-digit'
     });
@@ -156,7 +156,8 @@ const WeatherAlertCard = ({ crop = 'default' }) => {
           <button
             onClick={refresh}
             disabled={loading}
-            className="p-1.5 hover:bg-white/20 rounded-lg transition"
+            className="min-w-11 p-1.5 hover:bg-white/20 rounded-lg transition"
+            aria-label={t('common.refresh')}
           >
             <RefreshCw className={`w-4 h-4 ${loading ? 'animate-spin' : ''}`} />
           </button>
@@ -171,7 +172,7 @@ const WeatherAlertCard = ({ crop = 'default' }) => {
                   {formatTemp(currentWeather.temperature)}
                 </div>
                 <div className="text-sm text-white/80 capitalize">
-                  {currentWeather.description || currentWeather.condition}
+                  {t(`weather.conditions.${currentWeather.condition?.toLowerCase() || 'unknown'}`)}
                 </div>
               </div>
             </div>
@@ -183,7 +184,7 @@ const WeatherAlertCard = ({ crop = 'default' }) => {
               </div>
               <div className="flex items-center gap-1 justify-end">
                 <Wind className="w-4 h-4" />
-                <span>{Math.round(currentWeather.wind_speed)} km/h</span>
+                <span>{Math.round(currentWeather.wind_speed)} {t('weather.kmPerHour')}</span>
               </div>
             </div>
           </div>
@@ -195,7 +196,7 @@ const WeatherAlertCard = ({ crop = 'default' }) => {
         {error && (
           <div className="text-center py-4 text-red-500">
             <AlertCircle className="w-8 h-8 mx-auto mb-2" />
-            <p className="text-sm">{error}</p>
+            <p className="text-sm">{t('weatherCard.errors.failed')}</p>
           </div>
         )}
 
@@ -207,7 +208,7 @@ const WeatherAlertCard = ({ crop = 'default' }) => {
         )}
 
         {/* Rain Forecast Summary */}
-        {rainForecast && (
+        {rainForecast && rainForecast.available !== false && Number.isFinite(rainForecast.total_rain_mm) && (
           <div className="mb-4 bg-blue-50 rounded-lg p-3">
             <div className="flex items-center gap-2 mb-2">
               <Umbrella className="w-5 h-5 text-blue-600" />
@@ -229,7 +230,7 @@ const WeatherAlertCard = ({ crop = 'default' }) => {
                 <div className="text-xs text-blue-600">{t('weather.rainyDays') || 'Rainy Days'}</div>
               </div>
             </div>
-            <p className="text-sm text-blue-700">{rainForecast.summary}</p>
+            <p className="text-sm text-blue-700">{t('weather.rainSummary', { days: rainForecast.rain_days, rain: rainForecast.total_rain_mm })}</p>
           </div>
         )}
 
@@ -250,14 +251,11 @@ const WeatherAlertCard = ({ crop = 'default' }) => {
             ))}
           </div>
         ) : (
-          !loading && (
+          !loading && !error && currentWeather && (
             <div className="text-center py-4">
               <Sun className="w-10 h-10 text-green-500 mx-auto mb-2" />
               <p className="text-sm text-gray-600">
                 {t('weather.noAlerts') || 'No weather alerts at this time'}
-              </p>
-              <p className="text-xs text-gray-400 mt-1">
-                {t('weather.goodConditions') || 'Conditions are favorable for farming'}
               </p>
             </div>
           )
@@ -266,11 +264,11 @@ const WeatherAlertCard = ({ crop = 'default' }) => {
         {lastUpdated && (
           <div className="mt-4 pt-3 border-t border-gray-100 text-center">
             <p className="text-xs text-gray-400">
-              {t('common.lastUpdated') || 'Last updated'}: {formatTime(lastUpdated)}
+              {t('mandi.lastUpdated')}: {formatTime(lastUpdated)}
             </p>
             {currentWeather?.source && (
               <p className="text-[10px] text-gray-400 mt-1 uppercase tracking-wide">
-                SOURCE: {currentWeather.source}
+                {t('msp.source')}: {t('weather.dataSource')}
               </p>
             )}
           </div>

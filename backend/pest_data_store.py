@@ -20,7 +20,7 @@ from dataclasses import dataclass, asdict
 # CONFIGURATION
 # ============================================================================
 
-PEST_DATA_DIR = Path(os.getenv("PEST_DATA_DIR", "./pest_data"))
+PEST_DATA_DIR = Path(os.getenv("PEST_DATA_DIR", str(Path(__file__).parent / 'pest_data')))
 REPORTS_FILE = PEST_DATA_DIR / "farmer_reports.json"
 HISTORY_FILE = PEST_DATA_DIR / "outbreak_history.json"
 
@@ -88,8 +88,10 @@ class PestDataStore:
         try:
             with open(filepath, 'r', encoding='utf-8') as f:
                 return json.load(f)
-        except (json.JSONDecodeError, FileNotFoundError):
+        except FileNotFoundError:
             return {}
+        except json.JSONDecodeError as exc:
+            raise ValueError('Saved pest data is unreadable; it has not been replaced.') from exc
     
     def _write_json(self, filepath: Path, data: dict):
         """Write JSON file atomically"""

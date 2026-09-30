@@ -24,8 +24,13 @@ class RiskEngine:
         Calculate comprehensive risk score (0-100, higher = more risky)
         Combines weather, price, pest, and soil factors
         """
+        for name, value, lower, upper in (
+            ('rainfall', expected_rainfall, 0, 100000), ('rainfall_delay', rainfall_delay, 0, 1000),
+            ('pest_probability', pest_probability, 0, 1), ('yield_confidence', yield_confidence, 0, 1)):
+            if isinstance(value, bool) or not isinstance(value, (int, float)) or not np.isfinite(value) or not lower <= value <= upper:
+                raise ValueError(f'Invalid {name}')
         # Individual risk components
-        weather_risk = self._calculate_weather_risk(expected_rainfall, rainfall_delay)
+        weather_risk = self._calculate_weather_risk(expected_rainfall, rainfall_delay, crop)
         price_risk = self._calculate_price_risk(price_statistics)
         pest_risk = self._calculate_pest_risk(pest_probability)
         soil_risk = self._calculate_soil_risk(crop, soil_type)
@@ -43,16 +48,25 @@ class RiskEngine:
         final_risk = min(100, composite_risk + confidence_penalty)
         
         # Risk category
-        risk_category = self._categorize_risk(final_risk)
+        risk_category = self._categorize_risk(round(final_risk, 2))
         
+        price_observed = self._has_price_evidence(price_statistics)
         # Generate risk insights
         insights = self._generate_risk_insights(
-            weather_risk, price_risk, pest_risk, soil_risk, risk_category
+            weather_risk, price_risk, pest_risk, soil_risk, risk_category, price_observed
         )
         
         return {
             "overall_risk_score": round(final_risk, 2),
+            "score_kind": "uncalibrated_heuristic_index_not_probability",
             "risk_category": risk_category,
+            "component_evidence": {
+                "price": "historical_price_dispersion" if price_observed else "assumed_baseline_insufficient_history",
+                "weather": "user_supplied_rainfall_and_delay",
+                "pest": "user_supplied_likelihood_not_observed_outbreak",
+                "soil": "static_crop_soil_compatibility",
+                "yield_confidence": "heuristic_appropriateness_not_measured_accuracy"
+            },
             "components": {
                 "weather_risk": round(weather_risk, 2),
                 "price_volatility_risk": round(price_risk, 2),
@@ -62,8 +76,13 @@ class RiskEngine:
             "insights": insights
         }
     
-    def _calculate_weather_risk(self, rainfall: float, delay: int) -> float:
+    def _calculate_weather_risk(self, rainfall: float, delay: int, crop: str = None) -> float:
         """Weather uncertainty risk (0-100)"""
+        # Match the same crop-specific rainfall response used by yield estimation.
+        if crop:
+            from yield_estimator import YieldEstimator
+            modifier = YieldEstimator._calculate_rainfall_modifier(self, crop, rainfall, max(0, delay))
+            return float(np.clip(20 + 80 * (1 - modifier), 0, 100))
         # Rainfall adequacy risk
         if 600 <= rainfall <= 1200:
             rainfall_risk = 20  # Good rainfall
@@ -79,9 +98,18 @@ class RiskEngine:
         
         return min(100, rainfall_risk + delay_risk)
     
+    @staticmethod
+    def _has_price_evidence(price_stats: Dict) -> bool:
+        value = price_stats.get('volatility')
+        observations = price_stats.get('observations', 0)
+        return (price_stats.get('source_type') == 'historical_dataset'
+                and isinstance(observations, (int, float)) and observations >= 2
+                and isinstance(value, (int, float)) and not isinstance(value, bool)
+                and np.isfinite(value) and value >= 0)
+
     def _calculate_price_risk(self, price_stats: Dict) -> float:
         """Market price volatility risk (0-100)"""
-        volatility = price_stats.get("volatility", 0.25)
+        volatility = price_stats["volatility"] if self._has_price_evidence(price_stats) else 0.25
         
         # Convert volatility to risk score
         # Low volatility (< 15%) = low risk
@@ -117,14 +145,14 @@ class RiskEngine:
     
     def _categorize_risk(self, score: float) -> str:
         """Categorize risk score into levels"""
-        if score < 25:
+        if score <= 25:
             return "Low Risk"
-        elif score < 50:
+        elif score <= 50:
             return "Moderate Risk"
-        elif score < 70:
+        elif score <= 75:
             return "High Risk"
         else:
-            return "Very High Risk"
+            return "Severe Risk"
     
     def _generate_risk_insights(
         self, 
@@ -132,7 +160,8 @@ class RiskEngine:
         price: float, 
         pest: float, 
         soil: float,
-        category: str
+        category: str,
+        price_observed: bool = True
     ) -> list:
         """Generate human-readable risk insights"""
         insights = []
@@ -146,12 +175,14 @@ class RiskEngine:
             insights.append("✅ Weather conditions appear favorable")
         
         # Price insights
-        if price > 60:
-            insights.append("📊 High market price volatility detected - timing of sale is critical")
+        if not price_observed:
+            insights.append("Market history is insufficient; the price-risk component uses an assumed baseline.")
+        elif price > 60:
+            insights.append("📊 High dispersion in historical prices; this does not establish an advantageous sale date")
         elif price > 40:
-            insights.append("💹 Moderate price fluctuations expected in market")
+            insights.append("💹 Moderate dispersion in historical prices; future prices remain uncertain")
         else:
-            insights.append("✅ Stable market prices expected")
+            insights.append("✅ Low dispersion in the available historical prices; future stability is not established")
         
         # Pest insights
         if pest > 60:
@@ -159,7 +190,7 @@ class RiskEngine:
         elif pest > 30:
             insights.append("🦟 Moderate pest risk - monitor crop health regularly")
         else:
-            insights.append("✅ Low pest risk for this season")
+            insights.append("✅ Low pest-risk input supplied; this does not rule out an outbreak")
         
         # Soil insights
         if soil > 60:

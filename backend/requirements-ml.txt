@@ -1,0 +1,3 @@
+# Full local/container image-classification service, beyond the lightweight API.
+-r requirements.txt
+-r requirements-eval.txt

@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useRef, useCallback, useEffect } from 'react';
 import {
   Upload, Camera, X, Loader2, AlertTriangle,
   CheckCircle, Leaf, Bug, Droplets, Shield,
@@ -6,15 +6,15 @@ import {
 } from 'lucide-react';
 import { useTranslation } from '../i18n';
 import diseaseDatabase from '../data/diseaseDatabase.json';
-
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+import { API_BASE_URL as API_URL } from '../config/api';
+import { parseDiseaseResponse } from '../utils/diseaseResponse';
 
 /**
  * Crop Health Check Component
  * Allows users to upload plant images for disease detection
  */
 const CropHealthCheck = () => {
-  const { t } = useTranslation();
+  const { t, language } = useTranslation();
   const [selectedImage, setSelectedImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [selectedCrop, setSelectedCrop] = useState('');
@@ -26,11 +26,30 @@ const CropHealthCheck = () => {
 
   const fileInputRef = useRef(null);
   const cameraInputRef = useRef(null);
-  // eslint-disable-next-line no-unused-vars
-  const [isSampleMode, setIsSampleMode] = useState(false);
-
-  // All crops from trained model (42 classes)
-  const trainedModelCrops = [
+  const operation = useRef(0);
+  const activeRequest = useRef(null);
+  const [capabilities, setCapabilities] = useState(null);
+  const [capabilityAttempt, setCapabilityAttempt] = useState(0);
+  const [capabilityLoading, setCapabilityLoading] = useState(true);
+  useEffect(() => {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 20000);
+    let current = true;
+    setCapabilityLoading(true);
+    fetch(`${API_URL}/disease-capabilities`, { signal: controller.signal })
+      .then(response => response.ok ? response.json() : null)
+      .then(data => {
+        if (current) setCapabilities(data?.success && data.data?.model_available === true
+          && Array.isArray(data.data.supported_crops)
+          && data.data.supported_crops.every(crop => typeof crop === 'string' && /^[a-z_]+$/.test(crop))
+          ? data.data : null);
+      })
+      .catch(() => { if (current) setCapabilities(null); })
+      .finally(() => { clearTimeout(timeout); if (current) setCapabilityLoading(false); });
+    return () => { current = false; clearTimeout(timeout); controller.abort(); };
+  }, [capabilityAttempt]);
+  useEffect(() => () => { operation.current += 1; activeRequest.current?.abort(); }, []);
+  const cropCatalog = [
     // Rice diseases
     { value: 'rice', label: 'Rice (धान)', diseases: ['Blast', 'Bacterial Blight', 'Brown Spot', 'Tungro'] },
     // Wheat diseases  
@@ -49,6 +68,10 @@ const CropHealthCheck = () => {
     { value: 'citrus', label: 'Citrus (संतरा)', diseases: ['Canker', 'Greening'] },
     { value: 'chilli', label: 'Chilli (मिर्च)', diseases: ['Leaf Curl', 'Anthracnose'] },
   ];
+  const supportedCrops = [...new Set(capabilities?.supported_crops || [])];
+  const trainedModelCrops = supportedCrops.map(value => cropCatalog.find(c => c.value === value) || {
+    value, label: value.charAt(0).toUpperCase() + value.slice(1), diseases: []
+  });
 
   // Handle file selection
   const handleFileSelect = useCallback((file) => {
@@ -57,27 +80,37 @@ const CropHealthCheck = () => {
     // Validate file type
     const validTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/webp'];
     if (!validTypes.includes(file.type)) {
-      setError('Please upload a valid image (JPG, PNG, or WebP)');
+      setError(t('cropHealth.invalidImage'));
       return;
     }
 
     // Validate file size (max 10MB)
     if (file.size > 10 * 1024 * 1024) {
-      setError('Image too large. Maximum size is 10MB');
+      setError(t('cropHealth.imageTooLarge'));
       return;
     }
 
+    const token = ++operation.current;
+    activeRequest.current?.abort();
+    setIsAnalyzing(false);
     setSelectedImage(file);
+    setImagePreview(null);
+    setShowTreatment(false);
     setError(null);
     setResult(null);
 
     // Create preview
     const reader = new FileReader();
     reader.onload = (e) => {
-      setImagePreview(e.target.result);
+      if (token === operation.current) setImagePreview(e.target.result);
+    };
+    reader.onerror = () => {
+      if (token !== operation.current) return;
+      setSelectedImage(null);
+      setError(t('cropHealth.invalidImage'));
     };
     reader.readAsDataURL(file);
-  }, []);
+  }, [t]);
 
   // Handle drag events
   const handleDrag = useCallback((e) => {
@@ -116,16 +149,22 @@ const CropHealthCheck = () => {
 
   // Analyze image
   const analyzeImage = async () => {
-    if (!selectedCrop) {
-      setError('Please select a crop type first');
+    if (!supportedCrops.includes(selectedCrop)) {
+      setError(t('cropHealth.selectCropWarning'));
       return;
     }
     if (!selectedImage) {
-      setError('Please select an image first');
+      setError(t('cropHealth.uploadPrompt'));
       return;
     }
 
+    const token = ++operation.current;
+    activeRequest.current?.abort();
+    const controller = new AbortController();
+    activeRequest.current = controller;
+    const timeout = setTimeout(() => controller.abort(), 60000);
     setIsAnalyzing(true);
+    setResult(null);
     setError(null);
 
     try {
@@ -137,125 +176,90 @@ const CropHealthCheck = () => {
       const response = await fetch(`${API_URL}/detect_disease`, {
         method: 'POST',
         body: formData,
+        signal: controller.signal,
       });
 
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.detail || 'Failed to analyze image from server.');
+        throw new Error('analysis_failed');
       }
 
       data = await response.json();
+      if (token !== operation.current) return;
+      if (data.success !== true) throw new Error('analysis_failed');
+      if (!['healthy', 'disease_detected'].includes(data.data?.status)) {
+        setResult(null);
+        setError(typeof data.data?.message === 'string' ? data.data.message : t('common.error'));
+        return;
+      }
+      const diagnosis = parseDiseaseResponse(data.data, selectedCrop);
+      if (!diagnosis) throw new Error('analysis_failed');
 
       // If disease detected and we have the full info in local database, use it
-      if (data.data.status === 'disease_detected' && data.data.disease) {
-        const diseaseId = data.data.disease.id;
-        // Try to find full disease info from local database
-        let fullDiseaseInfo = null;
-        // eslint-disable-next-line no-unused-vars
-        for (const [_crop, diseases] of Object.entries(diseaseDatabase.diseases)) {
-          const found = diseases.find(d => d.id === diseaseId);
-          if (found) {
-            fullDiseaseInfo = found;
-            break;
-          }
-        }
+      if (diagnosis.status === 'disease_detected') {
+        const fullDiseaseInfo = diseaseDatabase.diseases[selectedCrop]?.find(d => d.id === diagnosis.disease.id);
         if (fullDiseaseInfo) {
-          data.data.diseaseDetails = fullDiseaseInfo;
+          diagnosis.diseaseDetails = fullDiseaseInfo;
         }
       }
 
-      setResult(data.data);
+      setResult(diagnosis);
       setShowTreatment(true);
     } catch (err) {
-      console.error('Analysis error:', err);
+      if (token !== operation.current) return;
       // Hard failure for live upload. NEVER simulate a diagnosis for a real uploaded image.
-      setError(err.message === 'Failed to fetch' 
-        ? 'Backend AI server unreachable. Real image analysis is currently unavailable.' 
-        : (err.message || 'Failed to analyze image. Please try again.'));
+      setError(t('common.error'));
       setResult(null);
     } finally {
-      setIsAnalyzing(false);
+      clearTimeout(timeout);
+      if (token === operation.current) setIsAnalyzing(false);
     }
   };
 
   // Reset state
   const reset = () => {
+    operation.current += 1;
+    activeRequest.current?.abort();
+    setIsAnalyzing(false);
     setSelectedImage(null);
     setImagePreview(null);
     setResult(null);
     setError(null);
     setShowTreatment(false);
-    setIsSampleMode(false);
     if (fileInputRef.current) fileInputRef.current.value = '';
     if (cameraInputRef.current) cameraInputRef.current.value = '';
   };
 
-  // Fix H: Try Sample Image for demo mode
-  const trySampleImage = () => {
-    if (!selectedCrop) {
-      setError('Please select a crop type first');
+  // Load a photograph; only the classifier may assign a diagnosis.
+  const trySampleImage = async () => {
+    if (!supportedCrops.includes(selectedCrop)) {
+      setError(t('cropHealth.selectCropWarning'));
       return;
     }
-
+    const token = ++operation.current;
+    activeRequest.current?.abort();
+    const controller = new AbortController();
+    activeRequest.current = controller;
+    const timeout = setTimeout(() => controller.abort(), 20000);
     setIsAnalyzing(true);
     setError(null);
-    setIsSampleMode(true);
-
-    // Simulate brief analysis delay for realism
-    setTimeout(() => {
-      const cropDiseases = diseaseDatabase.diseases[selectedCrop] || [];
-      if (cropDiseases.length > 0) {
-        // Pick the first disease (most common) for consistent demo
-        const sampleDisease = cropDiseases[0];
-        setResult({
-          status: 'disease_detected',
-          disease: {
-            id: sampleDisease.id,
-            name: sampleDisease.name,
-            confidence: 0.82,
-            severity: sampleDisease.severity || 'medium',
-          },
-          diseaseDetails: sampleDisease,
-          isDemo: true,
-        });
-        
-        setShowTreatment(true);
-        setIsAnalyzing(false);
-
-        // Set a sample preview image (green leaf placeholder via SVG data URI)
-        setImagePreview('data:image/svg+xml,' + encodeURIComponent(
-          '<svg xmlns="http://www.w3.org/2000/svg" width="400" height="300" viewBox="0 0 400 300">' +
-          '<rect fill="#f0fdf4" width="400" height="300" rx="16"/>' +
-          '<text x="200" y="130" text-anchor="middle" font-family="system-ui" font-size="60">🌿</text>' +
-          '<text x="200" y="180" text-anchor="middle" font-family="system-ui" font-size="16" fill="#166534">Sample ' + selectedCrop + ' leaf</text>' +
-          '<text x="200" y="210" text-anchor="middle" font-family="system-ui" font-size="12" fill="#6b7280">(Demo generated image)</text>' +
-          '</svg>'
-        ));
-      } else {
-        // Stop the sample mode and refuse to invent a fake disease for unsupported crops
-        setError(`Sample demo image unavailable for ${selectedCropInfo?.label}. Try a fully supported crop (e.g. Rice, Tomato).`);
-        setIsSampleMode(false);
-        setIsAnalyzing(false);
-      }
-    }, 1000);
-  };
-
-  // Get severity color
-  const getSeverityColor = (severity) => {
-    switch (severity) {
-      case 'high': return 'text-red-600 bg-red-100 border-red-200';
-      case 'medium': return 'text-yellow-600 bg-yellow-100 border-yellow-200';
-      case 'low': return 'text-green-600 bg-green-100 border-green-200';
-      default: return 'text-gray-600 bg-gray-100 border-gray-200';
+    try {
+      const response = await fetch('/sample-crop-leaf.jpg', {signal:controller.signal});
+      if (!response.ok) throw new Error('Sample unavailable');
+      const blob = await response.blob();
+      if (token !== operation.current) return;
+      handleFileSelect(new File([blob], 'sample-crop-leaf.jpg', {type:blob.type || 'image/jpeg'}));
+    } catch {
+      if (token === operation.current) setError(t('common.error'));
+    } finally {
+      clearTimeout(timeout);
+      if (token === operation.current) setIsAnalyzing(false);
     }
   };
 
-  const getConfidenceLevel = (confidence) => {
-    const pct = confidence * 100;
-    if (pct >= 85) return { label: 'High Confidence', color: 'text-green-700 bg-green-100', desc: 'Strong visual match' };
-    if (pct >= 60) return { label: 'Medium Confidence', color: 'text-yellow-700 bg-yellow-100', desc: 'Plausible, requires field check' };
-    return { label: 'Low Confidence / Heuristic', color: 'text-red-700 bg-red-100', desc: 'Weak match. Do NOT rely purely on this diagnosis.' };
-  };
+  const diseaseKey = (name = '') => name.toLowerCase().replace(/[^a-z0-9]+/g, '');
+  const diseaseName = (name) => name ? (t(`diseases.${diseaseKey(name)}`) || t('cropHealth.diseaseDetected')) : t('cropHealth.diseaseDetected');
+  const translatedCropName = (crop) => t(`crops.${crop?.value === 'citrus' ? 'orange' : crop?.value}`) || crop?.label || t('common.notAvailable');
+  const safeLocalizedList = (items, fallbackKey) => language === 'en' && Array.isArray(items) && items.length ? items : [t(fallbackKey)];
 
   // Get selected crop info
   const selectedCropInfo = trainedModelCrops.find(c => c.value === selectedCrop);
@@ -286,25 +290,24 @@ const CropHealthCheck = () => {
             </label>
             <select
               value={selectedCrop}
-              onChange={(e) => setSelectedCrop(e.target.value)}
+              onChange={(e) => { reset(); setSelectedCrop(e.target.value); }}
               className={`w-full px-4 py-3 border-2 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all ${!selectedCrop ? 'border-orange-300 bg-orange-50' : 'border-green-300 bg-green-50'
                 }`}
             >
               <option value="">{t('cropHealth.selectCropPlaceholder') || '-- Select Crop Type --'}</option>
               {trainedModelCrops.map(crop => (
                 <option key={crop.value} value={crop.value}>
-                  {crop.label}
+                  {translatedCropName(crop)}
                 </option>
               ))}
             </select>
             {!selectedCrop && (
-              <p className="text-xs text-orange-600 mt-1">{t('cropHealth.selectCropWarning') || '⚠️ Please select a crop before uploading image'}</p>
+              <p className="text-xs text-orange-600 mt-1">{t('cropHealth.selectCropWarning') || 'Please select a crop before uploading an image'}</p>
             )}
-            {selectedCropInfo && (
-              <div className="mt-2 text-xs text-gray-500">
-                <span className="font-medium">{t('cropHealth.detectableDiseases') || 'Detectable diseases:'} </span> {selectedCropInfo.diseases.join(', ')}
-              </div>
-            )}
+            {!capabilities && <div role="status" className="mt-2 text-sm text-amber-700">
+              <p>{t(capabilityLoading ? 'common.loading' : 'common.notAvailable')}</p>
+              <button type="button" disabled={capabilityLoading} onClick={() => setCapabilityAttempt(value => value + 1)}>{t('common.retry')}</button>
+            </div>}
           </div>
 
           {/* Upload Zone */}
@@ -335,8 +338,8 @@ const CropHealthCheck = () => {
               <div className="relative">
                 <img
                   src={imagePreview}
-                  alt="Selected plant"
-                  className="max-h-64 mx-auto rounded-xl shadow-md"
+                  alt={t('cropHealth.selectedPlant')}
+                  className="max-h-64 mx-auto rounded-xl shadow-md bg-white"
                 />
                 <button
                   onClick={(e) => {
@@ -380,7 +383,7 @@ const CropHealthCheck = () => {
 
             <button
               onClick={analyzeImage}
-              disabled={!selectedImage || isAnalyzing}
+              disabled={!selectedImage || isAnalyzing || !supportedCrops.includes(selectedCrop)}
               className={`
                 flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl font-medium transition-all
                 ${selectedImage && !isAnalyzing
@@ -429,16 +432,6 @@ const CropHealthCheck = () => {
             <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden">
               {/* Result Header */}
               <div className={`p-6 ${result.status === 'healthy' ? 'bg-green-50' : 'bg-amber-50'}`}>
-                {result.isDemo && (
-                  <div className="mb-4 bg-orange-100 border-l-4 border-orange-500 p-3 rounded-r-lg shadow-sm">
-                    <p className="text-xs text-orange-800 font-bold flex items-center">
-                      <AlertTriangle className="w-4 h-4 mr-1"/> {t('cropHealth.simulatedFallbackMode') || 'Simulated Fallback Mode Active'}
-                    </p>
-                    <p className="text-[11px] text-orange-700 mt-0.5 leading-tight text-balance">
-                      {t('cropHealth.simulatedFallbackDesc') || 'This is a localized demo diagnosis because the live backend is unreachable or Sample Mode was clicked. This is not a real analysis of your image.'}
-                    </p>
-                  </div>
-                )}
                 <div className="flex items-center gap-4">
                   {result.status === 'healthy' ? (
                     <>
@@ -457,31 +450,17 @@ const CropHealthCheck = () => {
                       </div>
                       <div className="flex-1">
                         <h3 className="text-xl font-bold text-amber-800 leading-tight">
-                          {result.disease?.name || t('cropHealth.diseaseDetected') || 'Disease Detected'}
+                          {diseaseName(result.disease?.name)}
                         </h3>
                         {result.unsupportedCrop && (
                           <p className="text-[10px] text-amber-600 font-semibold mb-1 uppercase tracking-wide">
-                            {t('cropHealth.limitedModelSupport') || 'Limited Model Support for'} {selectedCropInfo?.label || 'this crop'}
+                            {t('cropHealth.limitedModelSupport') || 'Limited Model Support for'} {translatedCropName(selectedCropInfo)}
                           </p>
                         )}
                         <div className="flex flex-wrap items-center gap-2 mt-1">
-                          <span className={`px-2 py-0.5 rounded-full text-[11px] font-bold border flex items-center ${getSeverityColor(result.disease?.severity)}`}>
-                            {result.disease?.severity?.toUpperCase()} {t('cropHealth.severity') || 'SEVERITY'}
+                          <span className="px-2 py-0.5 rounded-full text-[11px] font-bold border flex items-center text-gray-600 bg-gray-100 border-gray-200">
+                            {t('cropHealth.severity')}: {t('common.notAvailable')}
                           </span>
-                          
-                          {(() => {
-                            const conf = getConfidenceLevel(result.disease?.confidence || 0);
-                            return (
-                              <div className="group relative" tabIndex={0}>
-                                <span className={`px-2 py-0.5 rounded-full text-[11px] font-bold cursor-pointer transition-colors hover:brightness-95 ${conf.color}`}>
-                                  {conf.label} ({((result.disease?.confidence || 0) * 100).toFixed(0)}%)
-                                </span>
-                                <div className="absolute top-full mt-2 left-0 w-48 sm:w-56 p-2 bg-gray-800 text-white text-[11px] rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible focus-within:opacity-100 focus-within:visible transition-all z-20 border border-gray-700">
-                                  {conf.desc}
-                                </div>
-                              </div>
-                            );
-                          })()}
                         </div>
                       </div>
                     </>
@@ -491,6 +470,13 @@ const CropHealthCheck = () => {
 
               {/* Result Content */}
               <div className="p-6 space-y-4">
+                <div className="rounded-xl border border-gray-200 bg-gray-50 p-3 space-y-2">
+                  <p className="text-sm font-medium text-gray-700">
+                    {t('dashboard.confidence')}: {((result.status === 'healthy' ? result.confidence : result.disease.confidence) * 100).toFixed(1)}%
+                  </p>
+                  <h4 className="text-sm font-semibold text-gray-800">{t('cropHealth.modelLimitationsTitle')}</h4>
+                  <p className="text-sm text-gray-600">{t('cropHealth.agronomicDisclaimer')}</p>
+                </div>
                 {result.status === 'healthy' ? (
                   <div className="space-y-3">
                     <h4 className="font-semibold text-gray-800 flex items-center gap-2">
@@ -498,7 +484,7 @@ const CropHealthCheck = () => {
                       {t('cropHealth.recommendations') || 'Recommendations'}
                     </h4>
                     <ul className="space-y-2">
-                      {(result.suggestions || diseaseDatabase.healthyIndicators).map((tip, i) => (
+                      {safeLocalizedList(result.suggestions || diseaseDatabase.healthyIndicators, 'cropHealth.healthySummary').map((tip, i) => (
                         <li key={i} className="flex items-start gap-2 text-sm text-gray-600">
                           <CheckCircle className="w-4 h-4 text-green-500 mt-0.5 flex-shrink-0" />
                           {tip}
@@ -513,7 +499,7 @@ const CropHealthCheck = () => {
                       <div className="space-y-2">
                         <h4 className="font-semibold text-gray-800">{t('cropHealth.symptoms') || 'Symptoms'}</h4>
                         <ul className="space-y-1">
-                          {result.diseaseDetails.symptoms.map((symptom, i) => (
+                          {safeLocalizedList(result.diseaseDetails.symptoms, 'cropHealth.symptomsSummary').map((symptom, i) => (
                             <li key={i} className="text-sm text-gray-600 flex items-start gap-2">
                               <span className="text-amber-500">•</span>
                               {symptom}
@@ -545,11 +531,11 @@ const CropHealthCheck = () => {
                           {/* Chemical Treatment */}
                           {(result.treatment?.chemical || result.diseaseDetails?.treatment) && (
                             <div>
-                              <h5 className="text-sm font-medium text-gray-700 mb-2">💊 {t('cropHealth.chemicalTreatment') || 'Chemical Treatment'}</h5>
+                              <h5 className="text-sm font-medium text-gray-700 mb-2">{t('cropHealth.chemicalTreatment') || 'Chemical Treatment'}</h5>
                               <ul className="space-y-1">
-                                {(result.treatment?.chemical || result.diseaseDetails?.treatment)?.map((t, i) => (
+                                {safeLocalizedList(result.treatment?.chemical || result.diseaseDetails?.treatment, 'cropHealth.chemicalSummary').map((item, i) => (
                                   <li key={i} className="text-sm text-gray-600 bg-blue-50 rounded-lg px-3 py-2">
-                                    {t}
+                                    {item}
                                   </li>
                                 ))}
                               </ul>
@@ -559,11 +545,11 @@ const CropHealthCheck = () => {
                           {/* Organic Treatment */}
                           {result.treatment?.organic && (
                             <div>
-                              <h5 className="text-sm font-medium text-gray-700 mb-2">🌿 {t('cropHealth.organicOptions') || 'Organic Options'}</h5>
+                              <h5 className="text-sm font-medium text-gray-700 mb-2">{t('cropHealth.organicOptions') || 'Organic Options'}</h5>
                               <ul className="space-y-1">
-                                {result.treatment.organic.map((t, i) => (
+                                {safeLocalizedList(result.treatment.organic, 'cropHealth.organicSummary').map((item, i) => (
                                   <li key={i} className="text-sm text-gray-600 bg-green-50 rounded-lg px-3 py-2">
-                                    {t}
+                                    {item}
                                   </li>
                                 ))}
                               </ul>
@@ -571,13 +557,13 @@ const CropHealthCheck = () => {
                           )}
 
                           {/* Prevention */}
-                          {result.diseaseDetails?.prevention && (
+                          {(result.treatment?.prevention || result.diseaseDetails?.prevention) && (
                             <div>
-                              <h5 className="text-sm font-medium text-gray-700 mb-2">🛡️ {t('cropHealth.prevention') || 'Prevention'}</h5>
+                              <h5 className="text-sm font-medium text-gray-700 mb-2">{t('cropHealth.prevention') || 'Prevention'}</h5>
                               <ul className="space-y-1">
-                                {result.diseaseDetails.prevention.map((p, i) => (
+                                {safeLocalizedList(result.treatment?.prevention || result.diseaseDetails?.prevention, 'cropHealth.preventionSummary').map((item, i) => (
                                   <li key={i} className="text-sm text-gray-600 bg-amber-50 rounded-lg px-3 py-2">
-                                    {p}
+                                    {item}
                                   </li>
                                 ))}
                               </ul>
@@ -597,13 +583,6 @@ const CropHealthCheck = () => {
                   {t('cropHealth.analyzeAnother') || 'Analyze Another Image'}
                 </button>
                 
-                {/* Formal Disclaimer Box */}
-                <div className="bg-gray-50 border border-gray-200 rounded-xl p-3 flex gap-2 items-start mt-2">
-                  <Shield className="w-4 h-4 text-gray-400 flex-shrink-0 mt-0.5" />
-                  <p className="text-[10px] leading-relaxed text-gray-500">
-                    {t('cropHealth.agronomicDisclaimer') || 'Agronomic Disclaimer: This tool utilizes computer vision heuristics to estimate crop health. It is not a substitute for laboratory testing or professional agricultural extension officers. Field verification is strictly required before initiating chemical treatments.'}
-                  </p>
-                </div>
               </div>
             </div>
           ) : (
@@ -619,15 +598,15 @@ const CropHealthCheck = () => {
               <div className="mt-6 text-left bg-white border border-gray-100 shadow-sm rounded-xl p-4">
                 <h4 className="text-xs font-bold text-gray-800 mb-2 uppercase tracking-wide">{t('cropHealth.modelLimitationsTitle') || 'Model Limitations'}</h4>
                 <p className="text-[11px] text-gray-500 mb-2 leading-relaxed">
-                  {t('cropHealth.modelLimitationsDesc') || 'Our model is primarily trained on 42 common crop diseases. While accurate for major blights and rusts, rare diseases or unsupported crops will yield low-confidence estimates.'}
+                  {t('cropHealth.agronomicDisclaimer')}
                 </p>
                 <div className="flex gap-2">
                   <span className="w-2 h-2 rounded-full bg-green-500 mt-1 flex-shrink-0"></span>
-                  <p className="text-[11px] text-gray-500 leading-tight">{t('cropHealth.supportedCrops') || 'Supported: Rice, Wheat, Cotton, Tomato, Potato, Grapes, Citrus.'}</p>
+                  <p className="text-[11px] text-gray-500 leading-tight">{trainedModelCrops.map(translatedCropName).join(', ')}</p>
                 </div>
                 <div className="flex gap-2 mt-1">
                   <span className="w-2 h-2 rounded-full bg-orange-400 mt-1 flex-shrink-0"></span>
-                  <p className="text-[11px] text-gray-500 leading-tight">{t('cropHealth.limitedCrops') || 'Limited: Maize, Sugarcane (Heuristic fallback applies).'}</p>
+                  <p className="text-[11px] text-gray-500 leading-tight">{t('cropHealth.uploadPrompt')}</p>
                 </div>
               </div>
             </div>
@@ -639,3 +618,4 @@ const CropHealthCheck = () => {
 };
 
 export default CropHealthCheck;
+

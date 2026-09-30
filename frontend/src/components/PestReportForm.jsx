@@ -10,7 +10,7 @@
  * - Photo upload placeholder
  */
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { X, Bug, MapPin, Camera, Send, AlertCircle, CheckCircle } from 'lucide-react';
 import { useTranslation } from '../i18n';
 
@@ -55,9 +55,7 @@ const PEST_IDS = {
   ]
 };
 
-const CROPS = ['rice', 'wheat', 'cotton', 'sugarcane', 'maize', 'soybean', 'groundnut', 'other'];
-
-const PestReportForm = ({ isOpen, onClose, onSubmit, initialCrop = '', initialLocation = null }) => {
+const PestReportForm = ({ isOpen, onClose, onSubmit, crops = [], initialCrop = '', initialLocation = null }) => {
   const { t } = useTranslation();
   const [formData, setFormData] = useState({
     crop: initialCrop,
@@ -125,20 +123,13 @@ const PestReportForm = ({ isOpen, onClose, onSubmit, initialCrop = '', initialLo
 
         setLocationLoading(false);
       },
-      (err) => {
+      () => {
         setLocationError(t('weatherCard.errors.failed') || 'Could not detect location');
         setLocationLoading(false);
       },
       { enableHighAccuracy: true, timeout: 10000 }
     );
   };
-
-  // Auto-detect location on open
-  useEffect(() => {
-    if (isOpen && !formData.lat) {
-      detectLocation();
-    }
-  }, [isOpen]);
 
   // Handle form input changes
   const handleChange = (field, value) => {
@@ -195,10 +186,10 @@ const PestReportForm = ({ isOpen, onClose, onSubmit, initialCrop = '', initialLo
           });
         }, 2000);
       } else {
-        setError(result.error || t('validation.submitFailed') || 'Failed to submit report');
+        setError(t('validation.submitFailed'));
       }
     } catch (err) {
-      setError(err.message);
+      setError(t('validation.submitFailed'));
     } finally {
       setSubmitting(false);
     }
@@ -221,7 +212,8 @@ const PestReportForm = ({ isOpen, onClose, onSubmit, initialCrop = '', initialLo
           </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="min-w-11 p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            aria-label={t('common.close')}
           >
             <X className="w-5 h-5 text-gray-500" />
           </button>
@@ -248,8 +240,8 @@ const PestReportForm = ({ isOpen, onClose, onSubmit, initialCrop = '', initialLo
                 required
               >
                 <option value="">{t('pestReport.selectCrop')}</option>
-                {CROPS.map(crop => (
-                  <option key={crop} value={crop}>{t(`crops.${crop}`) || crop}</option>
+                {crops.map(crop => (
+                  <option key={crop} value={crop}>{t(`crops.${crop.toLowerCase()}`) || crop}</option>
                 ))}
               </select>
             </div>
@@ -291,7 +283,7 @@ const PestReportForm = ({ isOpen, onClose, onSubmit, initialCrop = '', initialLo
                       : 'border-gray-200 text-gray-600 hover:border-gray-300'
                       }`}
                   >
-                    {level === 'low' ? `🟢 ${t('sidebar.low')}` : level === 'medium' ? `🟡 ${t('sidebar.medium')}` : `🔴 ${t('sidebar.high')}`}
+                    {level === 'low' ? t('sidebar.low') : level === 'medium' ? t('sidebar.medium') : t('sidebar.high')}
                   </button>
                 ))}
               </div>

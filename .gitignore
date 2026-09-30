@@ -53,6 +53,7 @@ logs/
 backend/models/*.pkl
 backend/models/*.h5
 backend/models/*.keras
+backend/models/active/*.keras
 backend/models/*.tflite
 backend/models/class_indices.json
 *.onnx
@@ -93,3 +94,23 @@ htmlcov/
 *.tmp
 *.temp
 *.bak
+.vercel
+.uv-cache/
+.hf-cache/
+.catalog-model-docs/
+.catalog-model/
+.codex-tmp/
+backend/training_runs/
+pest_data/
+soil_cache/
+
+# Local design and presentation working files
+output/
+.playwright-cli/
+.ppt-build/
+design-audit/
+Krishyak_SIH2026/
+Krishyak_SIH2026_Metrics/
+Krishyak_SIH2026*.pptx
+frontend/dependency-audit*.json
+frontend/lint-report.json

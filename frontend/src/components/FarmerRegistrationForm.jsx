@@ -1,10 +1,11 @@
-import React, { useState, useEffect, useCallback, memo } from 'react';
+import React, { useState, useEffect, useCallback, useRef, memo } from 'react';
 import { User, MapPin, Landmark, Wheat, ChevronLeft, ChevronRight, Check } from 'lucide-react';
 import { useTranslation } from '../i18n';
 import { indianStates, getDistrictsByState, getTehsilsByDistrict } from '../data/indianStates';
 import { useFormValidation } from '../hooks/useFormValidation';
 import { useFarmerSession } from '../hooks/useFarmerSession';
 import farmingApi from '../api/farmingApi';
+import LanguageSelector from './LanguageSelector';
 
 const INITIAL_FORM_DATA = {
   // Step 1: Personal Info
@@ -35,27 +36,17 @@ const INITIAL_FORM_DATA = {
   consentTerms: false
 };
 
-const CROPS = [
-  'Rice', 'Wheat', 'Maize', 'Barley', 'Bajra', 'Jowar', 'Ragi',
-  'Tur', 'Gram', 'Urad', 'Moong', 'Lentil', 'Chickpea',
-  'Groundnut', 'Soybean', 'Sunflower', 'Mustard', 'Sesame',
-  'Cotton', 'Sugarcane', 'Jute', 'Tobacco',
-  'Potato', 'Onion', 'Tomato', 'Brinjal', 'Cabbage', 'Cauliflower',
-  'Okra', 'Carrot', 'Green Peas', 'Spinach', 'Chilli', 'Garlic',
-  'Ginger', 'Coriander', 'Capsicum', 'Cucumber', 'Pumpkin', 'Radish',
-  'Mango', 'Banana', 'Grapes', 'Pomegranate', 'Orange', 'Guava',
-  'Papaya', 'Apple', 'Watermelon', 'Lemon', 'Coconut', 'Litchi',
-  'Turmeric', 'Cumin', 'Fenugreek', 'Black Pepper', 'Cardamom'
-];
-
 // Input components defined OUTSIDE main component to prevent re-creation
-const InputField = memo(({ label, field, type = 'text', required = false, placeholder, maxLength, pattern, value, onChange, error }) => (
+const InputField = memo(({ label, field, type = 'text', required = false, placeholder, maxLength, pattern, value, onChange, error, suggestions }) => (
   <div className="space-y-1">
-    <label className="block text-sm font-semibold text-gray-700">
+    <label htmlFor={`registration-${field}`} className="block text-sm font-semibold text-gray-700">
       {label} {required && <span className="text-red-500">*</span>}
     </label>
     <div className="relative">
       <input
+        id={`registration-${field}`}
+        list={suggestions ? `suggestions-${field}` : undefined}
+        aria-invalid={Boolean(error)}
         type={type}
         value={value}
         onChange={(e) => onChange(field, e.target.value)}
@@ -66,6 +57,9 @@ const InputField = memo(({ label, field, type = 'text', required = false, placeh
           }`}
         style={{ fontSize: '16px' }}
       />
+      {suggestions && <datalist id={`suggestions-${field}`}>
+        {suggestions.map(option => <option key={option} value={option} />)}
+      </datalist>}
     </div>
     {error && (
       <p className="text-sm text-red-500 mt-1">{error}</p>
@@ -75,10 +69,11 @@ const InputField = memo(({ label, field, type = 'text', required = false, placeh
 
 const SelectField = memo(({ label, field, options, required = false, placeholder, value, onChange, error, t }) => (
   <div className="space-y-1">
-    <label className="block text-sm font-semibold text-gray-700">
+    <label htmlFor={`registration-${field}`} className="block text-sm font-semibold text-gray-700">
       {label} {required && <span className="text-red-500">*</span>}
     </label>
     <select
+      id={`registration-${field}`}
       value={value}
       onChange={(e) => onChange(field, e.target.value)}
       className={`w-full px-4 py-3 border-2 rounded-xl text-base transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-farm-green-200 ${error ? 'border-red-400 bg-red-50' : 'border-gray-200 focus:border-farm-green-500'
@@ -98,7 +93,7 @@ const SelectField = memo(({ label, field, options, required = false, placeholder
   </div>
 ));
 
-const FarmerRegistrationForm = ({ onComplete, onSkip }) => {
+const FarmerRegistrationForm = ({ onComplete, onSkip, crops = [] }) => {
   const { t } = useTranslation();
   const { login, saveDraft, loadDraft, clearDraft } = useFarmerSession();
   const { errors, validateStep, clearFieldError } = useFormValidation();
@@ -108,6 +103,8 @@ const FarmerRegistrationForm = ({ onComplete, onSkip }) => {
   const [districts, setDistricts] = useState([]);
   const [tehsils, setTehsils] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState(null);
+  const submitting = useRef(false);
   const [lastLoadedState, setLastLoadedState] = useState('');
   const [lastLoadedDistrict, setLastLoadedDistrict] = useState('');
 
@@ -185,9 +182,17 @@ const FarmerRegistrationForm = ({ onComplete, onSkip }) => {
   };
 
   const handleSubmit = async () => {
-    if (!validateStep(4, formData)) return;
+    if (submitting.current) return;
+    for (let step = 1; step <= 4; step += 1) {
+      if (!validateStep(step, formData)) {
+        setCurrentStep(step);
+        return;
+      }
+    }
 
+    submitting.current = true;
     setIsSubmitting(true);
+    setSubmitError(null);
     try {
       // Add registration timestamp
       const registrationData = {
@@ -195,26 +200,22 @@ const FarmerRegistrationForm = ({ onComplete, onSkip }) => {
         registeredAt: new Date().toISOString()
       };
 
-      // Call backend to save to CSV (non-blocking, fire and forget)
-      farmingApi.registerFarmer(registrationData).catch(err => {
-        console.warn('Backend registration failed (CSV not saved):', err);
-      });
+      const result = await farmingApi.registerFarmer(registrationData);
+      if (result?.success !== true) throw new Error('Registration was not saved');
 
       // Call login to save session locally
       const farmerProfile = login(registrationData);
       // Clear the draft after successful registration
       clearDraft();
 
-      // Small delay to ensure state is saved and UI updates
-      await new Promise(resolve => setTimeout(resolve, 200));
-
       // Call onComplete callback to redirect to dashboard
       if (onComplete) {
         onComplete(farmerProfile);
       }
     } catch (error) {
-      console.error('Registration failed:', error);
+      setSubmitError('common.error');
     } finally {
+      submitting.current = false;
       setIsSubmitting(false);
     }
   };
@@ -313,11 +314,11 @@ const FarmerRegistrationForm = ({ onComplete, onSkip }) => {
       {/* Optional Aadhaar Section */}
       <div className="mt-2 pt-4 border-t border-dashed border-gray-200">
         <p className="text-xs text-gray-500 mb-3 flex items-center">
-          <span className="bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full text-xs font-medium mr-2">Optional</span>
-          You can verify your Aadhaar later from your profile
+          <span className="bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full text-xs font-medium mr-2">{t('common.optional')}</span>
+          {t('registration.aadhaarHelp')}
         </p>
         <InputField
-          label={(t('registration.aadhaarNumber') || 'Aadhaar Number (आधार संख्या)') + ' — Optional'}
+          label={`${t('registration.aadhaarNumber')} - ${t('common.optional')}`}
           field="aadhaarNumber"
           placeholder="XXXX XXXX XXXX"
           maxLength={14}
@@ -348,11 +349,11 @@ const FarmerRegistrationForm = ({ onComplete, onSkip }) => {
         t={t}
       />
 
-      <SelectField
+      <InputField
         label={t('registration.district') || 'District (जिला)'}
         field="district"
         required
-        options={districts.map(d => ({ value: d.name, label: d.name }))}
+        suggestions={districts.map(d => d.name)}
         placeholder={t('registration.selectDistrict') || 'Select District'}
         value={formData.district}
         onChange={handleChange}
@@ -360,11 +361,11 @@ const FarmerRegistrationForm = ({ onComplete, onSkip }) => {
         t={t}
       />
 
-      <SelectField
+      <InputField
         label={t('registration.tehsil') || 'Tehsil/Block (तहसील/ब्लॉक)'}
         field="tehsil"
         required
-        options={tehsils}
+        suggestions={tehsils}
         placeholder={t('registration.selectTehsil') || 'Select Tehsil'}
         value={formData.tehsil}
         onChange={handleChange}
@@ -489,7 +490,7 @@ const FarmerRegistrationForm = ({ onComplete, onSkip }) => {
         label={t('registration.primaryCrop') || 'Primary Crop (मुख्य फसल)'}
         field="primaryCrop"
         required
-        options={CROPS.map(c => ({ value: c, label: t(`crops.${c.toLowerCase()}`) || c }))}
+        options={crops.map(c => ({ value: c, label: t(`crops.${c.toLowerCase()}`) || c }))}
         value={formData.primaryCrop}
         onChange={handleChange}
         error={errors.primaryCrop}
@@ -580,60 +581,59 @@ const FarmerRegistrationForm = ({ onComplete, onSkip }) => {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-farm-green-50 via-white to-sky-blue-50 py-6 px-4">
-      <div className="max-w-2xl mx-auto">
-        {/* Branding Header */}
-        <div className="flex items-center justify-center mb-6">
+    <div className="registration-shell">
+      <aside className="registration-aside">
+        <div className="registration-brand">
           <img
             src="/krishyak_logo.png"
-            alt="Krishyak Logo"
-            className="w-16 h-16 sm:w-20 sm:h-20 mr-4 rounded-xl shadow-md"
+            alt=""
+            className="registration-logo"
           />
           <div>
-            <h1 className="text-2xl sm:text-3xl font-bold text-farm-green-700">
+            <h1>
               {t('app.name') || 'Krishyak'}
             </h1>
-            <p className="text-sm text-gray-600">
+            <p>
               {t('app.tagline') || 'Data-Driven Farming Insights'}
             </p>
           </div>
         </div>
-
-        {/* Registration Title */}
-        <div className="text-center mb-6">
-          <h2 className="text-xl sm:text-2xl font-bold text-gray-800">
-            {t('registration.title') || 'Farmer Registration'}
-          </h2>
-          <p className="text-gray-600 mt-1 text-sm sm:text-base">
-            {t('registration.subtitle') || 'Join Krishyak to access government schemes and data-driven farming insights'}
-          </p>
+        <div className="registration-aside__copy">
+          <p>{t('registration.subtitle') || 'Join Krishyak to access government schemes and data-driven farming insights'}</p>
         </div>
+      </aside>
 
-        {/* Progress Stepper */}
+      <main className="registration-main">
+        <div className="registration-panel">
+          <div className="registration-language"><LanguageSelector /></div>
+          <div className="registration-title">
+            <h2>{t('registration.title') || 'Farmer Registration'}</h2>
+          </div>
+
         {renderProgressStepper()}
 
-        {/* Form Card */}
-        <div className="bg-white rounded-2xl shadow-xl p-6 sm:p-8">
+        <div className="registration-form-card">
           {currentStep === 1 && renderStep1()}
           {currentStep === 2 && renderStep2()}
           {currentStep === 3 && renderStep3()}
           {currentStep === 4 && renderStep4()}
 
-          {/* Navigation Buttons */}
-          <div className="flex justify-between mt-8 pt-6 border-t border-gray-200">
+          <div className="registration-actions">
             {currentStep === 1 ? (
               <button
                 type="button"
                 onClick={onSkip}
-                className="flex items-center px-6 py-3 rounded-xl font-semibold transition-all min-h-[48px] text-farm-green-700 bg-farm-green-50 hover:bg-farm-green-100 border border-farm-green-200"
+                disabled={isSubmitting}
+                className="registration-secondary-action"
               >
-                Skip for now
+                {t('registration.skip') || 'Skip for now'}
               </button>
             ) : (
               <button
                 type="button"
                 onClick={handlePrevious}
-                className="flex items-center px-6 py-3 rounded-xl font-semibold transition-all min-h-[48px] bg-gray-100 text-gray-700 hover:bg-gray-200"
+                disabled={isSubmitting}
+                className="registration-secondary-action"
               >
                 <ChevronLeft className="w-5 h-5 mr-1" />
                 {t('registration.previous') || 'Previous'}
@@ -644,7 +644,7 @@ const FarmerRegistrationForm = ({ onComplete, onSkip }) => {
               <button
                 type="button"
                 onClick={handleNext}
-                className="flex items-center px-6 py-3 bg-farm-green-600 text-white rounded-xl font-semibold hover:bg-farm-green-700 transition-all min-h-[48px]"
+                className="registration-primary-action"
               >
                 {t('registration.next') || 'Next'}
                 <ChevronRight className="w-5 h-5 ml-1" />
@@ -654,7 +654,7 @@ const FarmerRegistrationForm = ({ onComplete, onSkip }) => {
                 type="button"
                 onClick={handleSubmit}
                 disabled={isSubmitting}
-                className="flex items-center px-8 py-3 bg-gradient-to-r from-farm-green-500 to-farm-green-600 text-white rounded-xl font-semibold hover:from-farm-green-600 hover:to-farm-green-700 transition-all min-h-[48px] disabled:opacity-70"
+                className="registration-primary-action disabled:opacity-70"
               >
                 {isSubmitting ? (
                   <>
@@ -672,11 +672,12 @@ const FarmerRegistrationForm = ({ onComplete, onSkip }) => {
           </div>
         </div>
 
-        {/* Auto-save indicator */}
-        <p className="text-center text-sm text-gray-500 mt-4">
-          {t('registration.autoSave') || '💾 Your progress is automatically saved'}
+        {submitError && <p role="alert" className="text-red-700 mt-4">{t(submitError)}</p>}
+        <p className="registration-autosave">
+          {t('registration.autoSave') || 'Your progress is automatically saved'}
         </p>
-      </div>
+        </div>
+      </main>
     </div>
   );
 };

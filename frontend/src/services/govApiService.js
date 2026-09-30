@@ -3,7 +3,7 @@
  * Handles API calls to backend for MSP prices, mandi prices, and location data
  */
 
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'https://krishyak-backend.onrender.com';
+import { API_BASE_URL } from '../config/api';
 
 /**
  * Fetch MSP prices from backend API
@@ -175,7 +175,7 @@ export function getTranslatedCropName(cropName, language = 'en') {
   return cropName;
 }
 
-export default {
+const govApiService = {
   fetchMSPPrices,
   fetchMSPForCrop,
   fetchMandiPrices,
@@ -183,3 +183,5 @@ export default {
   formatIndianPrice,
   getTranslatedCropName,
 };
+
+export default govApiService;

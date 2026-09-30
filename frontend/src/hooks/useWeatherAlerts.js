@@ -6,8 +6,7 @@
  */
 
 import { useState, useEffect, useCallback } from 'react';
-
-const API_BASE = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+import { API_BASE_URL as API_BASE } from '../config/api';
 
 // Default coordinates (India center)
 const DEFAULT_LOCATION = { lat: 20.5937, lon: 78.9629 };
@@ -80,13 +79,14 @@ const useWeatherAlerts = (options = {}) => {
 
       const data = await response.json();
 
-      if (data.success) {
+      if (data.success && data.data) {
         setCurrentWeather(data.data);
         return data.data;
       }
     } catch (err) {
       console.error('Weather fetch error:', err);
     }
+    setCurrentWeather(null);
     return null;
   }, []);
 
@@ -112,6 +112,7 @@ const useWeatherAlerts = (options = {}) => {
     } catch (err) {
       console.error('Alerts fetch error:', err);
     }
+    setAlerts([]);
     return [];
   }, [crop]);
 
@@ -137,6 +138,7 @@ const useWeatherAlerts = (options = {}) => {
     } catch (err) {
       console.error('Forecast fetch error:', err);
     }
+    setForecast([]);
     return [];
   }, []);
 
@@ -155,25 +157,26 @@ const useWeatherAlerts = (options = {}) => {
 
       const data = await response.json();
 
-      if (data.success) {
+      if (data.success && data.available !== false && Number.isFinite(data.total_rain_mm)) {
         setRainForecast(data);
         return data;
       }
     } catch (err) {
       console.error('Rain forecast error:', err);
     }
+    setRainForecast(null);
     return null;
   }, []);
 
   /**
    * Fetch all weather data
    */
-  const fetchAll = useCallback(async (cropType) => {
+  const fetchAll = useCallback(async (cropType, locationOverride) => {
     setLoading(true);
     setError(null);
 
     try {
-      let loc = location;
+      let loc = locationOverride || location;
 
       // Detect location if not set
       if (!loc) {
@@ -185,12 +188,17 @@ const useWeatherAlerts = (options = {}) => {
       }
 
       // Fetch all data in parallel
-      await Promise.all([
+      const [current, , , rain] = await Promise.all([
         fetchCurrentWeather(loc),
         fetchAlerts(loc, cropType || crop),
         fetchForecast(loc),
         fetchRainForecast(loc)
       ]);
+
+      if (!current && !rain) {
+        setLastUpdated(null);
+        throw new Error('Weather data is unavailable');
+      }
 
       setLastUpdated(new Date());
     } catch (err) {
@@ -205,7 +213,7 @@ const useWeatherAlerts = (options = {}) => {
    * Refresh all data
    */
   const refresh = useCallback(() => {
-    fetchAll();
+    return fetchAll();
   }, [fetchAll]);
 
   /**
@@ -213,7 +221,7 @@ const useWeatherAlerts = (options = {}) => {
    */
   const updateLocation = useCallback((newLocation) => {
     setLocation(newLocation);
-    fetchAll();
+    return fetchAll(undefined, newLocation);
   }, [fetchAll]);
 
   // Initial fetch and auto-refresh setup

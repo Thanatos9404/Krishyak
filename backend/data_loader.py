@@ -50,27 +50,37 @@ class DataLoader:
             
             # Parse date
             if 'Arrival_Date' in self.price_data.columns:
-                self.price_data['Arrival_Date'] = pd.to_datetime(self.price_data['Arrival_Date'], errors='coerce')
+                self.price_data['Arrival_Date'] = pd.to_datetime(self.price_data['Arrival_Date'], errors='coerce', dayfirst=True)
     
     def get_crop_yield(self, crop: str, season: str = "Total") -> float:
         """Get average yield for a crop"""
+        return self.get_crop_yield_record(crop, season)['value']
+
+    def get_crop_yield_record(self, crop: str, season: str = "Total") -> Dict:
+        fallback = {'value': config.DEFAULT_YIELDS.get(crop, 2000), 'source': 'static_config',
+                    'record_year': None, 'units': 'kg/ha', 'region': 'not_localized',
+                    'product_basis': 'lint' if crop == 'Cotton' else 'crop_product'}
         if self.crop_data is None:
-            return config.DEFAULT_YIELDS.get(crop, 2000)
+            return fallback
+        if not {'Crop', 'Season'}.issubset(self.crop_data.columns):
+            return fallback
+        alias = {'Chickpea': 'Gram', 'Arhar': 'Tur', 'Sesame': 'Sesamum'}.get(crop, crop)
         
         crop_rows = self.crop_data[
-            (self.crop_data['Crop'] == crop) & 
-            (self.crop_data['Season'] == season)
+            (self.crop_data['Crop'].str.strip().str.casefold() == alias.casefold()) &
+            (self.crop_data['Season'].str.strip().str.casefold() == season.casefold())
         ]
         
         if len(crop_rows) > 0:
             # Get most recent yield
-            yield_cols = [col for col in crop_rows.columns if 'Yield' in col]
-            if yield_cols:
-                recent_yield = crop_rows[yield_cols[-1]].values[0]
-                if pd.notna(recent_yield):
-                    return float(recent_yield)
+            yield_cols = sorted([col for col in crop_rows.columns if col.startswith('Yield-')], reverse=True)
+            for col in yield_cols:
+                recent_yield = crop_rows[col].values[0]
+                if pd.notna(recent_yield) and np.isfinite(recent_yield) and recent_yield > 0:
+                    return {**fallback, 'value': float(recent_yield), 'source': 'All-India crop yield CSV',
+                            'record_year': col.removeprefix('Yield-'), 'region': 'India national aggregate'}
         
-        return config.DEFAULT_YIELDS.get(crop, 2000)
+        return fallback
     
     def get_commodity_prices(self, commodity: str, days: int = 60) -> pd.DataFrame:
         """Get recent price data for a commodity"""
@@ -78,12 +88,15 @@ class DataLoader:
             return pd.DataFrame()
         
         commodity_data = self.price_data[
-            self.price_data['Commodity'].str.contains(commodity, case=False, na=False)
+            self.price_data['Commodity'].str.strip().str.casefold().eq(commodity.strip().casefold())
         ].copy()
         
         if len(commodity_data) > 0:
-            commodity_data = commodity_data.sort_values('Arrival_Date', ascending=False)
-            return commodity_data.head(days)
+            # A cross-section of markets on one date is not a daily time series.
+            commodity_data = commodity_data.dropna(subset=['Arrival_Date', 'Modal_x0020_Price'])
+            commodity_data = commodity_data[np.isfinite(commodity_data['Modal_x0020_Price']) & (commodity_data['Modal_x0020_Price'] > 0)]
+            daily = commodity_data.groupby('Arrival_Date', as_index=False)['Modal_x0020_Price'].median()
+            return daily.sort_values('Arrival_Date').tail(days)
         
         return pd.DataFrame()
     
@@ -118,14 +131,17 @@ class DataLoader:
                 "min": 1000,
                 "max": 5000,
                 "volatility": 0.25
+                , "source_type": "assumed", "observations": 0
             }
         
         modal_prices = prices['Modal_x0020_Price'].dropna()
         
         return {
             "mean": float(modal_prices.mean()),
-            "std": float(modal_prices.std()),
+            "std": float(modal_prices.std(ddof=0)),
             "min": float(modal_prices.min()),
             "max": float(modal_prices.max()),
-            "volatility": float(modal_prices.std() / modal_prices.mean()) if modal_prices.mean() > 0 else 0.25
+            "volatility": float(modal_prices.std(ddof=0) / modal_prices.mean()) if len(modal_prices) > 1 else 0.25,
+            "source_type": "historical_dataset",
+            "observations": len(modal_prices)
         }

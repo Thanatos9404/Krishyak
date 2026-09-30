@@ -77,7 +77,7 @@ export function filterAlertsByCrop(alerts, crop) {
   const cropKey = Object.keys(CROP_PEST_MAP).find(k => k.toLowerCase() === crop.toLowerCase());
   const relevantPests = cropKey ? CROP_PEST_MAP[cropKey] : null;
   
-  if (!relevantPests) return alerts; // Unknown crop — don't filter
+  if (!relevantPests) return alerts; // Unknown crop - don't filter
   
   // Case-insensitive partial match
   const lowerPests = relevantPests.map(p => p.toLowerCase());

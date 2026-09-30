@@ -11,19 +11,23 @@
  */
 
 export const RISK_THRESHOLDS = [
-  { max: 25,  label: 'Low Risk',      color: 'green',  emoji: '🟢', desc: 'Safe to Proceed' },
-  { max: 50,  label: 'Moderate Risk',  color: 'yellow', emoji: '🟡', desc: 'Monitor Closely' },
-  { max: 75,  label: 'High Risk',      color: 'orange', emoji: '🟠', desc: 'Take Precautions' },
-  { max: 100, label: 'Severe Risk',    color: 'red',    emoji: '🔴', desc: 'Reconsider Plan' },
+  { max: 25, id: 'low', color: 'green' },
+  { max: 50, id: 'moderate', color: 'yellow' },
+  { max: 75, id: 'high', color: 'orange' },
+  { max: 100, id: 'severe', color: 'red' },
 ];
 
 /**
  * Get risk info for a given score.
  * @param {number} score - Risk score 0–100
- * @returns {{ label, color, emoji, desc, bgClass, textClass, badgeBg, barColor }}
+ * @returns {{ label, color, desc, bgClass, textClass, badgeBg, barColor }}
  */
+export const isRiskScore = score => typeof score === 'number' && Number.isFinite(score) && score >= 0 && score <= 100;
+
 export function getRiskInfo(score) {
-  const s = Math.max(0, Math.min(100, Math.round(score)));
+  if (!isRiskScore(score)) return {id:'unknown',score:null,color:'gray',textClass:'text-gray-600',
+    bgClass:'bg-gray-100',badgeBg:'bg-gray-100 text-gray-600',barColor:'bg-gray-400'};
+  const s = score;
   const tier = RISK_THRESHOLDS.find(t => s <= t.max) || RISK_THRESHOLDS[RISK_THRESHOLDS.length - 1];
 
   const colorMap = {
@@ -44,7 +48,8 @@ export function getRiskInfo(score) {
  * Get the hex color for a risk score (for SVG/canvas rendering).
  */
 export function getRiskHexColor(score) {
-  const s = Math.round(score);
+  if (!isRiskScore(score)) return '#6b7280';
+  const s = score;
   if (s <= 25) return '#22c55e'; // green-500
   if (s <= 50) return '#eab308'; // yellow-500
   if (s <= 75) return '#f97316'; // orange-500

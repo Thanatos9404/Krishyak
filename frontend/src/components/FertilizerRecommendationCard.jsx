@@ -21,10 +21,21 @@ const NPK_COLORS = {
   K: { bg: 'bg-purple-100', bar: 'bg-purple-500', text: 'text-purple-700' }
 };
 
+const CROP_KEYS = { Rice: 'rice', Wheat: 'wheat', Maize: 'maize', Cotton: 'cotton', Sugarcane: 'sugarcane' };
+
+const fertilizerMethodKey = (method = '') => {
+  const value = method.toLowerCase();
+  if (value.includes('top dressing')) return 'topDress';
+  if (value.includes('2 weeks before')) return 'beforeSowing';
+  if (value.includes('sowing time')) return 'atSowing';
+  if (value.includes('split')) return 'split';
+  return 'basal';
+};
+
 /**
  * NPK Bar Component
  */
-const NPKBar = ({ nutrient, value, max = 150, label }) => {
+const NPKBar = ({ nutrient, value, max = 150, label, unit }) => {
   const colors = NPK_COLORS[nutrient] || NPK_COLORS.N;
   const percentage = Math.min((value / max) * 100, 100);
 
@@ -32,7 +43,7 @@ const NPKBar = ({ nutrient, value, max = 150, label }) => {
     <div className="mb-2">
       <div className="flex justify-between text-sm mb-1">
         <span className={`font-medium ${colors.text}`}>{label}</span>
-        <span className="text-gray-600">{value.toFixed(1)} kg/ha</span>
+        <span className="text-gray-600">{value.toFixed(1)} {unit}</span>
       </div>
       <div className={`w-full h-3 rounded-full ${colors.bg}`}>
         <div
@@ -51,11 +62,11 @@ const DoseItem = ({ dose, t }) => (
   <div className="bg-gray-50 rounded-lg p-3 mb-2">
     <div className="flex justify-between items-start mb-2">
       <div>
-        <span className="font-medium text-gray-800">{dose.name}</span>
-        <div className="text-sm text-gray-500">{dose.method}</div>
+        <span className="font-medium text-gray-800">{t(`fertilizer.products.${dose.name?.toLowerCase()}`) || dose.name}</span>
+        <div className="text-sm text-gray-500">{t(`fertilizer.methods.${fertilizerMethodKey(dose.method)}`)}</div>
       </div>
       <div className="text-right">
-        <div className="font-bold text-farm-green-600">{dose.quantity_kg_ha} kg/ha</div>
+        <div className="font-bold text-farm-green-600">{dose.quantity_kg_ha} {t('units.kgPerHectare')}</div>
         <div className="text-xs text-gray-500">₹{dose.cost_inr?.toFixed(0) || 0}</div>
       </div>
     </div>
@@ -76,7 +87,7 @@ const DoseItem = ({ dose, t }) => (
 /**
  * Schedule Timeline
  */
-const ScheduleTimeline = ({ schedule }) => {
+const ScheduleTimeline = ({ schedule, t }) => {
   if (!schedule?.schedule?.length) return null;
 
   return (
@@ -87,8 +98,8 @@ const ScheduleTimeline = ({ schedule }) => {
             <span className="text-farm-green-600 font-bold text-xs">{idx + 1}</span>
           </div>
           <div className="flex-1">
-            <div className="font-medium text-gray-800">{stage.stage}</div>
-            <div className="text-xs text-gray-500">{stage.timing}</div>
+            <div className="font-medium text-gray-800">{t(`fertilizer.stages.${stage.stage?.toLowerCase().replace(/[^a-z]+/g, '')}`) || t('fertilizer.schedule')}</div>
+            <div className="text-xs text-gray-500">{t('fertilizer.followSchedule')}</div>
           </div>
         </div>
       ))}
@@ -129,7 +140,7 @@ const FertilizerRecommendationCard = ({ crop, areaHectares = 1, soilData = null,
               {t('fertilizer.title') || 'Fertilizer Recommendation'}
             </h3>
             <div className="text-xs text-gray-500">
-              {crop && `For ${crop}`} • {areaHectares} ha
+              {crop && t('fertilizer.forCrop', { crop: t(`crops.${CROP_KEYS[crop] || crop.toLowerCase()}`) || crop })} • {areaHectares} {t('units.hectare')}
             </div>
           </div>
         </div>
@@ -137,8 +148,9 @@ const FertilizerRecommendationCard = ({ crop, areaHectares = 1, soilData = null,
         <button
           onClick={refresh}
           disabled={loading}
-          className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-          title="Refresh"
+          className="min-w-11 p-2 hover:bg-gray-100 rounded-lg transition-colors"
+          aria-label={t('fertilizer.refresh')}
+          title={t('common.refresh')}
         >
           <RefreshCw className={`w-4 h-4 text-gray-500 ${loading ? 'animate-spin' : ''}`} />
         </button>
@@ -171,7 +183,7 @@ const FertilizerRecommendationCard = ({ crop, areaHectares = 1, soilData = null,
       ) : error && !recommendation ? (
         <div className="text-center py-6 text-gray-500">
           <AlertTriangle className="w-8 h-8 mx-auto mb-2 text-yellow-500" />
-          <p className="text-sm">Could not load recommendations</p>
+          <p className="text-sm">{t('fertilizer.loadError')}</p>
           <button
             onClick={refresh}
             className="mt-2 text-sm text-farm-green-600 hover:underline"
@@ -186,6 +198,9 @@ const FertilizerRecommendationCard = ({ crop, areaHectares = 1, soilData = null,
         </div>
       ) : hasRecommendation ? (
         <>
+          {recommendation?.application_note && (
+            <p className="mb-3 text-sm text-gray-600" role="status">{recommendation.application_note}</p>
+          )}
           {/* NPK Applied */}
           {recommendation?.total_npk_applied && (
             <div className="mb-4">
@@ -196,16 +211,19 @@ const FertilizerRecommendationCard = ({ crop, areaHectares = 1, soilData = null,
                 nutrient="N"
                 value={recommendation.total_npk_applied.N}
                 label={t('soilSensor.nitrogen') || 'Nitrogen (N)'}
+                unit={t('units.kgPerHectare')}
               />
               <NPKBar
                 nutrient="P"
                 value={recommendation.total_npk_applied.P}
                 label={t('soilSensor.phosphorus') || 'Phosphorus (P)'}
+                unit={t('units.kgPerHectare')}
               />
               <NPKBar
                 nutrient="K"
                 value={recommendation.total_npk_applied.K}
                 label={t('soilSensor.potassium') || 'Potassium (K)'}
+                unit={t('units.kgPerHectare')}
               />
             </div>
           )}
@@ -229,7 +247,7 @@ const FertilizerRecommendationCard = ({ crop, areaHectares = 1, soilData = null,
               {t('fertilizer.totalCost') || 'Total Cost'}
             </span>
             <span className="font-bold text-farm-green-700">
-              ₹{costPerHectare?.toLocaleString() || 0}/ha
+              ₹{costPerHectare?.toLocaleString() || 0} {t('fertilizer.costPerHectare')}
             </span>
           </div>
 
@@ -244,7 +262,7 @@ const FertilizerRecommendationCard = ({ crop, areaHectares = 1, soilData = null,
             </div>
             {showSchedule ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
           </button>
-          {showSchedule && <ScheduleTimeline schedule={schedule} />}
+          {showSchedule && <ScheduleTimeline schedule={schedule} t={t} />}
 
           {/* Safety Notes Accordion */}
           {recommendation?.safety_notes?.length > 0 && (
@@ -264,7 +282,7 @@ const FertilizerRecommendationCard = ({ crop, areaHectares = 1, soilData = null,
                   {recommendation.safety_notes.slice(0, 4).map((note, idx) => (
                     <li key={idx} className="flex items-start">
                       <span className="text-yellow-500 mr-1">•</span>
-                      {note}
+                      {t(`fertilizer.safety.${idx + 1}`)}
                     </li>
                   ))}
                 </ul>

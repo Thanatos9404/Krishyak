@@ -1,9 +1,9 @@
 import axios from 'axios';
-
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+import { API_BASE_URL } from '../config/api';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
+  timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -68,13 +68,11 @@ export const farmingApi = {
   // Register farmer and save to CSV
   registerFarmer: async (farmerData) => {
     try {
-      const response = await api.post('/register-farmer', farmerData);
+      const response = await api.post('/register-farmer', farmerData, { timeout: 30000 });
       return response.data;
     } catch (error) {
-      console.error('Failed to register farmer on backend:', error);
-      // Return success anyway - registration is primarily client-side
-      // Backend CSV storage is a secondary feature
-      return { success: false, error: error.message };
+      // Axios errors contain the submitted farmer profile in config.data.
+      return { success: false, error: 'common.error' };
     }
   },
 };

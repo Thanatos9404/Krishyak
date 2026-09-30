@@ -1,348 +1,64 @@
-import { useState, useRef, useCallback, useEffect } from 'react';
+import useVoiceRecognition, { STATUS } from './useSarvamRecognition';
 
 /**
- * Production-Grade Voice Recognition Hook
+ * Sarvam recording hook plus the existing reviewable farm-command parser.
  * 
  * Features:
  * - Graceful degradation when speech recognition unavailable
  * - Automatic fallback to manual text input
- * - Network error handling with limited retries
+ * - Provider failures fall back to manual input without automatic paid retries
  * - Support for manual text entry as alternative
  * - Works offline via text input mode
  */
 
-// Status constants for clearer state management
-const STATUS = {
-  IDLE: 'idle',
-  LISTENING: 'listening',
-  PROCESSING: 'processing',
-  ERROR: 'error',
-  NO_SUPPORT: 'no_support'
-};
+const normalizeForSpeechScore = (value = '') => value
+  .normalize('NFKC')
+  .toLocaleLowerCase('en-IN')
+  .replace(/[^\p{L}\p{N}\s]/gu, ' ')
+  .replace(/\s+/g, ' ')
+  .trim();
 
-const useVoiceRecognition = () => {
-  const [status, setStatus] = useState(STATUS.IDLE);
-  const [transcript, setTranscript] = useState('');
-  const [error, setError] = useState(null);
-  const [isVoiceAvailable, setIsVoiceAvailable] = useState(false);
-
-  const recognitionRef = useRef(null);
-  const shouldBeListeningRef = useRef(false);
-  const retryCountRef = useRef(0);
-  const timeoutRef = useRef(null);
-
-  const MAX_RETRIES = 2; // Quick fail for network issues
-  const LISTEN_TIMEOUT = 30000; // Auto-stop after 30 seconds
-
-  // Check browser support on mount
-  useEffect(() => {
-    const checkSupport = () => {
-      if (typeof window === 'undefined') return false;
-
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-      if (!SpeechRecognition) {
-        console.log('Speech Recognition API not supported');
-        return false;
-      }
-
-      // Check if we're in a secure context (HTTPS or localhost)
-      const isSecure = window.location.protocol === 'https:' ||
-        window.location.hostname === 'localhost' ||
-        window.location.hostname === '127.0.0.1';
-
-      if (!isSecure) {
-        console.log('Speech Recognition requires HTTPS');
-        return false;
-      }
-
-      return true;
-    };
-
-    const supported = checkSupport();
-    setIsVoiceAvailable(supported);
-
-    if (!supported) {
-      setStatus(STATUS.NO_SUPPORT);
-    }
-  }, []);
-
-  // Initialize recognition lazily (only when starting to listen)
-  const initRecognition = useCallback(() => {
-    if (recognitionRef.current) return recognitionRef.current;
-
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SpeechRecognition) return null;
-
-    const recognition = new SpeechRecognition();
-
-    // Configuration for best results
-    recognition.continuous = false; // Single utterance mode - more reliable
-    recognition.interimResults = true;
-    recognition.lang = 'en-IN'; // English-India for Hinglish support
-    recognition.maxAlternatives = 1;
-
-    recognition.onstart = () => {
-      setStatus(STATUS.LISTENING);
-      setError(null);
-      retryCountRef.current = 0;
-    };
-
-    recognition.onresult = (event) => {
-      let finalTranscript = '';
-      let interimTranscript = '';
-
-      for (let i = event.resultIndex; i < event.results.length; i++) {
-        const result = event.results[i];
-        if (result.isFinal) {
-          finalTranscript += result[0].transcript;
-        } else {
-          interimTranscript += result[0].transcript;
-        }
-      }
-
-      // Update transcript with combined results
-      const newTranscript = finalTranscript || interimTranscript;
-      if (newTranscript) {
-        setTranscript(prev => {
-          // Append final results, replace with interim
-          if (finalTranscript) {
-            return (prev + ' ' + finalTranscript).trim();
-          }
-          return prev || interimTranscript;
-        });
-      }
-    };
-
-    recognition.onerror = (event) => {
-      console.log('Speech recognition error:', event.error);
-
-      switch (event.error) {
-        case 'not-allowed':
-          setError('Microphone access denied. Please allow microphone access in your browser settings.');
-          setStatus(STATUS.ERROR);
-          shouldBeListeningRef.current = false;
-          break;
-
-        case 'no-speech':
-          // Not an error - just no speech detected, will restart
-          break;
-
-        case 'audio-capture':
-          setError('No microphone found. Please connect a microphone or use text input below.');
-          setStatus(STATUS.ERROR);
-          shouldBeListeningRef.current = false;
-          break;
-
-        case 'network':
-          retryCountRef.current += 1;
-          if (retryCountRef.current >= MAX_RETRIES) {
-            setError('Voice recognition unavailable. Please use text input below instead.');
-            setStatus(STATUS.ERROR);
-            shouldBeListeningRef.current = false;
-            setIsVoiceAvailable(false); // Disable voice for this session
-          }
-          break;
-
-        case 'aborted':
-          // User or system stopped - not an error
-          break;
-
-        case 'service-not-allowed':
-          setError('Speech recognition service not available. Please use text input.');
-          setStatus(STATUS.ERROR);
-          shouldBeListeningRef.current = false;
-          setIsVoiceAvailable(false);
-          break;
-
-        default:
-          console.log('Unhandled speech error:', event.error);
-      }
-    };
-
-    recognition.onend = () => {
-      // Clear timeout
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-        timeoutRef.current = null;
-      }
-
-      // Only restart if we should still be listening and no fatal errors
-      if (shouldBeListeningRef.current && retryCountRef.current < MAX_RETRIES) {
-        try {
-          // Small delay before restart to prevent rapid fire
-          setTimeout(() => {
-            if (shouldBeListeningRef.current && recognitionRef.current) {
-              try {
-                recognitionRef.current.start();
-              } catch (e) {
-                // Already stopped or other issue
-                setStatus(STATUS.IDLE);
-                shouldBeListeningRef.current = false;
-              }
-            }
-          }, 100);
-        } catch (e) {
-          setStatus(STATUS.IDLE);
-        }
-      } else {
-        setStatus(STATUS.IDLE);
-        shouldBeListeningRef.current = false;
-      }
-    };
-
-    recognitionRef.current = recognition;
-    return recognition;
-  }, []);
-
-  // Start listening
-  const startListening = useCallback(() => {
-    // Clear any previous state
-    setError(null);
-    setTranscript('');
-    retryCountRef.current = 0;
-
-    if (!isVoiceAvailable) {
-      setError('Voice input not available. Please use text input.');
-      setStatus(STATUS.ERROR);
-      return false;
-    }
-
-    const recognition = initRecognition();
-    if (!recognition) {
-      setError('Could not initialize speech recognition. Please use text input.');
-      setStatus(STATUS.ERROR);
-      setIsVoiceAvailable(false);
-      return false;
-    }
-
-    shouldBeListeningRef.current = true;
-
-    try {
-      recognition.start();
-
-      // Set timeout to auto-stop
-      timeoutRef.current = setTimeout(() => {
-        if (shouldBeListeningRef.current) {
-          stopListening();
-        }
-      }, LISTEN_TIMEOUT);
-
-      return true;
-    } catch (e) {
-      console.error('Start error:', e);
-
-      if (e.name === 'InvalidStateError') {
-        // Already running, try to restart
-        try {
-          recognition.stop();
-          setTimeout(() => {
-            if (shouldBeListeningRef.current) {
-              recognition.start();
-            }
-          }, 100);
-          return true;
-        } catch (e2) {
-          console.error('Restart error:', e2);
-        }
-      }
-
-      setError('Could not start voice recognition. Please use text input.');
-      setStatus(STATUS.ERROR);
-      shouldBeListeningRef.current = false;
-      return false;
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isVoiceAvailable, initRecognition]);
-
-  // Stop listening
-  const stopListening = useCallback(() => {
-    shouldBeListeningRef.current = false;
-
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-      timeoutRef.current = null;
-    }
-
-    if (recognitionRef.current) {
-      try {
-        recognitionRef.current.stop();
-      } catch (e) {
-        // Ignore stop errors
-      }
-    }
-
-    setStatus(STATUS.IDLE);
-  }, []);
-
-  // Reset state
-  const resetTranscript = useCallback(() => {
-    setTranscript('');
-    setError(null);
-    retryCountRef.current = 0;
-    if (status === STATUS.ERROR) {
-      setStatus(STATUS.IDLE);
-    }
-  }, [status]);
-
-  // Set transcript manually (for text input fallback)
-  const setManualTranscript = useCallback((text) => {
-    setTranscript(text);
-    setError(null);
-  }, []);
-
-  // Cleanup on unmount
-  useEffect(() => {
-    return () => {
-      shouldBeListeningRef.current = false;
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-      if (recognitionRef.current) {
-        try {
-          recognitionRef.current.stop();
-        } catch (e) {
-          // Ignore
-        }
-      }
-    };
-  }, []);
-
-  return {
-    // State
-    isListening: status === STATUS.LISTENING,
-    transcript,
-    error,
-    isSupported: isVoiceAvailable,
-    status,
-
-    // Actions
-    startListening,
-    stopListening,
-    resetTranscript,
-    setManualTranscript,
-
-    // Constants for UI
-    STATUS
-  };
+export const selectBestAlternative = (result, phraseHints = []) => {
+  const hints = phraseHints.map(normalizeForSpeechScore).filter((hint) => hint.length > 1);
+  const alternatives = Array.from(result || []).map((alternative) => {
+    const normalized = normalizeForSpeechScore(alternative.transcript);
+    const phraseMatches = hints.reduce((count, hint) => count + (normalized.includes(hint) ? 1 : 0), 0);
+    const confidence = Number.isFinite(alternative.confidence) ? alternative.confidence : 0;
+    return { transcript: alternative.transcript.trim(), confidence, score: confidence + phraseMatches * 0.22 };
+  });
+  alternatives.sort((a, b) => b.score - a.score);
+  return alternatives[0] || { transcript: '', confidence: 0, score: 0 };
 };
 
 /**
  * Parse voice/text command to extract farming parameters
  * Works with both voice transcripts and manually typed text
  */
-export const parseVoiceCommand = (transcript) => {
+export const parseVoiceCommand = (transcript, localizedTerms = {}) => {
   if (!transcript || typeof transcript !== 'string') {
     return {};
   }
 
   const params = {};
-  const text = transcript.toLowerCase().trim();
+  const nativeDigitZeroes = [0x0660, 0x06F0, 0x0966, 0x09E6, 0x0A66, 0x0AE6, 0x0B66, 0x0BE6, 0x0C66, 0x0CE6, 0x0D66];
+  const normalizeDigits = (value) => Array.from(value).map((char) => {
+    const code = char.codePointAt(0);
+    const zero = nativeDigitZeroes.find((candidate) => code >= candidate && code <= candidate + 9);
+    return zero === undefined ? char : String(code - zero);
+  }).join('');
+  const text = normalizeDigits(transcript)
+    .normalize('NFKC')
+    .toLocaleLowerCase('en-IN')
+    .replace(/[،,]/g, '.')
+    .replace(/\s+/g, ' ')
+    .trim();
+  const escape = (value) => String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
   // ========== CROP DETECTION ==========
   const crops = {
-    'Rice': ['rice', 'paddy', 'dhan', 'dhaan', 'chawal', 'chaval', 'धान', 'चावल'],
-    'Wheat': ['wheat', 'gehun', 'gehu', 'gehoon', 'gahu', 'गेहूं', 'गेहुं'],
-    'Maize': ['maize', 'corn', 'makka', 'makkai', 'bhutta', 'मक्का', 'मकई'],
+    'Rice': ['rice', 'paddy', 'dhan', 'dhaan', 'dhanwa', 'chawal', 'chaval', 'धान', 'धानवा', 'चावल'],
+    'Wheat': ['wheat', 'gehun', 'gehu', 'gehoon', 'gehuwa', 'gahu', 'गेहूं', 'गेहुं', 'गेहुआ'],
+    'Maize': ['maize', 'corn', 'makka', 'makkai', 'makaiya', 'bhutta', 'मक्का', 'मकई', 'मकइया'],
     'Cotton': ['cotton', 'kapas', 'kapaas', 'कपास', 'रुई'],
     'Sugarcane': ['sugarcane', 'ganna', 'ganne', 'sugar cane', 'गन्ना'],
     'Soybean': ['soybean', 'soya', 'soyabean', 'सोयाबीन'],
@@ -381,6 +97,10 @@ export const parseVoiceCommand = (transcript) => {
     'Fenugreek': ['fenugreek', 'methi', 'मेथी'],
   };
 
+  for (const [cropName, localizedName] of Object.entries(localizedTerms.crops || {})) {
+    if (localizedName && crops[cropName]) crops[cropName].push(String(localizedName).toLowerCase());
+  }
+
   for (const [cropName, keywords] of Object.entries(crops)) {
     for (const kw of keywords) {
       if (text.includes(kw)) {
@@ -393,11 +113,11 @@ export const parseVoiceCommand = (transcript) => {
 
   // ========== AREA DETECTION ==========
   const numberWords = {
-    'one': 1, 'ek': 1, 'एक': 1,
-    'two': 2, 'do': 2, 'दो': 2, 'to': 2,
-    'three': 3, 'teen': 3, 'तीन': 3,
-    'four': 4, 'char': 4, 'चार': 4,
-    'five': 5, 'paanch': 5, 'panch': 5, 'पांच': 5,
+    'one': 1, 'ek': 1, 'एक': 1, 'एक्के': 1,
+    'two': 2, 'do': 2, 'दो': 2, 'dui': 2, 'दुई': 2,
+    'three': 3, 'teen': 3, 'तीन': 3, 'tin': 3,
+    'four': 4, 'char': 4, 'chaar': 4, 'चार': 4,
+    'five': 5, 'paanch': 5, 'panch': 5, 'पांच': 5, 'पाँच': 5,
     'six': 6, 'chhe': 6, 'छह': 6,
     'seven': 7, 'saat': 7, 'सात': 7,
     'eight': 8, 'aath': 8, 'आठ': 8,
@@ -408,38 +128,39 @@ export const parseVoiceCommand = (transcript) => {
     'dhai': 2.5, 'ढाई': 2.5,
   };
 
-  // Try word numbers: "two hectare", "do hector"
-  for (const [word, value] of Object.entries(numberWords)) {
-    const patterns = [
-      new RegExp(`\\b${word}\\s*(hectare|hector|hect)s?\\b`, 'i'),
-      new RegExp(`\\b${word}\\s*(acre)s?\\b`, 'i'),
-      new RegExp(`\\b${word}\\s*(bigha)s?\\b`, 'i'),
-    ];
+  const unitMap = {
+    hectare: ['hectare', 'hector', 'hect', 'हेक्टेयर', 'हेक्टर', localizedTerms.units?.hectare].filter(Boolean),
+    acre: ['acre', 'एकड़', 'एकर', localizedTerms.units?.acre].filter(Boolean),
+    bigha: ['bigha', 'beegha', 'बीघा', 'बिघा', localizedTerms.units?.bigha].filter(Boolean),
+  };
+  const allUnitWords = Object.values(unitMap).flat().map(escape).sort((a, b) => b.length - a.length).join('|');
 
-    for (const pattern of patterns) {
-      if (pattern.test(text)) {
+  // Try word numbers: "two hectare", "do hector", "दुई बीघा"
+  for (const [word, value] of Object.entries(numberWords)) {
+    const match = text.match(new RegExp(`(?:^|\\s)${escape(word)}\\s*(${allUnitWords})(?:s)?(?:$|\\s)`, 'iu'));
+    if (match) {
         let area = value;
-        if (text.match(/acre/i)) {
+        const matchedUnit = match[1].toLocaleLowerCase('en-IN');
+        if (unitMap.acre.some((unit) => matchedUnit === String(unit).toLocaleLowerCase('en-IN'))) {
           area = value * 0.4047;
-        } else if (text.match(/bigha/i)) {
+        } else if (unitMap.bigha.some((unit) => matchedUnit === String(unit).toLocaleLowerCase('en-IN'))) {
           area = value * 0.25;
         }
         params.area_hectares = parseFloat(area.toFixed(2));
-        break;
-      }
     }
     if (params.area_hectares) break;
   }
 
   // Try numeric: "2 hectare", "5.5 acres"
   if (!params.area_hectares) {
-    const numMatch = text.match(/(\d+(?:\.\d+)?)\s*(hectare|hector|hect|acre|bigha)s?/i);
+    const unitPattern = Object.values(unitMap).flat().map(escape).sort((a, b) => b.length - a.length).join('|');
+    const numMatch = text.match(new RegExp(`(\\d+(?:\\.\\d+)?)\\s*(${unitPattern})`, 'iu'));
     if (numMatch) {
       let area = parseFloat(numMatch[1]);
       const unit = numMatch[2].toLowerCase();
-      if (unit.includes('acre')) {
+      if (unitMap.acre.some((value) => unit === String(value).toLowerCase())) {
         area = area * 0.4047;
-      } else if (unit.includes('bigha')) {
+      } else if (unitMap.bigha.some((value) => unit === String(value).toLowerCase())) {
         area = area * 0.25;
       }
       params.area_hectares = parseFloat(area.toFixed(2));
@@ -457,6 +178,10 @@ export const parseVoiceCommand = (transcript) => {
     'Laterite': ['laterite', 'lateritic'],
     'Mountain': ['mountain', 'hill', 'pahadi', 'पहाड़ी'],
   };
+
+  for (const [soilName, localizedName] of Object.entries(localizedTerms.soils || {})) {
+    if (localizedName && soils[soilName]) soils[soilName].push(String(localizedName).toLowerCase());
+  }
 
   for (const [soilName, keywords] of Object.entries(soils)) {
     for (const kw of keywords) {
@@ -506,11 +231,14 @@ export const parseVoiceCommand = (transcript) => {
   }
 
   // ========== PEST RISK DETECTION ==========
-  if (text.match(/high pest|bahut keede|zyada keede|pest problem/i)) {
+  const highWord = localizedTerms.levels?.high?.toLowerCase();
+  const mediumWord = localizedTerms.levels?.medium?.toLowerCase();
+  const lowWord = localizedTerms.levels?.low?.toLowerCase();
+  if (text.match(/high pest|bahut keede|zyada keede|pest problem/i) || (highWord && text.includes(highWord) && text.includes(localizedTerms.pestWord?.toLowerCase() || 'pest'))) {
     params.pest_probability = 0.7;
-  } else if (text.match(/some pest|medium pest|thode keede/i)) {
+  } else if (text.match(/some pest|medium pest|thode keede/i) || (mediumWord && text.includes(mediumWord) && text.includes(localizedTerms.pestWord?.toLowerCase() || 'pest'))) {
     params.pest_probability = 0.4;
-  } else if (text.match(/no pest|low pest|keede nahi|kam keede/i)) {
+  } else if (text.match(/no pest|low pest|keede nahi|kam keede/i) || (lowWord && text.includes(lowWord) && text.includes(localizedTerms.pestWord?.toLowerCase() || 'pest'))) {
     params.pest_probability = 0.1;
   }
 

@@ -3,7 +3,7 @@ Weather Alert System - Rain and Weather Notifications for Farmers
 Provides thresholds-based alerts, rain predictions, and farming advisories
 
 Features:
-- Multi-source weather data integration (OpenWeather, IMD fallback)
+- Open-Meteo weather model data with explicit unavailable states
 - Customizable alert thresholds per crop
 - Location-based weather monitoring
 - Farming activity advisories
@@ -17,6 +17,7 @@ from typing import Optional, List, Dict, Any
 from dataclasses import dataclass, asdict
 from enum import Enum
 import httpx
+import math
 
 logger = logging.getLogger(__name__)
 
@@ -159,23 +160,27 @@ class WeatherAlertService:
                 if response.status_code == 200:
                     data = response.json()
                     curr = data.get("current", {})
+                    required = ('temperature_2m', 'relative_humidity_2m', 'apparent_temperature', 'wind_speed_10m', 'weather_code')
+                    if not all(isinstance(curr.get(key), (int, float)) and not isinstance(curr[key], bool) and math.isfinite(curr[key]) for key in required):
+                        return None
                     return {
-                        "temperature": curr.get("temperature_2m", 25),
-                        "feels_like": curr.get("apparent_temperature", 25),
-                        "humidity": curr.get("relative_humidity_2m", 50),
-                        "wind_speed": curr.get("wind_speed_10m", 10),
-                        "condition": "Clear" if curr.get("weather_code", 0) <= 3 else "Cloudy",
+                        "temperature": curr['temperature_2m'],
+                        "feels_like": curr['apparent_temperature'],
+                        "humidity": curr['relative_humidity_2m'],
+                        "wind_speed": curr['wind_speed_10m'],
+                        "condition": self._weather_condition(curr['weather_code']),
                         "description": "Open-Meteo Advisory",
                         "icon": "02d",
                         "location": "Local",
-                        "timestamp": datetime.now().isoformat(),
-                        "source": "Open-Meteo (Estimate)"
+                        "timestamp": curr.get('time'),
+                        "source": "Open-Meteo",
+                        "source_type": "weather_model_current_conditions"
                     }
                     
         except Exception as e:
             logger.error(f"Weather API error: {e}")
         
-        return self._get_mock_weather(lat, lon)
+        return None
     
     async def get_forecast(
         self, 
@@ -183,7 +188,9 @@ class WeatherAlertService:
         lon: float, 
         hours: int = 48
     ) -> List[WeatherForecast]:
-        """Get hourly weather forecast from Open-Meteo"""
+        """Get a complete contiguous hourly forecast; incomplete provider data is unavailable."""
+        if isinstance(hours, bool) or not isinstance(hours, int) or not 1 <= hours <= 168:
+            raise ValueError("hours must be an integer between 1 and 168")
         try:
             async with httpx.AsyncClient(timeout=self.timeout) as client:
                 response = await client.get(
@@ -192,6 +199,7 @@ class WeatherAlertService:
                         "latitude": lat,
                         "longitude": lon,
                         "hourly": "temperature_2m,relative_humidity_2m,apparent_temperature,precipitation_probability,precipitation,wind_speed_10m,wind_direction_10m,cloud_cover,weather_code",
+                        "forecast_days": math.ceil(hours / 24) + 1,
                         "timezone": "auto"
                     }
                 )
@@ -201,10 +209,29 @@ class WeatherAlertService:
                     hourly = data.get("hourly", {})
                     forecasts = []
                     
-                    limit = min(hours, len(hourly.get("time", [])))
-                    
-                    for i in range(limit):
-                        if i % 3 != 0: continue # emulate 3-hour intervals
+                    local_now = datetime.utcnow() + timedelta(seconds=data.get('utc_offset_seconds', 0))
+                    future = [i for i, stamp in enumerate(hourly.get('time', []))
+                              if datetime.fromisoformat(stamp) >= local_now.replace(minute=0, second=0, microsecond=0)]
+                    selected = future[:hours]
+                    if len(selected) != hours:
+                        return []
+                    fields = ('temperature_2m', 'relative_humidity_2m', 'apparent_temperature',
+                              'precipitation_probability', 'precipitation', 'wind_speed_10m',
+                              'wind_direction_10m', 'cloud_cover', 'weather_code')
+                    start = local_now.replace(minute=0, second=0, microsecond=0)
+                    for step, i in enumerate(selected):
+                        if datetime.fromisoformat(hourly['time'][i]) != start + timedelta(hours=step):
+                            return []
+                        for key in fields:
+                            value = hourly[key][i]
+                            if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value):
+                                return []
+                        for key in ('relative_humidity_2m', 'precipitation_probability', 'cloud_cover'):
+                            if not 0 <= hourly[key][i] <= 100:
+                                return []
+                        if hourly['precipitation'][i] < 0 or hourly['wind_speed_10m'][i] < 0:
+                            return []
+                    for i in selected:
                         forecasts.append(WeatherForecast(
                             timestamp=datetime.fromisoformat(hourly["time"][i]),
                             temperature=hourly["temperature_2m"][i],
@@ -215,7 +242,7 @@ class WeatherAlertService:
                             precipitation=hourly["precipitation"][i],
                             precipitation_probability=hourly["precipitation_probability"][i],
                             cloud_cover=hourly["cloud_cover"][i],
-                            condition="Rain" if hourly["weather_code"][i] >= 60 else "Clear",
+                            condition=self._weather_condition(hourly['weather_code'][i]),
                             icon="02d"
                         ))
                     
@@ -224,7 +251,25 @@ class WeatherAlertService:
         except Exception as e:
             logger.error(f"Forecast API error: {e}")
         
-        return self._get_mock_forecast(lat, lon, hours)
+        return []
+
+    @staticmethod
+    def _weather_condition(code):
+        if code == 0:
+            return 'Clear'
+        if code in (1, 2, 3):
+            return 'Cloudy'
+        if code in (45, 48):
+            return 'Fog'
+        if code in (51, 53, 55, 56, 57):
+            return 'Drizzle'
+        if code in (61, 63, 65, 66, 67, 80, 81, 82):
+            return 'Rain'
+        if code in (71, 73, 75, 77, 85, 86):
+            return 'Snow'
+        if code in (95, 96, 99):
+            return 'Thunderstorm'
+        return 'Unknown'
     
     async def generate_alerts(
         self, 
@@ -234,7 +279,7 @@ class WeatherAlertService:
     ) -> List[WeatherAlert]:
         """Generate weather alerts based on forecast and crop thresholds"""
         alerts = []
-        thresholds = CROP_THRESHOLDS.get(crop, CROP_THRESHOLDS["default"])
+        thresholds = CROP_THRESHOLDS.get(crop.lower(), CROP_THRESHOLDS["default"])
         
         # Get current weather and forecast
         current = await self.get_current_weather(lat, lon)
@@ -271,8 +316,8 @@ class WeatherAlertService:
             ))
         
         # Check for rain in forecast
-        rain_expected = sum(f.precipitation for f in forecast[:8])  # Next 24 hours
-        rain_probability = max((f.precipitation_probability for f in forecast[:8]), default=0)
+        rain_expected = sum(f.precipitation for f in forecast[:24])
+        rain_probability = max((f.precipitation_probability for f in forecast[:24]), default=0)
         
         if rain_probability > 70:
             # Heavy rain expected
@@ -329,7 +374,7 @@ class WeatherAlertService:
             ))
         
         # Irrigation advisory
-        if rain_probability < 30 and humidity < thresholds["min_humidity"]:
+        if forecast and rain_probability < 30 and humidity < thresholds["min_humidity"]:
             alerts.append(WeatherAlert(
                 id=f"{alert_id_base}_irrigation",
                 type=AlertType.IRRIGATION,
@@ -350,6 +395,9 @@ class WeatherAlertService:
     ) -> Dict[str, Any]:
         """Get summarized rain forecast for next 7 days"""
         forecast = await self.get_forecast(lat, lon, 168)  # 7 days
+        if not forecast:
+            return {'available': False, 'total_rain_mm': None, 'rain_days': None,
+                    'daily_forecast': [], 'summary': 'Weather forecast unavailable; rainfall cannot be estimated.'}
         
         daily_rain = {}
         for f in forecast:
@@ -366,6 +414,8 @@ class WeatherAlertService:
         rain_days = sum(1 for d in daily_rain.values() if d["rain_mm"] > 0)
         
         return {
+            "available": True,
+            "forecast_hours": len(forecast),
             "total_rain_mm": round(total_rain, 1),
             "rain_days": rain_days,
             "daily_forecast": [

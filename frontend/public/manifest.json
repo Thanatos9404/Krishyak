@@ -3,9 +3,8 @@
   "name": "Krishyak - AI Farm Decision Simulator",
   "icons": [
     {
-      "src": "favicon.ico",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
+      "src": "krishyak_logo.png",
+      "type": "image/png"
     }
   ],
   "start_url": ".",

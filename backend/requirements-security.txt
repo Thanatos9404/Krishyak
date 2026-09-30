@@ -1,0 +1,17 @@
+# Minimum patched versions from the 7 September 2026 installed-environment audit.
+# Constraints do not install unused packages in the lightweight API deployment.
+click>=8.3.3
+fonttools>=4.60.2
+idna>=3.15
+keras>=3.15.1
+marshmallow>=4.1.2
+pillow>=12.3.0
+pip>=26.2
+protobuf>=6.33.5
+pygments>=2.20.0
+requests>=2.33.0
+scikit-learn>=1.5.0
+setuptools>=83.0.0
+urllib3>=2.7.0
+werkzeug>=3.1.6
+wheel>=0.46.2

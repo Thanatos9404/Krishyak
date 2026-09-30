@@ -17,39 +17,10 @@ A production-grade deep learning computer vision model designed for real-time ed
   - `Dropout(0.3)`: Further regularization.
   - `Dense(42)` + `Softmax`: Output probabilities for 42 disease classes.
 
-#### Rigorous Evaluation & Metrics
-We conducted extensive evaluation on a held-out test set (20% split).
+#### Evaluation status — do not make unverified metric claims
+The repository contains the 42-class `.h5` checkpoint and a labelled validation folder, but it does **not** contain a saved training log, TensorBoard event file, metric history, classification report, or confusion matrix. The previously listed numeric scores, model comparisons, ablation results, and confusion claims have no corresponding evidence in this repository and must not be used in a presentation.
 
-| Metric | Score (Weighted Avg) | Description |
-| :--- | :--- | :--- |
-| **Accuracy** | **95.2%** | Overall correct predictions. |
-| **F1-Score** | **0.94** | Harmonic mean of Precision and Recall (Critical for imbalanced classes). |
-| **Precision** | **0.95** | High precision minimizes false positives (telling a farmer they have a disease when they don't). |
-| **Recall** | **0.93** | High recall ensures we don't miss actual disease occurrences. |
-
-#### Baseline Comparisons
-We benchmarked our MobileNetV2 implementation against standard architectures:
-
-| Model | Accuracy | Param Count | Model Size | Inference Latency (CPU) |
-| :--- | :--- | :--- | :--- | :--- |
-| **MobileNetV2 (Ours)** | **95.2%** | **2.2M** | **14 MB** | **~45 ms** |
-| ResNet50 | 96.1% | 25.6M | 98 MB | ~120 ms |
-| VGG16 | 94.5% | 138M | 528 MB | ~300 ms |
-| EfficientNetB0 | 95.5% | 5.3M | 29 MB | ~65 ms |
-
-*Conclusion*: MobileNetV2 was chosen as it occupies **85% less storage** than ResNet50 while maintaining comparable accuracy (<1% difference), enabling seamless web integration.
-
-#### Ablation Studies
-To justify our training pipeline choices:
-1.  **w/o Data Augmentation**: Accuracy dropped to **87.4%** (-7.8%). Models overfit rapidly on leaf texture.
-2.  **w/o Fine-tuning**: Accuracy stalled at **91.2%** (-4.0%). Unfreezing the top 100 layers (Phase 2) was critical for adapting ImageNet features to agricultural domains.
-3.  **w/o Dropout**: Validation loss diverged after Epoch 12.
-
-#### Confusion Matrix Analysis
-- **Strongest Performance**: Distinct classes like *Rice Blast* and *Wheat Rust* (F1 > 0.98).
-- **Key Confusions**:
-  - *Tomato Early Blight* vs *Late Blight*: 4.2% confusion rate due to visual similarity in early necrosis stages.
-  - *Potato* vs *Tomato* diseases: Resolved by enforcing crop type context from user input.
+`backend/evaluation/EVALUATION_RESULTS.md` now records the reproducible validation result. `backend/evaluate_plant_disease_model.py` generates the exact top-1/top-3 and balanced accuracy, macro/weighted precision-recall-F1, per-class report, confusion matrix, and per-image predictions. ROUGE is not applicable to this image-classification task.
 
 ---
 

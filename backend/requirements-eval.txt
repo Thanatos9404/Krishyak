@@ -1,0 +1,7 @@
+# Patched training/evaluation runtime. Historical evaluations used their recorded
+# original versions; changing these pins does not retroactively revalidate results.
+-c requirements-security.txt
+tensorflow==2.20.0
+keras==3.15.1
+scikit-learn==1.9.0
+pillow==12.3.0

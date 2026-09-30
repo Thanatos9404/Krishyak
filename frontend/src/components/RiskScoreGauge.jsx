@@ -1,129 +1,34 @@
-import React, { useState, useEffect } from 'react';
-import { getRiskInfo, getRiskHexColor } from '../utils/riskHelper';
+import React from 'react';
+import { Shield } from 'lucide-react';
+import { getRiskInfo, getRiskHexColor, isRiskScore } from '../utils/riskHelper';
+import { useTranslation } from '../i18n';
 
-const RiskScoreGauge = ({ score = 0 }) => {
-  const [animatedScore, setAnimatedScore] = useState(0);
-
-  // Animate the score from 0 to actual value
-  useEffect(() => {
-    const duration = 1000;
-    const startTime = Date.now();
-
-    const animate = () => {
-      const elapsed = Date.now() - startTime;
-      const progress = Math.min(elapsed / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setAnimatedScore(score * eased);
-
-      if (progress < 1) {
-        requestAnimationFrame(animate);
-      }
-    };
-
-    animate();
-  }, [score]);
-
-  // Calculate needle rotation (-90 to 90 degrees based on 0-100 score)
-  const needleRotation = (animatedScore / 100) * 180 - 90;
-
-  // Use centralized risk helper for color and label
-  const color = getRiskHexColor(animatedScore);
+export default function RiskScoreGauge({ score }) {
+  const { t } = useTranslation();
+  if (!isRiskScore(score)) return <p role="status">{t('common.notAvailable')}</p>;
   const category = getRiskInfo(score);
-
+  const color = getRiskHexColor(score);
+  const arc = Math.PI * 80;
   return (
     <div className="flex flex-col items-center">
-      {/* Gauge */}
-      <div className="relative w-full max-w-[14rem] h-32 mb-2 mx-auto">
-        <svg className="w-full h-full" viewBox="0 0 200 120" overflow="visible">
-          {/* Background arc segments — using standardized thresholds: 0-25, 26-50, 51-75, 76-100 */}
-          {/* Green segment (0-25) */}
-          <path
-            d="M 20 100 A 80 80 0 0 1 35.86 50.34"
-            fill="none"
-            stroke="#22c55e"
-            strokeWidth="14"
-            strokeLinecap="round"
-          />
-
-          {/* Yellow segment (26-50) */}
-          <path
-            d="M 38 47.5 A 80 80 0 0 1 66.94 24.5"
-            fill="none"
-            stroke="#eab308"
-            strokeWidth="14"
-          />
-
-          {/* Orange segment (51-75) */}
-          <path
-            d="M 70 22.5 A 80 80 0 0 1 130 22.5"
-            fill="none"
-            stroke="#f97316"
-            strokeWidth="14"
-          />
-
-          {/* Red segment (76-100) */}
-          <path
-            d="M 133.06 24.5 A 80 80 0 0 1 180 100"
-            fill="none"
-            stroke="#ef4444"
-            strokeWidth="14"
-            strokeLinecap="round"
-          />
-
-          {/* Needle */}
-          <g transform={`rotate(${needleRotation}, 100, 100)`}>
-            <line
-              x1="100"
-              y1="100"
-              x2="100"
-              y2="35"
-              stroke={color}
-              strokeWidth="4"
-              strokeLinecap="round"
-            />
-            {/* Needle shadow/glow */}
-            <line
-              x1="100"
-              y1="100"
-              x2="100"
-              y2="38"
-              stroke={color}
-              strokeWidth="2"
-              strokeLinecap="round"
-              opacity="0.5"
-            />
-          </g>
-
-          {/* Center circle */}
-          <circle cx="100" cy="100" r="10" fill={color} />
-          <circle cx="100" cy="100" r="6" fill="white" />
-        </svg>
+      <svg className="w-full max-w-[14rem] h-32" viewBox="0 0 200 120" aria-hidden="true">
+        {['#22c55e','#eab308','#f97316','#ef4444'].map((stroke,index)=>(
+          <path key={stroke} d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke={stroke}
+            strokeWidth="14" strokeDasharray={`${arc / 4} ${arc * 3 / 4}`}
+            strokeDashoffset={-index * arc / 4} />
+        ))}
+        <g transform={`rotate(${score * 1.8 - 90}, 100, 100)`}>
+          <line x1="100" y1="100" x2="100" y2="35" stroke={color} strokeWidth="4" />
+        </g>
+        <circle cx="100" cy="100" r="8" fill={color} />
+      </svg>
+      <div role="meter" aria-label={t('dashboard.riskScore')} aria-valuemin={0} aria-valuemax={100} aria-valuenow={score}
+        className="text-3xl font-bold mb-3" style={{color}}>{Number(score.toFixed(2))}/100</div>
+      <div className={`${category.badgeBg} px-6 py-3 rounded-xl text-center`}>
+        <Shield className="w-6 h-6 inline" aria-hidden="true" />
+        <p className="font-bold">{t(`risk.levels.${category.id}`)}</p>
       </div>
-
-      {/* Score display BELOW the gauge (not overlapping) */}
-      <div className="text-center mb-3">
-        <span className="text-4xl font-bold" style={{ color }}>{Math.round(animatedScore)}</span>
-        <span className="text-gray-400 text-lg ml-1">/100</span>
-      </div>
-
-      {/* Risk badge — using centralized thresholds */}
-      <div className={`${category.badgeBg} px-6 py-3 rounded-xl text-center shadow-sm`}>
-        <div className="flex items-center justify-center space-x-2">
-          <span className="text-2xl">{category.emoji}</span>
-          <div>
-            <p className="font-bold text-lg">{category.label}</p>
-            <p className="text-sm opacity-80">{category.desc}</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Explanation */}
-      <p className="text-xs text-gray-500 mt-3 text-center max-w-xs">
-        Lower scores indicate safer farming conditions.
-        Your score is in the <span className={category.textClass + ' font-semibold'}>{score <= 50 ? 'safe' : 'elevated'}</span> range.
-      </p>
+      <p className="text-xs text-gray-500 mt-3 text-center">{t('scenarioDetails.disclaimer')}</p>
     </div>
   );
-};
-
-export default RiskScoreGauge;
+}

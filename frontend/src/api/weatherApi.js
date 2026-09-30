@@ -1,108 +1,5 @@
 import axios from 'axios';
 
-// Indian district/region to soil type mapping based on geography
-const regionSoilMapping = {
-  // Maharashtra
-  'Nashik': { soil: 'Black', rainfall: 650, zone: 'Deccan' },
-  'Pune': { soil: 'Red', rainfall: 700, zone: 'Western Ghats' },
-  'Mumbai': { soil: 'Laterite', rainfall: 2200, zone: 'Coastal' },
-  'Nagpur': { soil: 'Black', rainfall: 1000, zone: 'Vidarbha' },
-  'Aurangabad': { soil: 'Black', rainfall: 700, zone: 'Marathwada' },
-  'Kolhapur': { soil: 'Laterite', rainfall: 1200, zone: 'Western Maharashtra' },
-  'Solapur': { soil: 'Black', rainfall: 500, zone: 'Drought-prone' },
-  'Satara': { soil: 'Red', rainfall: 900, zone: 'Western Ghats' },
-
-  // Uttar Pradesh - Indo-Gangetic Plain
-  'Lucknow': { soil: 'Alluvial', rainfall: 900, zone: 'Central UP' },
-  'Varanasi': { soil: 'Alluvial', rainfall: 1000, zone: 'Eastern UP' },
-  'Kanpur': { soil: 'Alluvial', rainfall: 800, zone: 'Central UP' },
-  'Agra': { soil: 'Alluvial', rainfall: 650, zone: 'Western UP' },
-  'Allahabad': { soil: 'Alluvial', rainfall: 950, zone: 'Central UP' },
-  'Meerut': { soil: 'Alluvial', rainfall: 850, zone: 'Western UP' },
-  'Gorakhpur': { soil: 'Alluvial', rainfall: 1200, zone: 'Eastern UP' },
-
-  // Punjab & Haryana
-  'Ludhiana': { soil: 'Alluvial', rainfall: 700, zone: 'Central Punjab' },
-  'Amritsar': { soil: 'Alluvial', rainfall: 600, zone: 'Majha' },
-  'Chandigarh': { soil: 'Alluvial', rainfall: 1100, zone: 'Foothills' },
-  'Karnal': { soil: 'Alluvial', rainfall: 700, zone: 'Haryana' },
-  'Hisar': { soil: 'Desert', rainfall: 400, zone: 'Southern Haryana' },
-  'Rohtak': { soil: 'Alluvial', rainfall: 550, zone: 'Central Haryana' },
-
-  // Madhya Pradesh
-  'Bhopal': { soil: 'Black', rainfall: 1150, zone: 'Central MP' },
-  'Indore': { soil: 'Black', rainfall: 950, zone: 'Malwa' },
-  'Jabalpur': { soil: 'Black', rainfall: 1350, zone: 'Eastern MP' },
-  'Gwalior': { soil: 'Alluvial', rainfall: 800, zone: 'Northern MP' },
-
-  // Rajasthan
-  'Jaipur': { soil: 'Desert', rainfall: 500, zone: 'Eastern Rajasthan' },
-  'Jodhpur': { soil: 'Desert', rainfall: 350, zone: 'Thar Desert' },
-  'Udaipur': { soil: 'Red', rainfall: 600, zone: 'Mewar' },
-  'Bikaner': { soil: 'Desert', rainfall: 250, zone: 'Thar Desert' },
-  'Kota': { soil: 'Black', rainfall: 700, zone: 'Hadoti' },
-
-  // Gujarat
-  'Ahmedabad': { soil: 'Alluvial', rainfall: 800, zone: 'Central Gujarat' },
-  'Surat': { soil: 'Alluvial', rainfall: 1200, zone: 'South Gujarat' },
-  'Vadodara': { soil: 'Black', rainfall: 900, zone: 'Central Gujarat' },
-  'Rajkot': { soil: 'Black', rainfall: 550, zone: 'Saurashtra' },
-  'Bhuj': { soil: 'Desert', rainfall: 350, zone: 'Kutch' },
-
-  // Bihar
-  'Patna': { soil: 'Alluvial', rainfall: 1100, zone: 'Central Bihar' },
-  'Gaya': { soil: 'Alluvial', rainfall: 1000, zone: 'Magadh' },
-  'Muzaffarpur': { soil: 'Alluvial', rainfall: 1200, zone: 'North Bihar' },
-  'Bhagalpur': { soil: 'Alluvial', rainfall: 1100, zone: 'Eastern Bihar' },
-
-  // West Bengal
-  'Kolkata': { soil: 'Alluvial', rainfall: 1600, zone: 'Gangetic Delta' },
-  'Siliguri': { soil: 'Alluvial', rainfall: 3000, zone: 'Terai' },
-  'Malda': { soil: 'Alluvial', rainfall: 1400, zone: 'North Bengal' },
-
-  // Karnataka
-  'Bangalore': { soil: 'Red', rainfall: 900, zone: 'Southern Plateau' },
-  'Mysore': { soil: 'Red', rainfall: 800, zone: 'Old Mysore' },
-  'Belgaum': { soil: 'Black', rainfall: 1000, zone: 'North Karnataka' },
-  'Mangalore': { soil: 'Laterite', rainfall: 3500, zone: 'Coastal' },
-  'Hubli': { soil: 'Black', rainfall: 800, zone: 'Dharwad' },
-
-  // Tamil Nadu
-  'Chennai': { soil: 'Alluvial', rainfall: 1400, zone: 'Coastal' },
-  'Coimbatore': { soil: 'Black', rainfall: 700, zone: 'Western TN' },
-  'Madurai': { soil: 'Red', rainfall: 850, zone: 'Southern TN' },
-  'Trichy': { soil: 'Alluvial', rainfall: 800, zone: 'Central TN' },
-  'Salem': { soil: 'Red', rainfall: 900, zone: 'Northwestern TN' },
-
-  // Andhra Pradesh & Telangana
-  'Hyderabad': { soil: 'Red', rainfall: 800, zone: 'Deccan' },
-  'Vijayawada': { soil: 'Black', rainfall: 1000, zone: 'Coastal AP' },
-  'Visakhapatnam': { soil: 'Red', rainfall: 1100, zone: 'North Coastal' },
-  'Guntur': { soil: 'Black', rainfall: 850, zone: 'Coastal AP' },
-  'Tirupati': { soil: 'Red', rainfall: 950, zone: 'Rayalaseema' },
-
-  // Kerala
-  'Thiruvananthapuram': { soil: 'Laterite', rainfall: 1800, zone: 'Travancore' },
-  'Kochi': { soil: 'Laterite', rainfall: 3000, zone: 'Coastal Kerala' },
-  'Kozhikode': { soil: 'Laterite', rainfall: 3100, zone: 'Malabar' },
-
-  // Odisha
-  'Bhubaneswar': { soil: 'Red', rainfall: 1500, zone: 'Coastal Odisha' },
-  'Cuttack': { soil: 'Alluvial', rainfall: 1400, zone: 'Mahanadi Delta' },
-
-  // Northeast
-  'Guwahati': { soil: 'Alluvial', rainfall: 1700, zone: 'Brahmaputra Valley' },
-  'Shillong': { soil: 'Red', rainfall: 2300, zone: 'Meghalaya Hills' },
-  'Imphal': { soil: 'Alluvial', rainfall: 1400, zone: 'Manipur Valley' },
-
-  // Himalayan
-  'Dehradun': { soil: 'Mountain', rainfall: 2100, zone: 'Doon Valley' },
-  'Shimla': { soil: 'Mountain', rainfall: 1500, zone: 'Himachal' },
-  'Srinagar': { soil: 'Mountain', rainfall: 700, zone: 'Kashmir Valley' },
-  'Jammu': { soil: 'Alluvial', rainfall: 1100, zone: 'Jammu Region' }
-};
-
-// Get location from browser with timeout protection
 export const getCurrentLocation = () => {
   const locationPromise = new Promise((resolve, reject) => {
     if (!navigator.geolocation) {
@@ -125,11 +22,12 @@ export const getCurrentLocation = () => {
   });
 
   // Race against a timeout to prevent infinite hang if user ignores permission dialog
+  let timeout;
   const timeoutPromise = new Promise((_, reject) => {
-    setTimeout(() => reject(new Error('Location detection timed out. Please enter your location manually.')), 12000);
+    timeout = setTimeout(() => reject(new Error('Location detection timed out. Please enter your location manually.')), 12000);
   });
 
-  return Promise.race([locationPromise, timeoutPromise]);
+  return Promise.race([locationPromise, timeoutPromise]).finally(() => clearTimeout(timeout));
 };
 
 // Reverse geocode to get city/district name
@@ -137,7 +35,7 @@ export const getLocationName = async (lat, lon) => {
   try {
     const response = await axios.get(
       `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10`,
-      { headers: { 'Accept-Language': 'en' } }
+      { headers: { 'Accept-Language': 'en' }, timeout: 15000 }
     );
 
     const address = response.data.address;
@@ -153,153 +51,87 @@ export const getLocationName = async (lat, lon) => {
   }
 };
 
-// Get soil type based on location
-export const getSoilTypeForLocation = (locationName) => {
-  if (!locationName) return null;
+// Coordinates or place names cannot establish a farm's soil type without a verified soil source.
+export const getSoilTypeForLocation = () => null;
 
-  // Try to find exact match first
-  const cityName = locationName.city || locationName.district;
-
-  for (const [region, data] of Object.entries(regionSoilMapping)) {
-    if (cityName && cityName.toLowerCase().includes(region.toLowerCase())) {
-      return data;
-    }
-  }
-
-  // Try district match
-  for (const [region, data] of Object.entries(regionSoilMapping)) {
-    if (locationName.district && locationName.district.toLowerCase().includes(region.toLowerCase())) {
-      return data;
-    }
-  }
-
-  // Default based on state
-  const stateDefaults = {
-    'Maharashtra': { soil: 'Black', rainfall: 800 },
-    'Uttar Pradesh': { soil: 'Alluvial', rainfall: 900 },
-    'Punjab': { soil: 'Alluvial', rainfall: 650 },
-    'Haryana': { soil: 'Alluvial', rainfall: 550 },
-    'Madhya Pradesh': { soil: 'Black', rainfall: 1100 },
-    'Rajasthan': { soil: 'Arid / Sandy', rainfall: 500 },
-    'Gujarat': { soil: 'Black', rainfall: 800 },
-    'Bihar': { soil: 'Alluvial', rainfall: 1100 },
-    'West Bengal': { soil: 'Alluvial', rainfall: 1600 },
-    'Karnataka': { soil: 'Red', rainfall: 900 },
-    'Tamil Nadu': { soil: 'Red', rainfall: 900 },
-    'Andhra Pradesh': { soil: 'Black', rainfall: 900 },
-    'Telangana': { soil: 'Red', rainfall: 800 },
-    'Kerala': { soil: 'Laterite', rainfall: 2700 },
-    'Odisha': { soil: 'Red', rainfall: 1400 },
-    'Assam': { soil: 'Alluvial', rainfall: 1800 },
-    'Jharkhand': { soil: 'Red', rainfall: 1300 },
-    'Chhattisgarh': { soil: 'Red', rainfall: 1300 },
-    'Uttarakhand': { soil: 'Mountain', rainfall: 1500 },
-    'Himachal Pradesh': { soil: 'Mountain', rainfall: 1200 }
-  };
-
-  if (locationName.state) {
-    for (const [state, data] of Object.entries(stateDefaults)) {
-      if (locationName.state.toLowerCase().includes(state.toLowerCase())) {
-        return data;
-      }
-    }
-  }
-
-  return null;
+const inRange = (value, min, max) => typeof value === 'number' && Number.isFinite(value) && value >= min && value <= max;
+const utcTime = value => typeof value === 'string' && /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(:\d{2})?$/.test(value)
+  ? Date.parse(`${value}Z`) : NaN;
+const weatherDescriptions = {
+  0:'Clear',1:'Mainly clear',2:'Partly cloudy',3:'Overcast',45:'Fog',48:'Freezing fog',
+  51:'Drizzle',53:'Drizzle',55:'Drizzle',56:'Freezing drizzle',57:'Freezing drizzle',
+  61:'Rain',63:'Rain',65:'Rain',66:'Freezing rain',67:'Freezing rain',
+  71:'Snow',73:'Snow',75:'Snow',77:'Snow grains',80:'Rain showers',81:'Rain showers',82:'Rain showers',
+  85:'Snow showers',86:'Snow showers',95:'Thunderstorm',96:'Thunderstorm with hail',99:'Thunderstorm with hail',
 };
 
-// Get weather forecast using Open-Meteo (Free, No API Key required)
+// UTC timestamps make freshness independent of the browser's timezone.
 export const getWeatherForecast = async (lat, lon) => {
+  if (!inRange(lat,-90,90) || !inRange(lon,-180,180)) return getUnavailableWeatherData();
   try {
     const response = await axios.get(
-      `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code&hourly=temperature_2m,relative_humidity_2m,precipitation,weather_code&timezone=auto`
+      `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code&hourly=temperature_2m,relative_humidity_2m,precipitation&timezone=UTC`,
+      {timeout:15000}
     );
-
     const data = response.data;
-    const current = data.current;
-    
-    const getWeatherDescription = (code) => {
-      if (code <= 3) return 'Partly cloudy';
-      if (code < 50) return 'Foggy';
-      if (code < 70) return 'Rainy';
-      if (code >= 80) return 'Stormy';
-      return 'Clear';
-    };
-
-    const forecasts = [];
-    for (let i = 0; i < 8; i++) {
-        forecasts.push({
-            time: data.hourly.time[i],
-            temp: data.hourly.temperature_2m[i],
-            humidity: data.hourly.relative_humidity_2m[i],
-            rain: data.hourly.precipitation[i] || 0
-        });
+    const current = data?.current;
+    const observed = utcTime(current?.time);
+    const age = Date.now() - observed;
+    if (data?.utc_offset_seconds !== 0 || !Number.isFinite(age) || age < -300000 || age > 5400000
+      || !inRange(current?.temperature_2m,-90,60) || !inRange(current?.relative_humidity_2m,0,100)
+      || !Number.isInteger(current?.weather_code) || !Object.hasOwn(weatherDescriptions,current.weather_code)) {
+      return getUnavailableWeatherData();
     }
-
+    const hourly = data.hourly;
+    const start = Math.ceil(Date.now()/3600000)*3600000;
+    let forecasts = [];
+    if (Array.isArray(hourly?.time)) {
+      const index = hourly.time.findIndex(time => utcTime(time) === start);
+      if (index >= 0) {
+        for (let offset = 0; offset < 8; offset++) {
+          const i = index + offset;
+          const time = utcTime(hourly.time[i]);
+          const temp = hourly.temperature_2m?.[i];
+          const humidity = hourly.relative_humidity_2m?.[i];
+          const rain = hourly.precipitation?.[i];
+          if (time !== start + offset*3600000 || !inRange(temp,-90,60)
+            || !inRange(humidity,0,100) || !inRange(rain,0,1000)) { forecasts = []; break; }
+          forecasts.push({time:new Date(time).toISOString(),temp,humidity,rain});
+        }
+      }
+    }
     return {
-      current: {
-        temp: current.temperature_2m,
-        humidity: current.relative_humidity_2m,
-        description: getWeatherDescription(current.weather_code),
-        icon: current.weather_code > 50 ? '09d' : '02d' 
-      },
-      location: 'Local Region',
-      forecast: forecasts,
-      isMock: false,
-      source: "Open-Meteo (Estimate)"
+      current:{temp:current.temperature_2m,humidity:current.relative_humidity_2m,
+        description:weatherDescriptions[current.weather_code],weather_code:current.weather_code,
+        observed_at:new Date(observed).toISOString()},
+      location:'Local Region',forecast:forecasts,forecast_available:forecasts.length === 8,
+      isMock:false,source:'Open-Meteo model estimate',
     };
-  } catch (error) {
-    console.error('Weather API error:', error);
-    return getMockWeatherData(lat, lon);
+  } catch {
+    return getUnavailableWeatherData();
   }
 };
 
-// Mock weather data for demo (location-aware)
-const getMockWeatherData = (lat, lon) => {
-  // December weather approximation based on latitude
-  const isNorth = lat > 23; // North of Tropic of Cancer
-  const baseTemp = isNorth ? 15 + Math.random() * 10 : 25 + Math.random() * 5;
-  const humidity = 40 + Math.random() * 30;
+// Explicit unavailable weather state
+const getUnavailableWeatherData = () => {
 
   return {
     current: {
-      temp: Math.round(baseTemp),
-      humidity: Math.round(humidity),
-      description: 'Partly cloudy',
+      temp: null,
+      humidity: null,
+      description: 'Weather unavailable',
       icon: '02d'
     },
     location: 'Your Location',
     forecast: [],
     isMock: true,
-    source: "Static Default (No Location)"
+    source: "Unavailable"
   };
 };
 
-// Estimate seasonal rainfall based on location data
-export const estimateSeasonalRainfall = (locationData) => {
-  if (locationData?.rainfall) {
-    return locationData.rainfall;
-  }
-
-  // Default average for India
-  return 800;
-};
-
-// Calculate monsoon delay based on current date and region
-export const estimateMonsoonDelay = (lat) => {
-  const now = new Date();
-  const month = now.getMonth() + 1;
-
-  // Monsoon typically arrives June-July
-  // South India gets monsoon earlier
-  if (month >= 6 && month <= 9) {
-    // During monsoon season
-    const isSouth = lat < 20;
-    return isSouth ? 0 : Math.floor(Math.random() * 10);
-  }
-
-  return 0;
-};
+// No seasonal forecast or observed monsoon-onset dataset is configured.
+export const estimateSeasonalRainfall = () => null;
+export const estimateMonsoonDelay = () => null;
 
 // Main function to get all location-based data
 export const getLocationBasedData = async () => {
@@ -313,9 +145,9 @@ export const getLocationBasedData = async () => {
     return {
       location: locationName,
       coordinates: coords,
-      soil_type: soilData?.soil || 'Alluvial',
-      soil_source: soilData ? 'Estimated based on location (Regional Map)' : 'Static Fallback Default',
-      expected_rainfall: soilData?.rainfall || estimateSeasonalRainfall(null),
+      soil_type: soilData?.soil ?? null,
+      soil_source: 'unavailable',
+      expected_rainfall: estimateSeasonalRainfall(null),
       rainfall_delay: monsoonDelay,
       weather: weather,
       zone: soilData?.zone || 'Unknown'

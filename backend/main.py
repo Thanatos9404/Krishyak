@@ -5,16 +5,24 @@ Version: 1.1.0 (Government-Ready with Security Hardening)
 """
 import time
 import logging
+import os
 from contextlib import asynccontextmanager
-from fastapi import FastAPI, HTTPException, File, UploadFile, Form, Request, Response
+from fastapi import FastAPI, HTTPException, File, UploadFile, Form, Request, Response, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel, Field, validator
-from typing import Dict, List, Optional
+from pydantic import BaseModel, Field, validator, model_validator
+from typing import Dict, List, Optional, Literal
 import uvicorn
 
+# Vercel functions expose a read-only deployment filesystem; runtime caches and
+# demo registration exports must use the writable temporary filesystem.
+if os.getenv("VERCEL"):
+    os.environ.setdefault("PEST_DATA_DIR", "/tmp/krishyak/pest_data")
+    os.environ.setdefault("SOIL_CACHE_DIR", "/tmp/krishyak/soil_cache")
+    os.environ.setdefault("SARVAM_QUOTA_DB", "/tmp/krishyak/speech_quotas.sqlite3")
+
 # Security and logging imports
-from security import security_config, InputSanitizer, FileValidator, generate_request_id
+from security import security_config, InputSanitizer, FileValidator, generate_request_id, normalize_request_id
 from logging_config import setup_logging, request_logger
 
 # Engine imports
@@ -25,7 +33,6 @@ from cost_calculator import CostCalculator
 from risk_engine import RiskEngine
 from data_loader import DataLoader
 import config
-import os
 from disease_detector import detect_disease_mock, CROP_DISEASES
 from jam_trinity import get_jam_service, JAMTrinityService
 from land_records import get_land_service, LandRecordsService
@@ -33,43 +40,12 @@ from land_records import get_land_service, LandRecordsService
 # Initialize logging
 logger = setup_logging()
 
-# Rate limiting setup (in-memory for simplicity, use Redis in production)
-from collections import defaultdict
-from datetime import datetime, timedelta
+from datetime import datetime
+from rate_limiter import RateLimiter
+from sarvam_service import router as speech_router
+from speech_limits import SpeechBodyLimit
 
-class RateLimiter:
-    """Simple in-memory rate limiter"""
-    def __init__(self):
-        self.requests = defaultdict(list)
-        self.rate_per_minute = security_config.rate_limit_per_minute
-        self.rate_per_day = security_config.rate_limit_per_day
-    
-    def is_allowed(self, client_ip: str) -> tuple[bool, str]:
-        """Check if request is allowed, returns (allowed, reason)"""
-        now = datetime.now()
-        minute_ago = now - timedelta(minutes=1)
-        day_ago = now - timedelta(days=1)
-        
-        # Clean old entries
-        self.requests[client_ip] = [
-            t for t in self.requests[client_ip] 
-            if t > day_ago
-        ]
-        
-        # Check minute limit
-        minute_requests = sum(1 for t in self.requests[client_ip] if t > minute_ago)
-        if minute_requests >= self.rate_per_minute:
-            return False, f"Rate limit exceeded: {self.rate_per_minute} requests per minute"
-        
-        # Check daily limit
-        if len(self.requests[client_ip]) >= self.rate_per_day:
-            return False, f"Rate limit exceeded: {self.rate_per_day} requests per day"
-        
-        # Record this request
-        self.requests[client_ip].append(now)
-        return True, ""
-
-rate_limiter = RateLimiter()
+rate_limiter = RateLimiter(security_config.rate_limit_per_minute, security_config.rate_limit_per_day)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -89,27 +65,28 @@ app = FastAPI(
     docs_url="/docs" if security_config.is_development else None,
     redoc_url="/redoc" if security_config.is_development else None,
 )
+app.include_router(speech_router)
+app.add_middleware(SpeechBodyLimit)
 
-# CORS middleware with secure configuration
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=security_config.cors_origins,
-    allow_credentials=True,
-    allow_methods=["GET", "POST", "OPTIONS"],
-    allow_headers=["Content-Type", "Authorization", "X-Request-ID"],
-    max_age=600,  # Cache preflight for 10 minutes
-)
+# CORS middleware with secure configuration. Keep the stable production alias
+# explicit so a stale deployment environment cannot silently remove it.
+cors_origins = list(dict.fromkeys([
+    *security_config.cors_origins,
+    "https://krishyak.vercel.app",
+    "https://krishyak-yashvardhan-thanvis-projects.vercel.app",
+]))
 
 @app.middleware("http")
 async def request_middleware(request: Request, call_next):
     """Request logging, rate limiting, and error handling middleware"""
     start_time = time.time()
-    request_id = request.headers.get("X-Request-ID", generate_request_id())
+    request_id = normalize_request_id(request.headers.get("X-Request-ID"))
+    request.state.request_id = request_id
     
     # Get client IP
     client_ip = request.client.host if request.client else "unknown"
     forwarded_for = request.headers.get("X-Forwarded-For")
-    if forwarded_for:
+    if forwarded_for and os.getenv('TRUST_PROXY_HEADERS', 'false').lower() == 'true':
         client_ip = forwarded_for.split(",")[0].strip()
     
     # Rate limiting
@@ -118,7 +95,8 @@ async def request_middleware(request: Request, call_next):
         logger.warning(f"Rate limit exceeded for {client_ip}")
         return JSONResponse(
             status_code=429,
-            content={"success": False, "error": reason, "request_id": request_id}
+            content={"success": False, "error": reason, "request_id": request_id},
+            headers={"X-Request-ID": request_id}
         )
     
     # Log request
@@ -154,6 +132,7 @@ async def request_middleware(request: Request, call_next):
         
         return JSONResponse(
             status_code=500,
+            headers={"X-Request-ID": request_id},
             content={
                 "success": False,
                 "error": "Internal server error",
@@ -161,15 +140,27 @@ async def request_middleware(request: Request, call_next):
             }
         )
 
+# Register outside request middleware so preflight and early error responses get CORS.
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=cors_origins,
+    allow_credentials=True,
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization", "X-Request-ID"],
+    expose_headers=["X-Request-ID"],
+    max_age=600,
+)
+
 @app.exception_handler(HTTPException)
 async def http_exception_handler(request: Request, exc: HTTPException):
     """Custom HTTP exception handler with structured response"""
-    request_id = request.headers.get("X-Request-ID", generate_request_id())
+    request_id = getattr(request.state, 'request_id', None) or normalize_request_id(request.headers.get("X-Request-ID"))
     return JSONResponse(
         status_code=exc.status_code,
+        headers={**(exc.headers or {}), "X-Request-ID": request_id},
         content={
             "success": False,
-            "error": exc.detail,
+            "error": "Internal server error" if exc.status_code == 500 else exc.detail,
             "request_id": request_id
         }
     )
@@ -177,14 +168,15 @@ async def http_exception_handler(request: Request, exc: HTTPException):
 @app.exception_handler(Exception)
 async def general_exception_handler(request: Request, exc: Exception):
     """Handle unexpected exceptions"""
-    request_id = request.headers.get("X-Request-ID", generate_request_id())
-    logger.error(f"Unhandled exception: {str(exc)}", exc_info=True)
+    request_id = getattr(request.state, 'request_id', None) or normalize_request_id(request.headers.get("X-Request-ID"))
+    logger.error("Unhandled exception (%s)", type(exc).__name__, extra={"request_id": request_id})
     
     # Don't expose internal errors in production
-    error_message = str(exc) if security_config.is_development else "An unexpected error occurred"
+    error_message = "Internal server error"
     
     return JSONResponse(
         status_code=500,
+        headers={"X-Request-ID": request_id},
         content={
             "success": False,
             "error": error_message,
@@ -202,40 +194,64 @@ data_loader = DataLoader()
 
 # Pydantic models for request/response
 class FarmingInput(BaseModel):
+    model_config = {"allow_inf_nan": False}
     crop: str = Field(..., description="Crop type")
     soil_type: str = Field(..., description="Soil type")
-    area_hectares: float = Field(..., gt=0, description="Cultivation area in hectares")
+    area_hectares: float = Field(..., gt=0, le=1000000, description="Cultivation area in hectares")
     seed_quality: float = Field(..., ge=0, le=1, description="Seed quality (0-1 scale)")
-    expected_rainfall: float = Field(..., ge=0, description="Expected rainfall in mm")
-    rainfall_delay: int = Field(0, ge=0, description="Monsoon delay in days")
-    irrigation_frequency: int = Field(..., ge=0, description="Irrigation times per month")
+    expected_rainfall: float = Field(..., ge=0, le=20000, description="Expected rainfall in mm")
+    rainfall_delay: int = Field(0, ge=0, le=365, description="Monsoon delay in days")
+    irrigation_frequency: int = Field(..., ge=0, le=100, description="Irrigation times per month")
     fertilizer_mix: Dict[str, float] = Field(..., description="Fertilizer quantities (kg/hectare)")
     pest_probability: float = Field(..., ge=0, le=1, description="Pest attack probability (0-1)")
-    labour_days: float = Field(30, gt=0, description="Labour days required")
+    labour_days: float = Field(30, gt=0, le=10000000, description="Total person-days required across the farm")
     pest_control_intensity: float = Field(0.5, ge=0, le=1, description="Pest control intensity")
     sale_month: int = Field(2, ge=0, le=12, description="Planned sale month (0-12)")
-    current_market_price: float = Field(2000, gt=0, description="Current market price per quintal")
-    seed_quantity_kg: Optional[float] = None
+    current_market_price: float = Field(2000, gt=0, le=10000000, description="Current market price per quintal")
+    seed_quantity_kg: Optional[float] = Field(None, ge=0, le=100000000)
+    season_months: float = Field(4, gt=0, le=24, description="Season duration used for monthly irrigation costs")
+
+    @validator('fertilizer_mix')
+    def validate_fertilizers(cls, value):
+        import math
+        if any(name not in config.FERTILIZERS or not math.isfinite(qty) or not 0 <= qty <= 100000 for name, qty in value.items()):
+            raise ValueError('Fertilizers must be known products with finite non-negative quantities')
+        return value
+
+    @validator('crop')
+    def validate_crop(cls, value):
+        if value not in config.CROPS:
+            raise ValueError('Unsupported crop')
+        return value
+
+    @validator('soil_type')
+    def validate_soil(cls, value):
+        if value not in config.SOIL_TYPES:
+            raise ValueError('Unsupported soil type')
+        return value
 
 class SimulationRequest(BaseModel):
     farming_input: FarmingInput
     num_simulations: int = Field(500, ge=100, le=2000, description="Number of micro-simulations")
 
 class PriceForecastRequest(BaseModel):
+    model_config = {"allow_inf_nan": False}
     commodity: str
-    current_price: float
+    current_price: float = Field(..., gt=0, le=10000000)
     forecast_days: int = Field(60, ge=1, le=180)
 
 # ============ FARMER REGISTRATION ============
 import csv
+import asyncio
+from registration_store import append_registration
 from pathlib import Path
 
 # Directory to store farmer data (inside backend folder for easy access)
-FARMER_DATA_DIR = Path(__file__).parent / "data"
+FARMER_DATA_DIR = Path("/tmp/krishyak/farmers") if os.getenv("VERCEL") else Path(__file__).parent / "data"
 FARMER_CSV_FILE = FARMER_DATA_DIR / "registered_farmers.csv"
 
 # Ensure the data directory exists
-FARMER_DATA_DIR.mkdir(exist_ok=True)
+FARMER_DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 class FarmerRegistrationInput(BaseModel):
     """Pydantic model for farmer registration data"""
@@ -251,7 +267,7 @@ class FarmerRegistrationInput(BaseModel):
     pinCode: str = Field(..., min_length=6, max_length=6, pattern=r"^\d{6}$", description="6-digit PIN code")
     khasraNumber: str = Field(..., description="Khasra/Survey number")
     totalLandArea: str = Field(..., description="Total land area")
-    landUnit: str = Field("hectares", description="Unit of land area")
+    landUnit: Literal['hectares', 'acres'] = Field("hectares", description="Unit of land area")
     irrigatedLand: Optional[str] = Field(None, description="Irrigated land area")
     rainfedLand: Optional[str] = Field(None, description="Rain-fed land area")
     ownershipType: str = Field(..., description="Land ownership type")
@@ -262,6 +278,39 @@ class FarmerRegistrationInput(BaseModel):
     consentData: bool = Field(..., description="Consent to share data")
     consentTerms: bool = Field(..., description="Agree to terms")
     registeredAt: Optional[str] = Field(None, description="Registration timestamp")
+
+    @validator('totalLandArea')
+    def validate_land_area(cls, value):
+        import math
+        amount = float(value)
+        if not math.isfinite(amount) or not 0 < amount <= 1000000:
+            raise ValueError('Land area must be finite and in the supported range')
+        return str(amount)
+
+    @validator('irrigatedLand', 'rainfedLand')
+    def validate_optional_area(cls, value):
+        import math
+        if value is None or value.strip() == '':
+            return None
+        amount = float(value)
+        if not math.isfinite(amount) or not 0 <= amount <= 1000000:
+            raise ValueError('Land area must be finite and non-negative')
+        return str(amount)
+
+    @model_validator(mode='after')
+    def validate_area_partition(self):
+        from decimal import Decimal
+        total = Decimal(self.totalLandArea)
+        portions = [Decimal(value) for value in (self.irrigatedLand, self.rainfedLand) if value is not None]
+        if sum(portions) > total + Decimal('0.000000001'):
+            raise ValueError('Irrigated and rain-fed areas cannot exceed total land area in the selected unit')
+        return self
+
+    @validator('consentData', 'consentTerms')
+    def require_consent(cls, value):
+        if value is not True:
+            raise ValueError('Consent must be granted before registration')
+        return value
 
 # CSV column headers for farmer data
 FARMER_CSV_HEADERS = [
@@ -278,50 +327,41 @@ async def register_farmer(farmer_data: FarmerRegistrationInput):
     This endpoint saves all farmer details to a CSV file for easy access.
     """
     try:
-        # Set registration timestamp if not provided
-        if not farmer_data.registeredAt:
-            farmer_data.registeredAt = datetime.now().isoformat()
+        # The server records receipt time; client timestamps are not authoritative.
+        farmer_data.registeredAt = datetime.now().isoformat()
         
-        # Check if CSV file exists, if not create with headers
-        file_exists = FARMER_CSV_FILE.exists()
+        # Prepare row data
+        row_data = {
+            "registeredAt": farmer_data.registeredAt,
+            "fullName": farmer_data.fullName,
+            "fatherName": farmer_data.fatherName,
+            "mobileNumber": farmer_data.mobileNumber,
+            "dateOfBirth": farmer_data.dateOfBirth or "",
+            "aadhaarNumber": "",  # Do not persist government identifiers in plaintext CSV.
+            "state": farmer_data.state,
+            "district": farmer_data.district,
+            "tehsil": farmer_data.tehsil,
+            "village": farmer_data.village,
+            "pinCode": farmer_data.pinCode,
+            "khasraNumber": farmer_data.khasraNumber,
+            "totalLandArea": farmer_data.totalLandArea,
+            "landUnit": farmer_data.landUnit,
+            "irrigatedLand": farmer_data.irrigatedLand or "",
+            "rainfedLand": farmer_data.rainfedLand or "",
+            "ownershipType": farmer_data.ownershipType,
+            "primaryCrop": farmer_data.primaryCrop,
+            "secondaryCrops": ",".join(farmer_data.secondaryCrops) if farmer_data.secondaryCrops else "",
+            "farmingType": farmer_data.farmingType,
+            "experience": farmer_data.experience or "",
+            "consentData": str(farmer_data.consentData),
+            "consentTerms": str(farmer_data.consentTerms)
+        }
         
-        with open(FARMER_CSV_FILE, mode='a', newline='', encoding='utf-8') as csv_file:
-            writer = csv.DictWriter(csv_file, fieldnames=FARMER_CSV_HEADERS)
-            
-            # Write headers if file is new
-            if not file_exists:
-                writer.writeheader()
-            
-            # Prepare row data
-            row_data = {
-                "registeredAt": farmer_data.registeredAt,
-                "fullName": farmer_data.fullName,
-                "fatherName": farmer_data.fatherName,
-                "mobileNumber": farmer_data.mobileNumber,
-                "dateOfBirth": farmer_data.dateOfBirth or "",
-                "aadhaarNumber": farmer_data.aadhaarNumber or "",
-                "state": farmer_data.state,
-                "district": farmer_data.district,
-                "tehsil": farmer_data.tehsil,
-                "village": farmer_data.village,
-                "pinCode": farmer_data.pinCode,
-                "khasraNumber": farmer_data.khasraNumber,
-                "totalLandArea": farmer_data.totalLandArea,
-                "landUnit": farmer_data.landUnit,
-                "irrigatedLand": farmer_data.irrigatedLand or "",
-                "rainfedLand": farmer_data.rainfedLand or "",
-                "ownershipType": farmer_data.ownershipType,
-                "primaryCrop": farmer_data.primaryCrop,
-                "secondaryCrops": ",".join(farmer_data.secondaryCrops) if farmer_data.secondaryCrops else "",
-                "farmingType": farmer_data.farmingType,
-                "experience": farmer_data.experience or "",
-                "consentData": str(farmer_data.consentData),
-                "consentTerms": str(farmer_data.consentTerms)
-            }
-            
-            writer.writerow(row_data)
+        row_data = {key: ("'" + value if isinstance(value, str) and value.lstrip().startswith(('=', '+', '-', '@')) else value)
+                    for key, value in row_data.items()}
+        await asyncio.to_thread(append_registration, FARMER_CSV_FILE, FARMER_CSV_HEADERS, row_data)
         
-        logger.info(f"New farmer registered: {farmer_data.fullName} ({farmer_data.mobileNumber})")
+        logger.info("New farmer registration saved")
         
         return {
             "success": True,
@@ -334,8 +374,8 @@ async def register_farmer(farmer_data: FarmerRegistrationInput):
         }
     
     except Exception as e:
-        logger.error(f"Error registering farmer: {e}")
-        raise HTTPException(status_code=500, detail=f"Registration error: {str(e)}")
+        logger.error("Registration storage failed (%s)", type(e).__name__)
+        raise HTTPException(status_code=503, detail="Registration could not be saved. Please try again.")
 
 # API Endpoints
 
@@ -364,7 +404,7 @@ async def get_fertilizers():
     return {"fertilizers": config.FERTILIZERS}
 
 @app.post("/simulate")
-async def simulate_farming(request: SimulationRequest):
+def simulate_farming(request: SimulationRequest):
     """
     Run comprehensive farming simulation
     Returns yield estimation, cost analysis, risk assessment, and profitability
@@ -379,16 +419,20 @@ async def simulate_farming(request: SimulationRequest):
         # Run simulation
         result = simulation_engine._simulate_scenario(params, "current")
         
+        from hybrid_inference import PredictionRouter
+        final_result, meta = PredictionRouter.route_simulation(params, result)
+
         return {
             "success": True,
-            "data": result
+            "data": final_result,
+            "metadata": meta.dict()
         }
     
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Simulation error: {str(e)}")
 
 @app.post("/forecast_prices")
-async def forecast_commodity_prices(request: PriceForecastRequest):
+def forecast_commodity_prices(request: PriceForecastRequest):
     """
     Forecast commodity prices for next N days
     Returns price predictions and optimal selling window
@@ -400,16 +444,20 @@ async def forecast_commodity_prices(request: PriceForecastRequest):
             request.forecast_days
         )
         
+        from hybrid_inference import PredictionRouter
+        final_result, meta = PredictionRouter.route_price(request.commodity, forecast)
+
         return {
             "success": True,
-            "data": forecast
+            "data": final_result,
+            "metadata": meta.dict()
         }
     
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Forecast error: {str(e)}")
 
 @app.post("/compare_scenarios")
-async def compare_scenarios(request: SimulationRequest):
+def compare_scenarios(request: SimulationRequest):
     """
     Compare Current Plan vs Optimized Plan vs Worst Case
     Runs multiple scenarios and returns comparative data.
@@ -426,16 +474,20 @@ async def compare_scenarios(request: SimulationRequest):
             request.num_simulations
         )
         
+        from hybrid_inference import PredictionRouter
+        final_result, meta = PredictionRouter.route_simulation(params, results)
+
         return {
             "success": True,
-            "data": results
+            "data": final_result,
+            "metadata": meta.dict()
         }
     
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Comparison error: {str(e)}")
 
 @app.post("/recommend")
-async def get_recommendations(request: SimulationRequest):
+def get_recommendations(request: SimulationRequest):
     """
     Get model-based recommendations for optimal farming strategy
     Analyzes parameters and suggests optimizations for better yield/profit.
@@ -462,9 +514,13 @@ async def get_recommendations(request: SimulationRequest):
             "optimal_parameters": results["ai_optimal_plan"]["parameters_used"]
         }
         
+        from hybrid_inference import PredictionRouter
+        final_result, meta = PredictionRouter.route_simulation(params, recommendation_data)
+
         return {
             "success": True,
-            "data": recommendation_data
+            "data": final_result,
+            "metadata": meta.dict()
         }
     
     except Exception as e:
@@ -485,7 +541,7 @@ async def detect_disease(
 ):
     """
     Detect plant disease from uploaded image.
-    Priority: Trained ML Model > Plant.ID API > Mock detection
+    Runs the installed classifier; unsupported or uncertain images do not produce treatments.
     
     Args:
         file: Image file (JPG, PNG)
@@ -504,42 +560,54 @@ async def detect_disease(
     
     # Read file content
     try:
-        contents = await file.read()
+        contents = await file.read(10 * 1024 * 1024 + 1)
         
         # Check file size (max 10MB)
         if len(contents) > 10 * 1024 * 1024:
             raise HTTPException(status_code=400, detail="File too large. Maximum size is 10MB.")
+        FileValidator.validate_image_upload(contents, file.content_type, file.filename or '')
         
+    except HTTPException:
+        raise
+    except ValueError:
+        raise HTTPException(status_code=400, detail="File content does not match an accepted image format.")
     except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Error reading file: {str(e)}")
+        logger.error("Image upload read failed (%s)", type(e).__name__)
+        raise HTTPException(status_code=500, detail="Image upload could not be read.")
     
-    # Use multi-source detection: ML Model > Reverse Image Search > Pattern Matching
+    # Real model inference only; unavailable and uncertain outcomes are preserved.
     from disease_detector import detect_disease_multisource, get_detection_status
     
     try:
-        result = detect_disease_multisource(contents, crop_type)
+        from starlette.concurrency import run_in_threadpool
+        result = await run_in_threadpool(detect_disease_multisource, contents, crop_type)
         status = get_detection_status()
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Disease detection failed: {str(e)}")
     
-    # Determine mode from detection sources (check for 'sources', not 'sources_used')
-    sources = result.get("sources", [])
-    source_names = [s.get("name", "").lower() for s in sources]
-    
-    if any("ml model" in name or "trained" in name for name in source_names):
-        mode = "trained_model"
-    elif any("visual" in name or "search" in name for name in source_names):
-        mode = "visual_search"
-    else:
-        mode = "pattern_matching"
+    if result.get('status') == 'unavailable':
+        raise HTTPException(status_code=503, detail=result['message'])
+    if result.get('status') == 'invalid_image':
+        raise HTTPException(status_code=400, detail=result['message'])
+    from hybrid_inference import PredictionRouter
+    final_result, meta = PredictionRouter.route_disease(crop_type or "", result, {})
+
+    mode = meta.prediction_mode
     
     return {
         "success": True,
-        "data": result,
+        "data": final_result,
         "mode": mode,
-        "detection_status": status
+        "detection_status": status,
+        "metadata": meta.dict()
     }
 
+
+
+@app.get("/disease-capabilities")
+def disease_capabilities():
+    from disease_detector import get_detection_status
+    return {"success": True, "data": get_detection_status()}
 
 
 @app.get("/diseases")
@@ -548,7 +616,7 @@ async def get_diseases():
     return {
         "success": True,
         "data": {
-            crop: [d["name"] for d in diseases]
+            crop: diseases
             for crop, diseases in CROP_DISEASES.items()
         }
     }
@@ -611,7 +679,7 @@ async def list_sensors():
             "cache_stats": soil_cache.get_cache_stats()
         }
     except Exception as e:
-        logger.error(f"Error listing sensors: {e}")
+        logger.error(f"Error listing sensors: {type(e).__name__}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -634,11 +702,14 @@ async def get_sensor_data(device_id: str, use_cache: bool = True):
         if data:
             # Cache the fresh data
             soil_cache.save(device_id, data)
+            latest = soil_cache.get_latest(device_id)
+            if use_cache and latest and latest.timestamp.timestamp() > data.timestamp.timestamp():
+                data = latest
             return {
                 "success": True,
                 "data": data.to_dict(),
                 "source": data.source,
-                "is_stale": False
+                "is_stale": (datetime.now(data.timestamp.tzinfo) - data.timestamp).total_seconds() > soil_cache.stale_threshold_hours * 3600
             }
         
         # Fallback to cache
@@ -661,7 +732,7 @@ async def get_sensor_data(device_id: str, use_cache: bool = True):
         }
         
     except Exception as e:
-        logger.error(f"Error getting sensor data: {e}")
+        logger.error(f"Error getting sensor data: {type(e).__name__}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -697,8 +768,8 @@ async def submit_manual_soil_data(input_data: ManualSoilInput):
             )
         
         # Save to sensor manager and cache
-        sensor_manager.set_manual_data(input_data.device_id, soil_data)
         soil_cache.save(input_data.device_id, soil_data)
+        sensor_manager.set_manual_data(input_data.device_id, soil_data)
         
         logger.info(f"Manual soil data saved for device: {input_data.device_id}")
         
@@ -711,12 +782,12 @@ async def submit_manual_soil_data(input_data: ManualSoilInput):
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"Error saving manual soil data: {e}")
+        logger.error(f"Error saving manual soil data: {type(e).__name__}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.get("/sensors/{device_id}/history")
-async def get_sensor_history(device_id: str, days: int = 7):
+async def get_sensor_history(device_id: str, days: int = Query(7, ge=1, le=30)):
     """
     Get historical soil data for a device
     
@@ -724,8 +795,6 @@ async def get_sensor_history(device_id: str, days: int = 7):
         device_id: Sensor device identifier
         days: Number of days of history (default: 7, max: 30)
     """
-    if days > 30:
-        days = 30
     
     try:
         history = soil_cache.get_history(device_id, days)
@@ -739,7 +808,7 @@ async def get_sensor_history(device_id: str, days: int = 7):
         }
         
     except Exception as e:
-        logger.error(f"Error getting sensor history: {e}")
+        logger.error(f"Error getting sensor history: {type(e).__name__}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -763,7 +832,7 @@ async def get_sensors_status():
         }
         
     except Exception as e:
-        logger.error(f"Error getting sensor status: {e}")
+        logger.error(f"Error getting sensor status: {type(e).__name__}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -802,12 +871,12 @@ async def get_current_weather(location: LocationRequest):
         }
         
     except Exception as e:
-        logger.error(f"Error fetching current weather: {e}")
+        logger.error(f"Error fetching current weather: {type(e).__name__}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.post("/weather/forecast")
-async def get_weather_forecast(location: LocationRequest, hours: int = 48):
+async def get_weather_forecast(location: LocationRequest, hours: int = Query(48, ge=1, le=168)):
     """
     Get weather forecast for next 48 hours (default)
     """
@@ -827,7 +896,7 @@ async def get_weather_forecast(location: LocationRequest, hours: int = 48):
         }
         
     except Exception as e:
-        logger.error(f"Error fetching forecast: {e}")
+        logger.error(f"Error fetching forecast: {type(e).__name__}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -869,7 +938,7 @@ async def get_weather_alerts(location: LocationRequest):
         }
         
     except Exception as e:
-        logger.error(f"Error generating alerts: {e}")
+        logger.error(f"Error generating alerts: {type(e).__name__}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -890,7 +959,7 @@ async def get_rain_forecast(location: LocationRequest):
         }
         
     except Exception as e:
-        logger.error(f"Error fetching rain forecast: {e}")
+        logger.error(f"Error fetching rain forecast: {type(e).__name__}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -922,12 +991,13 @@ class PestAlertRequest(BaseModel):
 
 class PestPredictionRequest(BaseModel):
     """Request model for pest outbreak predictions"""
+    model_config = {"allow_inf_nan": False}
     crop: str = Field(..., min_length=2, max_length=50, description="Crop type")
     lat: float = Field(..., ge=-90, le=90, description="Latitude")
     lon: float = Field(..., ge=-180, le=180, description="Longitude")
-    temperature: float = Field(25.0, ge=-10, le=60, description="Current temperature in Celsius")
-    humidity: float = Field(60.0, ge=0, le=100, description="Current humidity percentage")
-    rainfall: float = Field(0.0, ge=0, description="Recent rainfall in mm")
+    temperature: float = Field(..., ge=-10, le=60, description="Current temperature in Celsius")
+    humidity: float = Field(..., ge=0, le=100, description="Current humidity percentage")
+    rainfall: float = Field(..., ge=0, le=10000, description="Recent rainfall in mm")
 
 
 @app.post("/pest/report")
@@ -970,7 +1040,7 @@ async def submit_pest_report(report: PestReportInput):
         }
         
     except Exception as e:
-        logger.error(f"Error submitting pest report: {e}")
+        logger.error(f"Error submitting pest report: {type(e).__name__}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -1006,12 +1076,13 @@ async def get_pest_alerts(request: PestAlertRequest):
             "district": request.district,
             "total_alerts": len(alerts),
             "alerts": alerts,
+            "government_feed_status": "not_integrated",
             "farmer_reports": [r.to_dict() for r in farmer_reports[:10]],
             "seasonal_risk": seasonal_risk
         }
         
     except Exception as e:
-        logger.error(f"Error fetching pest alerts: {e}")
+        logger.error(f"Error fetching pest alerts: {type(e).__name__}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -1036,11 +1107,12 @@ async def get_pest_history(
             "state": state,
             "years": years,
             "outbreaks": history,
+            "historical_feed_status": "not_integrated",
             "report_statistics": stats
         }
         
     except Exception as e:
-        logger.error(f"Error fetching pest history: {e}")
+        logger.error(f"Error fetching pest history: {type(e).__name__}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -1048,7 +1120,7 @@ async def get_pest_history(
 async def get_pest_prediction(request: PestPredictionRequest):
     """
     Get pest outbreak predictions based on crop, weather, and location.
-    Uses weather correlation and historical patterns.
+    Uses an uncalibrated weather/season suitability index; no regional outbreak feed.
     """
     try:
         weather = {
@@ -1077,7 +1149,7 @@ async def get_pest_prediction(request: PestPredictionRequest):
         }
         
     except Exception as e:
-        logger.error(f"Error generating pest prediction: {e}")
+        logger.error(f"Error generating pest prediction: {type(e).__name__}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -1096,7 +1168,7 @@ async def get_pest_statistics(days: int = 30):
         }
         
     except Exception as e:
-        logger.error(f"Error fetching pest statistics: {e}")
+        logger.error(f"Error fetching pest statistics: {type(e).__name__}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -1108,13 +1180,14 @@ from fertilizer_analyzer import fertilizer_analyzer
 
 class FertilizerRecommendationRequest(BaseModel):
     """Request model for fertilizer recommendations"""
+    model_config = {'allow_inf_nan': False}
     crop: str = Field(..., min_length=2, max_length=50, description="Crop type")
     area_hectares: float = Field(1.0, ge=0.1, le=1000, description="Farm area in hectares")
-    growth_stage: str = Field("basal", description="Current growth stage")
+    growth_stage: Literal["basal", "early_vegetative", "late_vegetative", "flowering", "grain_filling", "maturity"] = "basal"
     prefer_organic: bool = Field(False, description="Prefer organic alternatives")
-    soil_n: Optional[float] = Field(None, ge=0, description="Soil nitrogen (ppm)")
-    soil_p: Optional[float] = Field(None, ge=0, description="Soil phosphorus (ppm)")
-    soil_k: Optional[float] = Field(None, ge=0, description="Soil potassium (ppm)")
+    soil_n: Optional[float] = Field(None, ge=0, description="Soil available nitrogen (kg/ha)")
+    soil_p: Optional[float] = Field(None, ge=0, description="Soil available phosphorus (kg/ha)")
+    soil_k: Optional[float] = Field(None, ge=0, description="Soil available potassium (kg/ha)")
     soil_ph: Optional[float] = Field(None, ge=0, le=14, description="Soil pH")
 
 
@@ -1127,11 +1200,11 @@ async def get_fertilizer_recommendation(request: FertilizerRecommendationRequest
     try:
         # Build soil data dict if provided
         soil_data = None
-        if any([request.soil_n, request.soil_p, request.soil_k]):
+        if any(v is not None for v in [request.soil_n, request.soil_p, request.soil_k, request.soil_ph]):
             soil_data = {
-                "N": request.soil_n or 0,
-                "P": request.soil_p or 0,
-                "K": request.soil_k or 0,
+                "N": request.soil_n,
+                "P": request.soil_p,
+                "K": request.soil_k,
                 "pH": request.soil_ph
             }
         
@@ -1151,12 +1224,12 @@ async def get_fertilizer_recommendation(request: FertilizerRecommendationRequest
         }
         
     except Exception as e:
-        logger.error(f"Error generating fertilizer recommendation: {e}")
+        logger.error(f"Error generating fertilizer recommendation: {type(e).__name__}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.get("/fertilizer/schedule")
-async def get_fertilizer_schedule(crop: str, area_hectares: float = 1.0):
+async def get_fertilizer_schedule(crop: str, area_hectares: float = Query(1.0, gt=0, le=1000)):
     """
     Get complete fertilizer application schedule for the crop.
     Returns timing for each growth stage with dosages.
@@ -1173,7 +1246,7 @@ async def get_fertilizer_schedule(crop: str, area_hectares: float = 1.0):
         }
         
     except Exception as e:
-        logger.error(f"Error generating fertilizer schedule: {e}")
+        logger.error(f"Error generating fertilizer schedule: {type(e).__name__}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -1192,7 +1265,7 @@ async def get_organic_alternatives(crop: str):
         }
         
     except Exception as e:
-        logger.error(f"Error fetching organic alternatives: {e}")
+        logger.error(f"Error fetching organic alternatives: {type(e).__name__}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -1238,7 +1311,7 @@ async def request_consent(request: ConsentRequest):
         }
         
     except Exception as e:
-        logger.error(f"Consent request error: {e}")
+        logger.error(f"Consent request error: {type(e).__name__}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -1265,7 +1338,7 @@ async def grant_consent(consent_id: str):
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"Consent grant error: {e}")
+        logger.error(f"Consent grant error: {type(e).__name__}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -1290,7 +1363,7 @@ async def revoke_consent(consent_id: str):
     except HTTPException:
         raise
     except Exception as e:
-        logger.error(f"Consent revoke error: {e}")
+        logger.error(f"Consent revoke error: {type(e).__name__}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -1327,7 +1400,7 @@ async def verify_aadhaar(request: AadhaarVerifyRequest):
         }
         
     except Exception as e:
-        logger.error(f"Aadhaar verification error: {e}")
+        logger.error(f"Aadhaar verification error: {type(e).__name__}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -1366,7 +1439,7 @@ async def verify_land_records(request: TokenRequest):
         }
         
     except Exception as e:
-        logger.error(f"Land verification error: {e}")
+        logger.error(f"Land verification error: {type(e).__name__}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -1403,7 +1476,7 @@ async def verify_jan_dhan(request: TokenRequest):
         }
         
     except Exception as e:
-        logger.error(f"Jan Dhan verification error: {e}")
+        logger.error(f"Jan Dhan verification error: {type(e).__name__}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -1434,7 +1507,7 @@ async def get_pm_kisan_status(request: TokenRequest):
         }
         
     except Exception as e:
-        logger.error(f"PM-KISAN status error: {e}")
+        logger.error(f"PM-KISAN status error: {type(e).__name__}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -1458,7 +1531,7 @@ async def get_farmer_profile(request: TokenRequest):
         }
         
     except Exception as e:
-        logger.error(f"Farmer profile error: {e}")
+        logger.error(f"Farmer profile error: {type(e).__name__}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -1477,7 +1550,7 @@ async def get_supported_states():
         }
         
     except Exception as e:
-        logger.error(f"Supported states error: {e}")
+        logger.error(f"Supported states error: {type(e).__name__}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -1487,7 +1560,7 @@ async def get_supported_states():
 
 from gov_api_service import (
     get_all_msp, get_msp_for_crop, fetch_msp_from_api,
-    fetch_mandi_prices, get_all_states, INDIAN_STATES
+    fetch_mandi_prices, get_all_states, INDIAN_STATES, fetch_districts, fetch_tehsils
 )
 
 
@@ -1495,7 +1568,7 @@ from gov_api_service import (
 async def get_msp_prices():
     """
     Get all current MSP (Minimum Support Prices) for supported crops.
-    Updated data for 2025-26 season.
+    Source-linked publications with a season and product basis for each record.
     """
     try:
         msp_data = get_all_msp()
@@ -1507,7 +1580,7 @@ async def get_msp_prices():
         }
         
     except Exception as e:
-        logger.error(f"Error fetching MSP prices: {e}")
+        logger.error(f"Error fetching MSP prices: {type(e).__name__}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -1535,7 +1608,7 @@ async def get_msp_for_specific_crop(crop: str):
         }
         
     except Exception as e:
-        logger.error(f"Error fetching MSP for {crop}: {e}")
+        logger.error(f"Error fetching MSP for {crop}: {type(e).__name__}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -1544,7 +1617,7 @@ async def get_live_mandi_prices(
     commodity: Optional[str] = None,
     state: Optional[str] = None,
     district: Optional[str] = None,
-    limit: int = 50
+    limit: int = Query(default=50, ge=1, le=100)
 ):
     """
     Get live mandi (market) prices from data.gov.in.
@@ -1555,8 +1628,6 @@ async def get_live_mandi_prices(
         district: Filter by district name
         limit: Maximum number of results (default: 50, max: 100)
     """
-    if limit > 100:
-        limit = 100
     
     try:
         prices = await fetch_mandi_prices(
@@ -1567,12 +1638,12 @@ async def get_live_mandi_prices(
         )
         
         return {
-            "success": True,
+            "success": prices.get("available", False),
             **prices
         }
         
     except Exception as e:
-        logger.error(f"Error fetching mandi prices: {e}")
+        logger.error(f"Error fetching mandi prices: {type(e).__name__}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -1589,8 +1660,23 @@ async def get_indian_states():
         }
         
     except Exception as e:
-        logger.error(f"Error fetching states: {e}")
+        logger.error(f"Error fetching states: {type(e).__name__}")
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/api/locations/districts")
+async def get_district_suggestions(state: str = Query(min_length=1, max_length=100)):
+    return {"success": True, "districts": await fetch_districts(state),
+            "source": "local_registration_suggestions", "complete": False,
+            "allows_free_entry": True}
+
+
+@app.get("/api/locations/tehsils")
+async def get_tehsil_suggestions(state: str = Query(min_length=1, max_length=100),
+                                district: str = Query(min_length=1, max_length=100)):
+    return {"success": True, "tehsils": await fetch_tehsils(state, district),
+            "source": "local_registration_suggestions", "complete": False,
+            "allows_free_entry": True}
 
 
 # Run server

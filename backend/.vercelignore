@@ -1,0 +1,14 @@
+venv/
+__pycache__/
+evaluation/
+soil_cache/
+models/
+*.pyc
+*.pyo
+*.log
+*.csv
+requirements-eval.txt
+requirements-render.txt
+evaluate_plant_disease_model.py
+combine_evaluation_shards.py
+train_model.py

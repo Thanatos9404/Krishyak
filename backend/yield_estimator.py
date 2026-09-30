@@ -20,14 +20,16 @@ class YieldEstimator:
         irrigation_frequency: int,  # times per month
         fertilizer_mix: Dict[str, float],  # kg per hectare
         pest_probability: float,  # 0-1 scale
-        area_hectares: float = 1.0
+        area_hectares: float = 1.0,
+        *, baseline_record=None
     ) -> Dict:
         """
         Estimate crop yield with all modifying factors
         Returns: yield (kg/hectare), confidence, breakdown
         """
         # Get base yield for the crop
-        base_yield = self.data_loader.get_crop_yield(crop)
+        baseline_metadata = dict(baseline_record) if baseline_record is not None else self.data_loader.get_crop_yield_record(crop)
+        base_yield = baseline_metadata['value']
         
         # Apply modifiers
         soil_modifier = self._calculate_soil_modifier(crop, soil_type)
@@ -63,7 +65,10 @@ class YieldEstimator:
             "total_production_kg": round(total_production, 2),
             "total_production_quintals": round(total_production / 100, 2),
             "base_yield": base_yield,
+            "baseline_metadata": baseline_metadata,
             "confidence": round(confidence, 2),
+            "confidence_kind": "uncalibrated_input_suitability_score",
+            "method": "multiplicative_agronomic_heuristic",
             "modifiers": {
                 "soil": round(soil_modifier, 3),
                 "rainfall": round(rainfall_modifier, 3),
@@ -163,9 +168,9 @@ class YieldEstimator:
         target = optimal_npk.get(crop, (80, 40, 40))
         
         # Calculate NPK balance score (0-1)
-        n_score = 1.0 - min(0.5, abs(total_n - target[0]) / target[0])
-        p_score = 1.0 - min(0.5, abs(total_p - target[1]) / target[1])
-        k_score = 1.0 - min(0.5, abs(total_k - target[2]) / target[2])
+        n_score = max(0.0, 1.0 - abs(total_n - target[0]) / target[0])
+        p_score = max(0.0, 1.0 - abs(total_p - target[1]) / target[1])
+        k_score = max(0.0, 1.0 - abs(total_k - target[2]) / target[2])
         
         avg_score = (n_score + p_score + k_score) / 3
         

@@ -13,6 +13,7 @@ Real integration requires UIDAI, NPCI, and bank API access.
 import hashlib
 import secrets
 import logging
+import os
 from datetime import datetime, timedelta
 from typing import Optional, Dict, Any
 from dataclasses import dataclass, asdict
@@ -306,6 +307,11 @@ class JAMTrinityService:
         
         In production, this would call UIDAI eKYC API
         """
+        if os.getenv('ENABLE_DEMO_IDENTITY', 'false').lower() != 'true':
+            return AadhaarVerificationResult(
+                verified=False, token='', name_verified=False, demographic_match=0.0,
+                consent_id=consent_id,
+                error='Official Aadhaar verification is not integrated. Demo verification is disabled.')
         # Verify consent
         if not self.consent_manager.verify_consent(consent_id, "aadhaar_verify"):
             return AadhaarVerificationResult(

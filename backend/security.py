@@ -3,6 +3,7 @@ Security utilities and configuration for Krishyak backend
 Provides secure configuration loading, input validation, and security helpers
 """
 import os
+import math
 import re
 import secrets
 import logging
@@ -154,7 +155,7 @@ class InputSanitizer:
         field_name: str = "value"
     ) -> float:
         """Validate numeric value is within range"""
-        if not isinstance(value, (int, float)):
+        if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value):
             raise ValueError(f"{field_name} must be a number")
         
         if min_val is not None and value < min_val:
@@ -208,17 +209,11 @@ class FileValidator:
             raise ValueError(f"File too large. Maximum size is {cls.MAX_FILE_SIZE // (1024*1024)}MB")
         
         # Check file signature (magic bytes) for common image formats
-        magic_bytes = {
-            b'\xff\xd8\xff': 'jpeg',
-            b'\x89PNG': 'png',
-            b'RIFF': 'webp',
-        }
-        
-        valid_magic = False
-        for magic, fmt in magic_bytes.items():
-            if content[:len(magic)] == magic:
-                valid_magic = True
-                break
+        valid_magic = (
+            content_type in ('image/jpeg', 'image/jpg') and content.startswith(b'\xff\xd8\xff') or
+            content_type == 'image/png' and content.startswith(b'\x89PNG\r\n\x1a\n') or
+            content_type == 'image/webp' and content.startswith(b'RIFF') and content[8:12] == b'WEBP'
+        )
         
         if not valid_magic:
             raise ValueError("File content does not match declared type")
@@ -229,10 +224,15 @@ def generate_request_id() -> str:
     return secrets.token_hex(8)
 
 
+def normalize_request_id(value: Optional[str]) -> str:
+    """Accept bounded ASCII trace identifiers; never reflect arbitrary header data."""
+    return value if isinstance(value, str) and re.fullmatch(r'[A-Za-z0-9_.:-]{1,64}', value) else generate_request_id()
+
+
 def mask_sensitive_data(data: dict, sensitive_keys: List[str] = None) -> dict:
     """Mask sensitive data in a dictionary for logging"""
     if sensitive_keys is None:
-        sensitive_keys = ["password", "api_key", "secret", "token", "key"]
+        sensitive_keys = ["password", "api_key", "secret", "token", "key", "aadhaar", "mobile", "phone", "fullname", "fathername", "dateofbirth"]
     
     masked = {}
     for key, value in data.items():
@@ -241,6 +241,8 @@ def mask_sensitive_data(data: dict, sensitive_keys: List[str] = None) -> dict:
             masked[key] = "***MASKED***"
         elif isinstance(value, dict):
             masked[key] = mask_sensitive_data(value, sensitive_keys)
+        elif isinstance(value, list):
+            masked[key] = [mask_sensitive_data(item, sensitive_keys) if isinstance(item, dict) else item for item in value]
         else:
             masked[key] = value
     

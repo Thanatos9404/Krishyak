@@ -10,10 +10,11 @@
  */
 
 import React, { useState, useMemo } from 'react';
-import { Bug, AlertTriangle, Shield, ChevronDown, ChevronUp, Clock, MapPin, Info } from 'lucide-react';
+import { Bug, AlertTriangle, Shield, ChevronDown, ChevronUp, Clock, MapPin, Info, FilePlus2 } from 'lucide-react';
 import { useTranslation } from '../i18n';
 import { usePestIntelligence } from '../hooks/usePestIntelligence';
 import { filterAlertsByCrop } from '../utils/pestMapping';
+import PestReportForm from './PestReportForm';
 
 const SEVERITY_COLORS = {
   low: { bg: 'bg-green-50', border: 'border-green-200', text: 'text-green-700', badge: 'bg-green-100 text-green-800' },
@@ -31,10 +32,10 @@ const AlertItem = ({ alert, expanded, onToggle }) => {
 
   const getSeverityLabel = (severity) => {
     switch (severity) {
-      case 'low': return `🟢 ${t('sidebar.low')}`;
-      case 'medium': return `🟡 ${t('sidebar.medium')}`;
-      case 'high': return `🟠 ${t('sidebar.high')}`;
-      case 'critical': return `🔴 ${t('sidebar.severe')}`;
+      case 'low': return t('sidebar.low');
+      case 'medium': return t('sidebar.medium');
+      case 'high': return t('sidebar.high');
+      case 'critical': return t('sidebar.severe');
       default: return severity;
     }
   };
@@ -48,7 +49,7 @@ const AlertItem = ({ alert, expanded, onToggle }) => {
         <div className="flex items-center space-x-3">
           <Bug className={`w-5 h-5 ${colors.text}`} />
           <div>
-            <span className={`font-medium ${colors.text}`}>{alert.pest_name}</span>
+            <span className={`font-medium ${colors.text}`}>{t(`pests.${alert.pest_type || 'other'}`) || alert.pest_name}</span>
             <span className="text-xs text-gray-500 ml-2">{t('common.on') || 'on'} {alert.crop}</span>
           </div>
         </div>
@@ -62,7 +63,7 @@ const AlertItem = ({ alert, expanded, onToggle }) => {
 
       {expanded && (
         <div className="px-3 pb-3 border-t border-gray-100">
-          <p className="text-sm text-gray-600 mt-2 mb-3">{alert.description}</p>
+          <p className="text-sm text-gray-600 mt-2 mb-3">{t('pest.alertDescription')}</p>
 
           <div className="flex items-center text-xs text-gray-500 mb-2">
             <MapPin className="w-3 h-3 mr-1" />
@@ -73,10 +74,10 @@ const AlertItem = ({ alert, expanded, onToggle }) => {
             <div className="mt-2">
               <p className="text-xs font-semibold text-gray-700 mb-1">{t('pest.recommendedActions')}:</p>
               <ul className="text-xs text-gray-600 space-y-1">
-                {alert.recommendations.slice(0, 3).map((rec, idx) => (
+                {alert.recommendations.slice(0, 3).map((_, idx) => (
                   <li key={idx} className="flex items-start">
                     <span className="text-farm-green-500 mr-1">•</span>
-                    {rec}
+                    {t(`pest.actions.${idx + 1}`)}
                   </li>
                 ))}
               </ul>
@@ -92,14 +93,15 @@ const AlertItem = ({ alert, expanded, onToggle }) => {
  * Prediction Card
  */
 const PredictionItem = ({ prediction }) => {
+  const { t } = useTranslation();
   const probability = Math.round(prediction.probability * 100);
   const colors = SEVERITY_COLORS[prediction.risk_level] || SEVERITY_COLORS.low;
 
   return (
     <div className={`p-3 rounded-lg border ${colors.border} ${colors.bg} mb-2`}>
       <div className="flex items-center justify-between mb-2">
-        <span className={`font-medium ${colors.text}`}>{prediction.pest_name}</span>
-        <span className={`text-sm font-bold ${colors.text}`}>{probability}% risk</span>
+        <span className={`font-medium ${colors.text}`}>{t(`pests.${prediction.pest_type || 'other'}`) || prediction.pest_name}</span>
+        <span className={`text-sm font-bold ${colors.text}`}>{probability}/100 {t('scenarios.risk')}</span>
       </div>
 
       {/* Probability bar */}
@@ -115,10 +117,10 @@ const PredictionItem = ({ prediction }) => {
 
       {prediction.factors && prediction.factors.length > 0 && (
         <ul className="text-xs text-gray-600 space-y-1">
-          {prediction.factors.slice(0, 2).map((factor, idx) => (
+          {prediction.factors.slice(0, 2).map((_, idx) => (
             <li key={idx} className="flex items-start">
               <AlertTriangle className="w-3 h-3 text-yellow-500 mr-1 mt-0.5 flex-shrink-0" />
-              {factor}
+              {t('pest.predictionFactor')}
             </li>
           ))}
         </ul>
@@ -130,10 +132,11 @@ const PredictionItem = ({ prediction }) => {
 /**
  * Main PestAlertCard Component
  */
-const PestAlertCard = ({ crop, location, state, district, weather }) => {
+const PestAlertCard = ({ crop, crops = [], location, state, district, weather }) => {
   const { t } = useTranslation();
   const [expandedAlert, setExpandedAlert] = useState(null);
   const [view, setView] = useState('alerts'); // 'alerts' or 'predictions'
+  const [reportOpen, setReportOpen] = useState(false);
 
   const {
     alerts: rawAlerts,
@@ -143,7 +146,9 @@ const PestAlertCard = ({ crop, location, state, district, weather }) => {
     loading,
     error,
     lastUpdated,
-    refresh
+    governmentFeedStatus,
+    refresh,
+    submitReport
   } = usePestIntelligence(crop, location, state, district, weather);
 
   // Fix C: Filter alerts to only show pests relevant to the selected crop
@@ -159,10 +164,11 @@ const PestAlertCard = ({ crop, location, state, district, weather }) => {
 
   // Determine overall status
   const getOverallStatus = () => {
-    if (hasHighRisk) return { label: 'High Risk', color: 'text-red-600', bg: 'bg-red-100' };
-    if (activeAlertCount > 0) return { label: 'Active Alerts', color: 'text-orange-600', bg: 'bg-orange-100' };
-    if (seasonalRisk?.risk_level === 'medium') return { label: 'Moderate Risk', color: 'text-yellow-600', bg: 'bg-yellow-100' };
-    return { label: 'Low Risk', color: 'text-green-600', bg: 'bg-green-100' };
+    if (governmentFeedStatus !== 'available' && !activeAlertCount && !predictions.length) return { label: t('pest.unavailable'), color: 'text-gray-600', bg: 'bg-gray-100' };
+    if (hasHighRisk) return { label: t('pest.highRisk'), color: 'text-red-600', bg: 'bg-red-100' };
+    if (activeAlertCount > 0) return { label: t('pest.activeAlerts'), color: 'text-orange-600', bg: 'bg-orange-100' };
+    if (seasonalRisk?.risk_level === 'medium') return { label: t('pest.moderateRisk'), color: 'text-yellow-600', bg: 'bg-yellow-100' };
+    return { label: t('pest.lowRisk'), color: 'text-green-600', bg: 'bg-green-100' };
   };
 
   const status = getOverallStatus();
@@ -184,7 +190,7 @@ const PestAlertCard = ({ crop, location, state, district, weather }) => {
                 {status.label}
               </span>
               {activeAlertCount > 0 && (
-                <span className="ml-2">{activeAlertCount} active alerts</span>
+                <span className="ml-2">{activeAlertCount} {t('pest.activeAlerts')}</span>
               )}
             </div>
           </div>
@@ -193,8 +199,9 @@ const PestAlertCard = ({ crop, location, state, district, weather }) => {
         <button
           onClick={refresh}
           disabled={loading}
-          className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
-          title="Refresh"
+          className="min-w-11 p-2 hover:bg-gray-100 rounded-lg transition-colors"
+          aria-label={t('pest.refresh')}
+          title={t('common.refresh')}
         >
           <Clock className={`w-4 h-4 text-gray-500 ${loading ? 'animate-spin' : ''}`} />
         </button>
@@ -209,7 +216,7 @@ const PestAlertCard = ({ crop, location, state, district, weather }) => {
             : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
         >
-          Alerts {alerts.length > 0 ? `(${alerts.length})` : ''}
+          {t('pest.alerts')} {alerts.length > 0 ? `(${alerts.length})` : ''}
         </button>
         <button
           onClick={() => setView('predictions')}
@@ -218,27 +225,36 @@ const PestAlertCard = ({ crop, location, state, district, weather }) => {
             : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
             }`}
         >
-          Predictions {predictions.length > 0 ? `(${predictions.length})` : ''}
+          {t('pest.predictions')} {predictions.length > 0 ? `(${predictions.length})` : ''}
         </button>
       </div>
+
+      <button
+        type="button"
+        onClick={() => setReportOpen(true)}
+        className="mb-3 flex min-h-11 w-full items-center justify-center gap-2 rounded-lg border border-farm-green-300 bg-farm-green-50 px-4 py-2 text-sm font-semibold text-farm-green-800 hover:bg-farm-green-100"
+      >
+        <FilePlus2 className="h-4 w-4" aria-hidden="true" />
+        {t('pest.reportTitle')}
+      </button>
 
       {/* Content */}
       <div className="max-h-64 overflow-y-auto">
         {loading && alerts.length === 0 && predictions.length === 0 ? (
           <div className="text-center py-8 text-gray-500">
             <Bug className="w-8 h-8 mx-auto mb-2 animate-pulse" />
-            <p>Loading pest data...</p>
+            <p>{t('pest.loading')}</p>
           </div>
         ) : error && alerts.length === 0 ? (
           <div className="text-center py-8 text-gray-500">
             <AlertTriangle className="w-8 h-8 mx-auto mb-2 text-yellow-500" />
-            <p className="text-sm font-medium text-gray-600">Pest monitoring unavailable</p>
-            <p className="text-xs text-gray-400 mt-1">Connect to the backend to get live alerts</p>
+            <p className="text-sm font-medium text-gray-600">{t('pest.unavailable')}</p>
+            <p className="text-xs text-gray-400 mt-1">{t('pest.connectionHint')}</p>
             <button
               onClick={refresh}
               className="mt-3 text-sm text-farm-green-600 hover:underline font-medium"
             >
-              Try again
+              {t('common.retry')}
             </button>
           </div>
         ) : view === 'alerts' ? (
@@ -247,15 +263,15 @@ const PestAlertCard = ({ crop, location, state, district, weather }) => {
             {alerts.some(a => a.isFallback) && (
               <div className="flex items-center gap-1.5 text-xs text-amber-600 bg-amber-50 px-3 py-1.5 rounded-lg mb-2">
                 <Info className="w-3 h-3" />
-                Showing common pests for {crop} (offline mode)
+                {t('pest.offlineFallback', { crop: t(`crops.${crop?.toLowerCase()}`) || crop })}
               </div>
             )}
             {alerts.length === 0 ? (
               <div className="text-center py-6 text-gray-500">
                 <Shield className="w-8 h-8 mx-auto mb-2 text-green-500 opacity-80" />
-                <p className="text-sm font-medium">Safe Zone</p>
+                <p className="text-sm font-medium">{governmentFeedStatus === 'available' ? t('weather.noAlerts') : t('pest.unavailable')}</p>
                 <p className="text-xs text-gray-400 mt-1 px-4 leading-relaxed">
-                  {crop ? `No high-priority pest alerts matched your selected crop (${crop}) right now.` : 'Select a crop to monitor for threats.'}
+                  {governmentFeedStatus === 'available' && crop ? t('pest.noCropAlerts', { crop: t(`crops.${crop.toLowerCase()}`) || crop }) : ''}
                 </p>
               </div>
             ) : (
@@ -274,9 +290,9 @@ const PestAlertCard = ({ crop, location, state, district, weather }) => {
             {predictions.length === 0 ? (
               <div className="text-center py-6 text-gray-500">
                 <Shield className="w-8 h-8 mx-auto mb-2 text-green-500" />
-                <p className="text-sm">No outbreak predictions available</p>
+                <p className="text-sm">{t('pest.noPredictions')}</p>
                 <p className="text-xs text-gray-400 mt-1">
-                  {crop ? `Prediction models require backend connection` : 'Select a crop for predictions'}
+                  {crop ? t('pest.connectionHint') : t('pest.selectCropMessage')}
                 </p>
               </div>
             ) : (
@@ -293,21 +309,30 @@ const PestAlertCard = ({ crop, location, state, district, weather }) => {
         <div className="mt-3 pt-3 border-t border-gray-100">
           <div className="flex items-center justify-between text-xs">
             <span className="text-gray-500">
-              Seasonal Risk:
+              {t('pest.seasonalRisk')}:
               <span className={`ml-1 font-medium ${seasonalRisk.risk_level === 'high' ? 'text-red-600' :
                 seasonalRisk.risk_level === 'medium' ? 'text-yellow-600' : 'text-green-600'
                 }`}>
-                {seasonalRisk.risk_level?.toUpperCase()}
+                {t(`sidebar.${seasonalRisk.risk_level}`)}
               </span>
             </span>
             {lastUpdated && (
               <span className="text-gray-400">
-                Updated {new Date(lastUpdated).toLocaleTimeString()}
+                {t('mandi.lastUpdated')} {new Date(lastUpdated).toLocaleTimeString()}
               </span>
             )}
           </div>
         </div>
       )}
+
+      <PestReportForm
+        isOpen={reportOpen}
+        onClose={() => setReportOpen(false)}
+        onSubmit={submitReport}
+        crops={crops}
+        initialCrop={crop}
+        initialLocation={location}
+      />
     </div>
   );
 };

@@ -10,8 +10,8 @@ services:
     buildCommand: pip install --upgrade pip && pip install -r requirements.txt
     startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
     envVars:
-      - key: API_KEY
-        value: 579b464db66ec23bdd0000019e4dba64f69842d1547080c5536593c7
+      - key: EXTERNAL_API_KEY
+        sync: false
       - key: PYTHON_VERSION
         value: 3.11.9
       - key: CORS_ORIGINS
