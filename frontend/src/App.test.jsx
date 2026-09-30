@@ -16,6 +16,7 @@ jest.mock('./api/farmingApi', () => ({__esModule:true,default:{
 }}));
 jest.mock('./components/LanguageSelector', () => () => null);
 jest.mock('./hooks/useTextToSpeech', () => ({ SpeakButton: () => null, visiblePageText: () => '' }));
+jest.mock('./components/VoiceInputModal', () => ({isOpen,onClose,onApply}) => isOpen ? <div role="dialog" aria-label="Voice input"><button onClick={onClose}>Close voice</button><button onClick={() => {onApply({crop:'Wheat'});onClose();}}>Apply spoken crop</button></div> : null);
 jest.mock('./components/BottomSheet', () => () => null);
 jest.mock('./components/LoadingOverlay', () => () => null);
 jest.mock('./components/Toast', () => ({ToastContainer:()=>null,useToast:()=>({toasts:[],addToast:mockToast,removeToast:()=>{}})}));
@@ -68,6 +69,20 @@ test('parent updates preserve mounted sidebar local state',async()=>{
   expect(screen.getByLabelText('Sidebar local state').value).toBe('keep input state');
   await act(async()=>{});
   expect(screen.getByLabelText('Sidebar local state').value).toBe('keep input state');
+});
+
+test('workspace voice button opens directly, applies reviewed inputs, and closes', async () => {
+  farmingApi.simulate.mockResolvedValue({success:true,data:{profit:123}});
+  render(<App />);
+  fireEvent.click(screen.getByRole('button',{name:'voice.title'}));
+  expect(screen.getByRole('dialog',{name:'Voice input'})).toBeTruthy();
+  fireEvent.click(screen.getByText('Apply spoken crop'));
+  expect(screen.queryByRole('dialog',{name:'Voice input'})).toBeNull();
+  fireEvent.click(screen.getByText('Run test'));
+  await waitFor(() => expect(farmingApi.simulate).toHaveBeenCalledWith(expect.objectContaining({crop:'Wheat'}),500));
+  fireEvent.click(screen.getByRole('button',{name:'voice.title'}));
+  fireEvent.click(screen.getByText('Close voice'));
+  expect(screen.queryByRole('dialog',{name:'Voice input'})).toBeNull();
 });
 
 test('a response for old inputs cannot populate results or storage', async () => {

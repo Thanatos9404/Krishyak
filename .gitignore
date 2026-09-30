@@ -53,7 +53,7 @@ logs/
 backend/models/*.pkl
 backend/models/*.h5
 backend/models/*.keras
-backend/models/active/*.keras
+# Ship the verified active classifier with deployments.
 backend/models/*.tflite
 backend/models/class_indices.json
 *.onnx

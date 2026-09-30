@@ -2,7 +2,13 @@ venv/
 __pycache__/
 evaluation/
 soil_cache/
-models/
+models/plant_disease_model.h5
+models/class_indices.json
+.env
+.env.*
+.venv/
+tests/
+training_runs/
 *.pyc
 *.pyo
 *.log

@@ -8,6 +8,7 @@ import {
   Lightbulb,
   LogOut,
   MapPin,
+  Mic,
   Shield,
   Store,
   TrendingUp,
@@ -22,6 +23,7 @@ import BottomSheet from './components/BottomSheet';
 import { useToast, ToastContainer } from './components/Toast';
 import LanguageSelector from './components/LanguageSelector';
 import LandingPage from './components/LandingPage';
+import VoiceInputModal from './components/VoiceInputModal';
 import { SpeakButton, visiblePageText } from './hooks/useTextToSpeech';
 import { useFarmerSession } from './hooks/useFarmerSession';
 import { useTranslation } from './i18n';
@@ -62,6 +64,7 @@ function App() {
   const [comparisonData, setComparisonData] = useState(null);
   const [recommendationData, setRecommendationData] = useState(null);
   const [mobileInputsOpen, setMobileInputsOpen] = useState(false);
+  const [voiceOpen, setVoiceOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const profileRef = useRef(null);
   const { toasts, addToast, removeToast } = useToast();
@@ -354,6 +357,7 @@ function App() {
       onSimulate={runSimulation}
       loading={loading}
       hideTitle={hideTitle}
+      onOpenVoice={() => { setMobileInputsOpen(false); setVoiceOpen(true); }}
     />
   );
 
@@ -445,7 +449,12 @@ function App() {
 
       <main className="app-content">
         <div className="workspace-intro"><div><p className="field-eyebrow"><Leaf size={15} aria-hidden="true" />{t('landing.workspaceEyebrow')}</p><h1>{tabs.find(tab => tab.id === activeTab)?.label}</h1><p>{t('landing.workspaceCopy')}</p></div><span className="workspace-crop"><Leaf size={18} aria-hidden="true" />{t(`crops.${formData.crop.toLowerCase()}`)}</span></div>
-        <SpeakButton getText={visiblePageText} resetKey={activeTab} className="mb-3" />
+        <div className="speech-toolbar">
+          <button type="button" className="voice-mode-button" onClick={() => setVoiceOpen(true)} aria-haspopup="dialog" aria-expanded={voiceOpen}>
+            <Mic size={20} aria-hidden="true" />{t('voice.title')}
+          </button>
+          <SpeakButton getText={visiblePageText} resetKey={activeTab} className="speech-toolbar__reading" />
+        </div>
         {catalogNotice}
         <div className="workspace-grid">
           <aside className="desktop-inputs" aria-label={t('sidebar.title')}>{renderSidebar()}</aside>
@@ -494,6 +503,7 @@ function App() {
       </main>
 
       <FloatingActionButton onClick={() => setMobileInputsOpen(true)} />
+      <VoiceInputModal isOpen={voiceOpen} onClose={() => setVoiceOpen(false)} onApply={parsed => setFormData(previous => ({ ...previous, ...parsed }))} />
       <BottomSheet isOpen={mobileInputsOpen} onClose={() => setMobileInputsOpen(false)} title={t('sidebar.title') || 'Farm Inputs'}>
         {renderSidebar(true)}
       </BottomSheet>

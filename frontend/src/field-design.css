@@ -122,8 +122,11 @@ h1,h2,h3,h4,h5,h6,.language-picker__heading strong,.profile-menu__identity stron
 .workspace-intro h1 { font:400 36px/1.2 Georgia,serif; margin:0; }
 .workspace-intro p:last-child { color:#76806c; margin:8px 0 0; font-size:13px; }
 .workspace-crop { display:flex; align-items:center; gap:9px; color:#46643a; background:#edf2e5; border:1px solid #dce5d1; padding:12px 20px; border-radius:30px; font-size:13px; }
-.app-content > .mb-3 { display:flex; flex-wrap:wrap; align-items:center; gap:6px; padding:12px 16px; background:#eeefe4; border:1px solid #e0e4d4; border-radius:12px; margin-bottom:22px; }
-.app-content > .mb-3 button { background:#fffef8; color:#31583c; border-color:#cfd9c3; min-height:44px; }
+.speech-toolbar { display:flex; flex-wrap:wrap; align-items:center; gap:12px; padding:12px 16px; background:#eeefe4; border:1px solid #e0e4d4; border-radius:12px; margin-bottom:22px; }
+.voice-mode-button { display:inline-flex; align-items:center; justify-content:center; gap:9px; min-height:48px; padding:12px 18px; border:1px solid #234c35; border-radius:9px; background:#234c35; color:white; font-weight:600; flex-shrink:0; }
+.voice-mode-button:hover { background:#183c27; }
+.speech-toolbar__reading { flex:1; min-width:0; }
+.speech-toolbar__reading button { background:#fffef8; color:#31583c; border-color:#cfd9c3; min-height:44px; }
 .sidebar-panel { overflow:hidden; border-radius:18px; }
 .sidebar-panel > div:first-child { background:#f2f5eb; border-bottom:1px solid #dee6d4; }
 .sidebar-panel > div:first-child h2 { font-size:21px; }
@@ -214,7 +217,8 @@ h1,h2,h3,h4,h5,h6,.language-picker__heading strong,.profile-menu__identity stron
   .workspace-intro h1 { font-size:30px; }
   .workspace-intro p:last-child { font-size:12px; line-height:1.6; }
   .workspace-crop { padding:8px 12px; font-size:11px; flex:none; }
-  .app-content > .mb-3 { padding:10px; }
+  .speech-toolbar { padding:10px; }
+  .speech-toolbar__reading { flex-basis:100%; }
   .farm-empty-state__photo { height:180px; }
   .farm-empty-state__copy { padding:23px; }
   .farm-empty-state__copy h3 { font-size:27px; }

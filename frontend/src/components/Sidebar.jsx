@@ -6,7 +6,7 @@ import VoiceInputModal from './VoiceInputModal';
 import SoilDataCard from './SoilDataCard';
 import { useTranslation } from '../i18n';
 
-const Sidebar = ({ formData, setFormData, crops, soilTypes, onSimulate, loading, hideTitle = false }) => {
+const Sidebar = ({ formData, setFormData, crops, soilTypes, onSimulate, loading, hideTitle = false, onOpenVoice }) => {
   const { t } = useTranslation();
   const soilTranslationKey = (soil) => soil.toLowerCase().includes('sandy') ? 'sandy' : soil.toLowerCase();
   // Accordion state - Basic Information is expanded by default
@@ -83,7 +83,7 @@ const Sidebar = ({ formData, setFormData, crops, soilTypes, onSimulate, loading,
 
           {/* Voice Input Button */}
           <button
-            onClick={() => setVoiceModalOpen(true)}
+            onClick={onOpenVoice || (() => setVoiceModalOpen(true))}
             className="mt-3 flex items-center justify-center w-full bg-blue-800 text-white py-2.5 px-4 rounded-xl hover:bg-blue-900 transition-colors duration-150"
           >
             <Mic className="w-4 h-4 mr-2" />

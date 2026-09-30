@@ -147,7 +147,7 @@ SARVAM_API_KEY=your_sarvam_key
 
 The default loader uses `backend/models/active/model.keras` and the matching `class_indices.json`; the original model is retained separately. `release.json` identifies the selected model and preserves evaluation metrics. `KRISHYAK_DISEASE_BUNDLE` can override the entire bundle. A backend restart is required after changing bundles. A classifier score is not calibrated diagnostic accuracy.
 
-For a new host, install `backend/requirements-ml.txt` and provision the verified model artifact (SHA-256 `5d8b08e61feae381a7bf05f0dea8fe77527e0dcc2dd7b5714f5160eb5341a591`) into the active directory with its matching labels. Large model binaries are not committed to Git. The lightweight Vercel package excludes models/TensorFlow; use a suitably provisioned inference backend and configure `REACT_APP_API_URL`. Changing this repository does not deploy or provision that remote service.
+The verified active model is included in Git alongside its labels (SHA-256 `5d8b08e61feae381a7bf05f0dea8fe77527e0dcc2dd7b5714f5160eb5341a591`). `backend/requirements.txt` includes the CPU inference runtime. Deploy the backend as a separate Vercel project rooted at `backend`, with Fluid compute and `VERCEL_SUPPORT_LARGE_FUNCTIONS=1` enabled for the TensorFlow package. Set `SARVAM_API_KEY` in that backend project's production environment; a local `.env` does not configure Vercel. The frontend defaults to `https://krishyak-api.vercel.app`, or accepts `REACT_APP_API_URL` for another backend. Verify `/disease-capabilities` and `/speech/capabilities` after deployment. Voice Input is accessible from the workspace toolbar on desktop and mobile.
 
 ### Sarvam translation and speech
 
@@ -167,6 +167,8 @@ Translation and STT cover all 22 scheduled Indian languages plus English. **Sarv
 Speech abuse controls default to 6 requests/IP/minute, 60/IP/day, 20 global/minute, 300 global/day, 200,000 TTS characters/day and 3 concurrent provider calls. Uploads are bounded before multipart parsing; audio is limited to 6 MB and TTS requests to 2,500 characters. Errors do not expose provider response bodies or credentials. Failed attempts and cached responses conservatively count against local quotas. Quotas fail closed if storage is unavailable.
 
 Configure `SARVAM_IP_PER_MINUTE`, `SARVAM_IP_PER_DAY`, `SARVAM_GLOBAL_PER_MINUTE`, `SARVAM_GLOBAL_PER_DAY`, `SARVAM_TTS_CHARACTERS_PER_DAY`, `SARVAM_MAX_CONCURRENT` and `SARVAM_QUOTA_DB` as needed. SQLite counters survive restarts on durable storage and coordinate workers sharing that file. In-memory concurrency/audio cache are per process. Multiple replicas/serverless temporary files do **not** share a global quota: use a shared gateway limiter and a provider account spending cap for deployment-wide protection. Leave `TRUST_PROXY_HEADERS=false` unless the hosting gateway reliably overwrites forwarded client headers. Existing general API rate limits also apply.
+
+Default speech limits are 6 requests/minute and 60/day per client, 20/minute and 300/day per quota store, 200,000 TTS characters/day per store, and 3 concurrent provider calls per process. Requests are bounded to 2,500 TTS characters or 30 seconds of validated WAV audio. Quota storage failures block paid requests. The API key belongs only in the backend environment, never frontend variables or Git. An additional Vercel firewall rule for `POST /speech/*` at 30 requests/minute/IP has been staged in log-only mode; it is not an active blocking rule until reviewed, switched to enforcement, and published in Vercel.
 
 ## 📡 API Endpoints
 

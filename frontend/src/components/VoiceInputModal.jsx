@@ -186,8 +186,8 @@ const VoiceInputModal = ({ isOpen, onClose, onApply }) => {
     : '';
 
   return (
-    <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-4 backdrop-blur-sm" onKeyDown={event => { if (event.key === 'Escape') handleClose(); }}>
+      <div role="dialog" aria-modal="true" aria-label={t('voice.title')} className="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="bg-green-800 p-5 text-white">
           <div className="flex items-center justify-between">
@@ -206,6 +206,7 @@ const VoiceInputModal = ({ isOpen, onClose, onApply }) => {
               </div>
             </div>
             <button
+              autoFocus
               onClick={handleClose}
               className="p-2 hover:bg-white/20 rounded-full transition-colors"
               aria-label={t('common.close') || 'Close'}
