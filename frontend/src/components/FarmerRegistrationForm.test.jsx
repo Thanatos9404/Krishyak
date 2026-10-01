@@ -55,3 +55,11 @@ test('final submission revalidates earlier steps before any backend write', () =
   expect(farmingApi.registerFarmer).not.toHaveBeenCalled();
   expect(screen.queryByRole('button',{name:/registration.submit/})).toBeNull();
 });
+
+test('farmers can enter a primary crop even when the catalog is unavailable', async () => {
+  farmingApi.registerFarmer.mockResolvedValue({success:true});
+  lastStep();
+  fireEvent.change(screen.getByLabelText(/registration.primaryCrop/),{target:{value:' Millet '}});
+  fireEvent.click(screen.getByRole('button',{name:/registration.submit/}));
+  await waitFor(() => expect(farmingApi.registerFarmer).toHaveBeenCalledWith(expect.objectContaining({primaryCrop:'Millet'})));
+});

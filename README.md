@@ -37,6 +37,27 @@ Krishyak (कृष्यक - "The Cultivator") is a comprehensive full-stack w
 | 🌿 **Disease Detection** | Local image classifier with explicit unsupported, uncertain, healthy and unavailable outcomes |
 | 📱 **Mobile-First UX** | Fully stabilized Android-first responsive architecture with Bottom Sheet, touch-safe FABs, & compact data views |
 | 🧪 **Soil Sensor Integration** | Manual soil data entry with NPK, pH, moisture, temperature tracking |
+| 🛰️ **Field Intelligence** | GPS-first nearby weather/climate and optional Copernicus vegetation observations; cloud masks, NDVI/NDMI/NDRE and touch map boundaries |
+
+## Field Intelligence foundation
+
+Implemented locally on 1 October 2026. Open **Field Intelligence** and allow
+device location: no latitude/longitude entry is needed. Weather and a gridded
+1991–2020 climate baseline load automatically. With server CDSE credentials,
+nearby satellite statistics and a small preview also load automatically.
+The 200 m device neighbourhood is clearly labelled, not a confirmed farm.
+Mark actual field corners using map taps when exact field evidence is needed.
+Unknown soil, official pest history, previous crops and satellite disease
+classification remain explicit unknowns; existing soil/pest/crop-photo tools
+are linked. Remote observations do not change economic/advisory equations.
+
+See the [engineering handoff](docs/remote-sensing/ENGINEERING_HANDOFF.md),
+[setup](docs/remote-sensing/SETUP.md), [research](docs/remote-sensing/PROVIDER_RESEARCH.md),
+[ADR](docs/adr/ADR-remote-sensing-provider.md),
+[scientific limits](docs/remote-sensing/SCIENTIFIC_LIMITATIONS.md) and
+[mobile/performance checks](docs/remote-sensing/MOBILE_AND_PERFORMANCE.md).
+Live CDSE processing was not verified because credentials were absent.
+Software tests do not establish scientific validation.
 
 ## 📸 Screenshots
 

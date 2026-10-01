@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Info, Mic, Sprout } from 'lucide-react';
 import AccordionSection from './AccordionSection';
 import WeatherCard from './WeatherCard';
@@ -6,7 +6,7 @@ import VoiceInputModal from './VoiceInputModal';
 import SoilDataCard from './SoilDataCard';
 import { useTranslation } from '../i18n';
 
-const Sidebar = ({ formData, setFormData, crops, soilTypes, onSimulate, loading, hideTitle = false, onOpenVoice }) => {
+const Sidebar = ({ formData, setFormData, crops, soilTypes, onSimulate, loading, hideTitle = false, onOpenVoice, focusSection }) => {
   const { t } = useTranslation();
   const soilTranslationKey = (soil) => soil.toLowerCase().includes('sandy') ? 'sandy' : soil.toLowerCase();
   // Accordion state - Basic Information is expanded by default
@@ -21,6 +21,16 @@ const Sidebar = ({ formData, setFormData, crops, soilTypes, onSimulate, loading,
 
   // Voice input modal state
   const [voiceModalOpen, setVoiceModalOpen] = useState(false);
+  const sidebarElement = React.useRef(null);
+  useEffect(() => {
+    if (!focusSection) return;
+    setExpandedSections(previous => ({ ...previous, [focusSection.section]: true }));
+    const timer = window.setTimeout(() => {
+      const target = sidebarElement.current?.querySelector(`[data-farm-section="${focusSection.section}"]`);
+      target?.scrollIntoView?.({ behavior: 'smooth', block: 'center' });
+    }, 50);
+    return () => window.clearTimeout(timer);
+  }, [focusSection]);
 
   const toggleSection = (section) => {
     setExpandedSections(prev => ({
@@ -68,7 +78,7 @@ const Sidebar = ({ formData, setFormData, crops, soilTypes, onSimulate, loading,
 
   return (
     <>
-      <div className="sidebar-panel w-full bg-white rounded-2xl flex flex-col lg:max-h-[calc(100vh-160px)] lg:sticky lg:top-20">
+      <div ref={sidebarElement} className="sidebar-panel w-full bg-white rounded-2xl flex flex-col lg:max-h-[calc(100vh-160px)] lg:sticky lg:top-20">
         {/* Header */}
         <div className="text-center p-4 sm:p-6 border-b-2 border-farm-green-100 flex-shrink-0">
           {!hideTitle ? (
@@ -98,6 +108,7 @@ const Sidebar = ({ formData, setFormData, crops, soilTypes, onSimulate, loading,
             title={t('sidebar.basicInfo') || 'Basic Information'}
             icon={null}
             isExpanded={expandedSections.basic}
+            sectionId="basic"
             onToggle={() => toggleSection('basic')}
           >
             {/* Crop Selection */}
@@ -151,6 +162,7 @@ const Sidebar = ({ formData, setFormData, crops, soilTypes, onSimulate, loading,
             title={t('soilSensor.title') || 'Soil Sensor Data'}
             icon={null}
             isExpanded={expandedSections.soil}
+            sectionId="soil"
             onToggle={() => toggleSection('soil')}
           >
             <SoilDataCard
@@ -170,6 +182,7 @@ const Sidebar = ({ formData, setFormData, crops, soilTypes, onSimulate, loading,
             title={t('sidebar.weatherConditions') || 'Weather Conditions'}
             icon={null}
             isExpanded={expandedSections.weather}
+            sectionId="weather"
             onToggle={() => toggleSection('weather')}
           >
             {/* Weather Card with Location Detection */}
@@ -276,6 +289,7 @@ const Sidebar = ({ formData, setFormData, crops, soilTypes, onSimulate, loading,
             title={t('sidebar.irrigationPest') || 'Irrigation & Pest Control'}
             icon={null}
             isExpanded={expandedSections.irrigation}
+            sectionId="irrigation"
             onToggle={() => toggleSection('irrigation')}
           >
             {/* Irrigation */}

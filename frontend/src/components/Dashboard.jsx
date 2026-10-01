@@ -156,7 +156,7 @@ const Dashboard = ({ simulationData, formData, farmer, crops = [] }) => {
       </div>
 
       {/* Pest Intelligence Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div id="dashboard-pest" className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <PestAlertCard
           crop={formData?.crop || simulationData?.crop || ''}
           crops={crops}

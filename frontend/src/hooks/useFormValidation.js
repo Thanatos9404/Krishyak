@@ -74,18 +74,20 @@ export const useFormValidation = () => {
       stepErrors[field] = message;
       isValid = false;
     };
+    const validateText = (field, label, max = 1000) => {
+      const value = typeof formData[field] === 'string' ? formData[field].trim() : '';
+      const length = Array.from(value).length;
+      if (!length) addError(field, t('validation.required'));
+      else if (length < 2 || length > max) addError(field, t('validation.range', {label: t(label), min: 2, max}));
+    };
 
     switch (stepNumber) {
       case 1: // Personal Information
-        if (!formData.fullName?.trim()) {
-          addError('fullName', t('validation.required') || 'This field is required');
-        }
-        if (!formData.fatherName?.trim()) {
-          addError('fatherName', t('validation.required') || 'This field is required');
-        }
+        validateText('fullName', 'registration.fullName', 100);
+        validateText('fatherName', 'registration.fatherName', 100);
         if (!formData.mobileNumber?.trim()) {
           addError('mobileNumber', t('validation.required') || 'This field is required');
-        } else if (!MOBILE_REGEX.test(formData.mobileNumber)) {
+        } else if (!MOBILE_REGEX.test(formData.mobileNumber.trim())) {
           addError('mobileNumber', t('validation.invalidMobile') || 'Please enter a valid 10-digit mobile number');
         }
         // Aadhaar is optional - only validate format if provided
@@ -95,13 +97,10 @@ export const useFormValidation = () => {
         break;
 
       case 2: // Location Details
-        if (!formData.state) addError('state', t('validation.required') || 'This field is required');
-        if (!formData.district) addError('district', t('validation.required') || 'This field is required');
-        if (!formData.tehsil) addError('tehsil', t('validation.required') || 'This field is required');
-        if (!formData.village?.trim()) addError('village', t('validation.required') || 'This field is required');
+        for (const field of ['state', 'district', 'tehsil', 'village']) validateText(field, `registration.${field}`);
         if (!formData.pinCode?.trim()) {
           addError('pinCode', t('validation.required') || 'This field is required');
-        } else if (!PIN_REGEX.test(formData.pinCode)) {
+        } else if (!PIN_REGEX.test(formData.pinCode.trim())) {
           addError('pinCode', t('validation.invalidPinCode') || 'Please enter a valid 6-digit PIN code');
         }
         break;

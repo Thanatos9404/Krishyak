@@ -6,10 +6,11 @@ const AccordionSection = ({
   icon,
   isExpanded,
   onToggle,
+  sectionId,
   children
 }) => {
   return (
-    <div className="border-b border-gray-200 last:border-b-0">
+    <div data-farm-section={sectionId} className="border-b border-gray-200 last:border-b-0">
       {/* Accordion Header */}
       <button
         onClick={onToggle}

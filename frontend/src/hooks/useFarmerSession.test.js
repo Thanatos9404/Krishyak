@@ -54,6 +54,15 @@ test('new and legacy drafts exclude personal identifiers', () => {
   expect(result.current.loadDraft()).toBeNull();
 });
 
+test('malformed saved field types are discarded and legacy numeric land areas become strings', () => {
+  localStorage.setItem('krishyak_registration_draft', JSON.stringify({
+    village:{bad:true}, district:123, tehsil:null, primaryCrop:['Rice'], landUnit:'invalid',
+    totalLandArea:2, irrigatedLand:0, secondaryCrops:['Wheat',{},null], state:'Punjab'
+  }));
+  const {result} = renderHook(() => useFarmerSession());
+  expect(result.current.loadDraft()).toEqual({state:'Punjab',totalLandArea:'2',irrigatedLand:'0',secondaryCrops:['Wheat']});
+});
+
 test('logout removes farm caches while preserving language preference', () => {
   const keys = ['krishyak_registration_draft', 'krishyak_sim_cache', 'pestAlerts', 'pestPredictions', 'krishyak_soil_data'];
   keys.forEach(key => localStorage.setItem(key, 'private'));

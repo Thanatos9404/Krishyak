@@ -29,3 +29,16 @@ test('clearing one field error preserves others and clearing all resets validati
   act(() => result.current.clearErrors());
   expect(result.current.errors).toEqual({});
 });
+
+test('names and location fields meet the server length requirements before submission', () => {
+  const {result} = renderHook(() => useFormValidation());
+  const personal = {fullName:'A',fatherName:'Test Parent',mobileNumber:'9876543210'};
+  act(() => expect(result.current.validateStep(1, personal)).toBe(false));
+  expect(result.current.errors.fullName).toBeTruthy();
+  act(() => expect(result.current.validateStep(1, {...personal,fullName:'A'.repeat(101)})).toBe(false));
+  act(() => expect(result.current.validateStep(1, {...personal,fullName:'  Test Farmer ',mobileNumber:'9876543210 '})).toBe(true));
+  const place = {state:'Punjab',district:'Ludhiana',tehsil:'Ludhiana',village:'A',pinCode:'141001'};
+  act(() => expect(result.current.validateStep(2, place)).toBe(false));
+  expect(result.current.errors.village).toBeTruthy();
+  act(() => expect(result.current.validateStep(2, {...place,village:'Village',pinCode:'141001 '})).toBe(true));
+});

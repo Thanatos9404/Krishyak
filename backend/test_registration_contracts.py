@@ -20,6 +20,14 @@ class RegistrationAreaContracts(unittest.TestCase):
             model = FarmerRegistrationInput(**self.payload(**parts))
             self.assertEqual(model.totalLandArea, '1.0')
 
+    def test_keyboard_whitespace_is_normalized_before_validation(self):
+        payload = self.payload()
+        payload.update(fullName='  Test Farmer  ', mobileNumber='9876543210 ', pinCode=' 141001')
+        model = FarmerRegistrationInput(**payload)
+        self.assertEqual(model.fullName, 'Test Farmer')
+        self.assertEqual(model.mobileNumber, '9876543210')
+        self.assertEqual(model.pinCode, '141001')
+
     def test_nonfinite_and_negative_optional_areas_rejected(self):
         for value in ('NaN', 'Infinity', '-1', 'invalid'):
             with self.assertRaises(ValidationError):

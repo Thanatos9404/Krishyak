@@ -54,6 +54,16 @@ export default function useFarmCatalog() {
       }
     }));
   }, []);
-  useEffect(() => { reload(); return () => { sequence.current += 1; }; }, [reload]);
+  useEffect(() => {
+    reload();
+    const reconnect = () => reload();
+    window.addEventListener('online', reconnect);
+    return () => { sequence.current += 1; window.removeEventListener('online', reconnect); };
+  }, [reload]);
+  useEffect(() => {
+    if (!Object.values(catalog.status).some(status => ['cached', 'unavailable'].includes(status))) return;
+    const timer = setTimeout(reload, 30000);
+    return () => clearTimeout(timer);
+  }, [catalog.status, reload]);
   return {...catalog, reload};
 }

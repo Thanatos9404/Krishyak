@@ -90,7 +90,8 @@ async def generate(args):
     key = os.getenv('SARVAM_API_KEY', '').strip()
     if not key:
         raise RuntimeError('Set SARVAM_API_KEY in backend/.env')
-    source_path = ROOT / 'frontend/src/i18n/locales/en.json'
+    source_path = Path(args.source) if args.source else ROOT / 'frontend/src/i18n/locales/en.json'
+    output_path = Path(args.output) if args.output else OUT
     source_text = source_path.read_text(encoding='utf-8')
     source = json.loads(source_text)
     strings = list(dict.fromkeys(value for _, value in leaves(source)))
@@ -204,10 +205,10 @@ async def generate(args):
                 if Counter(PLACEHOLDERS.findall(value)) != Counter(PLACEHOLDERS.findall(s)):
                     raise ValueError('Cached placeholder mismatch')
                 put(translated, path, value)
-            atomic_json(OUT / (language + '.json'), translated)
-            atomic_json(OUT / (language + '.meta.json'), {'provider': 'Sarvam', 'model': MODEL,
+            atomic_json(output_path / (language + '.json'), translated)
+            atomic_json(output_path / (language + '.meta.json'), {'provider': 'Sarvam', 'model': MODEL,
                         'source_sha256': digest(source_text),
-                        'pack_sha256': digest((OUT / (language + '.json')).read_text(encoding='utf-8')),
+                        'pack_sha256': digest((output_path / (language + '.json')).read_text(encoding='utf-8')),
                         'strings': len(list(leaves(source))), 'review_status': 'machine_translated_needs_native_review'})
             print(f'Published {language}', flush=True)
         # A small fixed worker pool avoids uncontrolled API spend/concurrency.
@@ -225,4 +226,6 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--languages', nargs='+')
     parser.add_argument('--workers', type=int, choices=range(1, 5), default=3)
+    parser.add_argument('--source', help='Optional additive locale source; preserve main UI packs')
+    parser.add_argument('--output', help='Optional output directory for additive locale packs')
     asyncio.run(generate(parser.parse_args()))

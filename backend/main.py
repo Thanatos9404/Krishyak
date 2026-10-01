@@ -44,6 +44,7 @@ from datetime import datetime
 from rate_limiter import RateLimiter
 from sarvam_service import router as speech_router
 from speech_limits import SpeechBodyLimit
+from remote_sensing.router import router as remote_sensing_router
 
 rate_limiter = RateLimiter(security_config.rate_limit_per_minute, security_config.rate_limit_per_day)
 
@@ -66,6 +67,7 @@ app = FastAPI(
     redoc_url="/redoc" if security_config.is_development else None,
 )
 app.include_router(speech_router)
+app.include_router(remote_sensing_router)
 app.add_middleware(SpeechBodyLimit)
 
 # CORS middleware with secure configuration. Keep the stable production alias
@@ -255,6 +257,7 @@ FARMER_DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 class FarmerRegistrationInput(BaseModel):
     """Pydantic model for farmer registration data"""
+    model_config = {"str_strip_whitespace": True}
     fullName: str = Field(..., min_length=2, max_length=100, description="Full name of farmer")
     fatherName: str = Field(..., min_length=2, max_length=100, description="Father's or husband's name")
     mobileNumber: str = Field(..., min_length=10, max_length=10, pattern=r"^\d{10}$", description="10-digit mobile number")

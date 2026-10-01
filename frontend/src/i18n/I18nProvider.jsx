@@ -10,6 +10,8 @@ import {
   loadLanguagePreference,
 } from './config';
 import en from './locales/en.json';
+import remoteSensingEnglish from './locales/remote-sensing/en.json';
+import { REMOTE_SENSING_LOCALE_LOADERS } from './remoteSensingLocales';
 import { SARVAM_LOCALE_LOADERS } from './sarvamLocales';
 
 export const SHELL_PATCHES = {
@@ -131,6 +133,7 @@ export const buildDerivedTranslations = (messages) => {
   const join = (...parts) => parts.filter(Boolean).join(' ');
 
   return {
+    remoteSensing: remoteSensingEnglish.remoteSensing,
     common: {
       optional: read('registration.nameOptional', read('common.select', read('common.submit'))),
       information: read('common.select', read('common.submit')),
@@ -469,7 +472,7 @@ const applyDocumentLanguage = (code) => {
 export const I18nProvider = ({ children }) => {
   const initialEnglishRef = useRef(null);
   if (!initialEnglishRef.current) {
-    initialEnglishRef.current = deepMerge(buildDerivedTranslations(en), en);
+    initialEnglishRef.current = deepMerge(deepMerge(buildDerivedTranslations(en), en), remoteSensingEnglish);
   }
   const [currentLanguage, setCurrentLanguage] = useState(DEFAULT_LANGUAGE);
   const [messages, setMessages] = useState(initialEnglishRef.current);
@@ -480,10 +483,13 @@ export const I18nProvider = ({ children }) => {
   const loadLanguage = useCallback(async (code) => {
     const safeCode = SUPPORTED_LANGUAGES[code] ? code : DEFAULT_LANGUAGE;
     if (cacheRef.current[safeCode]) return cacheRef.current[safeCode];
-    const sarvam = await (SARVAM_LOCALE_LOADERS[safeCode]?.() || Promise.resolve({}));
+    const [sarvam, remote] = await Promise.all([
+      SARVAM_LOCALE_LOADERS[safeCode]?.() || Promise.resolve({}),
+      REMOTE_SENSING_LOCALE_LOADERS[safeCode]?.() || Promise.resolve(remoteSensingEnglish),
+    ]);
     if (sarvam.app && sarvam.speech) {
-      cacheRef.current[safeCode] = sarvam;
-      return sarvam;
+      cacheRef.current[safeCode] = deepMerge(deepMerge(sarvam, remoteSensingEnglish), remote);
+      return cacheRef.current[safeCode];
     }
     // Retain the previous static pack only while a new pack is being generated.
     const [loaded, generated, catalog] = await Promise.all([
@@ -494,7 +500,7 @@ export const I18nProvider = ({ children }) => {
     const withDerivedKeys = deepMerge(buildDerivedTranslations(loaded || {}), loaded || {});
     const withGenerated = deepMerge(withDerivedKeys, generated);
     const withCatalog = deepMerge(withGenerated, catalog);
-    cacheRef.current[safeCode] = deepMerge(deepMerge(withCatalog, SHELL_PATCHES[safeCode]), sarvam);
+    cacheRef.current[safeCode] = deepMerge(deepMerge(deepMerge(deepMerge(withCatalog, SHELL_PATCHES[safeCode]), sarvam), remoteSensingEnglish), remote);
     return cacheRef.current[safeCode];
   }, []);
 
@@ -526,7 +532,7 @@ export const I18nProvider = ({ children }) => {
   const t = useCallback((key, params = {}) => {
     const translated = getNestedTranslation(messages, key, params);
     if (translated !== null && translated !== undefined) return translated;
-    const fallback = getNestedTranslation(en, key, params);
+    const fallback = getNestedTranslation(remoteSensingEnglish, key, params) ?? getNestedTranslation(en, key, params);
     return fallback === null || fallback === undefined ? null : fallback;
   }, [messages]);
 

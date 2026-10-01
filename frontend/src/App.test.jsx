@@ -71,6 +71,15 @@ test('parent updates preserve mounted sidebar local state',async()=>{
   expect(screen.getByLabelText('Sidebar local state').value).toBe('keep input state');
 });
 
+test('unavailable catalogs do not show the global yellow retry notice', async () => {
+  farmingApi.getCrops.mockRejectedValue(new Error('offline'));
+  farmingApi.getSoilTypes.mockRejectedValue(new Error('offline'));
+  render(<App />);
+  await act(async () => {});
+  expect(screen.queryByText('common.retry')).toBeNull();
+  expect(document.querySelector('.bg-amber-50')).toBeNull();
+});
+
 test('workspace voice button opens directly, applies reviewed inputs, and closes', async () => {
   farmingApi.simulate.mockResolvedValue({success:true,data:{profit:123}});
   render(<App />);
@@ -117,13 +126,12 @@ test('logout invalidates a pending response', async () => {
   expect(localStorage.getItem('krishyak_sim_cache')).toBeNull();
 });
 
-test('catalog unavailable notice exposes a working retry',async()=>{
+test('catalog recovers on reconnect without a global retry notice',async()=>{
   farmingApi.getCrops.mockRejectedValueOnce(new Error('offline')).mockResolvedValue({crops:['Rice']});
   farmingApi.getSoilTypes.mockResolvedValue({soil_types:['Alluvial']});
   render(<App />);
-  await waitFor(()=>expect(screen.getByRole('button',{name:'common.retry'}).disabled).toBe(false));
-  expect(screen.getByText(/common.notAvailable/)).toBeTruthy();
-  fireEvent.click(screen.getByRole('button',{name:'common.retry'}));
-  await waitFor(()=>expect(screen.queryByRole('button',{name:'common.retry'})).toBeNull());
+  await act(async()=>{});
+  expect(screen.queryByRole('button',{name:'common.retry'})).toBeNull();
+  await act(async()=>window.dispatchEvent(new Event('online')));
   expect(farmingApi.getCrops).toHaveBeenCalledTimes(2);
 });
