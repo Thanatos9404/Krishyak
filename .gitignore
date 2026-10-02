@@ -115,3 +115,5 @@ Krishyak_SIH2026_Metrics/
 Krishyak_SIH2026*.pptx
 frontend/dependency-audit*.json
 frontend/lint-report.json
+
+!backend/models/active/model.tflite
