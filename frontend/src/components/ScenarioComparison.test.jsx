@@ -11,4 +11,3 @@ test('scenario cards retain the minus sign for losses and show positive profit c
   expect(screen.getByText('₹2,000')).toBeInTheDocument();
   expect(screen.queryByText('₹1,000')).not.toBeInTheDocument();
 });
-

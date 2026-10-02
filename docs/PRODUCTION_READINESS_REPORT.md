@@ -24,7 +24,7 @@ The reviewed starting revision was `71f836f` on `feature/krishyak-geoai-remote-s
 
 ### 1. Identity, privacy and durable data â€” critical
 
-`useFarmerSession.js` stores a profile in browser session storage. It does not authenticate an owner against the backend. Sensor read/write endpoints accept caller-supplied device IDs, and the default soil sensor uses `default`; there is no owner access check. The pest alerts API can return report records with precise coordinates and descriptions. These are code-inspection findings; no real farmer data was accessed or modified in this audit.
+`useFarmerSession.js` stores a profile in browser session storage. It does not authenticate an owner against the backend. Sensor read/write endpoints accept caller-supplied device IDs, and the default soil sensor uses `default`; there is no owner access check. The pest alerts API can return report records with precise coordinates and descriptions. These are code-inspection findings. No actual farmer identity was submitted and no existing records were deliberately modified during release checks.
 
 Registration writes plaintext personal fields to local CSV, or temporary `/tmp` storage on Vercel. Local atomic writes and file locking improve write integrity but do not provide durable serverless storage, backups, identity recovery, authorization or deletion workflows. Browser logout does not remove the server record. Consent and government identity tokens are demo/in-memory mechanisms.
 
@@ -40,7 +40,7 @@ The current classes cover 14 crop groups and exclude major requested crops such 
 
 ### 3. Yield, profit and eligibility claims â€” high
 
-The simulation uses agronomic rules and assumed Monte Carlo ranges. Price forecasting is an entered-price persistence baseline with no validated best selling date. This does not demonstrate realized yield or income improvement. Some translated UI copy still calls heuristic plans AI-optimized, implies selling-time optimization, or expresses pest-control input changes as a percentage crop-loss reduction without causal validation.
+The simulation uses agronomic rules and assumed Monte Carlo ranges. Price forecasting is an entered-price persistence baseline with no validated best selling date. This does not demonstrate realized yield or income improvement. Some translated UI copy still calls heuristic plans AI-optimized, implies selling-time optimization, or expresses pest-control input changes as a percentage crop-loss reduction without causal validation. The market forecast still says it is based on mandi trends despite the baseline using an entered price. A scheme card retains an MSP 2025–26 title even though the separate MSP rate card correctly displays the 2026–27 publication.
 
 Scheme matching is indicative and can combine loan/noncash benefits into estimated support. It does not prove eligibility, government approval, entitlement or DBT receipt. Official Aadhaar/land/bank/PM-Kisan integrations are not live verified; demo identity verification is disabled by default. MSP is a source-linked published snapshot, while live mandi data requires a configured provider key and can be unavailable.
 
@@ -52,11 +52,11 @@ The failed API deployment packaged 1,668.27 MB against a 500 MB Python limit. Th
 
 Health currently confirms process response rather than storage/model/provider readiness. Quotas and caches are primarily per process or local filesystem; serverless replicas do not share a durable global budget. General request throttling, public speech usage, provider cost controls and concurrency need multi-instance testing. No CI quality gate, restore exercise, SLO, incident runbook or integrated telemetry was found in the reviewed repository; hosting-side controls beyond deployment settings were not comprehensively inspected.
 
-**Gate:** reproducible production dependency locking, CI release checks, readiness probes, shared throttling/quotas, monitoring, load/cold-start measurements and rollback rehearsal. Secure production configuration and staged promotion are necessary but do not resolve the account/storage gaps above.
+The repaired production runtime is now locked to audited versions. **Remaining gate:** CI release checks, readiness probes, shared throttling/quotas, monitoring, load/cold-start measurements and rollback rehearsal. Secure production configuration and staged promotion are necessary but do not resolve the account/storage gaps above.
 
 ### 5. Farmer experience and low-end phones â€” medium
 
-Desktop and mobile-width layouts were inspected and core navigation worked. Several sidebar controls lack accessible names; keyboard and screen-reader coverage need improvement. The main JavaScript bundle is approximately 829 kB before gzip and the optional map bundle approximately 1,038 kB. A manifest and limited cached summaries do not establish a complete offline PWA. Some secondary data hooks lack bounded request cancellation.
+Desktop and 320/390/768-pixel layouts were inspected and core navigation worked without horizontal page overflow. Hindi and Urdu locale packs loaded; Urdu switched to right-to-left layout. Mobile registration loaded without browser errors. Release QA with explicitly emulated Jaipur GPS populated current weather and the ERA5 baseline automatically; this does not verify physical GPS hardware. Several sidebar controls lack accessible names; keyboard and screen-reader coverage need improvement. The main JavaScript bundle is approximately 829 kB before gzip and the optional map bundle approximately 1,038 kB. A manifest and limited cached summaries do not establish a complete offline PWA. Some secondary data hooks lack bounded request cancellation. The satellite-unavailable panel still contains administrator/credential terminology that should be simplified for farmers. An uncertain image is shown as a message alongside a No Analysis Yet placeholder, which should more clearly distinguish a completed uncertain assessment.
 
 **Gate:** physical Android/iOS GPS, camera, microphone and speaker testing; slow-network and low-memory budgets; accessible labels and keyboard focus; Hindi and regional-language field usability; truthful offline and permission-denied states. Automatic device location still requires the browser/OS permission and represents the phone's location, which may be away from the farm.
 
@@ -77,3 +77,9 @@ No user traction, retention, willingness to pay, acquisition cost, unit economic
 5. Reassess readiness with measurable acceptance criteria and an independent security review.
 
 This assessment covers the inspected repository, recorded model evidence, automated suites and selected real browser/API flows. It does not assert every physical device, paid provider, deployment region or failure combination was tested.
+
+## Verified public release
+
+Both components were promoted on 2 October 2026 from source commit `9bdf0e62e835920ff1d390614a9c17ffcaa23be2`. [Public app](https://krishyak.vercel.app) and [API health](https://krishyak-api.vercel.app/health) responded successfully. The API deployment is `dpl_4kgN8RYv3J3hJ6NMVjsxfkbv1bcM`; the frontend is `dpl_7eq8ZJEicLWsgDPSS1653dwy9ehu`. Authenticated candidate checks and public checks confirmed real image inference, synthetic speech transcription, TTS generation, CORS and production docs disabled. Actual browser simulation/recommendation/comparison requests returned 200.
+
+Browser read-aloud completed with an actual audio-source start and end on retry. Its first synthesis request recorded status 0 and the UI showed a recoverable connection error; the release therefore does not demonstrate uninterrupted provider availability. Live mandi data remained unavailable without its provider configuration, and satellite imagery remained explicitly disabled without credentials. These capabilities were preserved in code rather than substituted with fabricated results.

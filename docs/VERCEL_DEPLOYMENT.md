@@ -51,4 +51,23 @@ Live satellite imagery still requires configured CDSE credentials; weather, soil
 
 ## Release outcome
 
-Cloud deployment URLs, final READY status and public smoke-test results are recorded after the release checks finish.
+Both production candidates reached **READY** and were promoted after checks on 2 October 2026. Source commit: `9bdf0e62e835920ff1d390614a9c17ffcaa23be2`.
+
+| Component | Public URL | Deployment ID |
+|---|---|---|
+| Frontend | https://krishyak.vercel.app | `dpl_7eq8ZJEicLWsgDPSS1653dwy9ehu` |
+| API | https://krishyak-api.vercel.app | `dpl_4kgN8RYv3J3hJ6NMVjsxfkbv1bcM` |
+
+Vercel inspect reports the new API function as **68.01 MB**; its cloud build passed the size gate. This platform-reported function size is recorded separately from the measured 265.70 MB source/dependency estimate; they should not be treated as identical size measurements.
+
+All 21 authenticated API candidate checks passed, covering valid and invalid requests, classifier/crop abstention, geometry, simulation/recommendation/comparison, configured speech, origin checks and production `/docs` returning 404. Public checks confirmed HTML and its production asset, catalogues, capabilities, geometry-service status, published MSP, image inference, approved-origin preflight and nonempty Sarvam transcription of synthetic public-text audio.
+
+The candidate browser verified all six core feature screens, registration loading, actual simulation requests, the negative worst-case amount, uncertain photo output, speech playback on retry, automatically fetched weather/climate with emulated GPS, Hindi/Urdu loading and 320/390/768-pixel layouts. Physical phone permissions and live satellite imagery remain outside verified coverage. A first browser speech request failed with status 0; retry produced completed playback. Live mandi remained unavailable without provider configuration. These are operational limitations, not silently replaced data.
+
+An error-level log query for the API deployment returned **No logs found**. This is a bounded observation, not proof of comprehensive monitoring or zero incidents; expected validation/provider-unavailable responses are documented separately.
+
+Previous production deployments retained for rollback:
+- API: `dpl_7fGgi95SHsKQsZz3qsFwC44Hbzk9`
+- Frontend: `dpl_DDcmZ9Qz4wM5EsPZG4cdEz8H4kD4`
+
+No prior deployments were deleted and deployment protection remains enabled.
