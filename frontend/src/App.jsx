@@ -39,7 +39,7 @@ const CropHealthCheck = deferredFeature(() => import('./components/CropHealthChe
 const MandiPriceCard = deferredFeature(() => import('./components/MandiPriceCard'));
 const MSPRateCard = deferredFeature(() => import('./components/MSPRateCard'));
 const PriceForecastChart = deferredFeature(() => import('./components/PriceForecastChart'));
-const FarmerRegistrationForm = deferredFeature(() => import('./components/FarmerRegistrationForm'));
+const FarmWorkspace = deferredFeature(() => import('./features/farms/FarmWorkspace'));
 const MSPFullView = deferredFeature(() => import('./components/MSPFullView'));
 const PrivacyPolicy = deferredFeature(() => import('./components/PrivacyPolicy'));
 const TermsOfService = deferredFeature(() => import('./components/TermsOfService'));
@@ -52,7 +52,6 @@ function App() {
     isRegistered,
     loading: sessionLoading,
     logout,
-    login,
     guestLogin
   } = useFarmerSession();
   const [activeTab, setActiveTab] = useState('dashboard');
@@ -275,15 +274,6 @@ function App() {
     }
   };
 
-  const handleRegistrationComplete = (profile) => {
-    login(profile);
-    setGuestMode(false);
-    addToast({
-      type: 'success',
-      message: t('registration.success') || `Welcome, ${profile.fullName}! Registration complete.`
-    });
-    navigateTo('main');
-  };
 
   const handleSkipRegistration = () => {
     guestLogin();
@@ -293,7 +283,7 @@ function App() {
 
   const handleProfileClick = () => {
     if (!isRegistered) {
-      navigateTo('register');
+      window.location.assign('/farm');
       return;
     }
     setProfileOpen(open => !open);
@@ -332,7 +322,7 @@ function App() {
   if (currentPage === 'terms') return <TermsOfService onBack={() => navigateTo('main')} />;
   if (currentPage === 'msp') return <MSPFullView onBack={() => navigateTo('main')} />;
   if (currentPage === 'register') {
-    return <FarmerRegistrationForm crops={crops} onComplete={handleRegistrationComplete} onSkip={isRegistered || isGuest ? () => navigateTo('main') : handleSkipRegistration} />;
+    return <FarmWorkspace />;
   }
 
   const tabs = [

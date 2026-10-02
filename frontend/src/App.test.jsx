@@ -9,7 +9,7 @@ let mockSession;
 jest.mock('./hooks/useFarmerSession', () => ({useFarmerSession: () => mockSession || ({
   farmer:{fullName:'Test Farmer'},isRegistered:true,loading:false,logout:mockLogout,
 })}));
-jest.mock('./components/FarmerRegistrationForm', () => ({onSkip, onComplete}) => <div><h1>Existing registration form</h1><button onClick={onSkip}>Skip registration</button><button onClick={() => onComplete({fullName:'New Farmer'})}>Finish registration</button></div>);
+jest.mock('./features/farms/FarmWorkspace', () => () => <div><h1>Authenticated farm account workflow</h1></div>);
 jest.mock('./i18n', () => ({useTranslation: () => ({t:key=>key})}));
 jest.mock('./api/farmingApi', () => ({__esModule:true,default:{
   getCrops:jest.fn(),getSoilTypes:jest.fn(),simulate:jest.fn(),compareScenarios:jest.fn(),getRecommendations:jest.fn(),
@@ -39,25 +39,22 @@ beforeEach(() => {
   farmingApi.getRecommendations.mockResolvedValue({success:true,data:{profit_improvement:0}});
 });
 
-test('a new visitor sees landing, Register opens the existing form, and Skip enters the workspace', async () => {
+test('planning registration opens the authenticated farm account workflow', async () => {
   const guestLogin = jest.fn();
   mockSession = {farmer:null,isRegistered:false,loading:false,guestLogin,login:jest.fn(),logout:mockLogout};
   render(<App />);
   expect(screen.getByRole('heading', {level:1}).textContent).toContain('landing.title');
   fireEvent.click(screen.getAllByRole('button', {name:'landing.start'})[0]);
-  await screen.findByRole('heading', {name:'Existing registration form'});
+  await screen.findByRole('heading', {name:'Authenticated farm account workflow'});
   expect(window.location.pathname).toBe('/register');
-  fireEvent.click(screen.getByText('Skip registration'));
-  expect(guestLogin).toHaveBeenCalledTimes(1);
-  expect(screen.getByTestId('result')).toBeTruthy();
-  expect(window.location.pathname).toBe('/');
+  expect(guestLogin).not.toHaveBeenCalled();
 });
 
-test('browser back from registration restores the landing page without losing the existing registration route', async () => {
+test('browser back from account registration restores the planning landing page', async () => {
   mockSession = {farmer:null,isRegistered:false,loading:false,guestLogin:jest.fn(),login:jest.fn(),logout:mockLogout};
   window.history.replaceState({}, '', '/register');
   render(<App />);
-  await screen.findByRole('heading', {name:'Existing registration form'});
+  await screen.findByRole('heading', {name:'Authenticated farm account workflow'});
   act(() => { window.history.replaceState({}, '', '/'); window.dispatchEvent(new PopStateEvent('popstate')); });
   expect(screen.getByRole('button', {name:'landing.explore'})).toBeTruthy();
 });

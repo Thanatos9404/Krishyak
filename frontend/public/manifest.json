@@ -1,13 +1,23 @@
 {
   "short_name": "Krishyak",
-  "name": "Krishyak - AI Farm Decision Simulator",
+  "name": "Krishyak — Field Intelligence",
   "icons": [
     {
-      "src": "krishyak_logo.png",
-      "type": "image/png"
+      "src": "icon-192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any"
+    },
+    {
+      "src": "icon-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any"
     }
   ],
-  "start_url": ".",
+  "id": "/farm",
+  "start_url": "/farm",
+  "scope": "/",
   "display": "standalone",
   "theme_color": "#22c55e",
   "background_color": "#ffffff"

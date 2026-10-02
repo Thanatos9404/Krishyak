@@ -1,6 +1,7 @@
 import React from 'react';
 import { ArrowLeft, Database, MapPin, ShieldCheck, Trash2 } from 'lucide-react';
 import { useTranslation } from '../i18n';
+import V2LegalNotice from '../features/farms/V2LegalNotice';
 
 const SECTION_ICONS = [Database, MapPin, ShieldCheck, Trash2];
 
@@ -20,6 +21,7 @@ const PrivacyPolicy = ({ onBack }) => {
         </header>
 
         <div className="p-5 sm:p-7 space-y-5">
+          <V2LegalNotice />
           {[1, 2, 3, 4].map((index) => {
             const Icon = SECTION_ICONS[index - 1];
             return (
