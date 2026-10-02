@@ -138,10 +138,13 @@ python -m venv venv
 venv\Scripts\activate        # Windows
 # source venv/bin/activate   # Linux/Mac
 pip install -r requirements.txt
+# Windows/macOS image inference, or training/evaluation:
+# pip install -r requirements-ml.txt
 python main.py
 ```
 - API: `http://localhost:8000`
-- Docs: `http://localhost:8000/docs`
+- Docs: `http://localhost:8000/docs` (development only)
+- On Windows/macOS, install `requirements-ml.txt` for local Keras image inference. Linux can use the compact LiteRT runtime from `requirements.txt` without TensorFlow.
 
 ### Frontend Setup
 
@@ -166,9 +169,13 @@ SARVAM_API_KEY=your_sarvam_key
 
 ### Active disease model
 
-The default loader uses `backend/models/active/model.keras` and the matching `class_indices.json`; the original model is retained separately. `release.json` identifies the selected model and preserves evaluation metrics. `KRISHYAK_DISEASE_BUNDLE` can override the entire bundle. A backend restart is required after changing bundles. A classifier score is not calibrated diagnostic accuracy.
+The selected bundle retains `backend/models/active/model.keras`, a numerically verified float32 `model.tflite`, and the matching `class_indices.json`. Local environments with TensorFlow use Keras by default; Vercel uses compact LiteRT. `KRISHYAK_DISEASE_RUNTIME=keras` or `litert` selects explicitly, and `KRISHYAK_DISEASE_BUNDLE` overrides the complete bundle. Restart the backend after changing either. `release.json` preserves the original accuracy metrics; `runtime-verification.json` records conversion hashes and numerical comparisons. A classifier score is not calibrated diagnostic accuracy.
 
-The verified active model is included in Git alongside its labels (SHA-256 `5d8b08e61feae381a7bf05f0dea8fe77527e0dcc2dd7b5714f5160eb5341a591`). `backend/requirements.txt` includes the CPU inference runtime. Deploy the backend as a separate Vercel project rooted at `backend`, with Fluid compute and `VERCEL_SUPPORT_LARGE_FUNCTIONS=1` enabled for the TensorFlow package. Set `SARVAM_API_KEY` in that backend project's production environment; a local `.env` does not configure Vercel. The frontend defaults to `https://krishyak-api.vercel.app`, or accepts `REACT_APP_API_URL` for another backend. Verify `/disease-capabilities` and `/speech/capabilities` after deployment. Voice Input is accessible from the workspace toolbar on desktop and mobile.
+The selected Keras model's SHA-256 remains `5d8b08e61feae381a7bf05f0dea8fe77527e0dcc2dd7b5714f5160eb5341a591`. The 38-class LiteRT export uses no quantization and matched Keras top predictions and abstention decisions on all 247 checked inputs. The Linux production dependencies are locked in `backend/requirements.txt`; full authoring/local Keras inference is available through `backend/requirements-ml.txt`.
+
+Deploy separate projects rooted at `backend` and `frontend`. Full TensorFlow, Keras authoring weights, tests and training assets are excluded from the serverless upload; no function-size override is required by the compact runtime. See [deployment repair and verified release](docs/VERCEL_DEPLOYMENT.md) for staged release commands and rollback IDs. Production requires `SECRET_KEY`, `ENVIRONMENT=production`, `DEBUG=false`, explicit CORS origins and server-only provider credentials such as `SARVAM_API_KEY`; a local `.env` does not configure Vercel. Verify `/disease-capabilities`, `/speech/capabilities` and `/remote-sensing/status` after deployment. Voice Input remains available on desktop and mobile. The frontend defaults to `https://krishyak-api.vercel.app` and accepts `REACT_APP_API_URL` for another backend.
+
+The [production readiness assessment](docs/PRODUCTION_READINESS_REPORT.md) distinguishes the verified MVP from the privacy, field validation and operational work required for farmer production.
 
 ### Sarvam translation and speech
 
