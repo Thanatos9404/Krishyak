@@ -12,6 +12,8 @@ antimeridian/polar/extreme extents and multipolygons are rejected rather than
 misprocessed. Manual area is separately labelled and cannot enable satellite
 processing. PostGIS geography computes square metres; display converts to hectares.
 
+Alembic drift checks manage the `v2_` table namespace only. PostGIS topology/TIGER
+extension tables and unrelated applications are never proposed for removal.
 Foreign keys cascade owner-domain deletion. An independent object-deletion
 queue survives account removal. Partial consent uniqueness preserves withdrawal
 history. Active/planned crop cycles have a database exclusion constraint against

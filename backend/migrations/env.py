@@ -13,8 +13,10 @@ if not url.startswith("postgresql+psycopg://"):
 
 
 def include_object(obj, name, kind, reflected, compare_to):
-    # PostGIS owns this extension table; it must never be dropped as ORM drift.
-    return not (kind == "table" and name == "spatial_ref_sys")
+    # Only this application's namespace belongs to these migrations. PostGIS
+    # images may expose topology/TIGER extension tables through search_path;
+    # neither extension objects nor unrelated tables may become drop operations.
+    return kind != "table" or name.startswith("v2_")
 
 
 if context.is_offline_mode():

@@ -43,6 +43,9 @@ Resolved findings included stale field selection after offline reload, missing
 reconnection signals, late account/field responses, logout cache races, stale
 Today cache after new evidence, extension-table Alembic drift, non-root Docker
 cache paths, excluded public catalog files and a Keras-specific test assumption.
+GitHub additionally exposed topology/TIGER extension-table drift and newline
+normalization of the hashed label map. Migrations now manage only the v2 namespace,
+and the original label-map bytes are preserved across checkouts.
 
 ## External provider verification
 

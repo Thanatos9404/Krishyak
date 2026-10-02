@@ -3,6 +3,8 @@
 `backend/models/active/release.json` remains authoritative. The active model is
 `publisher-efficientnet-colab-v1`, EfficientNetV2B0, 38 classes across 14 crops.
 No new checkpoint was trained or promoted in this implementation.
+The active label map is stored with its original hashed bytes; Git line-ending
+normalization is disabled for that artifact to preserve Linux/Windows integrity.
 
 | Evaluation | Samples | Accuracy |
 |---|---:|---:|
