@@ -1,0 +1,128 @@
+name: Field Intelligence quality gates
+on:
+  push:
+    branches: [main, feat/krishyak-v2-field-intelligence]
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: v2-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgis/postgis:17-3.5
+        env:
+          POSTGRES_DB: krishyak_v2_test
+          POSTGRES_USER: krishyak
+          POSTGRES_PASSWORD: synthetic-ci-only
+        ports: [5432:5432]
+        options: >-
+          --health-cmd "pg_isready -U krishyak -d krishyak_v2_test"
+          --health-interval 5s --health-timeout 3s --health-retries 15
+      redis:
+        image: redis:7-alpine
+        ports: [6379:6379]
+    env:
+      ENVIRONMENT: test
+      KRISHYAK_V2_ENABLED: 'true'
+      V2_DATABASE_URL: postgresql+psycopg://krishyak:synthetic-ci-only@127.0.0.1:5432/krishyak_v2_test
+      V2_TEST_DATABASE_URL: postgresql+psycopg://krishyak:synthetic-ci-only@127.0.0.1:5432/krishyak_v2_test
+      V2_AUTH_SECRET: synthetic-ci-only-auth-secret-never-a-deployment-key
+      V2_OTP_PROVIDER: development
+      V2_DEV_MOBILES: +919000000001,+919000000002,+919000000003
+      V2_REDIS_URL: redis://127.0.0.1:6379/0
+      CORS_ORIGINS: http://localhost:3000,http://127.0.0.1:3000,http://localhost:3001
+      SECRET_KEY: synthetic-ci-only-legacy-secret-never-deployed
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with: {python-version: '3.12', cache: pip, cache-dependency-path: 'backend/requirements*.txt'}
+      - run: pip install -r backend/requirements-dev.txt
+      - name: Static and formatting checks
+        run: |
+          ruff check backend/v2 backend/db backend/repositories backend/migrations backend/test_v2_foundation.py
+          ruff format --check backend/v2 backend/db backend/repositories backend/migrations backend/test_v2_foundation.py
+          bandit -r backend/v2 backend/db backend/repositories
+      - name: Migration round trip on disposable database
+        working-directory: backend
+        run: |
+          alembic upgrade head
+          alembic downgrade base
+          alembic upgrade head
+          alembic check
+      - name: Backend unit and real PostGIS integration tests
+        working-directory: backend
+        run: python -m unittest discover -v
+      - name: Runtime dependency security
+        run: pip-audit -r backend/requirements.txt
+      - name: Release documentation links
+        run: python scripts/check_v2_docs.py
+  frontend-and-browsers:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    services:
+      postgres:
+        image: postgis/postgis:17-3.5
+        env: {POSTGRES_DB: krishyak_v2_e2e, POSTGRES_USER: krishyak, POSTGRES_PASSWORD: synthetic-ci-only}
+        ports: [5432:5432]
+        options: >-
+          --health-cmd "pg_isready -U krishyak -d krishyak_v2_e2e"
+          --health-interval 5s --health-timeout 3s --health-retries 15
+      redis:
+        image: redis:7-alpine
+        ports: [6379:6379]
+    env:
+      V2_E2E_PRODUCTION: 'true'
+      ENVIRONMENT: test
+      KRISHYAK_V2_ENABLED: 'true'
+      V2_DATABASE_URL: postgresql+psycopg://krishyak:synthetic-ci-only@127.0.0.1:5432/krishyak_v2_e2e
+      V2_AUTH_SECRET: synthetic-ci-only-auth-secret-never-a-deployment-key
+      V2_OTP_PROVIDER: development
+      V2_DEV_MOBILES: +919000000001,+919000000002,+919000000003
+      V2_REDIS_URL: redis://127.0.0.1:6379/0
+      CORS_ORIGINS: http://localhost:3000,http://127.0.0.1:3000,http://localhost:3001
+      SECRET_KEY: synthetic-ci-only-legacy-secret-never-deployed
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with: {node-version: '24', cache: npm, cache-dependency-path: frontend/package-lock.json}
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with: {python-version: '3.12', cache: pip, cache-dependency-path: 'backend/requirements*.txt'}
+      - run: pip install -r backend/requirements.txt
+      - run: npm ci
+        working-directory: frontend
+      - name: Frontend unit, static, build and dependency gates
+        working-directory: frontend
+        run: |
+          npm test -- --runInBand
+          npm run format:check:v2
+          npm run build
+          npm audit --audit-level=low
+          npx playwright install --with-deps chromium firefox webkit
+      - name: Start isolated API and production frontend preview
+        run: |
+          cd backend
+          python -m alembic upgrade head
+          python -m uvicorn main:app --host 127.0.0.1 --port 8000 --no-access-log > /tmp/v2-api.log 2>&1 &
+          cd ../frontend
+          npm run preview -- --host 127.0.0.1 --port 3000 > /tmp/v2-web.log 2>&1 &
+          python ../scripts/wait_for_v2.py
+      - name: Chromium, Firefox and WebKit E2E, mobile and accessibility
+        run: npm run test:e2e
+        working-directory: frontend
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        if: failure()
+        with: {name: synthetic-browser-failures, path: output/playwright, retention-days: 7}
+  container:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - run: docker build --tag krishyak-v2:ci backend
+      - name: Compact classifier runtime without network
+        run: docker run --rm --network none --entrypoint python krishyak-v2:ci /app/test_container_runtime.py
