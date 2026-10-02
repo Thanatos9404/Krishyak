@@ -7,9 +7,9 @@ below refer to passing release checks, not baseline or guessed results.
 
 | Gate | Recorded result | Scope |
 |---|---|---|
-| Windows backend | 229 run, 227 passed, 2 skipped | Complete suite plus real disposable PostGIS |
-| Linux backend | 229 run, 228 passed, 1 skipped | Release image, real PostGIS, public parity catalogs mounted read-only |
-| Foundation | 29 passed | OTP/session/ownership/consent/geometry/rights/jobs/context/pilots |
+| Windows backend | 230 run, 228 passed, 2 skipped | Complete suite plus real disposable PostGIS |
+| Linux backend | 230 run, 229 passed, 1 skipped | Release image, real PostGIS, public parity catalogs mounted read-only |
+| Foundation | 30 passed | OTP/session/ownership/consent/geometry/rights/jobs/context/pilots |
 | Frontend | 287 passed, 36 suites | Existing behavior and new IndexedDB isolation/replay/logout |
 | Production browser matrix | 16 passed, 2 skipped, no failures | 15 functional flows across Chromium/Firefox/WebKit plus Chromium mobile throttle |
 | Accessibility/mobile | Passed automated Axe tags and overflow assertions | WCAG2 A/AA, 2.1 AA, 2.2 AA; 320/360/375/390/412/768/1280 px |
@@ -24,7 +24,7 @@ below refer to passing release checks, not baseline or guessed results.
 | Complete local containers | API, worker, PostGIS, Redis exercised | Persistent named volumes, non-root writable caches/private objects |
 | Local load | 100 authenticated reads, concurrency 8, 0 errors | 95.72 requests/s, p50 82.86 ms, p95 105.67 ms, max 154.36 ms |
 | Local resilience | Passed Redis and PostGIS stop/restart | Readiness 503 during outage, 200 after recovery; Redis API fail-closed; worker heartbeat recovered |
-| Throttled mobile | Sign-in visible in 4.024 s | Fresh Chromium 360 px, 400 ms latency, 50 KB/s download, CPU×4; map/planning bundles absent |
+| Throttled mobile | Sign-in visible in 4.024 s | Fresh Chromium 360 px, 400 ms latency, 50 KB/s download, CPUÃ—4; map/planning bundles absent |
 | Documentation | Required index and relative links checked | README, current guide, dataset status and v2 runbooks |
 
 Backend skips: live CDSE processing without credentials; Windows additionally

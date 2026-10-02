@@ -41,6 +41,25 @@ POLYGON = {
 
 
 class ConfigAndSchemaTests(unittest.TestCase):
+    def test_hosted_runtime_cannot_reenable_legacy_pii_or_development_identity(self):
+        with patch.dict(os.environ, {"VERCEL": "1", "ENVIRONMENT": "development", "KRISHYAK_V2_ENABLED": "false"}):
+            settings = Settings.from_env()
+            self.assertTrue(settings.deployed)
+            app = FastAPI()
+            install_v2(app, settings)
+            with TestClient(app) as client:
+                self.assertEqual(client.post("/register-farmer", json={}).status_code, 410)
+            with self.assertRaises(ValidationError):
+                Settings(
+                    enabled=True,
+                    hosted=True,
+                    environment="development",
+                    database_url="postgresql+psycopg://synthetic/test",
+                    auth_secret="test-auth-secret-" * 3,
+                    otp_provider="development",
+                    dev_mobiles=["+919000000001"],
+                )
+
     def test_redis_outage_fails_closed_without_logging_identity(self):
         from v2.limits import Quotas
 

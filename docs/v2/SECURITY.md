@@ -6,6 +6,9 @@ and exact Origin. Deployed cookies are Secure, HttpOnly where appropriate,
 SameSite=Lax and scoped to `/api/v2`. No JWT, OTP or token enters IndexedDB.
 Privileged operations need a role plus OTP authentication within ten minutes;
 refresh does not extend that privilege window.
+Vercel/Render host markers enforce deployment protections even if `ENVIRONMENT`
+is mistakenly set to development; legacy personal routes and synthetic OTP cannot
+be reopened by that misconfiguration.
 
 Redis atomically counts HMAC-pseudonymized usage identities. Deployment fails
 closed on unavailable Redis; memory limits are development-only. OTP challenge

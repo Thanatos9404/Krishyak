@@ -12,6 +12,7 @@ class Settings(BaseModel):
     model_config = ConfigDict(extra="forbid")
     enabled: bool = False
     environment: Literal["development", "test", "staging", "production"] = "development"
+    hosted: bool = False
     database_url: SecretStr = SecretStr("")
     auth_secret: SecretStr = SecretStr("")
     origins: list[str] = Field(default_factory=lambda: ["http://localhost:3000"])
@@ -34,7 +35,7 @@ class Settings(BaseModel):
 
     @property
     def deployed(self) -> bool:
-        return self.environment in {"staging", "production"}
+        return self.hosted or self.environment in {"staging", "production"}
 
     @model_validator(mode="after")
     def deployment_contract(self):
@@ -85,9 +86,11 @@ class Settings(BaseModel):
 
     @classmethod
     def from_env(cls):
+        hosted = os.getenv("VERCEL") == "1" or os.getenv("RENDER") == "true" or bool(os.getenv("RENDER_SERVICE_ID"))
         return cls(
             enabled=os.getenv("KRISHYAK_V2_ENABLED", "false").lower() == "true",
-            environment=os.getenv("ENVIRONMENT", "development"),
+            environment=os.getenv("ENVIRONMENT", "production" if hosted else "development"),
+            hosted=hosted,
             database_url=os.getenv("V2_DATABASE_URL", ""),
             auth_secret=os.getenv("V2_AUTH_SECRET", ""),
             origins=[x.strip() for x in os.getenv("CORS_ORIGINS", "http://localhost:3000").split(",") if x.strip()],
