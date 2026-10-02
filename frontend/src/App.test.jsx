@@ -9,7 +9,7 @@ let mockSession;
 jest.mock('./hooks/useFarmerSession', () => ({useFarmerSession: () => mockSession || ({
   farmer:{fullName:'Test Farmer'},isRegistered:true,loading:false,logout:mockLogout,
 })}));
-jest.mock('./components/FarmerRegistrationForm', () => ({onSkip, onComplete}) => <div><h1>Existing registration form</h1><button onClick={onSkip}>Skip registration</button><button onClick={() => onComplete({fullName:'New Farmer'})}>Finish registration</button></div>);
+jest.mock('./features/farms/FarmWorkspace', () => () => <div><h1>Authenticated farm account workflow</h1></div>);
 jest.mock('./i18n', () => ({useTranslation: () => ({t:key=>key})}));
 jest.mock('./api/farmingApi', () => ({__esModule:true,default:{
   getCrops:jest.fn(),getSoilTypes:jest.fn(),simulate:jest.fn(),compareScenarios:jest.fn(),getRecommendations:jest.fn(),
@@ -39,25 +39,22 @@ beforeEach(() => {
   farmingApi.getRecommendations.mockResolvedValue({success:true,data:{profit_improvement:0}});
 });
 
-test('a new visitor sees landing, Register opens the existing form, and Skip enters the workspace', async () => {
+test('planning registration opens the authenticated farm account workflow', async () => {
   const guestLogin = jest.fn();
   mockSession = {farmer:null,isRegistered:false,loading:false,guestLogin,login:jest.fn(),logout:mockLogout};
   render(<App />);
   expect(screen.getByRole('heading', {level:1}).textContent).toContain('landing.title');
   fireEvent.click(screen.getAllByRole('button', {name:'landing.start'})[0]);
-  await screen.findByRole('heading', {name:'Existing registration form'});
+  await screen.findByRole('heading', {name:'Authenticated farm account workflow'});
   expect(window.location.pathname).toBe('/register');
-  fireEvent.click(screen.getByText('Skip registration'));
-  expect(guestLogin).toHaveBeenCalledTimes(1);
-  expect(screen.getByTestId('result')).toBeTruthy();
-  expect(window.location.pathname).toBe('/');
+  expect(guestLogin).not.toHaveBeenCalled();
 });
 
-test('browser back from registration restores the landing page without losing the existing registration route', async () => {
+test('browser back from account registration restores the planning landing page', async () => {
   mockSession = {farmer:null,isRegistered:false,loading:false,guestLogin:jest.fn(),login:jest.fn(),logout:mockLogout};
   window.history.replaceState({}, '', '/register');
   render(<App />);
-  await screen.findByRole('heading', {name:'Existing registration form'});
+  await screen.findByRole('heading', {name:'Authenticated farm account workflow'});
   act(() => { window.history.replaceState({}, '', '/'); window.dispatchEvent(new PopStateEvent('popstate')); });
   expect(screen.getByRole('button', {name:'landing.explore'})).toBeTruthy();
 });
@@ -69,6 +66,15 @@ test('parent updates preserve mounted sidebar local state',async()=>{
   expect(screen.getByLabelText('Sidebar local state').value).toBe('keep input state');
   await act(async()=>{});
   expect(screen.getByLabelText('Sidebar local state').value).toBe('keep input state');
+});
+
+test('unavailable catalogs do not show the global yellow retry notice', async () => {
+  farmingApi.getCrops.mockRejectedValue(new Error('offline'));
+  farmingApi.getSoilTypes.mockRejectedValue(new Error('offline'));
+  render(<App />);
+  await act(async () => {});
+  expect(screen.queryByText('common.retry')).toBeNull();
+  expect(document.querySelector('.bg-amber-50')).toBeNull();
 });
 
 test('workspace voice button opens directly, applies reviewed inputs, and closes', async () => {
@@ -117,13 +123,12 @@ test('logout invalidates a pending response', async () => {
   expect(localStorage.getItem('krishyak_sim_cache')).toBeNull();
 });
 
-test('catalog unavailable notice exposes a working retry',async()=>{
+test('catalog recovers on reconnect without a global retry notice',async()=>{
   farmingApi.getCrops.mockRejectedValueOnce(new Error('offline')).mockResolvedValue({crops:['Rice']});
   farmingApi.getSoilTypes.mockResolvedValue({soil_types:['Alluvial']});
   render(<App />);
-  await waitFor(()=>expect(screen.getByRole('button',{name:'common.retry'}).disabled).toBe(false));
-  expect(screen.getByText(/common.notAvailable/)).toBeTruthy();
-  fireEvent.click(screen.getByRole('button',{name:'common.retry'}));
-  await waitFor(()=>expect(screen.queryByRole('button',{name:'common.retry'})).toBeNull());
+  await act(async()=>{});
+  expect(screen.queryByRole('button',{name:'common.retry'})).toBeNull();
+  await act(async()=>window.dispatchEvent(new Event('online')));
   expect(farmingApi.getCrops).toHaveBeenCalledTimes(2);
 });

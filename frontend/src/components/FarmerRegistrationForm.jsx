@@ -158,6 +158,7 @@ const FarmerRegistrationForm = ({ onComplete, onSkip, crops = [] }) => {
   }, [formData.state, lastLoadedDistrict]);
 
   const handleChange = useCallback((field, value) => {
+    clearFieldError(field);
     // Special handling for state and district to manage cascading
     if (field === 'state') {
       handleStateChange(value);
@@ -168,7 +169,6 @@ const FarmerRegistrationForm = ({ onComplete, onSkip, crops = [] }) => {
       return;
     }
     setFormData(prev => ({ ...prev, [field]: value }));
-    clearFieldError(field);
   }, [clearFieldError, handleStateChange, handleDistrictChange]);
 
   const handleNext = () => {
@@ -196,7 +196,8 @@ const FarmerRegistrationForm = ({ onComplete, onSkip, crops = [] }) => {
     try {
       // Add registration timestamp
       const registrationData = {
-        ...formData,
+        ...Object.fromEntries(Object.entries(formData).map(([key, value]) =>
+          [key, typeof value === 'string' ? value.trim() : value])),
         registeredAt: new Date().toISOString()
       };
 
@@ -486,11 +487,11 @@ const FarmerRegistrationForm = ({ onComplete, onSkip, crops = [] }) => {
         {t('registration.step4Title') || 'Farming Information'}
       </h3>
 
-      <SelectField
+      <InputField
         label={t('registration.primaryCrop') || 'Primary Crop (मुख्य फसल)'}
         field="primaryCrop"
         required
-        options={crops.map(c => ({ value: c, label: t(`crops.${c.toLowerCase()}`) || c }))}
+        suggestions={crops}
         value={formData.primaryCrop}
         onChange={handleChange}
         error={errors.primaryCrop}

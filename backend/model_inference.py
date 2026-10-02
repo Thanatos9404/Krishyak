@@ -19,7 +19,12 @@ keras = None
 # Keep model and label map together. Never silently fall back to older weights.
 bundle = Path(os.getenv('KRISHYAK_DISEASE_BUNDLE') or
               Path(__file__).parent / 'models' / 'active').resolve()
-MODEL_PATH = str(bundle / 'model.keras')
+_runtime = os.getenv('KRISHYAK_DISEASE_RUNTIME', 'auto').lower()
+if _runtime not in {'auto', 'keras', 'litert'}:
+    raise ValueError('KRISHYAK_DISEASE_RUNTIME must be auto, keras, or litert')
+_use_litert = _runtime == 'litert' or (_runtime == 'auto' and (
+    os.getenv('VERCEL') == '1' or importlib.util.find_spec('tensorflow') is None))
+MODEL_PATH = str(bundle / ('model.tflite' if _use_litert else 'model.keras'))
 CLASS_INDICES_PATH = str(bundle / 'class_indices.json')
 IMG_SIZE = (224, 224)
 
@@ -257,6 +262,32 @@ DEFAULT_TREATMENT = {
 }
 
 
+class LiteRTClassifier:
+    """Float32 adapter; serialize interpreter mutation across concurrent requests."""
+    def __init__(self, path):
+        from ai_edge_litert.interpreter import Interpreter
+        self.interpreter = Interpreter(model_path=path, num_threads=2)
+        self.interpreter.allocate_tensors()
+        inputs = self.interpreter.get_input_details()
+        outputs = self.interpreter.get_output_details()
+        if len(inputs) != 1 or len(outputs) != 1:
+            raise ValueError('Expected one classifier input and output')
+        self.input, self.output = inputs[0], outputs[0]
+        if self.input['dtype'] != np.float32 or self.output['dtype'] != np.float32:
+            raise ValueError('Expected unquantized float32 classifier tensors')
+        self.input_shape = tuple(self.input['shape'])
+        self.output_shape = tuple(self.output['shape'])
+        self.lock = Lock()
+
+    def predict(self, values, verbose=0):
+        if values.shape != self.input_shape or values.dtype != np.float32:
+            raise ValueError('Unexpected classifier input tensor')
+        with self.lock:
+            self.interpreter.set_tensor(self.input['index'], values)
+            self.interpreter.invoke()
+            return self.interpreter.get_tensor(self.output['index'])
+
+
 def load_model():
     """Load the trained model and class indices"""
     global _model, _class_indices, tf, keras
@@ -277,16 +308,22 @@ def load_model():
             "Please train the model first."
         )
     
-    # Import TensorFlow
-    import tensorflow as tf_import
-    from tensorflow import keras as keras_import
-    tf = tf_import
-    keras = keras_import
-    
     print("Loading plant disease detection model...")
     with _load_lock:
         if _model is None:
-            candidate = keras.models.load_model(MODEL_PATH, compile=False)
+            if MODEL_PATH.endswith('.tflite'):
+                import hashlib
+                verification = json.loads((Path(MODEL_PATH).parent / 'runtime-verification.json').read_text())
+                if hashlib.sha256(Path(MODEL_PATH).read_bytes()).hexdigest() != verification['artifact_sha256']:
+                    raise ValueError('Classifier runtime artifact digest mismatch')
+                if hashlib.sha256(Path(CLASS_INDICES_PATH).read_bytes()).hexdigest() != verification['class_indices_sha256']:
+                    raise ValueError('Classifier label map digest mismatch')
+                candidate = LiteRTClassifier(MODEL_PATH)
+            else:
+                import tensorflow as tf_import
+                from tensorflow import keras as keras_import
+                tf, keras = tf_import, keras_import
+                candidate = keras.models.load_model(MODEL_PATH, compile=False)
             with open(CLASS_INDICES_PATH, 'r') as f:
                 labels = json.load(f)
             if (not isinstance(labels, dict) or not labels
@@ -337,7 +374,7 @@ def predict_from_image(image_data: bytes, crop_type: str = None) -> dict:
     
     try:
         model, class_indices = load_model()
-    except (FileNotFoundError, ImportError, OSError, ValueError) as e:
+    except (FileNotFoundError, ImportError, OSError, ValueError, RuntimeError, KeyError):
         return {
             "status": "unavailable",
             "message": "Image classifier could not be loaded. Install the ML dependencies and a compatible model bundle.",
@@ -466,7 +503,7 @@ def predict_from_image(image_data: bytes, crop_type: str = None) -> dict:
 def is_model_available() -> bool:
     """Check if trained model is available"""
     return (os.path.exists(MODEL_PATH) and os.path.exists(CLASS_INDICES_PATH)
-            and importlib.util.find_spec('tensorflow') is not None
+            and importlib.util.find_spec('ai_edge_litert' if MODEL_PATH.endswith('.tflite') else 'tensorflow') is not None
             and importlib.util.find_spec('PIL') is not None)
 
 

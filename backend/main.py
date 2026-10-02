@@ -10,6 +10,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException, File, UploadFile, Form, Request, Response, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.exceptions import RequestValidationError
 from pydantic import BaseModel, Field, validator, model_validator
 from typing import Dict, List, Optional, Literal
 import uvicorn
@@ -44,6 +45,7 @@ from datetime import datetime
 from rate_limiter import RateLimiter
 from sarvam_service import router as speech_router
 from speech_limits import SpeechBodyLimit
+from remote_sensing.router import router as remote_sensing_router
 
 rate_limiter = RateLimiter(security_config.rate_limit_per_minute, security_config.rate_limit_per_day)
 
@@ -66,6 +68,9 @@ app = FastAPI(
     redoc_url="/redoc" if security_config.is_development else None,
 )
 app.include_router(speech_router)
+app.include_router(remote_sensing_router)
+from v2.application import install_v2
+install_v2(app)
 app.add_middleware(SpeechBodyLimit)
 
 # CORS middleware with secure configuration. Keep the stable production alias
@@ -90,7 +95,7 @@ async def request_middleware(request: Request, call_next):
         client_ip = forwarded_for.split(",")[0].strip()
     
     # Rate limiting
-    allowed, reason = rate_limiter.is_allowed(client_ip)
+    allowed, reason = (True, '') if request.url.path.startswith('/api/v2') else rate_limiter.is_allowed(client_ip)
     if not allowed:
         logger.warning(f"Rate limit exceeded for {client_ip}")
         return JSONResponse(
@@ -128,7 +133,9 @@ async def request_middleware(request: Request, call_next):
         
     except Exception as e:
         duration_ms = (time.time() - start_time) * 1000
-        request_logger.log_error(request_id, e, f"Unhandled error in {request.url.path}")
+        request_logger.log_error(request_id, e, "Unhandled private API error" if request.url.path.startswith('/api/v2') else f"Unhandled error in {request.url.path}")
+        if request.url.path.startswith('/api/v2'):
+            return JSONResponse(status_code=500, headers={"X-Request-ID": request_id, "Cache-Control": "no-store"}, content={"error": {"code": "INTERNAL_ERROR", "message": "The service could not complete this request", "retryable": False, "request_id": request_id}})
         
         return JSONResponse(
             status_code=500,
@@ -145,8 +152,8 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=cors_origins,
     allow_credentials=True,
-    allow_methods=["GET", "POST", "OPTIONS"],
-    allow_headers=["Content-Type", "Authorization", "X-Request-ID"],
+    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allow_headers=["Content-Type", "Authorization", "X-Request-ID", "X-CSRF-Token"],
     expose_headers=["X-Request-ID"],
     max_age=600,
 )
@@ -155,6 +162,11 @@ app.add_middleware(
 async def http_exception_handler(request: Request, exc: HTTPException):
     """Custom HTTP exception handler with structured response"""
     request_id = getattr(request.state, 'request_id', None) or normalize_request_id(request.headers.get("X-Request-ID"))
+    if request.scope.get('path', '').startswith('/api/v2'):
+        return JSONResponse(status_code=exc.status_code, headers={**(exc.headers or {}), "X-Request-ID": request_id},
+            content={"error": {"code": {401: "SESSION_REQUIRED", 403: "ACCESS_DENIED", 404: "NOT_FOUND", 409: "CONFLICT", 429: "RATE_LIMITED", 503: "UNAVAILABLE"}.get(exc.status_code, "INVALID_REQUEST"),
+                               "message": "Service unavailable" if exc.status_code >= 500 and exc.status_code != 503 else exc.detail,
+                               "retryable": exc.status_code in {429, 503}, "request_id": request_id}})
     return JSONResponse(
         status_code=exc.status_code,
         headers={**(exc.headers or {}), "X-Request-ID": request_id},
@@ -164,6 +176,14 @@ async def http_exception_handler(request: Request, exc: HTTPException):
             "request_id": request_id
         }
     )
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    if request.url.path.startswith('/api/v2'):
+        return JSONResponse(status_code=422, content={"error": {"code": "INVALID_REQUEST", "message": "Check the supplied values, dates, and supported units.", "retryable": False,
+                            "request_id": getattr(request.state, 'request_id', None)}})
+    from fastapi.exception_handlers import request_validation_exception_handler
+    return await request_validation_exception_handler(request, exc)
 
 @app.exception_handler(Exception)
 async def general_exception_handler(request: Request, exc: Exception):
@@ -255,6 +275,7 @@ FARMER_DATA_DIR.mkdir(parents=True, exist_ok=True)
 
 class FarmerRegistrationInput(BaseModel):
     """Pydantic model for farmer registration data"""
+    model_config = {"str_strip_whitespace": True}
     fullName: str = Field(..., min_length=2, max_length=100, description="Full name of farmer")
     fatherName: str = Field(..., min_length=2, max_length=100, description="Father's or husband's name")
     mobileNumber: str = Field(..., min_length=10, max_length=10, pattern=r"^\d{10}$", description="10-digit mobile number")

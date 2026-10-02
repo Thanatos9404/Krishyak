@@ -1,0 +1,2 @@
+# The active release hashes these exact label-map bytes. Do not normalize EOLs.
+backend/models/active/class_indices.json -text

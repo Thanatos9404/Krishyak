@@ -1,6 +1,6 @@
 # Krishyak datasets and integration status
 
-Updated 6 September 2026. See [REPOSITORY_AUDIT.md](REPOSITORY_AUDIT.md) for evaluation results and remaining limitations. A file present in the repository is not proof that it is used, correctly licensed, or independently validated.
+Updated 3 October 2026. See [v2 model governance](docs/v2/MODEL_GOVERNANCE.md) and [REPOSITORY_AUDIT.md](REPOSITORY_AUDIT.md) for dated evaluation results and limitations. A file present in the repository is not proof that it is used, correctly licensed, or independently validated.
 
 ## Disease images
 
@@ -10,15 +10,15 @@ Updated 6 September 2026. See [REPOSITORY_AUDIT.md](REPOSITORY_AUDIT.md) for eva
 | PlantDoc | Publisher repository: https://github.com/pratikkayal/PlantDoc-Dataset ; revision `5467f6012d78d1c446145d5f582da6096f852ae8`; publisher CC-BY-4.0 | Field-like images; published test partition held out from fitting. Export manifest preserves original paths and hashes. |
 | Existing `pdisease` | Original acquisition and license unverified | Explicitly labelled legacy in the combined experiment; excluded from publisher-only experiments. |
 
-The corrected combined manifest contains 68,853 images and 77 labels before excluding labels without training support. The combined candidate has 71 classes. Publisher-only candidates have 38 classes across 14 crop categories. These are experimental candidates; the default 42-class deployment model has not been replaced. No candidate achieved the requested independent field accuracy. Results cannot establish superiority over NPSS.
+The corrected combined manifest contains 68,853 images and 77 labels before excluding labels without training support. The combined candidate has 71 classes. The selected active publisher-only EfficientNetV2B0 release has 38 classes across 14 crop categories: 94.39% validation, 93.71% internal test and 57.21% external PlantDoc accuracy. The old 42-class deployment description is historical. No model was retrained/promoted in v2 and independent farmer-field accuracy is not established. Results cannot establish superiority over NPSS.
 
 ## Active data paths
 
 - Open-Meteo provides weather through the weather adapter. Missing required observations remain unavailable. Regional soil estimates are not measured soil readings.
 - data.gov.in mandi integration requires `DATA_GOV_IN_API_KEY`. Historical CSV fallback must retain its historical source/date; it is not a live quote.
-- MSP cards use synchronized `backend/data/msp_data.json` and `frontend/src/data/msp_data.json`, with individual official source links, marketing seasons, product basis and verification dates. MSP/FRP is not a guaranteed sale price for every farmer. Sugarcane 2026-27 FRP has a future October effective date.
+- MSP cards use synchronized `backend/data/msp_data.json` and `frontend/src/data/msp_data.json`, with individual official source links, marketing seasons, product basis and verification/effective dates. MSP/FRP is not a guaranteed sale price for every farmer; consult the record's season and effective date.
 - Browser speech recognition and reverse geocoding depend on browser/provider availability. Speech support varies by device and language.
-- Manual soil readings are supported. Sensor adapters require credentials and verified vendor contracts; their existence is not proof of a working live integration.
+- V2 soil readings retain farmer-entered source, units, depth/date and explicit independent-verification limits. Sensor adapters require credentials and verified vendor contracts; deployed unsafe legacy sensor personal-data routes are disabled.
 - Aadhaar, bank and land-record demo code does not establish real identity or eligibility. Demo verification is disabled by default.
 
 ## Existing tabular assets and assumptions

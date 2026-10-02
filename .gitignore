@@ -67,8 +67,10 @@ saved_model/
 datasets/
 !datasets/.gitkeep
 backend/data/*.csv
+backend/data/*.csv.lock
 backend/data/*.db
 backend/data/*.sqlite3
+backend/data/v2-objects/
 !backend/data/.gitkeep
 
 # React
@@ -114,3 +116,5 @@ Krishyak_SIH2026_Metrics/
 Krishyak_SIH2026*.pptx
 frontend/dependency-audit*.json
 frontend/lint-report.json
+
+!backend/models/active/model.tflite

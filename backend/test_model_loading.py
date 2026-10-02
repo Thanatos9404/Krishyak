@@ -15,6 +15,7 @@ class ModelLoadingTests(unittest.TestCase):
         for patcher in [patch.dict('sys.modules', {'tensorflow':tensorflow}),
                         patch.object(inference, '_model', None), patch.object(inference, '_class_indices', None),
                         patch.object(inference, 'tf', None), patch.object(inference, 'keras', None),
+                        patch.object(inference, 'MODEL_PATH', 'synthetic-model.keras'),
                         patch('model_inference.os.path.exists', return_value=True)]:
             patcher.start()
             self.addCleanup(patcher.stop)

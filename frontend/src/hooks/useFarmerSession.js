@@ -26,8 +26,17 @@ const readRecord = (kind, key) => {
   return null;
 };
 const safeDraft = value => Object.fromEntries(
-  [...SAFE_DRAFT_FIELDS, 'savedAt'].filter(key => value[key] !== undefined)
-    .map(key => [key, value[key]])
+  [...SAFE_DRAFT_FIELDS, 'savedAt'].flatMap(key => {
+    const entry = value[key];
+    if (key === 'secondaryCrops') return Array.isArray(entry)
+      ? [[key, entry.filter(item => typeof item === 'string' && item.length <= 150).slice(0, 100)]] : [];
+    if (key === 'landUnit' && !['hectares', 'acres'].includes(entry)) return [];
+    if (typeof entry === 'string' && entry.length <= 1000) return [[key, entry]];
+    if (['totalLandArea', 'irrigatedLand', 'rainfedLand'].includes(key) && typeof entry === 'number' && Number.isFinite(entry)) {
+      return [[key, String(entry)]];
+    }
+    return [];
+  })
 );
 
 export const useFarmerSession = () => {
@@ -78,7 +87,8 @@ export const useFarmerSession = () => {
   const logout = useCallback(() => {
     storage('sessionStorage', 'removeItem', STORAGE_KEY);
     [GUEST_KEY, DRAFT_KEY, 'krishyak_sim_cache', 'pestAlerts', 'pestPredictions',
-      'krishyak_soil_data', 'fertilizerRecommendation'].forEach(key => storage('localStorage', 'removeItem', key));
+      'krishyak_soil_data', 'fertilizerRecommendation', 'krishyak_rs_field_v1',
+      'krishyak_rs_summary_v1'].forEach(key => storage('localStorage', 'removeItem', key));
     setFarmer(null);
     setIsRegistered(false);
   }, []);

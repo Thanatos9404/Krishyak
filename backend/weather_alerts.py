@@ -153,7 +153,7 @@ class WeatherAlertService:
                         "latitude": lat,
                         "longitude": lon,
                         "current": "temperature_2m,relative_humidity_2m,apparent_temperature,wind_speed_10m,weather_code",
-                        "timezone": "auto"
+                        "timezone": "UTC"
                     }
                 )
                 
@@ -173,12 +173,13 @@ class WeatherAlertService:
                         "icon": "02d",
                         "location": "Local",
                         "timestamp": curr.get('time'),
+                        "utc_offset_seconds": data.get("utc_offset_seconds", 0),
                         "source": "Open-Meteo",
                         "source_type": "weather_model_current_conditions"
                     }
                     
         except Exception as e:
-            logger.error(f"Weather API error: {e}")
+            logger.error("Weather provider failed: %s", type(e).__name__)
         
         return None
     
@@ -200,7 +201,7 @@ class WeatherAlertService:
                         "longitude": lon,
                         "hourly": "temperature_2m,relative_humidity_2m,apparent_temperature,precipitation_probability,precipitation,wind_speed_10m,wind_direction_10m,cloud_cover,weather_code",
                         "forecast_days": math.ceil(hours / 24) + 1,
-                        "timezone": "auto"
+                        "timezone": "UTC"
                     }
                 )
                 
@@ -249,7 +250,7 @@ class WeatherAlertService:
                     return forecasts
                     
         except Exception as e:
-            logger.error(f"Forecast API error: {e}")
+            logger.error("Forecast provider failed: %s", type(e).__name__)
         
         return []
 

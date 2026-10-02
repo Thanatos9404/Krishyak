@@ -3,10 +3,16 @@ import { API_BASE_URL } from '../config/api';
 
 const client = axios.create({ baseURL: API_BASE_URL, timeout: 70000 });
 let capabilitiesPromise;
+let capabilitiesFetchedAt = 0;
 
 export const getSpeechCapabilities = () => {
+  if (capabilitiesFetchedAt && Date.now() - capabilitiesFetchedAt > 60000) capabilitiesPromise = null;
   if (!capabilitiesPromise) {
-    capabilitiesPromise = client.get('/speech/capabilities').then(({ data }) => data).catch((error) => {
+    capabilitiesFetchedAt = 0;
+    capabilitiesPromise = client.get('/speech/capabilities').then(({ data }) => {
+      capabilitiesFetchedAt = Date.now();
+      return data;
+    }).catch((error) => {
       capabilitiesPromise = null;
       throw error;
     });

@@ -39,10 +39,11 @@ const CropHealthCheck = deferredFeature(() => import('./components/CropHealthChe
 const MandiPriceCard = deferredFeature(() => import('./components/MandiPriceCard'));
 const MSPRateCard = deferredFeature(() => import('./components/MSPRateCard'));
 const PriceForecastChart = deferredFeature(() => import('./components/PriceForecastChart'));
-const FarmerRegistrationForm = deferredFeature(() => import('./components/FarmerRegistrationForm'));
+const FarmWorkspace = deferredFeature(() => import('./features/farms/FarmWorkspace'));
 const MSPFullView = deferredFeature(() => import('./components/MSPFullView'));
 const PrivacyPolicy = deferredFeature(() => import('./components/PrivacyPolicy'));
 const TermsOfService = deferredFeature(() => import('./components/TermsOfService'));
+const FieldIntelligence = deferredFeature(() => import('./components/FieldIntelligence'));
 
 function App() {
   const { t } = useTranslation();
@@ -51,12 +52,11 @@ function App() {
     isRegistered,
     loading: sessionLoading,
     logout,
-    login,
     guestLogin
   } = useFarmerSession();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [currentPage, setCurrentPage] = useState('main');
-  const { crops, soilTypes, status: catalogStatus, reload: reloadCatalog } = useFarmCatalog();
+  const { crops, soilTypes } = useFarmCatalog();
   const [loading, setLoading] = useState(false);
   const [isOffline, setIsOffline] = useState(false);
   const [guestMode, setGuestMode] = useState(false);
@@ -66,6 +66,7 @@ function App() {
   const [mobileInputsOpen, setMobileInputsOpen] = useState(false);
   const [voiceOpen, setVoiceOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [inputFocus, setInputFocus] = useState(null);
   const profileRef = useRef(null);
   const { toasts, addToast, removeToast } = useToast();
 
@@ -152,7 +153,11 @@ function App() {
     };
 
     setCurrentPage(pageFromPath());
-    const handlePopState = () => setCurrentPage(pageFromPath());
+    if (window.location.pathname === '/field-intelligence') setActiveTab('field');
+    const handlePopState = () => {
+      setCurrentPage(pageFromPath());
+      setActiveTab(window.location.pathname === '/field-intelligence' ? 'field' : 'dashboard');
+    };
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
@@ -182,6 +187,8 @@ function App() {
   };
 
   const selectTab = (tab) => {
+    const path = tab === 'field' ? '/field-intelligence' : '/';
+    if (window.location.pathname !== path) window.history.pushState({}, '', path);
     setActiveTab(tab);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -267,15 +274,6 @@ function App() {
     }
   };
 
-  const handleRegistrationComplete = (profile) => {
-    login(profile);
-    setGuestMode(false);
-    addToast({
-      type: 'success',
-      message: t('registration.success') || `Welcome, ${profile.fullName}! Registration complete.`
-    });
-    navigateTo('main');
-  };
 
   const handleSkipRegistration = () => {
     guestLogin();
@@ -285,7 +283,7 @@ function App() {
 
   const handleProfileClick = () => {
     if (!isRegistered) {
-      navigateTo('register');
+      window.location.assign('/farm');
       return;
     }
     setProfileOpen(open => !open);
@@ -307,19 +305,6 @@ function App() {
     navigateTo('main');
   };
 
-  const catalogNotice = Object.values(catalogStatus).some(status => status !== 'live') ? (
-    <div role="status" className="rounded-lg bg-amber-50 p-3 text-sm text-amber-900">
-      {Object.entries(catalogStatus).filter(([,status]) => status !== 'live').map(([key,status]) => (
-        <p key={key}>{t(key === 'crops' ? 'sidebar.cropType' : 'sidebar.soilType')}: {t(
-          status === 'loading' ? 'common.loading' : status === 'cached' ? 'soilSensor.cachedData' : 'common.notAvailable'
-        )}</p>
-      ))}
-      <button type="button" onClick={reloadCatalog} disabled={Object.values(catalogStatus).includes('loading')}>
-        {t('common.retry')}
-      </button>
-    </div>
-  ) : null;
-
   if (sessionLoading) {
     return (
       <div className="app-loading">
@@ -337,7 +322,7 @@ function App() {
   if (currentPage === 'terms') return <TermsOfService onBack={() => navigateTo('main')} />;
   if (currentPage === 'msp') return <MSPFullView onBack={() => navigateTo('main')} />;
   if (currentPage === 'register') {
-    return <>{catalogNotice}<FarmerRegistrationForm crops={crops} onComplete={handleRegistrationComplete} onSkip={isRegistered || isGuest ? () => navigateTo('main') : handleSkipRegistration} /></>;
+    return <FarmWorkspace />;
   }
 
   const tabs = [
@@ -345,7 +330,8 @@ function App() {
     { id: 'comparison', icon: TrendingUp, label: t('nav.scenarios'), disabled: !simulationData },
     { id: 'recommendations', icon: Lightbulb, label: t('nav.aiInsights'), disabled: !simulationData },
     { id: 'market', icon: Store, label: t('nav.market') || 'Market' },
-    { id: 'health', icon: Leaf, label: t('nav.cropHealth') }
+    { id: 'health', icon: Leaf, label: t('nav.cropHealth') },
+    { id: 'field', icon: MapPin, label: t('remoteSensing.title') || 'Field Intelligence' }
   ];
 
   const renderSidebar = (hideTitle = false) => (
@@ -357,6 +343,7 @@ function App() {
       onSimulate={runSimulation}
       loading={loading}
       hideTitle={hideTitle}
+      focusSection={inputFocus}
       onOpenVoice={() => { setMobileInputsOpen(false); setVoiceOpen(true); }}
     />
   );
@@ -455,7 +442,6 @@ function App() {
           </button>
           <SpeakButton getText={visiblePageText} resetKey={activeTab} className="speech-toolbar__reading" />
         </div>
-        {catalogNotice}
         <div className="workspace-grid">
           <aside className="desktop-inputs" aria-label={t('sidebar.title')}>{renderSidebar()}</aside>
 
@@ -498,6 +484,18 @@ function App() {
               </div>
             ) : null}
             {activeTab === 'health' ? <CropHealthCheck /> : null}
+            {activeTab === 'field' ? <FieldIntelligence formData={formData} farmer={farmer} onNavigate={destination => {
+              if (destination === 'health') { selectTab('health'); return; }
+              selectTab('dashboard');
+              if (destination === 'pest') {
+                setInputFocus({ section: 'irrigation', at: Date.now() });
+                if (window.innerWidth < 1024) setMobileInputsOpen(true);
+                window.setTimeout(() => document.getElementById('dashboard-pest')?.scrollIntoView?.({ behavior: 'smooth' }), 0);
+              } else {
+                setInputFocus({ section: destination === 'simulation' ? 'basic' : destination, at: Date.now() });
+                if (window.innerWidth < 1024) setMobileInputsOpen(true);
+              }
+            }} /> : null}
           </section>
         </div>
       </main>
