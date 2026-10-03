@@ -8,6 +8,8 @@ from pydantic import BaseModel, ConfigDict, Field, StrictFloat, StrictInt, field
 
 from remote_sensing.schemas import Polygon
 
+from .india import normalize_mobile
+
 Number = StrictFloat | StrictInt
 Purpose = Literal[
     "account_operation",
@@ -26,6 +28,11 @@ class Input(BaseModel):
 
 class RequestOTP(Input):
     mobile: str = Field(pattern=r"^\+91[6-9][0-9]{9}$")
+
+    @field_validator("mobile", mode="before")
+    @classmethod
+    def indian_mobile(cls, value):
+        return normalize_mobile(value)
 
 
 class VerifyOTP(Input):
@@ -48,23 +55,11 @@ class ProfileInput(Input):
             "en",
             "hi",
             "bn",
-            "as",
-            "brx",
-            "doi",
             "gu",
             "kn",
-            "ks",
-            "kok",
-            "mai",
             "ml",
-            "mni",
             "mr",
-            "ne",
-            "or",
             "pa",
-            "sa",
-            "sat",
-            "sd",
             "ta",
             "te",
             "ur",

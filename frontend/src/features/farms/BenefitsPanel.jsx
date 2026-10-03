@@ -1,7 +1,8 @@
+import { useProductLocale } from "../product/ProductLocale";
 import React, { useEffect, useState } from "react";
 import { farmApi } from "./api";
-
 export default function BenefitsPanel() {
+  const { tx } = useProductLocale();
   const [catalog, setCatalog] = useState(null),
     [error, setError] = useState("");
   useEffect(() => {
@@ -19,18 +20,23 @@ export default function BenefitsPanel() {
   }, []);
   return (
     <section className="v2-card">
-      <h2>Benefits and official services</h2>
+      <h2>{tx("Benefits and official services")}</h2>
       <p>
-        These programs may be relevant to your farm. Official eligibility and
-        enrollment have not been verified.
+        {tx(
+          "These programs may be relevant to your farm. Official eligibility and enrollment have not been verified.",
+        )}
       </p>
-      {error && <p role="alert">Program information is unavailable. {error}</p>}
+      {error && (
+        <p role="alert">
+          {tx("Program information is unavailable.")} {error}
+        </p>
+      )}
       {catalog?.items.map((program) => (
         <article key={program.id} className="v2-event">
           <h3>{program.name}</h3>
           <p>{program.purpose}</p>
           <p>
-            <strong>Needs official verification</strong>
+            <strong>{tx("Needs official verification")}</strong>
           </p>
           <ul>
             {program.requires_verification.map((item) => (
@@ -38,23 +44,24 @@ export default function BenefitsPanel() {
             ))}
           </ul>
           <p>
-            Source review: {program.reviewed_at} · {program.review_scope}
+            {tx("Source review:")} {program.reviewed_at} ·{" "}
+            {program.review_scope}
           </p>
           <a
             href={program.official_url}
             target="_blank"
             rel="noopener noreferrer"
           >
-            Open official {program.name} portal
+            {tx("Open official")} {program.name} portal
           </a>
           <details>
-            <summary>Source and limits</summary>
+            <summary>{tx("Source and limits")}</summary>
             <a
               href={program.source_url}
               target="_blank"
               rel="noopener noreferrer"
             >
-              Program information source
+              {tx("Program information source")}
             </a>
             <ul>
               {catalog.limitations.map((item) => (
@@ -65,7 +72,7 @@ export default function BenefitsPanel() {
         </article>
       ))}
       {!catalog && !error && (
-        <p role="status">Loading public program information…</p>
+        <p role="status">{tx("Loading public program information\u2026")}</p>
       )}
     </section>
   );

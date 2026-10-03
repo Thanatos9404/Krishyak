@@ -1,0 +1,1936 @@
+{
+  "source_brief_sha256": "ac52ad77a87b85c975b5d6dcf37594db95b5dd12fde2afb6d7a452f0e8b4cf7a",
+  "baseline_commit": "7425c0cf945a3b54c2cc96fd226aeafc6e2971af",
+  "scope": "Complete user RC brief; statuses require inspected evidence, not intent",
+  "requirements": [
+    {
+      "number": 0,
+      "requirement": "PROJECT",
+      "source_sha256": "35b36316fa62dc9595e454bbdbc62adae858bf64653b2b23d00debd3c4ce51ec",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 1,
+      "requirement": "PRIMARY OBJECTIVE",
+      "source_sha256": "cadd6c6ed17996c135129ffb17baab039a9cb8f3e74167467c188eec5519ec6c",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 2,
+      "requirement": "BROWSER ACCESS AND ACCOUNTS",
+      "source_sha256": "97a5187914a8ec6403abccb99516118b51daa6860249b7737a5a21ac8f5e37ec",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 3,
+      "requirement": "SECRET HANDLING",
+      "source_sha256": "539dc8a1706809bac81627a5472ba6188c8f46110cfc667f3c8ac3418a6ccebe",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 4,
+      "requirement": "FIRST TASK — RE-AUDIT CURRENT PR #2",
+      "source_sha256": "6a3bffac7b43b168bc4a2f6c4e566294d9f0e0d2c3a669aba08bdb16db2dd967",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 5,
+      "requirement": "CURRENT CRITICAL CI FAILURE",
+      "source_sha256": "4cd218faa1cfc2b0c6c585fa6d1757eb1844f2cbec07ab2b2afea817f74da521",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 6,
+      "requirement": "FIX CONSENT TOGGLES PRODUCTION-GRADE",
+      "source_sha256": "5a68b57b7af0f2034ad66973c17f3ad87a40a9cc660f4d6236483dc4cb503f54",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 7,
+      "requirement": "CI MUST END GREEN",
+      "source_sha256": "2b4697aecc61bd1f0ddacfaa0f9ddf7011974ee4e0e5bea4df2e69420a729ba0",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 8,
+      "requirement": "INDIA-FIRST RULE",
+      "source_sha256": "b91d7638742b918ec755073cbac0e56c9e634828ff9db516aa67df945078fd6f",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 9,
+      "requirement": "DO NOT USE FAKE AI FARMERS",
+      "source_sha256": "b41c8a968304613c5958c332b4eacd70308646fcc928fac049cef307656188d8",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 10,
+      "requirement": "INDIAN EXAMPLES",
+      "source_sha256": "d0ac8bf748e1b6207a51b703a4370aea059f7b0a5f5c648bb7d8b58c18cf0ba6",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 11,
+      "requirement": "INDIA-FIRST LOCATION MODEL",
+      "source_sha256": "8cce2df9f56582ada738706dd69640e6bbd1344e42d36e191a9aa3f39ae2a27c",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 12,
+      "requirement": "LOCATION NORMALIZATION",
+      "source_sha256": "f0115670923e849a25065a6014ed5ca56abcd24058e1da28ba2509f2de4717e3",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 13,
+      "requirement": "LANGUAGE-FIRST ONBOARDING",
+      "source_sha256": "12c7829e45365e6658f3a3f9cc2b297986d99e2e3c9b5246bbbbf67feeff3457",
+      "status": "implemented_local_validation",
+      "evidence": [
+        "docs/release/PILOT_LANGUAGE_SCOPE.md",
+        "docs/release/WORKSPACE_LOCALE_VALIDATION.json",
+        "frontend/e2e/product-locales.spec.js"
+      ]
+    },
+    {
+      "number": 14,
+      "requirement": "22 SCHEDULED INDIAN LANGUAGES",
+      "source_sha256": "1d1984c397b596ebbe2e0f87707522975a5534179346522f1e5773ab0703fef5",
+      "status": "pilot_scope_revised_by_user",
+      "evidence": [
+        "docs/release/PILOT_LANGUAGE_SCOPE.md",
+        "docs/release/WORKSPACE_LOCALE_VALIDATION.json",
+        "frontend/e2e/product-locales.spec.js"
+      ]
+    },
+    {
+      "number": 15,
+      "requirement": "LANGUAGE CODES",
+      "source_sha256": "5958d4dee33d5180b12bd35b32a806024a6d2bd77954368e63e013b4437b6117",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 16,
+      "requirement": "SARVAM TRANSLATION",
+      "source_sha256": "4a3c2fb55ea6346b255481a5383408da8d97f7052a4e28ad6c4c72f5c82edcf3",
+      "status": "implemented_local_validation",
+      "evidence": [
+        "docs/release/PILOT_LANGUAGE_SCOPE.md",
+        "docs/release/WORKSPACE_LOCALE_VALIDATION.json",
+        "frontend/e2e/product-locales.spec.js"
+      ]
+    },
+    {
+      "number": 17,
+      "requirement": "STATIC TRANSLATION PIPELINE",
+      "source_sha256": "6c59007c02ce552cf5e697698104064b3084075215433de801c9d674104791ab",
+      "status": "implemented_local_validation",
+      "evidence": [
+        "docs/release/PILOT_LANGUAGE_SCOPE.md",
+        "docs/release/WORKSPACE_LOCALE_VALIDATION.json",
+        "frontend/e2e/product-locales.spec.js"
+      ]
+    },
+    {
+      "number": 18,
+      "requirement": "ZERO TRANSLATION COST AT RUNTIME",
+      "source_sha256": "001635782d8dd69d655e25bacbfb4b2e0b2966353ad89a3eed55cb5c5bea9a24",
+      "status": "implemented_local_validation",
+      "evidence": [
+        "docs/release/PILOT_LANGUAGE_SCOPE.md",
+        "docs/release/WORKSPACE_LOCALE_VALIDATION.json",
+        "frontend/e2e/product-locales.spec.js"
+      ]
+    },
+    {
+      "number": 19,
+      "requirement": "INCREMENTAL TRANSLATION",
+      "source_sha256": "53728507a87db7c97bbbe725ae00c9d795fd7e25be46e782c0b4f570ffe22a98",
+      "status": "implemented_local_validation",
+      "evidence": [
+        "docs/release/PILOT_LANGUAGE_SCOPE.md",
+        "docs/release/WORKSPACE_LOCALE_VALIDATION.json",
+        "frontend/e2e/product-locales.spec.js"
+      ]
+    },
+    {
+      "number": 20,
+      "requirement": "TRANSLATION GLOSSARY",
+      "source_sha256": "55f36ed602be83049af13d8eb0acb7c4303d53a3fff03b38205067d8a05e3680",
+      "status": "structural_validation_only",
+      "evidence": [
+        "docs/release/PILOT_LANGUAGE_SCOPE.md",
+        "docs/release/WORKSPACE_LOCALE_VALIDATION.json",
+        "frontend/e2e/product-locales.spec.js"
+      ]
+    },
+    {
+      "number": 21,
+      "requirement": "TRANSLATION SAFETY",
+      "source_sha256": "f2931095c7ce7bfa74fec6459e86aa9d6d9770a9481d2ee84c26fc12efcb1b02",
+      "status": "structural_validation_only",
+      "evidence": [
+        "docs/release/PILOT_LANGUAGE_SCOPE.md",
+        "docs/release/WORKSPACE_LOCALE_VALIDATION.json",
+        "frontend/e2e/product-locales.spec.js"
+      ]
+    },
+    {
+      "number": 22,
+      "requirement": "TRANSLATION QA",
+      "source_sha256": "a83ba9d78f8c0d37a2e1b27feced6b9d96b674bdfb4684e2af989bf4ae150978",
+      "status": "structural_validation_only",
+      "evidence": [
+        "docs/release/PILOT_LANGUAGE_SCOPE.md",
+        "docs/release/WORKSPACE_LOCALE_VALIDATION.json",
+        "frontend/e2e/product-locales.spec.js"
+      ]
+    },
+    {
+      "number": 23,
+      "requirement": "AUTOMATIC SEMANTIC QA",
+      "source_sha256": "c11d2490a93309f9c8ebe256b117e5c05a4b2ee69c1647edab092cbcf1857bdc",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 24,
+      "requirement": "MACHINE-TRANSLATION DISCLOSURE",
+      "source_sha256": "5369c1e1207c58bb9d2b82e11ec49eebb79d6076c54af2546496589af73b4e40",
+      "status": "implemented_local_validation",
+      "evidence": [
+        "docs/release/PILOT_LANGUAGE_SCOPE.md",
+        "docs/release/WORKSPACE_LOCALE_VALIDATION.json",
+        "frontend/e2e/product-locales.spec.js"
+      ]
+    },
+    {
+      "number": 25,
+      "requirement": "TRANSLATE THE ACTUAL NEW WORKSPACE",
+      "source_sha256": "d550852f789c027919fe27ffc65a3b5edcf07930fa74ada68cc281ac93875e3f",
+      "status": "partial_implementation",
+      "evidence": [
+        "docs/release/PILOT_LANGUAGE_SCOPE.md",
+        "docs/release/WORKSPACE_LOCALE_VALIDATION.json",
+        "frontend/e2e/product-locales.spec.js"
+      ]
+    },
+    {
+      "number": 26,
+      "requirement": "RTL",
+      "source_sha256": "e3381681f54bc89b9593784bf52bb98c0323ab681ff4cf2c49456fd75cbe6393",
+      "status": "implemented_local_validation",
+      "evidence": [
+        "docs/release/PILOT_LANGUAGE_SCOPE.md",
+        "docs/release/WORKSPACE_LOCALE_VALIDATION.json",
+        "frontend/e2e/product-locales.spec.js"
+      ]
+    },
+    {
+      "number": 27,
+      "requirement": "LANGUAGE FONTS",
+      "source_sha256": "cf6365041a883d15053d30fee5ce2fde46790dfe64f2f6300332339782a1707e",
+      "status": "implemented_local_validation",
+      "evidence": [
+        "docs/release/PILOT_LANGUAGE_SCOPE.md",
+        "docs/release/WORKSPACE_LOCALE_VALIDATION.json",
+        "frontend/e2e/product-locales.spec.js"
+      ]
+    },
+    {
+      "number": 28,
+      "requirement": "LANGUAGE SWITCH PERFORMANCE",
+      "source_sha256": "c6f2d41bfac2f99ad69db8bf0d9831a2b34c4363c358cf7519dd95fcd2e1cb40",
+      "status": "implemented_local_validation",
+      "evidence": [
+        "docs/release/PILOT_LANGUAGE_SCOPE.md",
+        "docs/release/WORKSPACE_LOCALE_VALIDATION.json",
+        "frontend/e2e/product-locales.spec.js"
+      ]
+    },
+    {
+      "number": 29,
+      "requirement": "SPEECH-TO-TEXT",
+      "source_sha256": "be17a4048e2aa3dc6c54979adbd9c39196d0162e394eb1c62265362025c96957",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 30,
+      "requirement": "SPEECH INPUT LOCATIONS",
+      "source_sha256": "f31b2855ec77aac59ba164967aa1a7bc5e90b15b1c7b5db5c4918bd327273ebc",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 31,
+      "requirement": "STT UX",
+      "source_sha256": "9c14d07ddcb92feb037ef4eb06609a3f7b585ced765f808de6ca5bb12f9e5308",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 32,
+      "requirement": "STT SECURITY",
+      "source_sha256": "192ae84a7486739845e595a6e38eadd2c54cd67a3838a58266a5d347e0adcb8e",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 33,
+      "requirement": "TEXT-TO-SPEECH",
+      "source_sha256": "a9583e506a699bb18ce720b642451fe421ef398dfd7a4b6c0093155c8e53b771",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 34,
+      "requirement": "TTS PROVIDER REALITY",
+      "source_sha256": "f8dc4789c4c0ab65a534061e69e92b035d89b202f76c6da022b8489f531e0ab7",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 35,
+      "requirement": "BHASHINI FALLBACK",
+      "source_sha256": "68c205a50918314a3f1a8e578a6a121492c301c849b12c13bfd99d553bac7166",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 36,
+      "requirement": "TTS CACHE",
+      "source_sha256": "0f7c0d914a5f7f9c5a225f5d250326fe9c7cd03138f95c9f4ca5973631301c38",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 37,
+      "requirement": "MOBILE PHONE LOGIN",
+      "source_sha256": "fd2c63fd24fa9e5c1ec0248398d3d2af306c266e0ccd60bc13759a636e665de0",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 38,
+      "requirement": "OTP PROVIDER SELECTION",
+      "source_sha256": "63db6a9cc153b48ce2bee80adf78b8ab9f8ef3f2a428831444b564a446aa9fef",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 39,
+      "requirement": "DO NOT CONFUSE FREE TRIAL WITH PRODUCTION FREE",
+      "source_sha256": "01d5b2354911c4a05626931423d5de9f737bae23426d98a41a2d844286ca238c",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 40,
+      "requirement": "MOBILE INPUT UX",
+      "source_sha256": "48a5d302c52c07d9e7485524c5f28068773aea1f6aa94fa5e0a7f04009841432",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 41,
+      "requirement": "OTP ABUSE PROTECTION",
+      "source_sha256": "cbb3a03b80287ac53727e5f5fc48703d9beab8c46197cfb60394cca375eb0fcb",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 42,
+      "requirement": "SESSION SECURITY",
+      "source_sha256": "47b473aa3304b3296ffaa83a51d746790ea241d6810b63ed6bb10a3c564d6722",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 43,
+      "requirement": "FIELD AREA — INDIA-FIRST UNITS",
+      "source_sha256": "54e8d0eb6d15fc6e5648abd1ba1812a219766f1b1e94c97c5e86e40d3dcf0cdf",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 44,
+      "requirement": "AREA CONVERSION",
+      "source_sha256": "f3d079b18b4120841c9ca4751aa7c4b1b27a9be4cdd43f29e8c8b45ff917a60a",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 45,
+      "requirement": "BIGHAS AND LOCAL UNITS",
+      "source_sha256": "78ff74d67aa467e81e98bf3c01641c47422485918efe0d15fd203622c451dec7",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 46,
+      "requirement": "DATE UX",
+      "source_sha256": "6a059b487809eca470c4e0a8afe6340e66eb462ffba426d8f3d9579339af66b8",
+      "status": "implemented_local_validation",
+      "evidence": [
+        "frontend/src/lib/localDates.js",
+        "frontend/src/lib/localDates.test.js",
+        "frontend/src/features/product/ProductLocale.jsx",
+        "docs/release/PILOT_LANGUAGE_SCOPE.md"
+      ]
+    },
+    {
+      "number": 47,
+      "requirement": "CROP NAMES",
+      "source_sha256": "cf3c096cfe6f19b964c1ebd877dc99eb7ad362dfb00bd5f7d4045028cb868335",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 48,
+      "requirement": "CROP SEARCH",
+      "source_sha256": "1da686445e14312ea80699afdc905a54040922b6408d15046aee18a02e316d9f",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 49,
+      "requirement": "INDIA-SPECIFIC CROP CATALOG",
+      "source_sha256": "95baaf83e2d651fa737a6265abdd0c1d3605893bf31b8469f98cffd0e6d744e6",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 50,
+      "requirement": "REMOTE SENSING — MAKE IT ACTUALLY LIVE",
+      "source_sha256": "8264e406adea124cf9661dc07052ef5b3b7eb1669849e7394cc1350972f4e884",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 51,
+      "requirement": "REMOTE-SENSING PREVIEW",
+      "source_sha256": "425aaec6b7caab71035aa61cd9aa45067c68a8c6266b4000e2ee85f64d2a1f1b",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 52,
+      "requirement": "FARMERIZE REMOTE-SENSING UI",
+      "source_sha256": "d1e9f561db68e5c57d09104735306e9a4d372ad14b61171288379667be89e59b",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 53,
+      "requirement": "FIELD HEALTH SUMMARY",
+      "source_sha256": "b0469e12bbcbcc7c9f92d9d0d0c6c8bba3cddeeaaa42de234152196303715b56",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 54,
+      "requirement": "DO NOT CREATE UNIVERSAL HEALTH SCORE",
+      "source_sha256": "3f4ac3f846f9b16feb5ae55061279cfe96ed45baa564a70208e319f197159c87",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 55,
+      "requirement": "REMOTE-SENSING LIMITATIONS",
+      "source_sha256": "7d99152c4cb8ae799365e8b2eec79bc9bb9700cb8fb8cc2ff230d6bab6fd7d93",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 56,
+      "requirement": "SATELLITE RATE LIMIT",
+      "source_sha256": "049a8456750418ba2fedd0f75d273a87a6625c606165cfe91a121f6a06cf714f",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 57,
+      "requirement": "WORKER",
+      "source_sha256": "eaf03a7bb5f93c89f516a71d8703b58ed1947993f8ad4e5a1a5aa627455661cf",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 58,
+      "requirement": "SOIL DATA",
+      "source_sha256": "ad32b39aef57320469d293b6069074a487e24191e4139a13c6ae54a9fa831eb0",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 59,
+      "requirement": "SOILGRIDS LIMITS",
+      "source_sha256": "9eb4bace3888c722be897776fc9c8478e56bade45bdd73cd467eec500316bc4f",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 60,
+      "requirement": "SOIL DATA CATEGORIES",
+      "source_sha256": "a783b076605d00260fc1b84736aca3afaefd0cb98db27d74f846d6322c8a1c98",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 61,
+      "requirement": "SOIL PROVENANCE",
+      "source_sha256": "52c93d875665d2a45da0f903593c8e33cb1f94c8fe2524ce864c6ae92aa32e4c",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 62,
+      "requirement": "SOIL FAILURE",
+      "source_sha256": "a76a1d54a89184dd2c9ef54b57fed4fec1aa155886d78314d1900dbc8deb27c8",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 63,
+      "requirement": "MARKET DATA",
+      "source_sha256": "c5fbc81cc38812d31825b1f9ca8acc925e97998e9fbfb0081ee1b41b92913943",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 64,
+      "requirement": "e-NAM",
+      "source_sha256": "809149e9372035b6f27bc5f5e77703f1786ca31af3105353f65ca4bb9239a37e",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 65,
+      "requirement": "DATA.GOV.IN",
+      "source_sha256": "c26b59dd089973d2dcc7790dc7a7e90cf25d360a21a3aaeee1a69c368c99f46b",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 66,
+      "requirement": "MARKET PROVIDER ARCHITECTURE",
+      "source_sha256": "1a7717f1d0b16fbbb9e3cf42f561d7a005e2dd9f626b240d493c0306d1f1f9a8",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 67,
+      "requirement": "MARKET CACHE",
+      "source_sha256": "95047f69ca9b82c01081224b7df7f4463037340d8e5fa707409a5e6866aa9cff",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 68,
+      "requirement": "MARKET UI INDIA-FIRST",
+      "source_sha256": "ed7b68fbe69adb371fea56f272926dacd70af14902aebf84eee204858db6a27c",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 69,
+      "requirement": "MARKET LOCATION",
+      "source_sha256": "c0f9b4c1a157816262c9c3128473bb8d1df56a4a8e100d7c381aa799dc9a5fe0",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 70,
+      "requirement": "MARKET DATA SAFETY",
+      "source_sha256": "ac7bbe4cd7e733c969673268641de928c39a92a93298a18ed4215b878c154dad",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 71,
+      "requirement": "WEATHER",
+      "source_sha256": "0ca49759edc6eac180c3b99104a62edd32a9c13881161c2a5a0935f77292bcbd",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 72,
+      "requirement": "WEATHER FARMER UI",
+      "source_sha256": "d909073ea7bb3779a481c491e501d94d3eda5dfd953c3720ef640d1b32308785",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 73,
+      "requirement": "WEATHER LOCALIZATION",
+      "source_sha256": "78ffc7b273fabeb13a0577c28a30a7aa7f0a2f999b210d1fc08f439e2136fae7",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 74,
+      "requirement": "FIELD HEALTH + WEATHER",
+      "source_sha256": "12ec9e9e9ed2f17d97c193d96f3bfa10c58d9439aa90efe69ce52428fdc73bac",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 75,
+      "requirement": "CROP PHOTO",
+      "source_sha256": "63277eac666ef41e1fc733d8076f458c02e9b772ab16fe46a33d185b1c67bdf1",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 76,
+      "requirement": "CROP PHOTO VOICE",
+      "source_sha256": "0f5fd376f149db463aa120034884d0fc2c6f30f47d454c07ec865626d67e95cb",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 77,
+      "requirement": "CLASSIFIER LIMITATIONS",
+      "source_sha256": "d3301706bd90007b702f7983fcf76476f0e190d117d2e418d0cd2f1ac7dba997",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 78,
+      "requirement": "FARMER RESULT LANGUAGE",
+      "source_sha256": "8760b1707c0eb962ea11b02ebbb3238117f300678e4fc3bd4e0116fbb6a3fb31",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 79,
+      "requirement": "DISEASE SAFETY",
+      "source_sha256": "9ed7b45a436d883ae345b4c8c6a05a4ec21c7346518a977c60b0fb378c4f4a73",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 80,
+      "requirement": "TODAY SCREEN",
+      "source_sha256": "1a0d4ba4502320c05c1898a7927fa8bf7c3efa23d34b1aabc19c20a5fffb77e0",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 81,
+      "requirement": "TODAY LOCALIZATION",
+      "source_sha256": "8c3fa20c58cff0019cb476aefa6a320789a5a1c0d6d050dae0bd35fb7b6c1e88",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 82,
+      "requirement": "STRUCTURED SERVER MESSAGES",
+      "source_sha256": "ddda79b1ebf604272cdddcddf6af123cfc9038244036cf51897c59d161e84665",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 83,
+      "requirement": "FARM UI",
+      "source_sha256": "971d3502854e41e2f8e165054ff7f28069405e0c222332227d2046a7a8a6b8ee",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 84,
+      "requirement": "FIELD MAP",
+      "source_sha256": "2c8878781ec4726675d41dab956691751dbdab42f805f3b4a11549be59c94877",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 85,
+      "requirement": "MAP PRIVACY",
+      "source_sha256": "59ec016cc347b87ed848bb595c37d6ca3620cd886ed30456fe21b7fac41e6fee",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 86,
+      "requirement": "FARM MANAGEMENT UI",
+      "source_sha256": "a2b40b55b8c1b4f9e44c99e28b5f072137326ffd373460ba06afdd2ad2e08d7b",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 87,
+      "requirement": "PLOT HEALTH LEGACY UI",
+      "source_sha256": "a05de6bb863119c1cc591f3ad5528687ab954787727e1d8b5d5a34cb4eff0299",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 88,
+      "requirement": "PLOT CONTEXT LEGACY UI",
+      "source_sha256": "e290bb6e5fa8e910d59aa52a8fed02fc3322e7c2075c551de98782bb8a8904a8",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 89,
+      "requirement": "BENEFITS",
+      "source_sha256": "7f870cda6c327cf111d3452c35adaadef85db9d3f9de4d9bd3a8568de689de85",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 90,
+      "requirement": "GOVERNMENT DATA",
+      "source_sha256": "3b5e650f998d6769487e0888d85386d8297644f47d0e35b07c3dacdaa2b33cab",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 91,
+      "requirement": "SCHEME CACHING",
+      "source_sha256": "3b167d0c26882ce31926ffb1d6762ef9057b03a2f6125a48d31ae8529f1d0b0b",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 92,
+      "requirement": "PLANNING",
+      "source_sha256": "42a3f6f429318a3e5e451c46cf545e76fa1d313e6e30b71de81f67cd42902236",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 93,
+      "requirement": "PLANNING RESULT",
+      "source_sha256": "706b354e6b345d888fa1f7ac5ab2229ebcdca366040122a80b4b9871260cff80",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 94,
+      "requirement": "VOICE FOR PLANNING",
+      "source_sha256": "ec60da9f1dc3f028d7a22ce4d8d07fef2336df876f6f083344299630f22983cf",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 95,
+      "requirement": "OFFLINE",
+      "source_sha256": "defe14eb321aaccb25d8f844219a98b4943e9be0a07f5b4495d520d67a630126",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 96,
+      "requirement": "OFFLINE STATUS",
+      "source_sha256": "585a7f63ca62b5e7cbd855d9ed8bed3a5bcdc257252f4610680192754f19f330",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 97,
+      "requirement": "OFFLINE SAFETY",
+      "source_sha256": "2c84f782a85b1c03445e7cc408cddf5236e9bafe62527415aa04e7c349e66f1f",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 98,
+      "requirement": "ACCOUNT SWITCHING",
+      "source_sha256": "09b0743ec2a761dad0f0baf6ab7bd2f85876dea40b25299c99da2edfb0f5bdf9",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 99,
+      "requirement": "PUBLIC WEBSITE",
+      "source_sha256": "89f55984156fafd654948c634fd152896fbd4e473d0d3412c9e14afc296bbaee",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 100,
+      "requirement": "PUBLIC WEBSITE INDIA-FIRST",
+      "source_sha256": "8de4be35a909c05379b52fe88a7799775540d8aad93722a5b6837791aacd9224",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 101,
+      "requirement": "PUBLIC LOCALIZATION",
+      "source_sha256": "df838d71cd11763f137ca1740729ca5231a8874026ee24ccc7f5a96edc8cd8ba",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 102,
+      "requirement": "HERO",
+      "source_sha256": "54e3c371f0e47bed1da06eaafe7010a00bc576abc9aa4e92773ef980b6bd4c91",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 103,
+      "requirement": "PERFORMANCE — FIX SLOW FARMER ENTRY",
+      "source_sha256": "28b075d7ccba871964431288090803038682da74af71b3907c47e27da8cfacfd",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 104,
+      "requirement": "AUTH PAGE SHOULD BE LIGHT",
+      "source_sha256": "ca3709fe3071a201bec04ec788c7ce4bac3d47f9858456cd6878a7cf3a2314fd",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 105,
+      "requirement": "PERFORMANCE TARGETS",
+      "source_sha256": "861b12aa4127433938ea32347f9c7864b00b31fad5e3de63f1da509a1b4242b7",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 106,
+      "requirement": "DO NOT FAKE SUB-2S",
+      "source_sha256": "159dc16ea7e391f596e9dd1dc5f235be6f781058923aaa94c08572559048c083",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 107,
+      "requirement": "SERVICE WORKER",
+      "source_sha256": "51c174a39d90ec04837f95acdabf1ca483d6908ff7631474326b0194ae789794",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 108,
+      "requirement": "LOCALIZATION OFFLINE",
+      "source_sha256": "d2714743dcb8c9f69013b1eff2ee46c872838126ff66ad2514f2ca2bbaaedfe9",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 109,
+      "requirement": "SPEECH OFFLINE",
+      "source_sha256": "1e7834b2e317aba7ddbccb0150d1aed70e729056c640500d48ee812666f27f99",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 110,
+      "requirement": "API SECURITY",
+      "source_sha256": "aaf9a1ef1ca1fd74e334848d0768e18478c83af3b030ed7667e86dab4644b90a",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 111,
+      "requirement": "RATE LIMITING",
+      "source_sha256": "db3548d1f3de784c7024256cc9e56913089ee4e222db185160ac0df1edfd852c",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 112,
+      "requirement": "RATE-LIMIT KEYS",
+      "source_sha256": "6666b751e08214bb7e1dd2347c9ae38e1db40cd9d7767aa43092ede610e4abad",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 113,
+      "requirement": "RATE LIMIT RESPONSE",
+      "source_sha256": "9eaf97926a7ffd47a7c9b1ebd7fbd20bb2706c30318eaf4444908b4e02b64803",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 114,
+      "requirement": "EXTERNAL PROVIDER CIRCUIT BREAKERS",
+      "source_sha256": "ff52fa14f00237881b75b181307bc549e249e53ef3edac9cf14d5e784a2642e3",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 115,
+      "requirement": "REQUEST COST PROTECTION",
+      "source_sha256": "11bdbd0a0dfa88f97d3b9bf755f82f947a12c41574b92e903a28c5079df37f04",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 116,
+      "requirement": "PROVIDER USAGE METRICS",
+      "source_sha256": "6c756ff1db8308423c027411d027ee70abc22398470db140f8c8af504fb4845c",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 117,
+      "requirement": "BUDGET GUARD",
+      "source_sha256": "3206124cff240504aad3655668a82572b5aa9884f30ca53db3dcb8d146564a59",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 118,
+      "requirement": "PROVIDER MATRIX",
+      "source_sha256": "987a1f0c385ac70bbaf0c4e9c541cb1926816bfc17ba1bb94f77ea2fba2f9156",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 119,
+      "requirement": "ACTUAL FREE-TIER PROVISIONING",
+      "source_sha256": "a4f869cb8390f92042c4b8e737b3e30c28b7af4e0cdf46cd1049123976045ce3",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 120,
+      "requirement": "DATABASE",
+      "source_sha256": "a03eebe3f4c7bb1d926d0dfbd21facf4dd45b0e9468d2df1f0a1d6626c777143",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 121,
+      "requirement": "FREE POSTGRES",
+      "source_sha256": "c122ddfbea5a04cbb65bc57d8061d4e1863f8da646b0db58d2c51ab670ed849e",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 122,
+      "requirement": "DATABASE MIGRATION",
+      "source_sha256": "348617336bfdea74f65822600499a0a939d1a23d551f1d925baa598f7d00e46d",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 123,
+      "requirement": "REDIS",
+      "source_sha256": "15cc94bc62598ff3451c98a32a2aa5e29d0434a3d810ac4d710414b55cd12493",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 124,
+      "requirement": "OBJECT STORAGE",
+      "source_sha256": "60089c4dd70131f87923e9d16e16123f9add126a28a8aedf6a157748b41d3011",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 125,
+      "requirement": "OBSERVABILITY",
+      "source_sha256": "7da932ad9a31b8314cd191eca0d71135f9f4b7ddf8e893c62f2d068b5e505b0f",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 126,
+      "requirement": "DO NOT LEAK FARM DATA INTO MONITORING",
+      "source_sha256": "276536b56fc35244d74febc5e8618b40ea6208b04063f5f505b313417224de7d",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 127,
+      "requirement": "BACKUPS",
+      "source_sha256": "4cf34a4b759893b276f90ad8f59b2b8673d7c0dc070349fe9e7f9cfd8c66e08f",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 128,
+      "requirement": "VERCEL PREVIEW — FIX API TOPOLOGY",
+      "source_sha256": "60daf4e076e59ef4657879f04460b644d5717d7e5605a982e837449c6886c863",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 129,
+      "requirement": "FULL STACK PREVIEW",
+      "source_sha256": "405487f38fb637cca9fa4dd0cc58fec16fbe699f0d356cbe519b567554707e2a",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 130,
+      "requirement": "PREVIEW DATA",
+      "source_sha256": "68b2918620c4658190e3f0ef056c38cb8ec46db26304f2256c54defdd6a56f6f",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 131,
+      "requirement": "PREVIEW NOINDEX",
+      "source_sha256": "29cf4bf50e2b9fe4ea6a32eb17ed4ffc26e39522d0b027eaa87708729b58dc95",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 132,
+      "requirement": "MOBILE LOGIN LIVE SMOKE",
+      "source_sha256": "aa7395b04233c9fd8d20afe9f3c2ebfff30c819ac21b763e36d6b1d95e097cbb",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 133,
+      "requirement": "SARVAM LIVE SMOKE",
+      "source_sha256": "38d7ca110d92dcee9d8adc6ef8bd88031b7fd1dcf27f2c24c94df2c0c18b51f9",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 134,
+      "requirement": "22-LANGUAGE TRANSLATION VERIFICATION",
+      "source_sha256": "0067ee6cca01294030e5600902ae92799b4825c7b2999cc054966dfee20f98cc",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 135,
+      "requirement": "ALL-LANGUAGE STT TEST",
+      "source_sha256": "cdf4475e5cacc863abe58af515991b67b2805b8742009f6dad04d158b17f87d9",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 136,
+      "requirement": "TTS COVERAGE TEST",
+      "source_sha256": "56131b72a632b10902f8dc0857393f4ac7fffc1c77452c1b144ca87de0654e40",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 137,
+      "requirement": "SPEECH LANGUAGE AUTO-DETECTION",
+      "source_sha256": "a741c0471ffd715b61b7eaa492325c844d948436c36631ad802fca619a3e2324",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 138,
+      "requirement": "CODE-MIXED SPEECH",
+      "source_sha256": "db03761c9aaa0617ab166616bbfbfd5e73acfe4eca41f979552610ac4c29665a",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 139,
+      "requirement": "TRANSLATION OF USER CONTENT",
+      "source_sha256": "e8e675a37846fbbd5f3e41314f0a45055f0605adc3965f53840b8ce7875322c4",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 140,
+      "requirement": "AGRONOMIC SOURCE LANGUAGE",
+      "source_sha256": "584d153bb036dda296f423b2bd97ff923b376185eef6e43a20fc149535e18d01",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 141,
+      "requirement": "SEARCH / DISCOVERY",
+      "source_sha256": "4efd08cfebcf9046e518818b0de8030705a4173106df2c09a1defe41431dcd1d",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 142,
+      "requirement": "ACCESSIBILITY",
+      "source_sha256": "c644974c7905df71e7aad7ce4dffc3c8329a19b42f56ee6d1aeec1db0460ea70",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 143,
+      "requirement": "PHYSICAL-FRIENDLY MOBILE UX",
+      "source_sha256": "0f8254ec19e6976f5391fcf196ecfd1d924db8642c57fdbbec2f1673b30ec6f9",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 144,
+      "requirement": "VOICE BUTTON ACCESSIBILITY",
+      "source_sha256": "911d0c8d08a30d9567890a577ff3317156f511707ac33345efb49431fe203511",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 145,
+      "requirement": "MIME / AUDIO VALIDATION",
+      "source_sha256": "ef9f45df75e2a25d40984c9a62c8145e7dbb37642586181c306967c6e8bd0058",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 146,
+      "requirement": "IMAGE SECURITY",
+      "source_sha256": "ae1f01acf7bccfadfe348013bda3b6972db38d4f448e43d76fc47af6ac8e18c4",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 147,
+      "requirement": "CSP",
+      "source_sha256": "ab8a7afc1a994335d961bf2ecc2ca280ef90462fb85cff59d8c0d16937b44768",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 148,
+      "requirement": "SECURITY HEADERS",
+      "source_sha256": "687e300c4c5bd5f417648853ac1069221fa9f9803fb0317e9d26152fb3406058",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 149,
+      "requirement": "CSRF",
+      "source_sha256": "bc6428d2417fed2e300ffd664ce8a3aeb010fe3149fbe3c7c1e7a80155f357b5",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 150,
+      "requirement": "IDOR",
+      "source_sha256": "b737557bab68e8462a27d08e40974b0685cfde84b915061677df75289a2eaa73",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 151,
+      "requirement": "API VERSION",
+      "source_sha256": "95eb81ceedefac0d1d246187251429b51eafd9034f4a8b5227edccd5b8cf055b",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 152,
+      "requirement": "ERROR LOCALIZATION",
+      "source_sha256": "51146641efb540691d08e70e21eb7f5ccf9f94e14df6081b171365573633e299",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 153,
+      "requirement": "ERROR EDGE CASES",
+      "source_sha256": "848ded8b27a5214441ed0a30cb97f38f3e4a4fcb1211d59767a8c0c502481ddb",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 154,
+      "requirement": "INSTITUTIONAL UI",
+      "source_sha256": "c00b289534b91bb6f5e2121f29dc1bce69f59aef9269e2cd2d48d8917cf9f270",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 155,
+      "requirement": "BENEFITS / GOVERNMENT INTEGRATION",
+      "source_sha256": "827f7b772bece8123b0ff20bca92e922a9a7ba05b16f49ff31be7baa1a566126",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 156,
+      "requirement": "REMOVE OLD FAKE JAM UI",
+      "source_sha256": "bda7cf1f976c06fdb7d3e394b441a741c8d92b550e9f2d0f79a0728a7f137358",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 157,
+      "requirement": "INDIA PRIVACY",
+      "source_sha256": "9e780269a01df81b9bc2758f556399e46ca5d8ce1ea7ee74020322c8d22e904f",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 158,
+      "requirement": "PRODUCTION LOGGING",
+      "source_sha256": "76f780cd5c306ebf843388f9071d5b1627e9a2ef902555d4ea7d4b90cb431622",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 159,
+      "requirement": "MASK PHONE",
+      "source_sha256": "ffd4a4d4807be63c5172bec1bb590acc0b9b6ea5ed5f1381fc07469f7f52d18f",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 160,
+      "requirement": "TEST SUITE — TRANSLATION",
+      "source_sha256": "8d28f2d7f1fecdc2952fcd55b0c1f68259553fdba0843abc12e88ec1e9af5a2f",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 161,
+      "requirement": "TEST SUITE — SPEECH",
+      "source_sha256": "44c82ef9430dcd84c3bc921c6c43439747001a847c019d7a698ff6a055018653",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 162,
+      "requirement": "TEST SUITE — AUTH",
+      "source_sha256": "633f8469d4a92079e706e743127b01f814b7cf892324b7eb03c93e2471f922b1",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 163,
+      "requirement": "TEST SUITE — SOIL",
+      "source_sha256": "5b461c85e63f4c9b5f28046c12d12c959c3438f83597afb176ad1b8f5500f386",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 164,
+      "requirement": "TEST SUITE — MARKET",
+      "source_sha256": "d526f932d56bc9eb2ffb13e664eacb12796c3abe2e50d68e7fa3c2000823fb5a",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 165,
+      "requirement": "TEST SUITE — SATELLITE",
+      "source_sha256": "e9d27d25f8a11c22f109f1a77c3fc5833ae4c85681495f8d2fe80cc9af7ebb49",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 166,
+      "requirement": "E2E — FARMER JOURNEY",
+      "source_sha256": "be9e4fbf245796864b6dc2ceb2be944e2cda98d47bb09f1d1e26414a0d7ed28b",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 167,
+      "requirement": "LIVE PROVIDER SMOKE IS SEPARATE",
+      "source_sha256": "dd128a03e71b45f4cf0862142febfbdd6596d172b143a25464d6eaca884cb944",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 168,
+      "requirement": "VISUAL REGRESSION — LANGUAGES",
+      "source_sha256": "0af503d2528421b2932ef250ab2919e7f375a1248bf30b652f4e1bc34417e0ae",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 169,
+      "requirement": "SCRIPT-SPECIFIC SMOKE",
+      "source_sha256": "5f18f5181d49a29fd29cbb82721ae2bba94bee5b8fa78371b308084de69a1a98",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 170,
+      "requirement": "PERFORMANCE WITH HINDI",
+      "source_sha256": "c8bc1ba3bdcb53e4a8be39a34bee4cdaab99d49772f2a86f6732e141d000358e",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 171,
+      "requirement": "RATE-LIMIT TESTING",
+      "source_sha256": "7c8d90b379ad959deeddce6452a02483b3adcfb1b6fe045e9aa288b2d8aac52d",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 172,
+      "requirement": "LOAD TEST",
+      "source_sha256": "bfc5cc30822b1058d7f437d4bca08e098352dd94bc1415afe6f21179496bb2d9",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 173,
+      "requirement": "FREE-TIER BUDGET MODEL",
+      "source_sha256": "b5f24a17ca7ccec60050a750fc76f9928fae790f591d0c6a47b3b5b64e849ab1",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 174,
+      "requirement": "DO NOT HIDE COST CLIFFS",
+      "source_sha256": "418d061278e47a751f81a043e0c623230c6092c412133d385b35f209d734691f",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 175,
+      "requirement": "PROVIDER HEALTH",
+      "source_sha256": "eb5576f20d6b1f8874dbd5572c45f4f92d3bf70c9a2a18c8c87c1ca36724506c",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 176,
+      "requirement": "READINESS ENDPOINT",
+      "source_sha256": "168688d20845338cd98c9cd89f916c14e1702e06e61d2a5958862117e42c1bb9",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 177,
+      "requirement": "STAGING",
+      "source_sha256": "36d33be84c3855ad4477739f1b842261734157492806307e7d2bbb484ff86d31",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 178,
+      "requirement": "PRODUCTION PREVIEW",
+      "source_sha256": "7874cb6c90a2b006c101a22b35ffb437416c5455e00729ad41a8e333b1ee9858",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 179,
+      "requirement": "ENVIRONMENT MATRIX",
+      "source_sha256": "c70f6e5753258d8f5f18314a8c27f9475c26ecd3527f68a4532ee1afe8a55aba",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 180,
+      "requirement": "NO DEVELOPMENT IDENTITY IN PROD",
+      "source_sha256": "a4f5ac4fce7c358acef5c4d00aa6f5524ba7e4e9415013dacb82b05a6775d703",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 181,
+      "requirement": "NO MOCK PROVIDERS IN PROD",
+      "source_sha256": "c97cd33ec7842cb40852d75a7dcb26f94ccfb59a8b226e1c586433114ccaeec8",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 182,
+      "requirement": "DATA PROVENANCE",
+      "source_sha256": "f2226571ed7366d2540a610d8a8613a264b6cb082fdf1ec167d1262e473169ef",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 183,
+      "requirement": "FARMER-FRIENDLY PROVENANCE",
+      "source_sha256": "ff0b5796021ee5cce9dc79e7b829639f2ae07164d0eb561986efe1fb6ba2104f",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 184,
+      "requirement": "AUTO REFRESH POLICIES",
+      "source_sha256": "ab6389ad9273f57e922143db0c99324094f7a66c77c2ecb7ca4920c2da0dafba",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 185,
+      "requirement": "SATELLITE REFRESH POLICY",
+      "source_sha256": "2e52842439c58538f53640676a03c61c34b27bc05ae11fbc3154d9fdc0750549",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 186,
+      "requirement": "MARKET REFRESH POLICY",
+      "source_sha256": "91b53b9bc0f6fb9a7d4a7f895041f7ecf9ce6a81dfd7d5acde08b4bc32b4595b",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 187,
+      "requirement": "SOIL REFRESH POLICY",
+      "source_sha256": "c0b0876a91909bcaca75ca51ac1f3b0632a8243c6fce6fba7f1c47f99ab5e84c",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 188,
+      "requirement": "TTS COMMON-PHRASE CACHE",
+      "source_sha256": "e4170c978f28e0c48e5678e8a35e4b4cebffeaeccf5c157303e556be505858ac",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 189,
+      "requirement": "SARVAM CREDIT EFFICIENCY",
+      "source_sha256": "3d929a19dea8baeb54da09a635d3a3645eb56b01388f861afd35e562747b2876",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 190,
+      "requirement": "ALL PROVIDER KEYS SERVER-SIDE",
+      "source_sha256": "5e2f9e0daba81b6c927bc8930290046228b01d30c1f40083687bc83590cfe2db",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 191,
+      "requirement": "DEPENDENCY AUDIT",
+      "source_sha256": "f3be30e726b094fec03c41317f75817e1e4465cc0407686acaa2e800b609bf28",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 192,
+      "requirement": "STATIC ANALYSIS",
+      "source_sha256": "5d04f11f7702551d5909febd3c08dd3d644828b6e7d99a514984ec6e3bd6454c",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 193,
+      "requirement": "NEXT.JS BUILD",
+      "source_sha256": "b5ddbffe0c2b8bec036441b94671522fe32e3e6b3508d4babbfe4c8a29491177",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 194,
+      "requirement": "HYDRATION",
+      "source_sha256": "2b7d7ec0862391c572fe5f0bc5148537f6572eeddfcb8c4b9b8ebe3a68d93e37",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 195,
+      "requirement": "PUBLIC SEO REGRESSION",
+      "source_sha256": "7ff5c6f162239037cf8ec778dc00d40582489c57fe3191d06cc45d0ae53bc215",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 196,
+      "requirement": "SEARCH CONSOLE",
+      "source_sha256": "678068674e38b7a400e28a4574971f3f7d624149ec1df03d8a28a797d69e1710",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 197,
+      "requirement": "FARMER USABILITY WITHOUT ENGLISH",
+      "source_sha256": "b427e2d1b9786c6d471f881d48f6d590862f183ff3341b6347205a3c9c8aa384",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 198,
+      "requirement": "VOICE-FIRST HINDI FLOW",
+      "source_sha256": "93629d2d9cc15e248e135fa058db79a04a5b60ad8a22b9b3f9c264362b8a14ab",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 199,
+      "requirement": "MULTILINGUAL CONTENT FALLBACK",
+      "source_sha256": "3c4e427457e1608862d3f7173b3adce678b779dafbd99e79dba6ef4715a48546",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 200,
+      "requirement": "ENGLISH SHOULD NOT DOMINATE",
+      "source_sha256": "546987ece68c2c0639f1ca6b19553dfee22d77201c60b16e4eb5e5238a0c57c3",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 201,
+      "requirement": "LOCAL NUMERALS",
+      "source_sha256": "8caa0a5f98f5fbf0449f4dd22cb1a3e687d1fa78c9a1f067408be185734db10f",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 202,
+      "requirement": "CURRENCY",
+      "source_sha256": "293cff81583bfb7de92ca95f5193041cfa91a8440358428c8161faf98d6d0c8b",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 203,
+      "requirement": "MARKET UNITS",
+      "source_sha256": "92f56db59ca143080b5b1f41546927e737d16937a875abab657c428c8e53d476",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 204,
+      "requirement": "WEATHER UNITS",
+      "source_sha256": "0344db71ccb03a217a03d24b54ee7abae2921f7345561f25f2cac0f168f6cf27",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 205,
+      "requirement": "FARMER SUPPORT CONTACT",
+      "source_sha256": "c516edcc1537776de606fd00f2eb9e83b3d44dc3442a9d819b289373d144d2e1",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 206,
+      "requirement": "EMPTY STATE INDIA-FIRST",
+      "source_sha256": "e354def186d50126a15a9825492897350d11108dbaae6d909a4689892a91cb40",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 207,
+      "requirement": "PUBLIC FOUNDER/ABOUT",
+      "source_sha256": "6ec65e51d952bf3e49384772e4c72d5f8402ae9eaa0f8571f3446855ceebf4e5",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 208,
+      "requirement": "GOVERNMENT LOGOS",
+      "source_sha256": "79cc3d1499806105fe907cebd6a8d87b5c1294db21e7b4f12b7c0de31883799f",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 209,
+      "requirement": "DATA SOURCES PAGE",
+      "source_sha256": "afe4c695246d1c2100ae5dbbe2160fad54f3cfa250f8320f7c4d46670011dc71",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 210,
+      "requirement": "EACH SOURCE LIMITATION",
+      "source_sha256": "47ef68c6fc542a9ab410967f630aa9b5897dc3fe6fb4aa4ef677b74777dec141",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 211,
+      "requirement": "README",
+      "source_sha256": "c63ebcd2d51019763f92f187d966f8165e70c4e1ff800e0ddb0165bfa493fd1b",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 212,
+      "requirement": "REMOVE STALE REPORT CLAIMS",
+      "source_sha256": "f39822aa2d691fd9528603dda1cdfc28002aa537d7866d65cd1207c6162caf09",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 213,
+      "requirement": "FINAL CI EVIDENCE",
+      "source_sha256": "a25a98fb8a62f6001c9904ae65bfd81fed39a68acb687b169269c447d6de28d3",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 214,
+      "requirement": "GIT WORKFLOW",
+      "source_sha256": "a6ce9f18f307b4ac8af314fef240aa9ab69f3b2af1254cfa6eaacc1a01e678ff",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 215,
+      "requirement": "SUGGESTED COMMITS",
+      "source_sha256": "3eac567f03be9ab98b83ad50e401fd99e083fc5b7f42eda9c7c456cc4cbccf23",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 216,
+      "requirement": "DO NOT MAKE ONE MASSIVE COMMIT",
+      "source_sha256": "cc5307ec45f8dc0cd125eea84af75193768b0f24d652814217c5e5acf541ba17",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 217,
+      "requirement": "BEFORE EVERY PUSH",
+      "source_sha256": "953bf6ac88fa6879ae6e4602dc4846d31936387174fd9f9057a3a2722f737fe7",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 218,
+      "requirement": "BEFORE FINAL PUSH",
+      "source_sha256": "a2ccc8e68d6e6fdafbc41215848cc8f81eaee355148b2dcd585bdd4f86b73488",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 219,
+      "requirement": "FINAL LIVE BROWSER VERIFICATION",
+      "source_sha256": "e41a15b786a5647da72b4e1713ea2dbce651fa6f98cc8114c1ad155ba8405e56",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 220,
+      "requirement": "LIVE FARMER FLOW",
+      "source_sha256": "1e24cdd92aca936f48f8fd3b2db2cebd3f64f45f5500a0bb688a8aca6b22cf88",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 221,
+      "requirement": "PROVIDER FAILURE FLOW",
+      "source_sha256": "50c9397287ab37069a1e59d8b5afd26557ebe6a1e55e7b0e57312a7d43f024de",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 222,
+      "requirement": "NO “EVERYTHING WORKS” WITHOUT EVIDENCE",
+      "source_sha256": "f269313448792115a2b78bc565fcf32c2ef5480fd3b3ea51dfe23b631226f03f",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 223,
+      "requirement": "EXTERNAL LEGAL/COMMERCIAL BARRIERS",
+      "source_sha256": "0e61c83759589f6cecc7778eba002c585e9dd020df45cc0bebeaa030594398f8",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 224,
+      "requirement": "DO NOT USE SCRAPING WHERE OFFICIAL API EXISTS",
+      "source_sha256": "8161dbb3d6c0aea4a598b2e0082f9006367daa2152766276ebb09c111be66e10",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 225,
+      "requirement": "DO NOT SCRAPE PRIVATE e-NAM ENDPOINTS",
+      "source_sha256": "353d9f6c800c9081b7c5930fe4725c69a24774db0d3c77d5705ce05c8619f962",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 226,
+      "requirement": "FREE DOES NOT MEAN ABUSIVE",
+      "source_sha256": "01af517a883806ff7f033fe6190f4a0f9fe992eee4c113b15d2162ff497ff791",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 227,
+      "requirement": "DATA RETENTION",
+      "source_sha256": "03e4f2868afc866bde544fddf401c9640dbb06669a729a04b3155ebfa24f2591",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 228,
+      "requirement": "OBJECT CLEANUP",
+      "source_sha256": "705f1b540576905478871f4df11bc5b56e2b0a91bf8b6e799e8692d3fb162201",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 229,
+      "requirement": "FARMER EXPORT",
+      "source_sha256": "037fc365d6b5c092acc8293222b511919ecb6e6894eae44f6eee2ecd2c3a6cdf",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 230,
+      "requirement": "INDIAN FARMER PILOT MODE",
+      "source_sha256": "6a7d0c644f4637469e3d6f75317461f7c90c7c3912985c9b96a4552f6f9574d8",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 231,
+      "requirement": "NO INVASIVE ANALYTICS",
+      "source_sha256": "11b9b961dc2c5fd5ff1afe0255d01f8f18b2420babc9bf43b78314585e80eb53",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 232,
+      "requirement": "SECURITY THREAT REVIEW",
+      "source_sha256": "6faadb139016760d0c8af18f530144227bc269a5e64db70efaa4fe30e58a6bf0",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 233,
+      "requirement": "AUDIO ATTACK SURFACE",
+      "source_sha256": "7c67c00e57623295dc7f63671b5af5b4d49d0e59fafbd67fd43fbd7d43fe4769",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 234,
+      "requirement": "CREDENTIAL ROTATION",
+      "source_sha256": "5bdb4894afadd088ce2af2023ff55d53b4ee7c9fd6b997875cefccb29436899e",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 235,
+      "requirement": "PWA LANGUAGE",
+      "source_sha256": "b37f9707e76cebb4e7d5b1fb76d0b0ed5034ad606bc301c3e8e70930c88151f5",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 236,
+      "requirement": "APP STARTUP",
+      "source_sha256": "a2e28e5874758311dde669974451630930482e5ddeb428ab533d0d997b755889",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 237,
+      "requirement": "FIRST SCREEN",
+      "source_sha256": "7c57b2b5e409879b476954e8e0381c9d6ed71003218ee6eff277e61f655ff9a5",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 238,
+      "requirement": "LANGUAGE SEARCH",
+      "source_sha256": "c04c0acd7d0ae0677124d32bc6aac8a184000c863a68dc87749944a2f2ac12a1",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 239,
+      "requirement": "VOICE ONBOARDING",
+      "source_sha256": "30823b6c165da6bb47c3d9196ab5e904fd99a2ac14af21e408809b13810782ce",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 240,
+      "requirement": "INDIA-FIRST DESIGN",
+      "source_sha256": "b4b31aa1ee392a6945d31454d45e3e09fade48c2a41c597874dfadabef83c657",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 241,
+      "requirement": "PUBLIC IMAGES",
+      "source_sha256": "69ad065e703974bd2649b0fe69d336837af329038ef776203335759ea6ef19cc",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 242,
+      "requirement": "DO NOT ADD FLAGS EVERYWHERE",
+      "source_sha256": "5ce0b444fa513210f3f0e53fb16a2c7c2fe5226713a73eac11979048ca54ce42",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 243,
+      "requirement": "TEST FARMER TECHNICAL COMPREHENSION",
+      "source_sha256": "a8a79afc418a5e8cb41e282cbda513128fbe82eb97e41ebbce93b83d1af70f33",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 244,
+      "requirement": "ELIMINATE RAW ENUMS",
+      "source_sha256": "dfbf9a8a15eebb9a14b292840cfbb45968686c36f40db515aca32cf9878bb0f5",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 245,
+      "requirement": "ELIMINATE RAW API ERROR CODES",
+      "source_sha256": "0957309f8efdd8a34b5616895813d79ffee1c0f2c934b61d42a7bd532f04eec9",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 246,
+      "requirement": "NO RAW UUID INPUTS",
+      "source_sha256": "8467cd24372305a4308f6c5922bedcfd4da32fdc53bd91a61c494f43ac847a7e",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 247,
+      "requirement": "PILOT INVITE",
+      "source_sha256": "f9fb54bdcf63ab677a68692f9df4ccc8d43002b5dc8f6af08773049e6d830d5e",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 248,
+      "requirement": "FINAL PERFORMANCE REPORT",
+      "source_sha256": "3ab0c29c2ac87cf48154cdcd36188617fdda312e6a2f52b9e9783725491be73c",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 249,
+      "requirement": "FINAL PROVIDER REPORT",
+      "source_sha256": "06a969ccf4900abf7835f681e4b214f9c15e9646f795571428847f2cce9f6e49",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 250,
+      "requirement": "FINAL LANGUAGE REPORT",
+      "source_sha256": "e4879a45e2f748086273402389fab96e05084bf792bd52d17453409ad21722e9",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 251,
+      "requirement": "FINAL SECURITY REPORT",
+      "source_sha256": "1b89f7f9a025f913ed08b85e69dc1af837845e3f6e780c276ac4c549f8e6b62b",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 252,
+      "requirement": "FINAL TEST REPORT",
+      "source_sha256": "d8cea43f8587fda59cb15b3226d3c0db63741215535723c0af2c4cc15ebbbbef",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 253,
+      "requirement": "DEFINITION OF DONE",
+      "source_sha256": "499d40925d08a2298f03a2576f2257adf4e340ddd63b21f96f1d38f679106762",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 254,
+      "requirement": "WHAT MAY NOT BE FAKED",
+      "source_sha256": "fb4b54965ad4a1be58ccda4df90d948941cf6f369c9a469b678dee047a9785c6",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 255,
+      "requirement": "NO TODO-DRIVEN COMPLETION",
+      "source_sha256": "9ed0eb740dc30b26dc697e4f54b1c801745e5deff7a03125e71bc177b7c9a284",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 256,
+      "requirement": "ONLY TRUE EXTERNAL BLOCKERS MAY REMAIN",
+      "source_sha256": "c4ce21c12c1f36f2da21da7f3ce954d8c27bf29d14e1a317ab481bd4d2a929a4",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 257,
+      "requirement": "FINAL PRODUCT STANDARD",
+      "source_sha256": "f399874d48b1ea312debf2acd78c5bba93a4f94113663b1cd4b217e5a37dbbc7",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 258,
+      "requirement": "FINAL TECHNICAL STANDARD",
+      "source_sha256": "0fe9956c8e60219c5ee902c14d868508098c591f296378b58be164214c31c626",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 259,
+      "requirement": "FINAL FUNDER STANDARD",
+      "source_sha256": "fbc675c1258caedb1056ead7eb5dfc707f6b4924be8a73947f8c9402d4792c4d",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 260,
+      "requirement": "FINAL RESPONSE",
+      "source_sha256": "14432e03bae8435efd5d967e647e04618cf155e6099463b01d37e8fde9cb4c21",
+      "status": "unverified",
+      "evidence": []
+    },
+    {
+      "number": 261,
+      "requirement": "FINAL INSTRUCTION",
+      "source_sha256": "3bfa3a31abb9f0fdf56ee9593c95962f6b9697299a5f498124649d665d27b0d3",
+      "status": "unverified",
+      "evidence": []
+    }
+  ],
+  "scope_overrides": [
+    {
+      "date": "2026-10-03",
+      "source": "Explicit user instruction: keep only the main 8 to 10 Indian languages for the first pilot; defer the rest and move to the next target",
+      "pilot_languages": [
+        "en",
+        "hi",
+        "ur",
+        "gu",
+        "bn",
+        "mr",
+        "kn",
+        "ta",
+        "te",
+        "ml",
+        "pa"
+      ],
+      "deferred_languages": [
+        "as",
+        "brx",
+        "doi",
+        "ks",
+        "kok",
+        "mai",
+        "mni",
+        "ne",
+        "or",
+        "sa",
+        "sat",
+        "sd"
+      ],
+      "remaining_release_scope": "unchanged"
+    }
+  ]
+}

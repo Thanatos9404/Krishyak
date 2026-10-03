@@ -1,12 +1,17 @@
 # Krishyak — Field Intelligence
 
 Private farm records, source-labelled field evidence and decision support for
-Indian farmer pilots. The v2 workspace is the main application; scenario
-planning remains available at `/planning`.
+Indian farmer pilots. The new farmer workspace starts at `/app/today`; scenario
+planning lives under `/app/more/planning`. Legacy links redirect permanently.
 
-**Release status, 3 October 2026:** v2 engineering is implemented on
-`feat/krishyak-v2-field-intelligence`. Local PostGIS, Docker, browser, security
-and restore checks are documented in [the test report](docs/v2/TEST_REPORT.md).
+**Release status, 3 October 2026:** the product and public SSR rebuild is on
+`feat/krishyak-v2-product-experience-seo`, based on verified v2 engineering.
+See the [product delivery report](docs/product/UI_REBUILD_REPORT.md),
+[frontend migration](docs/product/FRONTEND_MIGRATION.md),
+[SEO report](docs/seo/FINAL_SEO_REPORT.md) and
+[design system](docs/product/DESIGN_SYSTEM.md).
+Local PostGIS, Docker, security and restore foundations are documented in
+[the v2 test report](docs/v2/TEST_REPORT.md).
 Public hosting continues its existing deployment. Production v2 activation
 requires configured infrastructure/credentials and accountable pilot review;
 there is no production demo login or fabricated provider data.
@@ -27,11 +32,12 @@ there is no production demo login or fabricated provider data.
   reports that keep unmeasured impact null.
 - Installable public PWA shell; optional owner-scoped offline snapshots and
   bounded idempotent observation queue, explicit conflicts and logout cleanup.
-- Farmer Today/My Farm/Crop Health/Market/Benefits/Privacy screens; on-demand
+- Farmer Today/Farm/Scan/Market/More screens; on-demand
   map/chart/planning modules, device-only English readout and written fallback.
 - Existing simulation, fertilizer, market, MSP, weather and 23 legacy language
-  packs preserved. New v2 core has English/Hindi draft strings; other languages
-  explicitly fall back to English pending reviewed translations.
+  packs preserved. The new product screens use an explicit English fallback;
+  the selected language remains available in the planning tools. Draft pilot
+  translations require human field review before localization is certified.
 
 Unsafe legacy personal-data endpoints are disabled in deployed environments.
 Public government cards link official information and require verification;
@@ -71,6 +77,7 @@ python scripts/run_v2_local.py api
 # Separate terminals:
 python scripts/run_v2_local.py worker
 cd frontend
+npm run build
 npm start
 ```
 
@@ -96,6 +103,15 @@ PostGIS, Redis and (in deployment) a recent worker heartbeat. A static site or
 sleeping free API alone cannot provide persistent production v2 services.
 
 ## Documentation
+
+- [Reference inspection](docs/product/REFERENCE_SITE_ANALYSIS.md),
+  [content map](docs/product/CONTENT_MAP.md),
+  [visual QA](docs/product/DESIGN_QA.md),
+  [performance measurements](docs/product/PERFORMANCE_REPORT.md).
+- [Indexability](docs/seo/INDEXABILITY_MATRIX.md),
+  [Search Console handoff](docs/seo/SEARCH_CONSOLE_HANDOFF.md),
+  [media kit](docs/growth/MEDIA_KIT.md),
+  [earned-media research](docs/growth/EARNED_MEDIA_OUTREACH.md).
 
 - [Audit](docs/v2/CURRENT_STATE_AUDIT.md), [plan](docs/v2/IMPLEMENTATION_PLAN.md),
   [delivery report](docs/v2/DELIVERY_REPORT.md), [test report](docs/v2/TEST_REPORT.md).

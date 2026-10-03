@@ -1,0 +1,119 @@
+{
+  "source_sha256": "67c2b09482f2c25dbc38951f4d76f646c1cad044c01a76018793dd334cdc5abf",
+  "languages_checked": [
+    "hi",
+    "ur",
+    "gu",
+    "bn",
+    "mr",
+    "kn",
+    "ta",
+    "te",
+    "ml",
+    "pa"
+  ],
+  "results": [
+    {
+      "language": "hi",
+      "strings": 763,
+      "bytes": 124047,
+      "script_letter_fraction": 0.9883,
+      "unchanged_english_labels": [],
+      "structural_pass": true,
+      "semantic_approval": "not_established",
+      "native_review": "required"
+    },
+    {
+      "language": "ur",
+      "strings": 763,
+      "bytes": 97496,
+      "script_letter_fraction": 0.9923,
+      "unchanged_english_labels": [],
+      "structural_pass": true,
+      "semantic_approval": "not_established",
+      "native_review": "required"
+    },
+    {
+      "language": "gu",
+      "strings": 763,
+      "bytes": 119976,
+      "script_letter_fraction": 0.986,
+      "unchanged_english_labels": [],
+      "structural_pass": true,
+      "semantic_approval": "not_established",
+      "native_review": "required"
+    },
+    {
+      "language": "bn",
+      "strings": 763,
+      "bytes": 129316,
+      "script_letter_fraction": 0.9877,
+      "unchanged_english_labels": [],
+      "structural_pass": true,
+      "semantic_approval": "not_established",
+      "native_review": "required"
+    },
+    {
+      "language": "mr",
+      "strings": 763,
+      "bytes": 123120,
+      "script_letter_fraction": 0.9766,
+      "unchanged_english_labels": [],
+      "structural_pass": true,
+      "semantic_approval": "not_established",
+      "native_review": "required"
+    },
+    {
+      "language": "kn",
+      "strings": 763,
+      "bytes": 133316,
+      "script_letter_fraction": 0.9878,
+      "unchanged_english_labels": [],
+      "structural_pass": true,
+      "semantic_approval": "not_established",
+      "native_review": "required"
+    },
+    {
+      "language": "ta",
+      "strings": 763,
+      "bytes": 145823,
+      "script_letter_fraction": 0.9888,
+      "unchanged_english_labels": [],
+      "structural_pass": true,
+      "semantic_approval": "not_established",
+      "native_review": "required"
+    },
+    {
+      "language": "te",
+      "strings": 763,
+      "bytes": 131048,
+      "script_letter_fraction": 0.9864,
+      "unchanged_english_labels": [],
+      "structural_pass": true,
+      "semantic_approval": "not_established",
+      "native_review": "required"
+    },
+    {
+      "language": "ml",
+      "strings": 763,
+      "bytes": 142416,
+      "script_letter_fraction": 0.9884,
+      "unchanged_english_labels": [],
+      "structural_pass": true,
+      "semantic_approval": "not_established",
+      "native_review": "required"
+    },
+    {
+      "language": "pa",
+      "strings": 763,
+      "bytes": 123157,
+      "script_letter_fraction": 0.9862,
+      "unchanged_english_labels": [],
+      "structural_pass": true,
+      "semantic_approval": "not_established",
+      "native_review": "required"
+    }
+  ],
+  "failures": [],
+  "limits": "Script/placeholder/glossary integrity cannot establish semantic correctness or native usability."
+}

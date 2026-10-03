@@ -3,6 +3,7 @@
 import asyncio
 import copy
 import io
+import json
 import os
 import unittest
 from datetime import timedelta
@@ -30,7 +31,7 @@ from db.models import (
     utcnow,
 )
 from v2.application import install_v2
-from v2.schemas import ObservationInput, PlotInput
+from v2.schemas import ObservationInput, PlotInput, ProfileInput
 from v2.settings import Settings
 
 ORIGIN = "http://localhost:3000"
@@ -41,6 +42,18 @@ POLYGON = {
 
 
 class ConfigAndSchemaTests(unittest.TestCase):
+    def test_profile_language_acceptance_matches_the_first_pilot_scope(self):
+        pilot = json.loads(
+            (Path(__file__).resolve().parents[1] / "frontend/src/i18n/pilotLanguages.json").read_text(encoding="utf-8")
+        )
+        for code in pilot["codes"]:
+            with self.subTest(language=code):
+                profile = ProfileInput(display_name="Synthetic farmer", preferred_language=code)
+                self.assertEqual(profile.preferred_language, code)
+        for code in pilot["deferred"]:
+            with self.subTest(deferred=code), self.assertRaises(ValidationError):
+                ProfileInput(display_name="Synthetic farmer", preferred_language=code)
+
     def test_hosted_runtime_cannot_reenable_legacy_pii_or_development_identity(self):
         with patch.dict(os.environ, {"VERCEL": "1", "ENVIRONMENT": "development", "KRISHYAK_V2_ENABLED": "false"}):
             settings = Settings.from_env()

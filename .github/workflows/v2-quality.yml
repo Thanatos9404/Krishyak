@@ -1,7 +1,7 @@
 name: Field Intelligence quality gates
 on:
   push:
-    branches: [main, feat/krishyak-v2-field-intelligence]
+    branches: [main, feat/krishyak-v2-field-intelligence, feat/krishyak-v2-product-experience-seo]
   pull_request:
   workflow_dispatch:
 permissions:
@@ -61,7 +61,10 @@ jobs:
       - name: Runtime dependency security
         run: pip-audit -r backend/requirements.txt
       - name: Release documentation links
-        run: python scripts/check_v2_docs.py
+        run: |
+          python scripts/check_v2_docs.py
+          python scripts/check_product_release.py
+          python scripts/i18n/validate-workspace.py
   frontend-and-browsers:
     runs-on: ubuntu-latest
     timeout-minutes: 25
@@ -110,14 +113,22 @@ jobs:
           python -m alembic upgrade head
           python -m uvicorn main:app --host 127.0.0.1 --port 8000 --no-access-log > /tmp/v2-api.log 2>&1 &
           cd ../frontend
-          npm run preview -- --host 127.0.0.1 --port 3000 > /tmp/v2-web.log 2>&1 &
+          npm start > /tmp/v2-web.log 2>&1 &
           python ../scripts/wait_for_v2.py
       - name: Chromium, Firefox and WebKit E2E, mobile and accessibility
         run: npm run test:e2e
         working-directory: frontend
+      - name: Public crawl and orphan-page check
+        run: python scripts/audit_product_site.py
       - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
-        if: failure()
-        with: {name: synthetic-browser-failures, path: output/playwright, retention-days: 7}
+        if: always()
+        with:
+          name: synthetic-browser-evidence
+          path: |
+            output/playwright
+            output/product/screenshots
+            output/mobile-performance.json
+          retention-days: 7
   container:
     runs-on: ubuntu-latest
     timeout-minutes: 20

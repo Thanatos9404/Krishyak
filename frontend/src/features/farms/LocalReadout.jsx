@@ -1,6 +1,7 @@
+import { useProductLocale } from "../product/ProductLocale";
 import React, { useEffect, useState } from "react";
-
 export default function LocalReadout({ text }) {
+  const { tx } = useProductLocale();
   const [voice, setVoice] = useState(null),
     [speaking, setSpeaking] = useState(false),
     [error, setError] = useState("");
@@ -52,12 +53,18 @@ export default function LocalReadout({ text }) {
           window.speechSynthesis.speak(utterance);
         }}
       >
-        {speaking ? "Stop reading" : "Read today’s advice aloud in English"}
+        {speaking
+          ? tx("Stop reading")
+          : tx("Read today’s advice aloud in English")}
       </button>
       <p>
         {voice
-          ? "Uses an installed device voice. No speech-provider request is sent."
-          : "No installed English device voice is available. Written advice remains available."}
+          ? tx(
+              "Uses an installed device voice. No speech-provider request is sent.",
+            )
+          : tx(
+              "No installed English device voice is available. Written advice remains available.",
+            )}
       </p>
       {error && <p role="status">{error}</p>}
     </div>

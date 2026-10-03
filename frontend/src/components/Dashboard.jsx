@@ -16,7 +16,7 @@ const Dashboard = ({ simulationData, formData, farmer, crops = [] }) => {
   if (!simulationData) {
     return (
       <div className="farm-empty-state">
-        <div className="farm-empty-state__photo" role="img" aria-label={t('landing.photoAlt')} />
+        <div className="farm-empty-state__photo" role="img" aria-label="Green terraced rice fields, an illustrative photograph" />
         <div className="farm-empty-state__copy">
           <div className="mb-6 animate-pulse-soft">
             <Target className="w-10 h-10 text-farm-green-600" />

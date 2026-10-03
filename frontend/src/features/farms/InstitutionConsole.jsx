@@ -1,7 +1,8 @@
+import { useProductLocale } from "../product/ProductLocale";
 import React, { useEffect, useState } from "react";
 import { farmApi } from "./api";
-
 export default function InstitutionConsole({ farmer, act, busy }) {
+  const { tx, formatDate } = useProductLocale();
   const expert = ["admin", "agronomist"].includes(farmer.role),
     institution = ["admin", "organisation_admin"].includes(farmer.role);
   const [queue, setQueue] = useState([]),
@@ -47,38 +48,43 @@ export default function InstitutionConsole({ farmer, act, busy }) {
   }, [expert, institution]);
   return (
     <section className="v2-card">
-      <h2>Institutional workspace</h2>
+      <h2>{tx("Institutional workspace")}</h2>
       <p>
-        Privileged operations require a fresh OTP sign-in within ten minutes.
-        Refreshing the session does not extend that verification.
+        {tx(
+          "Privileged operations require a fresh OTP sign-in within ten minutes. Refreshing the session does not extend that verification.",
+        )}
       </p>
       {error && (
         <p role="alert">
-          {error}. Sign out and sign in again if fresh verification is required.
+          {error}
+          {tx(
+            ". Sign out and sign in again if fresh verification is required.",
+          )}
         </p>
       )}
       {expert && (
         <>
-          <h3>Consented expert review</h3>
+          <h3>{tx("Consented expert review")}</h3>
           <p>
-            Only photographs with current model-improvement consent appear here.
-            Corrections do not retrain or promote a model.
+            {tx(
+              "Only photographs with current model-improvement consent appear here. Corrections do not retrain or promote a model.",
+            )}
           </p>
           {queue.length ? (
             queue.map((item) => (
               <article className="v2-event" key={item.image_id}>
                 <p>
                   {item.result.model_id} · {item.result.status} ·{" "}
-                  {new Date(item.created_at).toLocaleString()}
+                  {formatDate(item.created_at, { time: true })}
                 </p>
                 <button onClick={() => setPhoto(item.image_id)}>
-                  View consented photograph
+                  {tx("View consented photograph")}
                 </button>
                 {photo === item.image_id && (
                   <img
                     className="v2-review-photo"
                     src={`/api/v2/review-queue/${item.image_id}/image`}
-                    alt="Consented crop photograph for expert review"
+                    alt={tx("Consented crop photograph for expert review")}
                   />
                 )}
                 <form
@@ -104,20 +110,20 @@ export default function InstitutionConsole({ farmer, act, busy }) {
                   }}
                 >
                   <label className="v2-label">
-                    Corrected classifier label
+                    {tx("Corrected classifier label")}
                     <select
                       required
                       value={correction}
                       onChange={(event) => setCorrection(event.target.value)}
                     >
-                      <option value="">Select a supported label</option>
+                      <option value="">{tx("Select a supported label")}</option>
                       {labels.map((label) => (
                         <option key={label}>{label}</option>
                       ))}
                     </select>
                   </label>
                   <label className="v2-label">
-                    Expert review notes
+                    {tx("Expert review notes")}
                     <textarea
                       required
                       maxLength={2000}
@@ -125,31 +131,41 @@ export default function InstitutionConsole({ farmer, act, busy }) {
                       onChange={(event) => setNote(event.target.value)}
                     />
                   </label>
-                  <button disabled={busy}>Save audited review</button>
+                  <button disabled={busy}>{tx("Save audited review")}</button>
                 </form>
               </article>
             ))
           ) : (
-            <p>No consented photographs are available for review.</p>
+            <p>{tx("No consented photographs are available for review.")}</p>
           )}
           {monitoring && (
             <details>
-              <summary>Model monitoring from consented records</summary>
+              <summary>{tx("Model monitoring from consented records")}</summary>
               <p>
-                {monitoring.scans} consented scans ·{" "}
-                {monitoring.farmer_responses} farmer responses ·{" "}
-                {monitoring.expert_reviews} expert reviews.
+                {monitoring.scans} {tx("consented scans \xB7")}{" "}
+                {monitoring.farmer_responses} {tx("farmer responses \xB7")}{" "}
+                {monitoring.expert_reviews} {tx("expert reviews.")}
               </p>
               <p>
-                Farmer disagreement:{" "}
+                {tx("Farmer disagreement:")}{" "}
                 {monitoring.farmer_disagreement_rate == null
                   ? "unavailable"
-                  : `${(monitoring.farmer_disagreement_rate * 100).toFixed(1)}%`}{" "}
-                · expert disagreement:{" "}
+                  : tx("{{v0}}%", {
+                      v0: (monitoring.farmer_disagreement_rate * 100).toFixed(
+                        1,
+                      ),
+                    })}{" "}
+                {tx("\xB7 expert disagreement:")}{" "}
                 {monitoring.expert_disagreement_rate == null
                   ? "unavailable"
-                  : `${(monitoring.expert_disagreement_rate * 100).toFixed(1)}%`}
-                . These are selected feedback records, not field accuracy.
+                  : tx("{{v0}}%", {
+                      v0: (monitoring.expert_disagreement_rate * 100).toFixed(
+                        1,
+                      ),
+                    })}
+                {tx(
+                  ". These are selected feedback records, not field accuracy.",
+                )}
               </p>
               <ul>
                 {Object.entries(monitoring.by_status).map(([status, count]) => (
@@ -169,7 +185,7 @@ export default function InstitutionConsole({ farmer, act, busy }) {
       )}
       {institution && (
         <>
-          <h3>Pilot cohorts</h3>
+          <h3>{tx("Pilot cohorts")}</h3>
           <form
             onSubmit={(event) => {
               event.preventDefault();
@@ -191,7 +207,7 @@ export default function InstitutionConsole({ farmer, act, busy }) {
             }}
           >
             <label className="v2-label">
-              Cohort name
+              {tx("Cohort name")}
               <input
                 required
                 maxLength={100}
@@ -200,7 +216,7 @@ export default function InstitutionConsole({ farmer, act, busy }) {
               />
             </label>
             <label className="v2-label">
-              Pilot district
+              {tx("Pilot district")}
               <input
                 required
                 maxLength={100}
@@ -209,7 +225,7 @@ export default function InstitutionConsole({ farmer, act, busy }) {
               />
             </label>
             <label className="v2-label">
-              Pilot crops, separated by commas
+              {tx("Pilot crops, separated by commas")}
               <input
                 required
                 maxLength={500}
@@ -217,7 +233,7 @@ export default function InstitutionConsole({ farmer, act, busy }) {
                 onChange={(event) => setCrops(event.target.value)}
               />
             </label>
-            <button disabled={busy}>Create pilot cohort</button>
+            <button disabled={busy}>{tx("Create pilot cohort")}</button>
           </form>
           {cohorts.map((cohort) => (
             <article className="v2-event" key={cohort.id}>
@@ -226,7 +242,7 @@ export default function InstitutionConsole({ farmer, act, busy }) {
                 {cohort.district} · {cohort.crops.join(", ")}
               </p>
               <p>
-                Enrollment code: <code>{cohort.id}</code>
+                {tx("Enrollment code:")} <code>{cohort.id}</code>
               </p>
               <button
                 disabled={busy}
@@ -238,29 +254,33 @@ export default function InstitutionConsole({ farmer, act, busy }) {
                   )
                 }
               >
-                View aggregate report
+                {tx("View aggregate report")}
               </button>
             </article>
           ))}
           {report && (
             <article>
-              <h3>{report.cohort.name} · aggregate report</h3>
+              <h3>
+                {report.cohort.name} {tx("\xB7 aggregate report")}
+              </h3>
               <p>
-                {report.enrolled_farmers} consented farmers ·{" "}
-                {report.enrolled_plots} selected fields.
+                {report.enrolled_farmers} {tx("consented farmers \xB7")}{" "}
+                {report.enrolled_plots} {tx("selected fields.")}
               </p>
               <p>
-                Yield improvement: not measured. Income improvement: not
-                measured. Field validation: incomplete.
+                {tx(
+                  "Yield improvement: not measured. Income improvement: not measured. Field validation: incomplete.",
+                )}
               </p>
               {report.suppressed_small_cohort ? (
                 <p>
-                  Distributions are hidden until at least five farmers have
-                  current pilot consent.
+                  {tx(
+                    "Distributions are hidden until at least five farmers have current pilot consent.",
+                  )}
                 </p>
               ) : (
                 <>
-                  <h4>Recorded events</h4>
+                  <h4>{tx("Recorded events")}</h4>
                   <ul>
                     {Object.entries(report.recorded_events || {}).map(
                       ([kind, count]) => (
@@ -270,7 +290,7 @@ export default function InstitutionConsole({ farmer, act, busy }) {
                       ),
                     )}
                   </ul>
-                  <h4>Active crops</h4>
+                  <h4>{tx("Active crops")}</h4>
                   <ul>
                     {Object.entries(report.crop_distribution || {}).map(
                       ([crop, count]) => (
@@ -281,7 +301,8 @@ export default function InstitutionConsole({ farmer, act, busy }) {
                     )}
                   </ul>
                   <p>
-                    In-app acknowledgements: {report.in_app_acknowledgements}
+                    {tx("In-app acknowledgements:")}{" "}
+                    {report.in_app_acknowledgements}
                   </p>
                 </>
               )}

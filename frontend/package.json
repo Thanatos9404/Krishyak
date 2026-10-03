@@ -1,28 +1,32 @@
 {
-  "name": "krishisaarthi-frontend",
-  "version": "1.0.0",
+  "name": "krishyak-product",
+  "version": "2.0.0",
   "private": true,
   "dependencies": {
     "axios": "^1.6.2",
     "chart.js": "^4.4.0",
-    "framer-motion": "^10.16.5",
-    "lucide-react": "^0.294.0",
+    "framer-motion": "14.0.0",
+    "lucide-react": "1.51.0",
     "maplibre-gl": "6.11.2",
-    "react": "^18.2.0",
+    "next": "16.3.8",
+    "react": "19.3.0",
     "react-chartjs-2": "^5.2.0",
-    "react-dom": "^18.2.0",
+    "react-dom": "19.3.0",
     "recharts": "^2.10.3",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "vite",
-    "build": "npm run lint && vite build",
-    "preview": "vite preview",
+    "start": "node scripts/start-production.mjs",
+    "build": "npm run lint && next build",
+    "preview": "node scripts/start-production.mjs",
     "test": "jest",
     "lint": "eslint src",
     "test:e2e": "playwright test",
     "format:v2": "prettier --write src/features/farms e2e public/sw.js playwright.config.mjs",
-    "format:check:v2": "prettier --check src/features/farms e2e public/sw.js playwright.config.mjs"
+    "format:check:v2": "prettier --check src/app src/design src/lib src/components/public src/components/product src/features/product src/features/farms e2e public/sw.js next.config.mjs src/proxy.js playwright.config.mjs",
+    "dev": "next dev --hostname 127.0.0.1 --port 3000",
+    "prebuild": "node scripts/prepare-runtime.mjs",
+    "format": "prettier --write src/app src/design src/lib src/components/public src/components/product src/features/product src/features/farms e2e public/sw.js next.config.mjs src/proxy.js playwright.config.mjs"
   },
   "browserslist": {
     "production": [
@@ -43,10 +47,10 @@
     "@babel/preset-react": "^7.27.0",
     "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.63.0",
+    "@tailwindcss/postcss": "4.3.3",
     "@testing-library/jest-dom": "^5.17.0",
-    "@testing-library/react": "^13.4.0",
+    "@testing-library/react": "16.3.3",
     "@testing-library/user-event": "^13.5.0",
-    "@vitejs/plugin-react": "6.1.1",
     "autoprefixer": "^10.4.16",
     "babel-jest": "30.5.1",
     "eslint": "^10.10.0",
@@ -55,12 +59,12 @@
     "globals": "^16.5.0",
     "jest": "30.5.1",
     "jest-environment-jsdom": "30.5.1",
+    "lighthouse": "13.5.0",
     "postcss": "^8.4.32",
     "prettier": "^3.9.9",
-    "tailwindcss": "^3.3.6",
-    "vite": "8.2.2"
+    "tailwindcss": "4.3.3"
   },
   "engines": {
-    "node": "^22.13.0 || >=24"
+    "node": ">=22.19"
   }
 }

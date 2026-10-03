@@ -95,7 +95,10 @@ async def request_middleware(request: Request, call_next):
         client_ip = forwarded_for.split(",")[0].strip()
     
     # Rate limiting
-    allowed, reason = (True, '') if request.url.path.startswith('/api/v2') else rate_limiter.is_allowed(client_ip)
+    # Stateless liveness probes must not consume the application request budget.
+    # Readiness and business endpoints retain their existing limits.
+    liveness_probe = request.method == 'GET' and request.url.path == '/health/live'
+    allowed, reason = (True, '') if liveness_probe or request.url.path.startswith('/api/v2') else rate_limiter.is_allowed(client_ip)
     if not allowed:
         logger.warning(f"Rate limit exceeded for {client_ip}")
         return JSONResponse(

@@ -469,7 +469,7 @@ const applyDocumentLanguage = (code) => {
   document.documentElement.dir = info.direction;
 };
 
-export const I18nProvider = ({ children }) => {
+export const I18nProvider = ({ children, preferredLanguage }) => {
   const initialEnglishRef = useRef(null);
   if (!initialEnglishRef.current) {
     initialEnglishRef.current = deepMerge(deepMerge(buildDerivedTranslations(en), en), remoteSensingEnglish);
@@ -525,9 +525,9 @@ export const I18nProvider = ({ children }) => {
   }, [loadLanguage]);
 
   useEffect(() => {
-    const saved = loadLanguagePreference();
+    const saved = preferredLanguage || loadLanguagePreference();
     changeLanguage(saved).finally(() => setIsLoading(false));
-  }, [changeLanguage]);
+  }, [changeLanguage, preferredLanguage]);
 
   const t = useCallback((key, params = {}) => {
     const translated = getNestedTranslation(messages, key, params);
