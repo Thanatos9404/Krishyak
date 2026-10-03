@@ -113,9 +113,21 @@ test("field onboarding, permissions, human update, crop cycle and account export
     page.getByRole("heading", { name: fieldName, exact: true }),
   ).toBeVisible();
   await page.goto("/app/more/settings");
-  await page
-    .getByRole("checkbox", { name: /Analyse my field records and photos/ })
-    .check();
+  const permission = page.getByRole("checkbox", {
+    name: /Analyse my field records and photos/,
+  });
+  // Exercise the first-use grant path even when an earlier local run granted it.
+  if (await permission.isChecked()) {
+    await permission.uncheck();
+    await expect(permission).toBeEnabled();
+    await expect(permission).not.toBeChecked();
+  }
+  await permission.check();
+  await expect(permission).toBeEnabled();
+  await expect(permission).toBeChecked();
+  await expect(
+    page.getByText("Your permission choice has been saved.", { exact: true }),
+  ).toBeVisible();
   await navigation("Today").click();
   await expect(
     page.getByRole("combobox", { name: "Selected field" }),
@@ -292,7 +304,9 @@ test("preserved simulation, comparison and recommendations use the real API", as
 });
 
 test("farmer routes, zoom, reduced motion and accessible navigation", async ({}, info) => {
-  test.setTimeout(120000);
+  // Nine Axe audits, 81 resize checks and full-page screenshots can exceed
+  // two minutes on Windows WebKit. Individual readiness assertions stay bounded.
+  test.setTimeout(240000);
   await page.emulateMedia({ reducedMotion: "reduce" });
   await fs.mkdir(`../output/product/screenshots/${info.project.name}`, {
     recursive: true,
@@ -309,7 +323,11 @@ test("farmer routes, zoom, reduced motion and accessible navigation", async ({},
     "/app/more/planning",
     "/institution",
   ]) {
-    await page.goto(route);
+    await page.goto(route, { waitUntil: "domcontentloaded" });
+    // Audit the signed-in field view, never an SSR/loading placeholder.
+    await expect(
+      page.getByRole("combobox", { name: "Selected field" }),
+    ).toHaveValue(/.+/);
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
     await expect(
       page.getByRole("heading", { name: "Opening your workspace…" }),

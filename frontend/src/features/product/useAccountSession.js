@@ -60,7 +60,12 @@ export function useAccountSession({ setError, setNotice }) {
     let cancelled = false;
     const initialise = async () => {
       try {
-        const provider = await farmApi("/status");
+        const provider = await farmApi("/status").catch((problem) => {
+          // An older public backend may not yet expose farm-account routes.
+          // Treat only missing service as unavailable; preserve auth/errors.
+          if (problem.status === 404) return { enabled: false };
+          throw problem;
+        });
         if (cancelled) return;
         setStatus(provider);
         if (provider.enabled) {

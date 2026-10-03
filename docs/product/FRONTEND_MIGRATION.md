@@ -1,6 +1,6 @@
 # Frontend migration
 ## Baseline and boundaries
-Started from v2 09068fadbfba43cbe216dd0e82e9235d374f1cd5 on feat/krishyak-v2-product-experience-seo. The FastAPI backend, migrations, ownership, opaque cookie/CSRF contracts, OTP checks, consent semantics, revision conflicts, model bundle and durable queue infrastructure remain unchanged.
+Started from v2 09068fadbfba43cbe216dd0e82e9235d374f1cd5 on feat/krishyak-v2-product-experience-seo. FastAPI migrations, ownership, opaque cookie/CSRF contracts, OTP checks, consent semantics, revision conflicts, model bundle and durable queue infrastructure remain unchanged. A narrow backend monitoring correction excludes only GET /health/live from the legacy business request budget: Docker probes every 30 seconds otherwise exhaust the daily quota. Readiness, other methods and business endpoints retain their limits; regression checks cover that boundary.
 
 ## Framework
 Exact stable Next.js 16.3.8 and React/ReactDOM 19.3.0 replace Vite. Node >=22.19; CI uses Node 24. App Router server components render public content, metadata, JSON-LD and actual 404s. Per-request CSP nonces require dynamic HTML rendering; sitemap/robots remain static. Private SSR returns anonymous shells; account data arrives from authenticated API calls in the client.
@@ -18,6 +18,6 @@ The old App.jsx, index.jsx, index.html, Vite config, FarmWorkspace, LandingPage,
 ## Offline migration and rollout
 Service worker krishyak-shell-v3-1 removes prior shell caches. Account/API/RSC/private-image responses are excluded. Only marked anonymous HTML and public assets are cached. Navigation fallback uses the real browser pathname; seven-day owner-isolated IDB records restore only after opt-in. Sign-out clears device records, broadcasts across tabs and defers server revocation when disconnected.
 
-Review through the new draft PR and preview. Do not merge/promote main until infrastructure, privacy/legal and agronomic release gates are satisfied. Rollback means redeploying the prior verified source; no database rollback is needed for this frontend-only change.
+Review through the new draft PR and preview. Do not merge/promote main until infrastructure, privacy/legal and agronomic release gates are satisfied. Rollback means redeploying the prior verified source; no database rollback is needed for the UI rebuild or stateless liveness correction.
 
 The existing Vercel project retained a legacy build output override. frontend/vercel.json explicitly selects framework nextjs and outputDirectory .next, overriding that saved setting for this source deployment. The project root remains frontend; private project metadata is never committed.

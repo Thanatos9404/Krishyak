@@ -16,6 +16,7 @@ export function ScanView({ workspace: w }) {
     [model, setModel] = useState(null);
   const camera = useRef(null),
     upload = useRef(null);
+  const cropChosen = useRef(false);
   useEffect(() => {
     let cancelled = false;
     farmApi("/model")
@@ -30,10 +31,11 @@ export function ScanView({ workspace: w }) {
   useEffect(() => {
     setResult(null);
     setPhoto(null);
+    cropChosen.current = false;
   }, [w.selected]);
   const cycleCrop = w.cycles[0]?.crop;
   useEffect(() => {
-    setCrop(cycleCrop || "Tomato");
+    if (!cropChosen.current) setCrop(cycleCrop || "Tomato");
   }, [w.selected, cycleCrop]);
   useEffect(() => {
     if (!photo) {
@@ -173,6 +175,7 @@ export function ScanView({ workspace: w }) {
                   required
                   value={crop}
                   onChange={(event) => {
+                    cropChosen.current = true;
                     setCrop(event.target.value);
                     setResult(null);
                   }}
@@ -188,7 +191,10 @@ export function ScanView({ workspace: w }) {
                   required
                   maxLength={100}
                   value={crop}
-                  onChange={(event) => setCrop(event.target.value)}
+                  onChange={(event) => {
+                    cropChosen.current = true;
+                    setCrop(event.target.value);
+                  }}
                 />
               )}
             </label>

@@ -44,6 +44,25 @@ class RateLimitContracts(unittest.TestCase):
 
 
 class RateLimitApiContracts(unittest.TestCase):
+    def test_repeated_liveness_probes_do_not_consume_business_quota(self):
+        from main import app
+        limiter = RateLimiter(1, 2)
+        with patch('main.rate_limiter', limiter), TestClient(app) as client:
+            for _ in range(4):
+                self.assertEqual(client.get('/health/live').status_code, 200)
+            self.assertEqual(len(limiter.requests), 0)
+            self.assertEqual(client.get('/health').status_code, 200)
+            self.assertEqual(client.get('/health').status_code, 429)
+            self.assertEqual(client.get('/health/live').status_code, 200)
+
+    def test_liveness_exception_does_not_cover_readiness_or_other_methods(self):
+        from main import app
+        limiter = RateLimiter(1, 2)
+        with patch('main.rate_limiter', limiter), TestClient(app) as client:
+            self.assertEqual(client.get('/health').status_code, 200)
+            self.assertEqual(client.get('/health/ready').status_code, 429)
+            self.assertEqual(client.post('/health/live').status_code, 429)
+
     def test_error_body_and_header_share_validated_trace_identifier(self):
         from main import app
         with patch('main.rate_limiter', RateLimiter()), TestClient(app) as client:

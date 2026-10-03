@@ -10,6 +10,8 @@ No page-level horizontal overflow. Axe WCAG 2.0 A/AA, 2.1 AA and 2.2 AA across p
 ## Issues found and resolved
 - A broad demo SVG rule enlarged a button icon; it now targets the chart directly.
 - Offline opt-in checked state waited for IDB; state now updates immediately, rolls back on failure and confirms only after commit.
+- Clean Linux CI found the same pending-state gap in first-use processing permissions. Only the control displays its pending choice immediately; actual processing continues to use server-confirmed consents. A failed save rolls the control back, and success is announced after refresh. Browser tests now withdraw/regrant permission even on previously used synthetic accounts.
+- Late crop-cycle evidence could replace an explicitly chosen Scan crop. Automatic crop defaults now stop after the farmer chooses a crop, and reset when the selected field changes. Regression tests cover both cases.
 - Legal pages lacked breadcrumb JSON-LD; visible and schema breadcrumbs are now aligned.
 - Dialog Tab could reach browser chrome; native modals additionally contain Tab/Shift+Tab and restore the initiating control.
 - A public numbered label and inherited market retry button failed contrast; both use darker tokens.

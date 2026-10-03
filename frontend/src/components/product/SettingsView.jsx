@@ -1,4 +1,5 @@
 import { Download, LogOut, ShieldCheck } from "lucide-react";
+import { useState } from "react";
 import { farmApi } from "../../features/farms/api";
 import { clearOwner } from "../../features/farms/offline";
 import { useTranslation } from "../../i18n";
@@ -38,6 +39,7 @@ const PURPOSES = [
 ];
 export function SettingsView({ workspace: w }) {
   const { language } = useTranslation();
+  const [permissionChange, setPermissionChange] = useState(null);
   return (
     <>
       <header className="product-page-heading">
@@ -66,22 +68,39 @@ export function SettingsView({ workspace: w }) {
               </span>
               <input
                 type="checkbox"
-                checked={w.consents.includes(purpose)}
-                disabled={w.busy || w.offline}
+                checked={
+                  permissionChange?.purpose === purpose
+                    ? permissionChange.granted
+                    : w.consents.includes(purpose)
+                }
+                disabled={w.busy || w.offline || Boolean(permissionChange)}
                 onChange={(event) => {
                   const granted = event.target.checked;
-                  w.act(async () => {
-                    await farmApi("/consents", {
-                      method: "POST",
-                      body: { purpose, granted, policy_version: "2026-10-03" },
-                    });
-                    await w.loadConsents();
-                  });
+                  // Only this pending control is optimistic. Processing checks
+                  // continue to use the server-confirmed workspace consents.
+                  setPermissionChange({ purpose, granted });
+                  void w
+                    .act(async () => {
+                      await farmApi("/consents", {
+                        method: "POST",
+                        body: {
+                          purpose,
+                          granted,
+                          policy_version: "2026-10-03",
+                        },
+                      });
+                      await w.loadConsents();
+                      w.setNotice("Your permission choice has been saved.");
+                    })
+                    .finally(() => setPermissionChange(null));
                 }}
               />
             </label>
           ))}
         </div>
+        {permissionChange && (
+          <p role="status">Saving your permission choice…</p>
+        )}
         <p className="small muted">
           Withdrawing research permissions stops future research linkage and
           review.

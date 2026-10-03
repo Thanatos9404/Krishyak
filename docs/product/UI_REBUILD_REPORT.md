@@ -10,8 +10,8 @@ Sign in when farm accounts are available; create a farm and field; draw/undo a b
 
 ## Verification performed on 2026-10-03
 - Production build and ESLint passed; formatting passed; npm audit reported zero vulnerabilities.
-- Frontend: 306 tests in 42 suites passed, including the nine migrated App integration checks.
-- Backend regression: 230 tests ran successfully with two expected Windows/provider skips; backend source is unchanged.
+- Frontend: 313 tests in 45 suites passed, including the nine migrated App integration checks, delayed/failed/confirmed consent checks, late crop evidence and unavailable-service/authorization boundaries.
+- Backend regression: 232 tests ran successfully with two expected Windows/provider skips. One monitoring correction exempts only stateless GET /health/live from the legacy business request budget; readiness, other methods and business endpoints remain limited. The Docker API was rebuilt and its health returned to healthy; all existing database/photo/Redis volumes were preserved.
 - Production browser matrix: 31 passed, two intentionally skipped Chromium-only CDP measurements on Firefox/WebKit, no failures. Chromium, Firefox and WebKit exercised actual local API workflows with three expressly synthetic accounts.
 - Nine widths: 320, 360, 375, 390, 412, 768, 1024, 1280 and 1440px. Checks cover public, demo and signed-in farmer routes, layout containment, Axe rules, keyboard dialogs, reduced motion and effective 200% zoom. Engine screenshots are in ignored output/product/screenshots.
 - Raw SSR checks cover all nine public pages, unique H1/metadata/canonical/schema, no-JS content, genuine sitemap/robots/404 responses, redirects and private source isolation. Independent public crawl checks nine pages, 20 internal resources and no public orphans.
