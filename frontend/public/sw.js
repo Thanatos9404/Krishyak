@@ -1,6 +1,6 @@
 // Cache only public assets and the explicitly anonymous Next app shell.
 // Account data, RSC payloads, private photographs and mutations stay network-only.
-const CACHE = "krishyak-shell-v3-3";
+const CACHE = "krishyak-shell-v3-4";
 const SHELL = [
   "/app/today",
   "/offline",

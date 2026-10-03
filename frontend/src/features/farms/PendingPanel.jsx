@@ -2,7 +2,7 @@ import { useProductLocale } from "../product/ProductLocale";
 import React, { useEffect, useState } from "react";
 import { pendingOperations, removeOperation } from "./offline";
 export default function PendingPanel({ owner, count, onChanged }) {
-  const { tx } = useProductLocale();
+  const { tx, formatDate } = useProductLocale();
   const [items, setItems] = useState([]),
     [error, setError] = useState("");
   useEffect(() => {
@@ -30,7 +30,7 @@ export default function PendingPanel({ owner, count, onChanged }) {
         <article className="v2-event" key={item.operation_id}>
           <p>
             {item.body.kind.replaceAll("_", " ")} ·{" "}
-            {new Date(item.body.observed_at).toLocaleString()}
+            {formatDate(item.body.observed_at, { time: true })}
           </p>
           <p>{item.body.note}</p>
           <button

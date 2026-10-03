@@ -14,7 +14,7 @@ const NoticeList = deferredFeature(
   () => import("../../features/farms/NoticeList"),
 );
 export function TodayView({ workspace: w }) {
-  const { tx } = useProductLocale();
+  const { tx, formatDate } = useProductLocale();
   const [evidence, setEvidence] = useState(null),
     [recording, setRecording] = useState(false),
     [all, setAll] = useState(false);
@@ -72,8 +72,8 @@ export function TodayView({ workspace: w }) {
               <span>
                 {w.cycles[0]
                   ? tx("Sown {{v0}} \xB7 {{v1}}", {
-                      v0: w.cycles[0].sowing_date,
-                      v1: w.cycles[0].growth_stage || "stage not recorded",
+                      v0: formatDate(w.cycles[0].sowing_date),
+                      v1: w.cycles[0].growth_stage || tx("Stage not recorded"),
                     })
                   : tx("Add the crop and sowing date in Farm.")}
               </span>
@@ -90,7 +90,7 @@ export function TodayView({ workspace: w }) {
           {w.savedAt && (
             <p className="status-panel">
               {tx("Saved on this device:")}{" "}
-              {new Date(w.savedAt).toLocaleString()}
+              {formatDate(w.savedAt, { time: true })}
               {tx(
                 ". These next steps reflect that snapshot; confirm current conditions.",
               )}
@@ -203,7 +203,7 @@ export function TodayView({ workspace: w }) {
           {evidence.evidence.observed_at && (
             <p>
               {tx("Observed")}{" "}
-              {new Date(evidence.evidence.observed_at).toLocaleString()}
+              {formatDate(evidence.evidence.observed_at, { time: true })}
             </p>
           )}
           <h3>{tx("What to keep in mind")}</h3>

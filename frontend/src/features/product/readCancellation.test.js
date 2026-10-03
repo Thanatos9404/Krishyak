@@ -1,4 +1,5 @@
 import { cancelReadsOnExit } from "./readCancellation";
+beforeEach(() => window.dispatchEvent(new Event("pageshow")));
 test.each(["beforeunload", "pagehide"])(
   "%s cancels in-flight passive reads before document replacement",
   (event) => {
@@ -19,4 +20,20 @@ test("cleanup aborts and removes both navigation listeners", () => {
   window.dispatchEvent(new Event("beforeunload"));
   window.dispatchEvent(new Event("pagehide"));
   expect(abort).toHaveBeenCalledTimes(1);
+});
+
+test("late deferred reads are cancelled until the document is restored", () => {
+  const first = new AbortController();
+  const cleanup = cancelReadsOnExit(first);
+  window.dispatchEvent(new Event("beforeunload"));
+  cleanup();
+  const late = new AbortController();
+  const endLate = cancelReadsOnExit(late);
+  expect(late.signal.aborted).toBe(true);
+  endLate();
+  window.dispatchEvent(new Event("pageshow"));
+  const restored = new AbortController();
+  const endRestored = cancelReadsOnExit(restored);
+  expect(restored.signal.aborted).toBe(false);
+  endRestored();
 });

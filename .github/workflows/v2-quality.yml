@@ -64,6 +64,7 @@ jobs:
         run: |
           python scripts/check_v2_docs.py
           python scripts/check_product_release.py
+          python scripts/i18n/validate-workspace.py
   frontend-and-browsers:
     runs-on: ubuntu-latest
     timeout-minutes: 25

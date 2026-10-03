@@ -12,6 +12,8 @@ import {
   getLanguage,
   loadLanguagePreference,
 } from "../../i18n/config";
+import { formatLocalDate } from "../../lib/localDates";
+import version from "./locales/version.json";
 
 export function interpolate(message, parameters = {}) {
   return String(message).replace(/\{\{(\w+)\}\}/g, (match, key) =>
@@ -22,6 +24,8 @@ const English = {
   language: "en",
   info: getLanguage("en"),
   tx: interpolate,
+  formatDate: (value, options) =>
+    formatLocalDate(value, getLanguage("en").speechCode, options),
   loading: false,
   error: "",
   changeLanguage: async () => false,
@@ -52,10 +56,13 @@ export function ProductLocaleProvider({ children }) {
     setError("");
     try {
       if (!cache.current[code]) {
-        const response = await fetch(`/locales/workspace/${code}.json`, {
-          signal: controller.signal,
-          credentials: "omit",
-        });
+        const response = await fetch(
+          `/locales/workspace/${code}.json?v=${version.source_sha256}`,
+          {
+            signal: controller.signal,
+            credentials: "omit",
+          },
+        );
         if (!response.ok) throw new Error("Locale unavailable");
         const pack = await response.json();
         if (
@@ -111,6 +118,11 @@ export function ProductLocaleProvider({ children }) {
     document.documentElement.lang = info.speechCode;
     document.documentElement.dir = info.direction;
   }, [language]);
+  const formatDate = useCallback(
+    (value, options) =>
+      formatLocalDate(value, getLanguage(language).speechCode, options),
+    [language],
+  );
   const tx = useCallback(
     (source, params = {}) => {
       const key = String(source)
@@ -133,6 +145,7 @@ export function ProductLocaleProvider({ children }) {
         language,
         info: getLanguage(language),
         tx,
+        formatDate,
         loading,
         error,
         changeLanguage,

@@ -11,7 +11,7 @@ export default function AccountDetails({
   offline,
   onUpdated,
 }) {
-  const { tx } = useProductLocale();
+  const { tx, formatDate } = useProductLocale();
   const [profile, setProfile] = useState({
     display_name: farmer.display_name,
     state: farmer.state || "",
@@ -143,7 +143,7 @@ export default function AccountDetails({
         .filter((item) => !item.withdrawn_at)
         .map((item) => (
           <p key={item.id}>
-            {tx("Enrolled")} {new Date(item.created_at).toLocaleDateString()} ·{" "}
+            {tx("Enrolled")} {formatDate(item.created_at)} ·{" "}
             {item.plot_ids.length} {tx("field(s)")}{" "}
             <button
               disabled={busy || offline}

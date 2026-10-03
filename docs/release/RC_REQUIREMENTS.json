@@ -385,8 +385,13 @@
       "number": 46,
       "requirement": "DATE UX",
       "source_sha256": "6a059b487809eca470c4e0a8afe6340e66eb462ffba426d8f3d9579339af66b8",
-      "status": "unverified",
-      "evidence": []
+      "status": "implemented_local_validation",
+      "evidence": [
+        "frontend/src/lib/localDates.js",
+        "frontend/src/lib/localDates.test.js",
+        "frontend/src/features/product/ProductLocale.jsx",
+        "docs/release/PILOT_LANGUAGE_SCOPE.md"
+      ]
     },
     {
       "number": 47,

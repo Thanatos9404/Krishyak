@@ -1,6 +1,6 @@
 {
   "extractor": "Babel AST; literals, JSX text, positional template placeholders",
-  "source_strings": 762,
+  "source_strings": 763,
   "strings": [
     {
       "source": ". Failed requests preserve earlier observations.",
@@ -19,7 +19,7 @@
       "references": [
         {
           "file": "src/features/farms/PlotHealth.jsx",
-          "line": 206,
+          "line": 207,
           "kind": "literal"
         }
       ]
@@ -402,7 +402,7 @@
       "references": [
         {
           "file": "src/components/product/ProductLanguageChooser.jsx",
-          "line": 43,
+          "line": 48,
           "kind": "literal"
         }
       ]
@@ -682,7 +682,7 @@
       "references": [
         {
           "file": "src/features/farms/V2LegalNotice.jsx",
-          "line": 30,
+          "line": 31,
           "kind": "jsx"
         }
       ]
@@ -846,7 +846,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 393,
+          "line": 394,
           "kind": "literal"
         },
         {
@@ -1400,7 +1400,7 @@
       "references": [
         {
           "file": "src/components/product/ProductLanguageChooser.jsx",
-          "line": 34,
+          "line": 39,
           "kind": "literal"
         }
       ]
@@ -2025,7 +2025,7 @@
       "references": [
         {
           "file": "src/features/farms/V2LegalNotice.jsx",
-          "line": 50,
+          "line": 51,
           "kind": "literal"
         }
       ]
@@ -2425,7 +2425,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 382,
+          "line": 383,
           "kind": "literal"
         }
       ]
@@ -2935,7 +2935,7 @@
       "references": [
         {
           "file": "src/features/farms/V2LegalNotice.jsx",
-          "line": 8,
+          "line": 9,
           "kind": "literal"
         }
       ]
@@ -3605,7 +3605,7 @@
       "references": [
         {
           "file": "src/features/farms/V2LegalNotice.jsx",
-          "line": 19,
+          "line": 20,
           "kind": "literal"
         }
       ]
@@ -3681,7 +3681,7 @@
       "references": [
         {
           "file": "src/features/product/ProductLocale.jsx",
-          "line": 68,
+          "line": 75,
           "kind": "literal"
         }
       ]
@@ -3780,7 +3780,7 @@
       "references": [
         {
           "file": "src/features/farms/V2LegalNotice.jsx",
-          "line": 14,
+          "line": 15,
           "kind": "literal"
         }
       ]
@@ -3890,7 +3890,7 @@
       "references": [
         {
           "file": "src/features/farms/PlotHealth.jsx",
-          "line": 288,
+          "line": 289,
           "kind": "literal"
         }
       ]
@@ -3945,7 +3945,7 @@
       "references": [
         {
           "file": "src/features/product/ProductLocale.jsx",
-          "line": 59,
+          "line": 66,
           "kind": "literal"
         }
       ]
@@ -4000,7 +4000,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 427,
+          "line": 428,
           "kind": "literal"
         }
       ]
@@ -4357,7 +4357,7 @@
       "references": [
         {
           "file": "src/features/farms/PlotHealth.jsx",
-          "line": 290,
+          "line": 291,
           "kind": "jsx"
         }
       ]
@@ -4500,7 +4500,7 @@
       "references": [
         {
           "file": "src/components/product/ProductLanguageChooser.jsx",
-          "line": 90,
+          "line": 95,
           "kind": "literal"
         }
       ]
@@ -4522,7 +4522,7 @@
       "references": [
         {
           "file": "src/features/farms/PlotHealth.jsx",
-          "line": 220,
+          "line": 221,
           "kind": "literal"
         }
       ]
@@ -4846,7 +4846,7 @@
       "references": [
         {
           "file": "src/features/farms/V2LegalNotice.jsx",
-          "line": 45,
+          "line": 46,
           "kind": "literal"
         }
       ]
@@ -4912,7 +4912,7 @@
       "references": [
         {
           "file": "src/features/farms/PlotHealth.jsx",
-          "line": 232,
+          "line": 233,
           "kind": "literal"
         }
       ]
@@ -4967,7 +4967,7 @@
       "references": [
         {
           "file": "src/features/farms/PlotHealth.jsx",
-          "line": 228,
+          "line": 229,
           "kind": "literal"
         }
       ]
@@ -4978,7 +4978,7 @@
       "references": [
         {
           "file": "src/components/product/ProductLanguageChooser.jsx",
-          "line": 56,
+          "line": 61,
           "kind": "literal"
         }
       ]
@@ -5147,7 +5147,7 @@
       "references": [
         {
           "file": "src/features/farms/PlotHealth.jsx",
-          "line": 225,
+          "line": 226,
           "kind": "literal"
         }
       ]
@@ -6085,7 +6085,7 @@
       "references": [
         {
           "file": "src/features/farms/PlotHealth.jsx",
-          "line": 247,
+          "line": 248,
           "kind": "literal"
         }
       ]
@@ -6107,7 +6107,7 @@
       "references": [
         {
           "file": "src/features/farms/V2LegalNotice.jsx",
-          "line": 40,
+          "line": 41,
           "kind": "literal"
         }
       ]
@@ -6315,7 +6315,7 @@
       "references": [
         {
           "file": "src/components/product/ProductLanguageChooser.jsx",
-          "line": 47,
+          "line": 52,
           "kind": "literal"
         }
       ]
@@ -6414,7 +6414,7 @@
       "references": [
         {
           "file": "src/components/product/ProductLanguageChooser.jsx",
-          "line": 82,
+          "line": 87,
           "kind": "literal"
         }
       ]
@@ -6880,6 +6880,17 @@
       ]
     },
     {
+      "source": "Stage not recorded",
+      "sha256": "8a0e2edfaee50c955350fab218140201090d53a8299b5b5b4cc2e025729a0518",
+      "references": [
+        {
+          "file": "src/components/product/TodayView.jsx",
+          "line": 76,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Start my farm",
       "sha256": "88bfeb0df4cf0c2158834faec9d48a29ea2ef0a6b5bd957b26e8aa33d2cadd1d",
       "references": [
@@ -7180,7 +7191,7 @@
       "references": [
         {
           "file": "src/features/farms/api.js",
-          "line": 62,
+          "line": 68,
           "kind": "literal"
         }
       ]
@@ -7191,7 +7202,7 @@
       "references": [
         {
           "file": "src/features/farms/V2LegalNotice.jsx",
-          "line": 24,
+          "line": 25,
           "kind": "literal"
         }
       ]
@@ -7224,7 +7235,7 @@
       "references": [
         {
           "file": "src/features/farms/api.js",
-          "line": 57,
+          "line": 63,
           "kind": "literal"
         }
       ]
@@ -7246,7 +7257,7 @@
       "references": [
         {
           "file": "src/features/farms/api.js",
-          "line": 90,
+          "line": 97,
           "kind": "literal"
         }
       ]
@@ -7257,7 +7268,7 @@
       "references": [
         {
           "file": "src/features/farms/V2LegalNotice.jsx",
-          "line": 55,
+          "line": 56,
           "kind": "literal"
         }
       ]
@@ -7433,7 +7444,7 @@
       "references": [
         {
           "file": "src/features/product/ProductLocale.jsx",
-          "line": 86,
+          "line": 93,
           "kind": "literal"
         }
       ]
@@ -8468,7 +8479,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 385,
+          "line": 386,
           "kind": "literal"
         }
       ]

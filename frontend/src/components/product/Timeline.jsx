@@ -52,7 +52,7 @@ export function eventDescription(item) {
   return "Saved evidence. Review the source and its limitations.";
 }
 export function Timeline({ items, onMore, busy, offline }) {
-  const { tx } = useProductLocale();
+  const { tx, formatDate } = useProductLocale();
   return (
     <section className="product-card timeline">
       <header className="section-heading">
@@ -73,7 +73,7 @@ export function Timeline({ items, onMore, busy, offline }) {
                 <div>
                   <h3>{tx(EVENT_NAMES[item.kind] || "Field update")}</h3>
                   <time dateTime={item.observed_at}>
-                    {new Date(item.observed_at).toLocaleString()}
+                    {formatDate(item.observed_at, { time: true })}
                   </time>
                   <p>
                     {item.payload?.note

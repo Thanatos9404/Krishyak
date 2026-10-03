@@ -1,3 +1,4 @@
+"use client";
 import { useProductLocale } from "../product/ProductLocale";
 import React from "react";
 export default function V2LegalNotice({ terms = false }) {

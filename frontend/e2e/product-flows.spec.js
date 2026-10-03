@@ -174,7 +174,9 @@ test("field onboarding, permissions, human update, crop cycle and account export
   await page
     .getByRole("button", { name: "Save crop cycle", exact: true })
     .click();
-  await expect(page.getByText(/2026-09-01 → 2026-12-01/).first()).toBeVisible();
+  await expect(
+    page.getByText(/1 Sept 2026 → 1 Dec 2026/).first(),
+  ).toBeVisible();
   await page.goto("/app/more/settings");
   const download = page.waitForEvent("download");
   await page.getByRole("button", { name: "Download my account data" }).click();

@@ -188,7 +188,7 @@ function AddCycle({ w, onClose }) {
   );
 }
 export function FarmView({ workspace: w, plotId }) {
-  const { tx } = useProductLocale();
+  const { tx, formatDate } = useProductLocale();
   const { plots, setSelected } = w;
   const [adding, setAdding] = useState(false),
     [cycle, setCycle] = useState(false),
@@ -369,8 +369,9 @@ export function FarmView({ workspace: w, plotId }) {
                   <h3>{tx("Crop cycles")}</h3>
                   {w.cycles.map((item) => (
                     <p key={item.id}>
-                      <strong>{item.crop}</strong> · {item.sowing_date} →{" "}
-                      {item.expected_harvest} · {item.status}
+                      <strong>{item.crop}</strong> ·{" "}
+                      {formatDate(item.sowing_date)} →{" "}
+                      {formatDate(item.expected_harvest)} · {item.status}
                     </p>
                   ))}
                 </div>

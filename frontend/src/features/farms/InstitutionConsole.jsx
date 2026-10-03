@@ -2,7 +2,7 @@ import { useProductLocale } from "../product/ProductLocale";
 import React, { useEffect, useState } from "react";
 import { farmApi } from "./api";
 export default function InstitutionConsole({ farmer, act, busy }) {
-  const { tx } = useProductLocale();
+  const { tx, formatDate } = useProductLocale();
   const expert = ["admin", "agronomist"].includes(farmer.role),
     institution = ["admin", "organisation_admin"].includes(farmer.role);
   const [queue, setQueue] = useState([]),
@@ -75,7 +75,7 @@ export default function InstitutionConsole({ farmer, act, busy }) {
               <article className="v2-event" key={item.image_id}>
                 <p>
                   {item.result.model_id} · {item.result.status} ·{" "}
-                  {new Date(item.created_at).toLocaleString()}
+                  {formatDate(item.created_at, { time: true })}
                 </p>
                 <button onClick={() => setPhoto(item.image_id)}>
                   {tx("View consented photograph")}

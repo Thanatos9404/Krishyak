@@ -5,7 +5,7 @@ import { farmApi } from "../../features/farms/api";
 import { readRecord, saveRecord } from "../../features/farms/offline";
 import { cancelReadsOnExit } from "../../features/product/readCancellation";
 export function WeatherStrip({ plotId, owner, cache }) {
-  const { tx } = useProductLocale();
+  const { tx, formatDate } = useProductLocale();
   const [record, setRecord] = useState(null),
     [savedAt, setSavedAt] = useState(null);
   useEffect(() => {
@@ -60,12 +60,12 @@ export function WeatherStrip({ plotId, owner, cache }) {
           <div className="weather-source">
             <span>
               {record.source} {tx("\xB7 retrieved")}{" "}
-              {new Date(record.created_at).toLocaleString()}
+              {formatDate(record.created_at, { time: true })}
             </span>
             {savedAt && (
               <span>
                 {tx("Saved on this device")}{" "}
-                {new Date(savedAt).toLocaleString()}
+                {formatDate(savedAt, { time: true })}
               </span>
             )}
             <a href={`/app/farm/${plotId}`}>{tx("Source & limits")}</a>

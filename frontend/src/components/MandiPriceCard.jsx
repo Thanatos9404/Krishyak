@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useTranslation } from "../i18n";
 import {
   TrendingUp,
@@ -10,6 +10,7 @@ import {
   ChevronUp,
 } from "lucide-react";
 import { fetchMandiPrices, formatIndianPrice } from "../services/govApiService";
+import { cancelReadsOnExit } from "../features/product/readCancellation";
 
 /**
  * MandiPriceCard Component
@@ -28,18 +29,27 @@ const MandiPriceCard = ({
   const [error, setError] = useState(null);
   const [lastUpdated, setLastUpdated] = useState(null);
   const [expanded, setExpanded] = useState(false);
+  const activeRead = useRef(null);
 
   const loadPrices = useCallback(async () => {
+    activeRead.current?.abort();
+    const controller = new AbortController();
+    activeRead.current = controller;
+    const endRead = cancelReadsOnExit(controller);
     setLoading(true);
     setError(null);
 
     try {
-      const result = await fetchMandiPrices({
-        commodity,
-        state,
-        district,
-        limit: 50,
-      });
+      const result = await fetchMandiPrices(
+        {
+          commodity,
+          state,
+          district,
+          limit: 50,
+        },
+        { signal: controller.signal },
+      );
+      if (controller.signal.aborted) return;
 
       if (result.success && result.prices) {
         setPrices(result.prices);
@@ -49,15 +59,18 @@ const MandiPriceCard = ({
         setPrices([]);
       }
     } catch (err) {
+      if (controller.signal.aborted) return;
       setError(t("mandi.fetchError"));
       setPrices([]);
     } finally {
-      setLoading(false);
+      if (!controller.signal.aborted) setLoading(false);
+      endRead();
     }
   }, [commodity, state, district, t]);
 
   useEffect(() => {
     loadPrices();
+    return () => activeRead.current?.abort();
   }, [loadPrices]);
 
   const displayPrices = expanded ? prices : prices.slice(0, maxItems);

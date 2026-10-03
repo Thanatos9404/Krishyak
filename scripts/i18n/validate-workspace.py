@@ -36,6 +36,9 @@ def validate(languages, output):
     glossary = json.loads(glossary_text)["preserve"]
     directory = ROOT / "frontend/public/locales/workspace"
     results, failures = [], []
+    version = json.loads((source_path.parent / "version.json").read_text(encoding="utf-8"))
+    if version.get("source_sha256") != sha(source_text):
+        failures.append("workspace locale URL version does not match the current source")
     for code in languages:
         path = directory / f"{code}.json"
         meta_path = directory / f"{code}.meta.json"

@@ -20,7 +20,7 @@ export default function PlotHealth({
   providerStatus,
   onUpdated,
 }) {
-  const { tx } = useProductLocale();
+  const { tx, formatDate } = useProductLocale();
   const [records, setRecords] = useState([]),
     [job, setJob] = useState(null),
     [error, setError] = useState("");
@@ -201,7 +201,8 @@ export default function PlotHealth({
                 {tx("m \xB7 processing")} {latest.provenance.processing_version}
               </p>
               <p>
-                {tx("Processed")} {new Date(latest.created_at).toLocaleString()}
+                {tx("Processed")}{" "}
+                {formatDate(latest.created_at, { time: true })}
                 {tx(
                   ". Interval composites may contain several acquisitions; exact contributing dates are not independently verified.",
                 )}

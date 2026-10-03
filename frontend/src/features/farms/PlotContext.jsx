@@ -28,7 +28,7 @@ export default function PlotContext({
   busy,
   onUpdated,
 }) {
-  const { tx } = useProductLocale();
+  const { tx, formatDate } = useProductLocale();
   const [evidence, setEvidence] = useState({}),
     [savedAt, setSavedAt] = useState(null);
   const [parameter, setParameter] = useState("ph"),
@@ -84,7 +84,7 @@ export default function PlotContext({
       <h2>{tx("Soil and weather evidence")}</h2>
       {savedAt && (
         <p>
-          {tx("Saved on this device:")} {new Date(savedAt).toLocaleString()}
+          {tx("Saved on this device:")} {formatDate(savedAt, { time: true })}
           {tx(". Live updates are unavailable offline.")}
         </p>
       )}
@@ -93,9 +93,9 @@ export default function PlotContext({
         <>
           <p>
             {weather.source} {tx("\xB7 retrieved")}{" "}
-            {new Date(weather.created_at).toLocaleString()}{" "}
+            {formatDate(weather.created_at, { time: true })}{" "}
             {tx("\xB7 conditions at")}{" "}
-            {new Date(weather.observed_at).toLocaleString()}
+            {formatDate(weather.observed_at, { time: true })}
           </p>
           <p>
             {weather.payload.current.temperature} {tx("\xB0C \xB7 humidity")}{" "}
@@ -124,7 +124,7 @@ export default function PlotContext({
                 <tbody>
                   {weather.payload.hourly.map((row) => (
                     <tr key={row.timestamp}>
-                      <td>{new Date(row.timestamp).toLocaleString()}</td>
+                      <td>{formatDate(row.timestamp, { time: true })}</td>
                       <td>{row.temperature}</td>
                       <td>{row.humidity}</td>
                       <td>{row.precipitation}</td>
@@ -187,7 +187,7 @@ export default function PlotContext({
         <>
           <p>
             {soil.source} {tx("\xB7 reported method:")} {soil.provenance.method}{" "}
-            · {new Date(soil.observed_at).toLocaleDateString()}
+            · {formatDate(soil.observed_at)}
           </p>
           <p>
             {tx(

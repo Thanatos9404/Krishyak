@@ -2,7 +2,7 @@ import { useProductLocale } from "../product/ProductLocale";
 import React, { useEffect, useState } from "react";
 import { farmApi } from "./api";
 export default function ScanHistory({ plotId, refresh, act, busy, offline }) {
-  const { tx } = useProductLocale();
+  const { tx, formatDate } = useProductLocale();
   const [items, setItems] = useState([]),
     [error, setError] = useState(""),
     [more, setMore] = useState(false);
@@ -36,7 +36,7 @@ export default function ScanHistory({ plotId, refresh, act, busy, offline }) {
       {items.map((item) => (
         <article className="v2-event" key={item.id}>
           <p>
-            {new Date(item.created_at).toLocaleString()} · {item.result.status}{" "}
+            {formatDate(item.created_at, { time: true })} · {item.result.status}{" "}
             · {item.result.predicted_class || tx("No supported classification")}
           </p>
           <button

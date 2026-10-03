@@ -4,6 +4,7 @@ import {
   useProductLocale,
   interpolate,
 } from "./ProductLocale";
+import version from "./locales/version.json";
 const wrapper = ({ children }) => (
   <ProductLocaleProvider>{children}</ProductLocaleProvider>
 );
@@ -35,7 +36,9 @@ test("selected language loads only its static pack, caches it and preserves plac
   await act(async () => {
     expect(await result.current.changeLanguage("hi")).toBe(true);
   });
-  expect(fetch.mock.calls[0][0]).toBe("/locales/workspace/hi.json");
+  expect(fetch.mock.calls[0][0]).toBe(
+    `/locales/workspace/hi.json?v=${version.source_sha256}`,
+  );
   expect(result.current.tx("Today")).toBe("आज");
   expect(result.current.tx(" Field {{name}} ", { name: "अनिल" })).toBe(
     " खेत अनिल ",

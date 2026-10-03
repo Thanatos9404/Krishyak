@@ -1,3 +1,4 @@
+import { cancelReadsOnExit } from "../product/readCancellation";
 const BASE = "/api/v2";
 let csrf = null;
 let refreshPromise = null;
@@ -22,7 +23,12 @@ export async function farmApi(
   { method = "GET", body, retry = true, binary = false, signal } = {},
 ) {
   const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 20000);
+  let timedOut = false;
+  const timeout = setTimeout(() => {
+    timedOut = true;
+    controller.abort();
+  }, 20000);
+  const endRead = method === "GET" ? cancelReadsOnExit(controller) : null;
   const cancel = () => controller.abort();
   if (signal?.aborted) cancel();
   else signal?.addEventListener("abort", cancel, { once: true });
@@ -53,7 +59,7 @@ export async function farmApi(
         return {};
       });
   } catch {
-    if (signal?.aborted) {
+    if (signal?.aborted || (!timedOut && controller.signal.aborted)) {
       const error = new Error("The previous read was cancelled.");
       error.cancelled = true;
       throw error;
@@ -65,6 +71,7 @@ export async function farmApi(
     throw error;
   } finally {
     clearTimeout(timeout);
+    endRead?.();
     signal?.removeEventListener("abort", cancel);
   }
   if (response.status === 401 && retry && csrf && path !== "/auth/refresh") {

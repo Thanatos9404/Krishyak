@@ -49,5 +49,6 @@ const entries = [...records.values()].sort((a, b) => a.source.localeCompare(b.so
 const destination = path.join(root, "frontend/src/features/product/locales");
 fs.mkdirSync(destination, { recursive: true });
 fs.writeFileSync(path.join(destination, "en.json"), JSON.stringify(Object.fromEntries(entries.map(({ source }) => [source, source])), null, 2) + "\n");
+fs.writeFileSync(path.join(destination, "version.json"), JSON.stringify({ source_sha256: createHash("sha256").update(fs.readFileSync(path.join(destination, "en.json"))).digest("hex") }, null, 2) + "\n");
 fs.writeFileSync(path.join(root, "docs/release/WORKSPACE_STRING_MANIFEST.json"), JSON.stringify({ extractor: "Babel AST; literals, JSX text, positional template placeholders", source_strings: entries.length, strings: entries }, null, 2) + "\n");
 console.log(JSON.stringify({ strings: entries.length, characters: entries.reduce((sum, row) => sum + row.source.length, 0), source: "frontend/src/features/product/locales/en.json" }));
