@@ -1,7 +1,15 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useTranslation } from '../i18n';
-import { TrendingUp, TrendingDown, MapPin, RefreshCw, AlertCircle, ChevronDown, ChevronUp } from 'lucide-react';
-import { fetchMandiPrices, formatIndianPrice } from '../services/govApiService';
+import React, { useState, useEffect, useCallback } from "react";
+import { useTranslation } from "../i18n";
+import {
+  TrendingUp,
+  TrendingDown,
+  MapPin,
+  RefreshCw,
+  AlertCircle,
+  ChevronDown,
+  ChevronUp,
+} from "lucide-react";
+import { fetchMandiPrices, formatIndianPrice } from "../services/govApiService";
 
 /**
  * MandiPriceCard Component
@@ -12,7 +20,7 @@ const MandiPriceCard = ({
   state = null,
   district = null,
   maxItems = 5,
-  className = ''
+  className = "",
 }) => {
   const { t, languageInfo } = useTranslation();
   const [prices, setPrices] = useState([]);
@@ -30,18 +38,18 @@ const MandiPriceCard = ({
         commodity,
         state,
         district,
-        limit: 50
+        limit: 50,
       });
 
       if (result.success && result.prices) {
         setPrices(result.prices);
         setLastUpdated(new Date(result.fetched_at || Date.now()));
       } else {
-        setError(t('mandi.fetchError'));
+        setError(t("mandi.fetchError"));
         setPrices([]);
       }
     } catch (err) {
-      setError(t('mandi.fetchError'));
+      setError(t("mandi.fetchError"));
       setPrices([]);
     } finally {
       setLoading(false);
@@ -71,12 +79,12 @@ const MandiPriceCard = ({
       <div className={`bg-white rounded-xl shadow-lg p-6 ${className}`}>
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold text-gray-800">
-            {t('mandi.title')}
+            {t("mandi.title")}
           </h3>
         </div>
         <div className="flex justify-center items-center py-8">
           <RefreshCw className="w-6 h-6 animate-spin text-green-600" />
-          <span className="ml-2 text-gray-600">{t('mandi.loading')}</span>
+          <span className="ml-2 text-gray-600">{t("mandi.loading")}</span>
         </div>
       </div>
     );
@@ -87,12 +95,12 @@ const MandiPriceCard = ({
       <div className={`bg-white rounded-xl shadow-lg p-6 ${className}`}>
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-lg font-semibold text-gray-800">
-            {t('mandi.title')}
+            {t("mandi.title")}
           </h3>
           <button
             onClick={loadPrices}
             className="p-2 rounded-full hover:bg-gray-100 transition-colors"
-            title={t('common.refresh')}
+            title={t("common.refresh")}
           >
             <RefreshCw className="w-4 h-4 text-gray-600" />
           </button>
@@ -100,11 +108,8 @@ const MandiPriceCard = ({
         <div className="flex flex-col items-center justify-center py-8 text-center">
           <AlertCircle className="w-10 h-10 text-yellow-500 mb-2" />
           <p className="text-gray-600">{error}</p>
-          <button
-            onClick={loadPrices}
-            className="mt-4 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-          >
-            {t('common.retry')}
+          <button onClick={loadPrices} className="button primary mt-4">
+            {t("common.retry")}
           </button>
         </div>
       </div>
@@ -112,25 +117,28 @@ const MandiPriceCard = ({
   }
 
   return (
-    <div className={`bg-white rounded-xl shadow-lg overflow-hidden ${className}`}>
+    <div
+      className={`bg-white rounded-xl shadow-lg overflow-hidden ${className}`}
+    >
       {/* Header */}
       <div className="bg-gradient-to-r from-green-600 to-green-700 p-4">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-semibold text-white flex items-center">
             <TrendingUp className="w-5 h-5 mr-2" />
-            {t('mandi.title')}
+            {t("mandi.title")}
           </h3>
           <button
             onClick={loadPrices}
             className="p-2 rounded-full hover:bg-white/20 transition-colors"
-            title={t('common.refresh')}
+            title={t("common.refresh")}
           >
             <RefreshCw className="w-4 h-4 text-white" />
           </button>
         </div>
         {lastUpdated && (
           <p className="text-green-100 text-xs mt-1">
-            {t('mandi.lastUpdated')}: {lastUpdated.toLocaleTimeString(languageInfo.speechCode)}
+            {t("mandi.lastUpdated")}:{" "}
+            {lastUpdated.toLocaleTimeString(languageInfo.speechCode)}
           </p>
         )}
       </div>
@@ -139,14 +147,11 @@ const MandiPriceCard = ({
       <div className="divide-y divide-gray-100">
         {displayPrices.length === 0 ? (
           <div className="p-6 text-center text-gray-500">
-            {t('mandi.noData')}
+            {t("mandi.noData")}
           </div>
         ) : (
           displayPrices.map((item, index) => (
-            <div
-              key={index}
-              className="p-4 hover:bg-gray-50 transition-colors"
-            >
+            <div key={index} className="p-4 hover:bg-gray-50 transition-colors">
               <div className="flex justify-between items-start">
                 <div className="flex-1">
                   <h4 className="font-medium text-gray-800">
@@ -170,10 +175,11 @@ const MandiPriceCard = ({
                     {getPriceChangeIcon(item.min_price, item.max_price)}
                   </div>
                   <div className="text-xs text-gray-500">
-                    {formatIndianPrice(item.min_price)} - {formatIndianPrice(item.max_price)}
+                    {formatIndianPrice(item.min_price)} -{" "}
+                    {formatIndianPrice(item.max_price)}
                   </div>
                   {item.arrival_date && (
-                    <div className="text-xs text-gray-400 mt-1">
+                    <div className="text-xs text-gray-600 mt-1">
                       {item.arrival_date}
                     </div>
                   )}
@@ -193,12 +199,13 @@ const MandiPriceCard = ({
           {expanded ? (
             <>
               <ChevronUp className="w-4 h-4 mr-1" />
-              {t('mandi.showLess')}
+              {t("mandi.showLess")}
             </>
           ) : (
             <>
               <ChevronDown className="w-4 h-4 mr-1" />
-              {t('mandi.showMore')} ({prices.length - maxItems} {t('mandi.more')})
+              {t("mandi.showMore")} ({prices.length - maxItems}{" "}
+              {t("mandi.more")})
             </>
           )}
         </button>
@@ -206,9 +213,7 @@ const MandiPriceCard = ({
 
       {/* Footer */}
       <div className="px-4 py-2 bg-gray-50 border-t border-gray-100">
-        <p className="text-xs text-gray-500 text-center">
-          {t('mandi.source')}
-        </p>
+        <p className="text-xs text-gray-500 text-center">{t("mandi.source")}</p>
       </div>
     </div>
   );

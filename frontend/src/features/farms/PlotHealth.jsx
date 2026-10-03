@@ -125,7 +125,7 @@ export default function PlotHealth({
         </p>
       )}
       <label className="v2-label">
-        Vegetation index
+        Field context to view
         <select
           value={index}
           onChange={(event) => setIndex(event.target.value)}
@@ -160,45 +160,47 @@ export default function PlotHealth({
           })
         }
       >
-        Queue {index.toUpperCase()} observations
+        Request fresh field observations
       </button>
       {values.length ? (
         <>
-          <FieldTrendChart
-            observations={values}
-            index={index}
-            description="Stored satellite interval means; cloudy intervals remain missing"
-          />
-          <p>
-            Latest interval: {latest.payload.observation.start.slice(0, 10)} to{" "}
-            {latest.payload.observation.end.slice(0, 10)} · quality{" "}
-            {latest.payload.observation.quality_status} · valid pixel fraction{" "}
-            {latest.payload.observation.valid_fraction}
-          </p>
           <details>
-            <summary>How this index was measured</summary>
+            <summary>View the stored trend and measurement details</summary>
+            <FieldTrendChart
+              observations={values}
+              index={index}
+              description="Stored satellite interval means; cloudy intervals remain missing"
+            />
             <p>
-              {latest.source} · {latest.provenance.formula} · resolution{" "}
-              {latest.provenance.spatial_resolution_m} m · processing{" "}
-              {latest.provenance.processing_version}
+              Latest interval: {latest.payload.observation.start.slice(0, 10)}{" "}
+              to {latest.payload.observation.end.slice(0, 10)} · quality{" "}
+              {latest.payload.observation.quality_status} · valid pixel fraction{" "}
+              {latest.payload.observation.valid_fraction}
             </p>
-            <p>
-              Processed {new Date(latest.created_at).toLocaleString()}. Interval
-              composites may contain several acquisitions; exact contributing
-              dates are not independently verified.
-            </p>
-            <ul>
-              {(latest.provenance.limitations || []).map((text) => (
-                <li key={text}>{text}</li>
-              ))}
-            </ul>
+            <details>
+              <summary>How this index was measured</summary>
+              <p>
+                {latest.source} · {latest.provenance.formula} · resolution{" "}
+                {latest.provenance.spatial_resolution_m} m · processing{" "}
+                {latest.provenance.processing_version}
+              </p>
+              <p>
+                Processed {new Date(latest.created_at).toLocaleString()}.
+                Interval composites may contain several acquisitions; exact
+                contributing dates are not independently verified.
+              </p>
+              <ul>
+                {(latest.provenance.limitations || []).map((text) => (
+                  <li key={text}>{text}</li>
+                ))}
+              </ul>
+            </details>
           </details>
         </>
       ) : (
         <p>
-          No observations for {index.toUpperCase()} and the current field
-          boundary are stored. This is missing evidence, not a healthy-field
-          result.
+          No observations for this view and the current field boundary are
+          stored. This is missing evidence, not a healthy-field result.
         </p>
       )}
       <details>

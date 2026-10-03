@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { farmApi } from "./api";
+import { BoundaryEditor } from "../../components/product/BoundaryEditor";
 
 function CycleEditor({ cycle, busy, offline, act, reload }) {
   const [draft, setDraft] = useState(cycle);
@@ -103,9 +104,7 @@ function CycleEditor({ cycle, busy, offline, act, reload }) {
 function PlotEditor({ plot, busy, offline, act, reload }) {
   const [name, setName] = useState(plot.name),
     [area, setArea] = useState(plot.entered_area_hectares || ""),
-    [boundary, setBoundary] = useState(
-      plot.boundary ? JSON.stringify(plot.boundary) : "",
-    ),
+    [boundary, setBoundary] = useState(plot.boundary || null),
     [irrigation, setIrrigation] = useState(plot.irrigation_type || "");
   return (
     <details>
@@ -118,16 +117,7 @@ function PlotEditor({ plot, busy, offline, act, reload }) {
         onSubmit={(event) => {
           event.preventDefault();
           act(async () => {
-            let geometry = null;
-            if (boundary.trim()) {
-              try {
-                geometry = JSON.parse(boundary);
-              } catch {
-                throw new Error(
-                  "Enter valid GeoJSON or leave the boundary blank for manual area.",
-                );
-              }
-            }
+            const geometry = boundary;
             await farmApi(`/plots/${plot.id}`, {
               method: "PUT",
               body: {
@@ -161,19 +151,12 @@ function PlotEditor({ plot, busy, offline, act, reload }) {
             min="0.0001"
             max="500"
             step="any"
-            required={!boundary.trim()}
+            required={!boundary}
             value={area}
             onChange={(event) => setArea(event.target.value)}
           />
         </label>
-        <label className="v2-label">
-          Updated field boundary (GeoJSON)
-          <textarea
-            maxLength={20000}
-            value={boundary}
-            onChange={(event) => setBoundary(event.target.value)}
-          />
-        </label>
+        <BoundaryEditor value={boundary} onChange={setBoundary} />
         <label className="v2-label">
           Irrigation type, if known
           <input

@@ -19,10 +19,13 @@ export async function restoreFarmSession() {
 
 export async function farmApi(
   path,
-  { method = "GET", body, retry = true, binary = false } = {},
+  { method = "GET", body, retry = true, binary = false, signal } = {},
 ) {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 20000);
+  const cancel = () => controller.abort();
+  if (signal?.aborted) cancel();
+  else signal?.addEventListener("abort", cancel, { once: true });
   let response, result;
   try {
     const headers = {
@@ -50,6 +53,11 @@ export async function farmApi(
         return {};
       });
   } catch {
+    if (signal?.aborted) {
+      const error = new Error("The previous read was cancelled.");
+      error.cancelled = true;
+      throw error;
+    }
     const error = new Error(
       "The connection failed. Saved observations remain on this device. Retry when connected.",
     );
@@ -57,6 +65,7 @@ export async function farmApi(
     throw error;
   } finally {
     clearTimeout(timeout);
+    signal?.removeEventListener("abort", cancel);
   }
   if (response.status === 401 && retry && csrf && path !== "/auth/refresh") {
     if (!refreshPromise)
@@ -71,7 +80,7 @@ export async function farmApi(
           refreshPromise = null;
         });
     await refreshPromise;
-    return farmApi(path, { method, body, retry: false, binary });
+    return farmApi(path, { method, body, retry: false, binary, signal });
   }
   if (response.ok && binary) return result;
   if (!response.ok) {

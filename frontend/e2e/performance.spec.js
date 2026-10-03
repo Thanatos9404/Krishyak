@@ -21,9 +21,13 @@ test("anonymous farm entry on a throttled mobile connection", async ({
   });
   await cdp.send("Emulation.setCPUThrottlingRate", { rate: 4 });
   const started = Date.now();
-  await page.goto("/farm");
+  await page.goto("/app/today");
   await expect(
-    page.getByRole("heading", { name: "Sign in to your farm" }).first(),
+    page
+      .getByRole("heading", {
+        name: "A good day starts with a clearer picture.",
+      })
+      .first(),
   ).toBeVisible({ timeout: 30000 });
   const readyMs = Date.now() - started;
   const assets = await page.evaluate(() =>
@@ -32,7 +36,7 @@ test("anonymous farm entry on a throttled mobile connection", async ({
       bytes: entry.transferSize,
     })),
   );
-  expect(assets.some((asset) => /FieldMap-|App-/.test(asset.name))).toBe(false);
+  expect(assets.some((asset) => /\/map\//.test(asset.name))).toBe(false);
   expect(readyMs).toBeLessThan(30000);
   await fs.mkdir("../output", { recursive: true });
   await fs.writeFile(

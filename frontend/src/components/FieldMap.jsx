@@ -1,10 +1,9 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Map, Marker, NavigationControl, setWorkerUrl } from 'maplibre-gl';
-import workerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import { fieldBounds, polygonFromVertices } from '../utils/remoteSensing';
 
-setWorkerUrl(workerUrl);
+setWorkerUrl('/map/maplibre-gl-worker.mjs');
 const empty = { type: 'FeatureCollection', features: [] };
 
 export default function FieldMap({ vertices, onVertices, drawing, editing, center, image, instructions, unavailable }) {
@@ -67,6 +66,10 @@ export default function FieldMap({ vertices, onVertices, drawing, editing, cente
     }
   }, [image, ready]);
   return <div className="rs-map-wrap"><div ref={container} className="rs-map" role="region" aria-label={instructions} />
+    {drawing && <button type="button" disabled={!ready || vertices.length >= 200} onClick={() => {
+      const point = mapRef.current?.getCenter();
+      if (point) onVertices([...vertices, [point.lng, point.lat]]);
+    }}>Add corner at map centre</button>}
     {failed && <p role="status" className="rs-notice">{unavailable}</p>}
   </div>;
 }
