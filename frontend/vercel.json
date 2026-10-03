@@ -1,5 +1,6 @@
 {
   "framework": "nextjs",
+  "outputDirectory": ".next",
   "buildCommand": "npm run build",
   "installCommand": "npm ci"
 }

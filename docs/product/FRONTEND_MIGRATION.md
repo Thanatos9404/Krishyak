@@ -19,3 +19,5 @@ The old App.jsx, index.jsx, index.html, Vite config, FarmWorkspace, LandingPage,
 Service worker krishyak-shell-v3-1 removes prior shell caches. Account/API/RSC/private-image responses are excluded. Only marked anonymous HTML and public assets are cached. Navigation fallback uses the real browser pathname; seven-day owner-isolated IDB records restore only after opt-in. Sign-out clears device records, broadcasts across tabs and defers server revocation when disconnected.
 
 Review through the new draft PR and preview. Do not merge/promote main until infrastructure, privacy/legal and agronomic release gates are satisfied. Rollback means redeploying the prior verified source; no database rollback is needed for this frontend-only change.
+
+The existing Vercel project retained a legacy build output override. frontend/vercel.json explicitly selects framework nextjs and outputDirectory .next, overriding that saved setting for this source deployment. The project root remains frontend; private project metadata is never committed.
