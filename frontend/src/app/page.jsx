@@ -95,7 +95,7 @@ export default function Home() {
               </span>
             </a>
             <span className="hero-photo-note">
-              Illustrative aerial photograph · Indonesia
+              Illustrative aerial photograph · Ottapalam, Kerala, India
             </span>
           </div>
         </section>

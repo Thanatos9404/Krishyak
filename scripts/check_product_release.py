@@ -1,5 +1,6 @@
 """Verify required release documents and licensed public asset integrity."""
 import json
+import hashlib
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -25,6 +26,7 @@ def main():
             assert image.stat().st_size == source["bytes"], image
             assert source["width"] and source["height"]
             assert image.read_bytes()[:4] == b"RIFF", image
+            assert hashlib.sha256(image.read_bytes()).hexdigest() == source["sha256"], image
     for font in manifest["fonts"]:
         path = public / font["path"].removeprefix("/")
         assert path.stat().st_size == font["bytes"] and path.read_bytes()[:4] == b"wOF2", path

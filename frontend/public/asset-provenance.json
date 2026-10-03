@@ -3,197 +3,239 @@
   "photos": [
     {
       "name": "fields",
-      "author": "Tom Fisk",
-      "page": "https://www.pexels.com/photo/aerial-photography-of-green-rice-field-2468400/",
+      "photo_id": 16970062,
+      "author": "Jeswin Thomas",
+      "page": "https://www.pexels.com/photo/areal-view-of-a-field-with-green-and-dirt-16970062/",
       "license": "https://www.pexels.com/license/",
-      "alt": "Aerial view of green rice fields in Indonesia",
-      "original_sha256": "71332b0eb543b5e13afed96497f0e18fb3ce2bee8317a7bdef7c8ad3ac7ef968",
+      "country": "India",
+      "location_evidence": "Photographer's location and description on the linked Pexels source page",
+      "alt": "Aerial view of green and harvested fields in Ottapalam, Kerala, India",
+      "original_sha256": "3b6f5a3d494b601e1e302ee276f856c6beb036c16cc38c558b747f175acd6995",
       "sizes": [
         {
-          "src": "/images/fields-400.webp",
+          "src": "/images/fields-400-417f452370ca.webp",
           "width": 400,
           "height": 160,
-          "bytes": 18184
+          "bytes": 8332,
+          "sha256": "417f452370ca38a0d9338c4590eed74221df7bc818b59a8653251ab3bc79ada8"
         },
         {
-          "src": "/images/fields-800.webp",
+          "src": "/images/fields-800-20afe2b0e5e7.webp",
           "width": 800,
           "height": 320,
-          "bytes": 91150
+          "bytes": 33690,
+          "sha256": "20afe2b0e5e758db3af742a9f3289b491ee67a92e0b3642ce5441b28a522cf44"
         },
         {
-          "src": "/images/fields-1440.webp",
+          "src": "/images/fields-1440-cfbb926e0450.webp",
           "width": 1440,
           "height": 576,
-          "bytes": 305734
+          "bytes": 109960,
+          "sha256": "cfbb926e04509167b10c546b72fbe83657299121b59f82b919130e17946e2248"
         }
       ]
     },
     {
       "name": "farmers",
+      "photo_id": 20344348,
       "author": "EqualStock IN",
       "page": "https://www.pexels.com/photo/farmers-in-india-20344348/",
       "license": "https://www.pexels.com/license/",
+      "country": "India",
+      "location_evidence": "Photographer's location and description on the linked Pexels source page",
       "alt": "Two women working in a green agricultural field in India",
       "original_sha256": "c53745c46f9d8df333e1b87ef632952cc6119b04540fa73fcaacf86a94d93a54",
       "sizes": [
         {
-          "src": "/images/farmers-400.webp",
+          "src": "/images/farmers-400-8082b9dd337d.webp",
           "width": 400,
           "height": 267,
-          "bytes": 29434
+          "bytes": 29434,
+          "sha256": "8082b9dd337d0c9b699ca0d9f13e7f3ad27f38da910220babea2b50aa8f03c4d"
         },
         {
-          "src": "/images/farmers-800.webp",
+          "src": "/images/farmers-800-4300d4eda7a7.webp",
           "width": 800,
           "height": 533,
-          "bytes": 99578
+          "bytes": 99578,
+          "sha256": "4300d4eda7a7c27ccb26d1c96260465fb8de238907ae670ab829f0fd3353552c"
         },
         {
-          "src": "/images/farmers-1440.webp",
+          "src": "/images/farmers-1440-2b852d08b944.webp",
           "width": 1440,
           "height": 960,
-          "bytes": 236964
+          "bytes": 236964,
+          "sha256": "2b852d08b944e6dffab361c9d04551e636ffb0d7dc1b38f3fd444db827073a16"
         }
       ]
     },
     {
       "name": "tomatoes",
-      "author": "Nurullah Karaman",
-      "page": "https://www.pexels.com/photo/fresh-red-tomato-on-a-vine-in-garden-setting-33474156/",
+      "photo_id": 17215421,
+      "author": "ganesh mohanty",
+      "page": "https://www.pexels.com/photo/unripe-green-tomatoes-on-a-vine-17215421/",
       "license": "https://www.pexels.com/license/",
-      "alt": "A ripe tomato growing on a vine among green leaves",
-      "original_sha256": "c17fda62eeae466f5c5d1d903e882b0ee30e158122b971054269b36a0a0cdf28",
+      "country": "India",
+      "location_evidence": "Photographer's location and description on the linked Pexels source page",
+      "alt": "Unripe tomatoes growing on a vine in Odisha, India",
+      "original_sha256": "14c82d92947e308e18275758733a42cb0c80d97897ad854e324a0fda6e44ecc5",
       "sizes": [
         {
-          "src": "/images/tomatoes-400.webp",
+          "src": "/images/tomatoes-400-73424ad32867.webp",
           "width": 400,
           "height": 267,
-          "bytes": 15552
+          "bytes": 14510,
+          "sha256": "73424ad32867cb4af28ecd717698806a7fe52ab8ab5fb373d02331b6f3f216f3"
         },
         {
-          "src": "/images/tomatoes-800.webp",
+          "src": "/images/tomatoes-800-1cd1ae3135fd.webp",
           "width": 800,
           "height": 533,
-          "bytes": 37644
+          "bytes": 48846,
+          "sha256": "1cd1ae3135fda75aaed30b20ab5d36028a941dcc427be703a87e1581677f088a"
         },
         {
-          "src": "/images/tomatoes-1440.webp",
+          "src": "/images/tomatoes-1440-cd7c342fb450.webp",
           "width": 1440,
           "height": 960,
-          "bytes": 75888
+          "bytes": 122994,
+          "sha256": "cd7c342fb4507b4da3605dafea7523451adceb7fac8dcab22c2e161105f650dd"
         }
       ]
     },
     {
       "name": "market",
+      "photo_id": 23884776,
       "author": "Robert Stokoe",
       "page": "https://www.pexels.com/photo/vegetable-market-in-india-23884776/",
       "license": "https://www.pexels.com/license/",
+      "country": "India",
+      "location_evidence": "Photographer's location and description on the linked Pexels source page",
       "alt": "Produce displayed at a street market in India",
       "original_sha256": "917481d5a312929b0cffb1991d27e13dd444e4819acc1767133a9d8e7a280d35",
       "sizes": [
         {
-          "src": "/images/market-400.webp",
+          "src": "/images/market-400-7fe714821736.webp",
           "width": 400,
           "height": 305,
-          "bytes": 28090
+          "bytes": 28090,
+          "sha256": "7fe71482173650d9803448fb5ce9623b2d1114fac4c1caf57d3ea8aad80b9742"
         },
         {
-          "src": "/images/market-800.webp",
+          "src": "/images/market-800-132b01a72f10.webp",
           "width": 800,
           "height": 611,
-          "bytes": 96262
+          "bytes": 96262,
+          "sha256": "132b01a72f10a4c1859445a6ee7624de8b00b54be844fb8793390f617c5e7ded"
         },
         {
-          "src": "/images/market-1440.webp",
+          "src": "/images/market-1440-bdb9aef7e64b.webp",
           "width": 1440,
           "height": 1099,
-          "bytes": 251598
+          "bytes": 251598,
+          "sha256": "bdb9aef7e64ba8d0a74cc7df62db2e63a0eb0b687f804bb3033de3f4011b7636"
         }
       ]
     },
     {
       "name": "terraces",
-      "author": "shy sol",
-      "page": "https://www.pexels.com/photo/green-rice-terraces-68491/",
+      "photo_id": 33638020,
+      "author": "Aman Gairola",
+      "page": "https://www.pexels.com/photo/lush-green-terraced-fields-in-uttarakhand-33638020/",
       "license": "https://www.pexels.com/license/",
-      "alt": "Green terraced rice fields seen from above",
-      "original_sha256": "03583939c5c657832fac24817ee3a7ef1191c80b85bda05c72b7211588dc9be4",
+      "country": "India",
+      "location_evidence": "Photographer's location and description on the linked Pexels source page",
+      "alt": "Green terraced fields and a village in Uttarakhand, India",
+      "original_sha256": "2107b8883bffcc4647bc305b2aa89df6da21881830bc57e0589cee1225816d4a",
       "sizes": [
         {
-          "src": "/images/terraces-400.webp",
+          "src": "/images/terraces-400-f7adb202655a.webp",
           "width": 400,
-          "height": 266,
-          "bytes": 19500
+          "height": 267,
+          "bytes": 30036,
+          "sha256": "f7adb202655a02143a5e773b50a5e94fc820bbf6a12e28952082d2b68efb87cd"
         },
         {
-          "src": "/images/terraces-800.webp",
+          "src": "/images/terraces-800-7f2fed8ebcda.webp",
           "width": 800,
-          "height": 532,
-          "bytes": 57496
+          "height": 533,
+          "bytes": 115646,
+          "sha256": "7f2fed8ebcdadd8845dfdca9744cf563a9318df0a6b2f994a3eaa277995badda"
         },
         {
-          "src": "/images/terraces-1440.webp",
+          "src": "/images/terraces-1440-d6f2dc4d3f9e.webp",
           "width": 1440,
-          "height": 958,
-          "bytes": 135494
+          "height": 960,
+          "bytes": 349854,
+          "sha256": "d6f2dc4d3f9ee14326b2f973014763fbb1d57b2e448f48fb7b601d56fe7595db"
         }
       ]
     },
     {
       "name": "community",
+      "photo_id": 19911960,
       "author": "Beyond India by Shubham Thakur",
       "page": "https://www.pexels.com/photo/people-working-on-field-19911960/",
       "license": "https://www.pexels.com/license/",
+      "country": "India",
+      "location_evidence": "Photographer's location and description on the linked Pexels source page",
       "alt": "Farmers working together in a field in Mungeli, India",
       "original_sha256": "f507dffa71ffb03cd0501f96a5ce3f68632664b94680d99cc50d0a9ffd97f5b2",
       "sizes": [
         {
-          "src": "/images/community-400.webp",
+          "src": "/images/community-400-c3d1a2680712.webp",
           "width": 400,
           "height": 267,
-          "bytes": 20872
+          "bytes": 20872,
+          "sha256": "c3d1a2680712105fd52d60477642d2d7cb6e6e7618984b304f3bcd250cd39ba5"
         },
         {
-          "src": "/images/community-800.webp",
+          "src": "/images/community-800-7b735c79acc9.webp",
           "width": 800,
           "height": 533,
-          "bytes": 78598
+          "bytes": 78598,
+          "sha256": "7b735c79acc9ea287a1032180fcf4d57c743314db7e6d94f01f780bf1235e336"
         },
         {
-          "src": "/images/community-1440.webp",
+          "src": "/images/community-1440-715e25462b2a.webp",
           "width": 1440,
           "height": 960,
-          "bytes": 219924
+          "bytes": 219924,
+          "sha256": "715e25462b2ac084d2457d752daafe5041522e098cc0f126aae84e9897a8e4f5"
         }
       ]
     },
     {
       "name": "fieldwork",
+      "photo_id": 18065034,
       "author": "Pranjal Mulane",
       "page": "https://www.pexels.com/photo/farmer-working-in-field-18065034/",
       "license": "https://www.pexels.com/license/",
+      "country": "India",
+      "location_evidence": "Photographer's location and description on the linked Pexels source page",
       "alt": "A woman working among crops in Nashik, India",
       "original_sha256": "da711638079ed4a66f8d36f52b793b6de8f590b1194dd0fe96456d7fe413bf6b",
       "sizes": [
         {
-          "src": "/images/fieldwork-400.webp",
+          "src": "/images/fieldwork-400-489e824ad77f.webp",
           "width": 400,
           "height": 711,
-          "bytes": 51646
+          "bytes": 51646,
+          "sha256": "489e824ad77fbeacda7ab5ab1cd75fb3f040e4b2fbc928702387ccab1dc5958b"
         },
         {
-          "src": "/images/fieldwork-800.webp",
+          "src": "/images/fieldwork-800-7c814da3a5d6.webp",
           "width": 800,
           "height": 1422,
-          "bytes": 232912
+          "bytes": 232912,
+          "sha256": "7c814da3a5d6c16b4d6e7b9dd2f352581222173d156cb16bcb00f8aafcdbcf7d"
         },
         {
-          "src": "/images/fieldwork-1440.webp",
+          "src": "/images/fieldwork-1440-c54bff580bc3.webp",
           "width": 1125,
           "height": 2000,
-          "bytes": 453826
+          "bytes": 453826,
+          "sha256": "c54bff580bc30b354b270b31e7b8dbb67ed88385c8d1d889080bffd25f531b8f"
         }
       ]
     }

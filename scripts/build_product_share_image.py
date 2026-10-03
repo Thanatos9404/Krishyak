@@ -1,5 +1,6 @@
 """Build the original social card and PWA icons from licensed/local assets."""
 from pathlib import Path
+import json
 import httpx
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 
@@ -15,7 +16,9 @@ def main():
         response.raise_for_status()
         font_path.write_bytes(response.content)
     card = Image.new("RGB", (1200, 630), "#f7f6f0")
-    photo = Image.open(PUBLIC / "images" / "fields-1440.webp")
+    provenance = json.loads((PUBLIC / "asset-provenance.json").read_text(encoding="utf-8"))
+    hero = next(row for row in provenance["photos"] if row["name"] == "fields")
+    photo = Image.open(PUBLIC / hero["sizes"][-1]["src"].removeprefix("/"))
     card.paste(ImageOps.fit(photo, (1200, 250), Image.Resampling.LANCZOS), (0, 380))
     draw = ImageDraw.Draw(card)
     draw.text((64, 36), "krishyak.", font=ImageFont.truetype(str(font_path), 38), fill="#214b3a")
