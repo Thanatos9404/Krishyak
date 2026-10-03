@@ -3,6 +3,7 @@ import { ArrowRight, ShieldCheck } from "lucide-react";
 import { farmApi } from "../../features/farms/api";
 import { revokeDeviceSession } from "../../features/product/useAccountSession";
 import { Photo } from "../public/Photo";
+import { normalizeIndianMobile } from "../../features/product/india";
 
 export function SignIn({ workspace: w }) {
   const [mobile, setMobile] = useState(""),
@@ -32,9 +33,7 @@ export function SignIn({ workspace: w }) {
                     await farmApi("/auth/request-otp", {
                       method: "POST",
                       body: {
-                        mobile: mobile.startsWith("+")
-                          ? mobile
-                          : `+91${mobile}`,
+                        mobile: normalizeIndianMobile(mobile),
                       },
                     }),
                   );
@@ -61,7 +60,9 @@ export function SignIn({ workspace: w }) {
                 type="tel"
                 autoComplete="tel"
                 placeholder="+91 98765 43210"
-                pattern="(\+91)?[6-9][0-9]{9}"
+                inputMode="tel"
+                maxLength={40}
+                minLength={10}
                 required
                 disabled={Boolean(challenge)}
                 value={mobile}

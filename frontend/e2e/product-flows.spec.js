@@ -69,7 +69,9 @@ test.beforeAll(async ({ browser }, info) => {
     firefox: "+919000000002",
     webkit: "+919000000003",
   }[info.project.name];
-  await page.getByLabel("Mobile number", { exact: true }).fill(mobile);
+  await page
+    .getByLabel("Mobile number", { exact: true })
+    .fill(`${mobile.slice(0, 3)} ${mobile.slice(3, 8)} ${mobile.slice(8)}`);
   await page.getByRole("checkbox", { name: /I accept the Terms/ }).check();
   await page
     .getByRole("button", { name: "Send sign-in code", exact: true })
@@ -103,11 +105,21 @@ test("field onboarding, permissions, human update, crop cycle and account export
     .fill(`Synthetic product farm ${Date.now()}`);
   fieldName = `Synthetic product field ${Date.now()}`;
   await dialog.getByLabel("Field name", { exact: true }).fill(fieldName);
-  await dialog.getByLabel("Field area (hectares)", { exact: true }).fill("1.2");
+  await dialog.getByLabel("Field area (acres)", { exact: true }).fill("2.5");
   expect(await dialog.getByRole("textbox", { name: /GeoJSON/ }).count()).toBe(
     0,
   );
+  const fieldSaved = page.waitForResponse(
+    (response) =>
+      response.url().endsWith("/api/v2/plots") &&
+      response.request().method() === "POST",
+  );
   await dialog.getByRole("button", { name: "Save field", exact: true }).click();
+  const saved = await fieldSaved;
+  expect(saved.ok()).toBe(true);
+  expect(saved.request().postDataJSON().entered_area_hectares).toBe(
+    1.0117141056,
+  );
   await expect(dialog).not.toBeVisible();
   await expect(
     page.getByRole("heading", { name: fieldName, exact: true }),

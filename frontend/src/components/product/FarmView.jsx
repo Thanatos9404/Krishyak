@@ -4,6 +4,8 @@ import { farmApi } from "../../features/farms/api";
 import { deferredFeature } from "../deferredFeature";
 import { BoundaryEditor } from "./BoundaryEditor";
 import { Dialog } from "./Dialog";
+import { AreaInput } from "./AreaInput";
+import { toHectares, formatArea } from "../../features/product/india";
 const FieldMap = deferredFeature(() => import("../FieldMap"));
 const PlotHealth = deferredFeature(
   () => import("../../features/farms/PlotHealth"),
@@ -20,6 +22,7 @@ function AddField({ w, onClose }) {
     [farmId, setFarmId] = useState(w.farms[0]?.id || ""),
     [farmName, setFarmName] = useState(""),
     [area, setArea] = useState(""),
+    [areaUnit, setAreaUnit] = useState("acre"),
     [boundary, setBoundary] = useState(null);
   return (
     <Dialog
@@ -46,7 +49,7 @@ function AddField({ w, onClose }) {
                 operation_id: crypto.randomUUID(),
                 farm_id: id,
                 name,
-                entered_area_hectares: area ? Number(area) : null,
+                entered_area_hectares: area ? toHectares(area, areaUnit) : null,
                 boundary,
                 boundary_quality: boundary ? "approximate" : "manual",
               },
@@ -101,27 +104,13 @@ function AddField({ w, onClose }) {
           />
         </label>
         <BoundaryEditor value={boundary} onChange={setBoundary} />
-        <label className="v2-label">
-          Field area (hectares)
-          {boundary && (
-            <span className="small muted">
-              Optional when a boundary is drawn.
-            </span>
-          )}
-          <input
-            type="number"
-            step="any"
-            min="0.0001"
-            max="500"
-            required={!boundary}
-            value={area}
-            onChange={(event) => setArea(event.target.value)}
-            placeholder="e.g. 1.5"
-          />
-        </label>
-        <p className="small muted">
-          1 hectare is approximately 2.47 acres. You can edit the area later.
-        </p>
+        <AreaInput
+          value={area}
+          onChange={setArea}
+          unit={areaUnit}
+          onUnitChange={setAreaUnit}
+          required={!boundary}
+        />
         {w.error && (
           <p className="error-panel" role="alert">
             {w.error}
@@ -244,10 +233,11 @@ export function FarmView({ workspace: w, plotId }) {
                 <span>
                   <strong>{field.name}</strong>
                   <small>
-                    {Number(
+                    {formatArea(
                       field.area_hectares || field.entered_area_hectares,
-                    ).toLocaleString()}{" "}
-                    ha · {field.boundary ? "Boundary mapped" : "Manual area"}
+                      "acre",
+                    )}{" "}
+                    acres · {field.boundary ? "Boundary mapped" : "Manual area"}
                   </small>
                 </span>
                 <ArrowRight size={18} />
@@ -287,11 +277,19 @@ export function FarmView({ workspace: w, plotId }) {
                 <div>
                   <span>Field area</span>
                   <strong>
-                    {Number(
+                    {formatArea(
                       plot.area_hectares || plot.entered_area_hectares,
-                    ).toLocaleString()}{" "}
-                    <small>ha</small>
+                      "acre",
+                    )}{" "}
+                    <small>acres</small>
                   </strong>
+                  <small>
+                    {formatArea(
+                      plot.area_hectares || plot.entered_area_hectares,
+                      "hectare",
+                    )}{" "}
+                    hectares
+                  </small>
                 </div>
                 <div>
                   <span>Current crop</span>

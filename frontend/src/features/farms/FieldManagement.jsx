@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { farmApi } from "./api";
 import { BoundaryEditor } from "../../components/product/BoundaryEditor";
+import { AreaInput } from "../../components/product/AreaInput";
+import { fromHectares, toHectares } from "../product/india";
 
 function CycleEditor({ cycle, busy, offline, act, reload }) {
   const [draft, setDraft] = useState(cycle);
@@ -103,7 +105,13 @@ function CycleEditor({ cycle, busy, offline, act, reload }) {
 
 function PlotEditor({ plot, busy, offline, act, reload }) {
   const [name, setName] = useState(plot.name),
-    [area, setArea] = useState(plot.entered_area_hectares || ""),
+    [area, setArea] = useState(
+      plot.entered_area_hectares
+        ? Number(fromHectares(plot.entered_area_hectares, "acre").toFixed(6))
+        : "",
+    ),
+    [areaUnit, setAreaUnit] = useState("acre"),
+    [areaEdited, setAreaEdited] = useState(false),
     [boundary, setBoundary] = useState(plot.boundary || null),
     [irrigation, setIrrigation] = useState(plot.irrigation_type || "");
   return (
@@ -125,7 +133,11 @@ function PlotEditor({ plot, busy, offline, act, reload }) {
                 revision: plot.revision,
                 farm_id: plot.farm_id,
                 name,
-                entered_area_hectares: area ? Number(area) : null,
+                entered_area_hectares: areaEdited
+                  ? area
+                    ? toHectares(area, areaUnit)
+                    : null
+                  : plot.entered_area_hectares,
                 boundary: geometry,
                 boundary_quality: geometry ? "farmer_drawn" : "manual",
                 irrigation_type: irrigation || null,
@@ -144,18 +156,17 @@ function PlotEditor({ plot, busy, offline, act, reload }) {
             onChange={(event) => setName(event.target.value)}
           />
         </label>
-        <label className="v2-label">
-          Updated manual area (hectares)
-          <input
-            type="number"
-            min="0.0001"
-            max="500"
-            step="any"
-            required={!boundary}
-            value={area}
-            onChange={(event) => setArea(event.target.value)}
-          />
-        </label>
+        <AreaInput
+          label="Updated manual area"
+          value={area}
+          onChange={(value) => {
+            setArea(value);
+            setAreaEdited(true);
+          }}
+          unit={areaUnit}
+          onUnitChange={setAreaUnit}
+          required={!boundary}
+        />
         <BoundaryEditor value={boundary} onChange={setBoundary} />
         <label className="v2-label">
           Irrigation type, if known
