@@ -325,9 +325,24 @@ test("farmer routes, zoom, reduced motion and accessible navigation", async ({},
   ]) {
     await page.goto(route, { waitUntil: "domcontentloaded" });
     // Audit the signed-in field view, never an SSR/loading placeholder.
-    await expect(
-      page.getByRole("combobox", { name: "Selected field" }),
-    ).toHaveValue(/.+/);
+    if (route === "/institution") {
+      await expect(
+        page.getByRole("link", { name: "Account and settings" }),
+      ).toBeVisible();
+      await expect(
+        page.getByRole("heading", {
+          name: "Institutional access is required.",
+          exact: true,
+        }),
+      ).toBeVisible();
+      await expect(
+        page.getByRole("button", { name: "Create pilot cohort" }),
+      ).toHaveCount(0);
+    } else {
+      await expect(
+        page.getByRole("combobox", { name: "Selected field" }),
+      ).toHaveValue(/.+/);
+    }
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
     await expect(
       page.getByRole("heading", { name: "Opening your workspace…" }),
@@ -380,6 +395,9 @@ test("farmer routes, zoom, reduced motion and accessible navigation", async ({},
 });
 
 test("offline reload, idempotent synchronization and logout clears private records", async () => {
+  // Real origin outages, SW reload, recovery and deferred logout are separate
+  // bounded operations; allow Windows WebKit enough time for the whole journey.
+  test.setTimeout(120000);
   await page.goto("/app/more/settings");
   await page
     .getByRole("checkbox", { name: /Keep farm records for offline use/ })

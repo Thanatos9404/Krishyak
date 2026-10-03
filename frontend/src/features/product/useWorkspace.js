@@ -93,7 +93,7 @@ export function useWorkspace() {
       },
     };
     try {
-      if (!navigator.onLine) {
+      if (offline || !navigator.onLine) {
         const problem = new Error();
         problem.network = true;
         throw problem;

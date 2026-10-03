@@ -1,5 +1,5 @@
 import { Download, LogOut, ShieldCheck } from "lucide-react";
-import { useState } from "react";
+import { useConsentChanges } from "../../features/product/useConsentChanges";
 import { farmApi } from "../../features/farms/api";
 import { clearOwner } from "../../features/farms/offline";
 import { useTranslation } from "../../i18n";
@@ -39,7 +39,8 @@ const PURPOSES = [
 ];
 export function SettingsView({ workspace: w }) {
   const { language } = useTranslation();
-  const [permissionChange, setPermissionChange] = useState(null);
+  const { states: permissionChanges, change: changePermission } =
+    useConsentChanges(w);
   return (
     <>
       <header className="product-page-heading">
@@ -61,45 +62,62 @@ export function SettingsView({ workspace: w }) {
         </p>
         <div className="consent-list">
           {PURPOSES.map(([purpose, title, description]) => (
-            <label className="consent-row" key={purpose}>
-              <span>
-                <strong>{title}</strong>
-                <small>{description}</small>
-              </span>
-              <input
-                type="checkbox"
-                checked={
-                  permissionChange?.purpose === purpose
-                    ? permissionChange.granted
-                    : w.consents.includes(purpose)
-                }
-                disabled={w.busy || w.offline || Boolean(permissionChange)}
-                onChange={(event) => {
-                  const granted = event.target.checked;
-                  // Only this pending control is optimistic. Processing checks
-                  // continue to use the server-confirmed workspace consents.
-                  setPermissionChange({ purpose, granted });
-                  void w
-                    .act(async () => {
-                      await farmApi("/consents", {
-                        method: "POST",
-                        body: {
-                          purpose,
-                          granted,
-                          policy_version: "2026-10-03",
-                        },
-                      });
-                      await w.loadConsents();
-                      w.setNotice("Your permission choice has been saved.");
-                    })
-                    .finally(() => setPermissionChange(null));
-                }}
-              />
-            </label>
+            <div
+              key={purpose}
+              aria-busy={Boolean(permissionChanges[purpose]?.saving)}
+            >
+              <label className="consent-row">
+                <span>
+                  <strong>{title}</strong>
+                  <small>{description}</small>
+                </span>
+                <input
+                  type="checkbox"
+                  checked={
+                    permissionChanges[purpose]?.saving
+                      ? permissionChanges[purpose].granted
+                      : w.consents.includes(purpose)
+                  }
+                  disabled={
+                    w.busy ||
+                    w.offline ||
+                    Boolean(permissionChanges[purpose]?.saving)
+                  }
+                  aria-busy={Boolean(permissionChanges[purpose]?.saving)}
+                  onChange={(event) => {
+                    const granted = event.target.checked;
+                    void changePermission(purpose, granted);
+                  }}
+                />
+              </label>
+              {permissionChanges[purpose]?.saving && (
+                <p role="status">Saving your permission choice…</p>
+              )}
+              {permissionChanges[purpose]?.error && (
+                <div role="alert">
+                  <p>{permissionChanges[purpose].error}</p>
+                  <button
+                    className="button secondary"
+                    disabled={w.offline || w.busy}
+                    onClick={() =>
+                      changePermission(
+                        purpose,
+                        permissionChanges[purpose].granted,
+                      )
+                    }
+                  >
+                    Retry permission choice
+                  </button>
+                </div>
+              )}
+            </div>
           ))}
         </div>
-        {permissionChange && (
-          <p role="status">Saving your permission choice…</p>
+        {w.offline && (
+          <p role="status">
+            Connect to the internet to change permissions. Your saved choices
+            still apply.
+          </p>
         )}
         <p className="small muted">
           Withdrawing research permissions stops future research linkage and
