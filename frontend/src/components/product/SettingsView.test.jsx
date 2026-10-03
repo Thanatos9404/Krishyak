@@ -6,7 +6,9 @@ import { farmApi } from "../../features/farms/api";
 
 jest.mock("../../features/farms/api", () => ({ farmApi: jest.fn() }));
 jest.mock("../../i18n", () => ({ useTranslation: () => ({ language: "en" }) }));
-jest.mock("../deferredFeature", () => ({ deferredFeature: () => () => null }));
+jest.mock("../../features/product/deferredProductFeature", () => ({
+  deferredFeature: () => () => null,
+}));
 
 function workspace() {
   return {

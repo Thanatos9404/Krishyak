@@ -10,7 +10,8 @@ import {
   Settings,
 } from "lucide-react";
 import { Brand } from "../public/Brand";
-import LanguageSelector from "../LanguageSelector";
+import { ProductLanguageChooser } from "./ProductLanguageChooser";
+import { useProductLocale } from "../../features/product/ProductLocale";
 const NAV = [
   ["/app/today", Sun, "Today"],
   ["/app/farm", Map, "Farm"],
@@ -25,13 +26,14 @@ export function ProductShell({
   demo = false,
   institution = false,
 }) {
+  const { tx, info } = useProductLocale();
   const nav = (location) => (
     <nav
       className={`product-nav ${location}`}
       aria-label={
         location === "desktop-nav"
-          ? "Workspace navigation"
-          : "Mobile workspace navigation"
+          ? tx("Workspace navigation")
+          : tx("Mobile workspace navigation")
       }
     >
       {NAV.map(([href, Icon, title]) => (
@@ -41,7 +43,7 @@ export function ProductShell({
           aria-current={pathname.startsWith(href) ? "page" : undefined}
         >
           <Icon size={23} />
-          <span>{title}</span>
+          <span>{tx(title)}</span>
         </a>
       ))}
     </nav>
@@ -51,25 +53,27 @@ export function ProductShell({
       className={`product-shell ${demo ? "demo-shell" : ""} ${institution ? "institution-shell" : ""}`}
     >
       <a href="#workspace-content" className="skip-link">
-        Skip to workspace
+        {tx("Skip to workspace")}
       </a>
       <aside className="product-sidebar">
         <Brand />
         <span className="sidebar-caption">
-          {institution ? "INSTITUTIONAL WORKSPACE" : "YOUR FIELD COMPANION"}
+          {institution
+            ? tx("INSTITUTIONAL WORKSPACE")
+            : tx("YOUR FIELD COMPANION")}
         </span>
         {!institution && nav("desktop-nav")}
         <div className="sidebar-bottom">
           <a href="/how-it-works">
-            How it works <ArrowUpRight size={17} />
+            {tx("How it works")} <ArrowUpRight size={17} />
           </a>
           <a href="/">
-            Back to website <ArrowUpRight size={17} />
+            {tx("Back to website")} <ArrowUpRight size={17} />
           </a>
           <p>
-            Observe. Understand.
+            {tx("Observe. Understand.")}
             <br />
-            Verify in the field.
+            {tx("Verify in the field.")}
           </p>
         </div>
       </aside>
@@ -82,11 +86,11 @@ export function ProductShell({
             <label className="workspace-field-picker">
               <Map size={19} />
               <select
-                aria-label="Selected field"
+                aria-label={tx("Selected field")}
                 value={w.selected}
                 onChange={(event) => w.setSelected(event.target.value)}
               >
-                <option value="">Select a field</option>
+                <option value="">{tx("Select a field")}</option>
                 {w.plots.map((plot) => (
                   <option key={plot.id} value={plot.id}>
                     {plot.name}
@@ -96,20 +100,20 @@ export function ProductShell({
             </label>
           )}
           <div className="workspace-tools">
-            {!demo && <LanguageSelector />}
+            {!demo && <ProductLanguageChooser />}
             {w.farmer && (
               <a
                 className="account-link"
                 href="/app/more/settings"
-                aria-label="Account and settings"
+                aria-label={tx("Account and settings")}
               >
                 <Settings size={20} />
-                <span>{w.farmer.display_name || "My account"}</span>
+                <span>{w.farmer.display_name || tx("My account")}</span>
               </a>
             )}
             {!w.farmer && !demo && (
               <a className="button secondary" href="/app/today">
-                Sign in
+                {tx("Sign in")}
               </a>
             )}
           </div>
@@ -117,11 +121,13 @@ export function ProductShell({
         {demo && (
           <div className="demo-banner" role="status">
             <span>
-              <strong>Illustrative demo</strong> · Synthetic records. Nothing
-              here is your farm or a live recommendation.
+              <strong>{tx("Illustrative demo")}</strong>{" "}
+              {tx(
+                "\xB7 Synthetic records. Nothing here is your farm or a live recommendation.",
+              )}
             </span>
             <a href="/app/today">
-              Start my farm <ArrowUpRight size={17} />
+              {tx("Start my farm")} <ArrowUpRight size={17} />
             </a>
           </div>
         )}
@@ -132,40 +138,52 @@ export function ProductShell({
           >
             {w.offline ? <WifiOff size={16} /> : <CircleCheck size={16} />}
             <span>
-              {w.offline ? "Offline · showing saved records" : "Connected"}
-              {w.pending > 0 ? ` · ${w.pending} waiting to sync` : ""}
+              {w.offline
+                ? tx("Offline · showing saved records")
+                : tx("Connected")}
+              {w.pending > 0
+                ? tx(" \xB7 {{v0}} waiting to sync", {
+                    v0: w.pending,
+                  })
+                : ""}
             </span>
             {w.pending > 0 && (
               <button disabled={w.busy} onClick={() => w.act(w.sync)}>
-                Sync now
+                {tx("Sync now")}
               </button>
             )}
           </div>
         )}
-        <main id="workspace-content" className="workspace-content" lang="en">
+        <main
+          id="workspace-content"
+          className="workspace-content"
+          lang={info.speechCode}
+          dir={info.direction}
+        >
           {w.status?.development_identity && (
             <p role="status" className="status-panel">
-              Development account service · test data only.
+              {tx("Development account service \xB7 test data only.")}
             </p>
           )}
           {w.error && (
             <div role="alert" className="error-panel">
-              {w.error}{" "}
+              {tx(w.error)}{" "}
               <button className="button text" onClick={() => location.reload()}>
-                Retry
+                {tx("Retry")}
               </button>
             </div>
           )}
           {w.notice && (
             <p role="status" className="status-panel">
-              {w.notice}
+              {tx(w.notice)}
             </p>
           )}
           {children}
         </main>
         <footer className="workspace-footer">
-          Field context supports your judgement. Verify before acting.{" "}
-          <a href="/privacy">Privacy</a> · <a href="/terms">Terms</a>
+          {tx("Field context supports your judgement. Verify before acting.")}{" "}
+          <a href="/privacy">{tx("Privacy")}</a> ·{" "}
+          <a href="/terms">{tx("Terms")}</a>
         </footer>
       </div>
       {!institution && nav("mobile-nav")}

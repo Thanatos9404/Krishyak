@@ -1,8 +1,9 @@
+import { useProductLocale } from "../../features/product/ProductLocale";
 import { useEffect, useId, useRef } from "react";
 import { X } from "lucide-react";
 import { trapDialogFocus } from "../../utils/dialogFocus";
-
 export function Dialog({ title, children, onClose, className = "" }) {
+  const { tx } = useProductLocale();
   const ref = useRef(null),
     heading = useId();
   useEffect(() => {
@@ -31,7 +32,7 @@ export function Dialog({ title, children, onClose, className = "" }) {
         <button
           className="icon-button"
           type="button"
-          aria-label="Close dialog"
+          aria-label={tx("Close dialog")}
           onClick={onClose}
         >
           <X size={22} />

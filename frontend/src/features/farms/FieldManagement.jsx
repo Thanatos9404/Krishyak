@@ -1,15 +1,16 @@
+import { useProductLocale } from "../product/ProductLocale";
 import React, { useState } from "react";
 import { farmApi } from "./api";
 import { BoundaryEditor } from "../../components/product/BoundaryEditor";
 import { AreaInput } from "../../components/product/AreaInput";
 import { fromHectares, toHectares } from "../product/india";
-
 function CycleEditor({ cycle, busy, offline, act, reload }) {
+  const { tx } = useProductLocale();
   const [draft, setDraft] = useState(cycle);
   return (
     <details>
       <summary>
-        {cycle.crop} · {cycle.status} · edit cycle
+        {cycle.crop} · {cycle.status} {tx("\xB7 edit cycle")}
       </summary>
       <form
         onSubmit={(event) => {
@@ -60,17 +61,23 @@ function CycleEditor({ cycle, busy, offline, act, reload }) {
               required
               value={draft[key]}
               onChange={(event) =>
-                setDraft((value) => ({ ...value, [key]: event.target.value }))
+                setDraft((value) => ({
+                  ...value,
+                  [key]: event.target.value,
+                }))
               }
             />
           </label>
         ))}
         <label className="v2-label">
-          Cycle status
+          {tx("Cycle status")}
           <select
             value={draft.status}
             onChange={(event) =>
-              setDraft((value) => ({ ...value, status: event.target.value }))
+              setDraft((value) => ({
+                ...value,
+                status: event.target.value,
+              }))
             }
           >
             {["planned", "active", "completed", "cancelled"].map((status) => (
@@ -78,7 +85,7 @@ function CycleEditor({ cycle, busy, offline, act, reload }) {
             ))}
           </select>
         </label>
-        <button disabled={busy || offline}>Update cycle</button>
+        <button disabled={busy || offline}>{tx("Update cycle")}</button>
         <button
           className="v2-danger"
           type="button"
@@ -91,19 +98,21 @@ function CycleEditor({ cycle, busy, offline, act, reload }) {
                 )
               )
                 return;
-              await farmApi(`/crop-cycles/${cycle.id}`, { method: "DELETE" });
+              await farmApi(`/crop-cycles/${cycle.id}`, {
+                method: "DELETE",
+              });
               await reload();
             })
           }
         >
-          Delete cycle
+          {tx("Delete cycle")}
         </button>
       </form>
     </details>
   );
 }
-
 function PlotEditor({ plot, busy, offline, act, reload }) {
+  const { tx } = useProductLocale();
   const [name, setName] = useState(plot.name),
     [area, setArea] = useState(
       plot.entered_area_hectares
@@ -116,10 +125,13 @@ function PlotEditor({ plot, busy, offline, act, reload }) {
     [irrigation, setIrrigation] = useState(plot.irrigation_type || "");
   return (
     <details>
-      <summary>Edit selected field: {plot.name}</summary>
+      <summary>
+        {tx("Edit selected field:")} {plot.name}
+      </summary>
       <p>
-        Boundary edits make earlier satellite observations historical.
-        Conflicting edits from another device require a refresh.
+        {tx(
+          "Boundary edits make earlier satellite observations historical. Conflicting edits from another device require a refresh.",
+        )}
       </p>
       <form
         onSubmit={(event) => {
@@ -148,7 +160,7 @@ function PlotEditor({ plot, busy, offline, act, reload }) {
         }}
       >
         <label className="v2-label">
-          Updated field name
+          {tx("Updated field name")}
           <input
             required
             maxLength={100}
@@ -157,7 +169,7 @@ function PlotEditor({ plot, busy, offline, act, reload }) {
           />
         </label>
         <AreaInput
-          label="Updated manual area"
+          label={tx("Updated manual area")}
           value={area}
           onChange={(value) => {
             setArea(value);
@@ -169,14 +181,14 @@ function PlotEditor({ plot, busy, offline, act, reload }) {
         />
         <BoundaryEditor value={boundary} onChange={setBoundary} />
         <label className="v2-label">
-          Irrigation type, if known
+          {tx("Irrigation type, if known")}
           <input
             maxLength={50}
             value={irrigation}
             onChange={(event) => setIrrigation(event.target.value)}
           />
         </label>
-        <button disabled={busy || offline}>Update field</button>
+        <button disabled={busy || offline}>{tx("Update field")}</button>
         <button
           className="v2-danger"
           type="button"
@@ -189,18 +201,19 @@ function PlotEditor({ plot, busy, offline, act, reload }) {
                 )
               )
                 return;
-              await farmApi(`/plots/${plot.id}`, { method: "DELETE" });
+              await farmApi(`/plots/${plot.id}`, {
+                method: "DELETE",
+              });
               await reload();
             })
           }
         >
-          Delete selected field
+          {tx("Delete selected field")}
         </button>
       </form>
     </details>
   );
 }
-
 export default function FieldManagement({
   farms,
   plot,
@@ -211,9 +224,10 @@ export default function FieldManagement({
   reload,
   reloadCycles,
 }) {
+  const { tx } = useProductLocale();
   return (
     <section className="v2-card">
-      <h2>Manage saved farms and cycles</h2>
+      <h2>{tx("Manage saved farms and cycles")}</h2>
       {farms.map((farm) => (
         <article className="v2-event" key={`${farm.id}:${farm.revision}`}>
           <h3>{farm.name}</h3>
@@ -224,14 +238,17 @@ export default function FieldManagement({
               act(async () => {
                 await farmApi(`/farms/${farm.id}`, {
                   method: "PATCH",
-                  body: { revision: farm.revision, name },
+                  body: {
+                    revision: farm.revision,
+                    name,
+                  },
                 });
                 await reload();
               });
             }}
           >
             <label className="v2-label">
-              Rename farm
+              {tx("Rename farm")}
               <input
                 name="name"
                 required
@@ -239,7 +256,7 @@ export default function FieldManagement({
                 defaultValue={farm.name}
               />
             </label>
-            <button disabled={busy || offline}>Rename farm</button>
+            <button disabled={busy || offline}>{tx("Rename farm")}</button>
             <button
               type="button"
               className="v2-danger"
@@ -252,12 +269,14 @@ export default function FieldManagement({
                     )
                   )
                     return;
-                  await farmApi(`/farms/${farm.id}`, { method: "DELETE" });
+                  await farmApi(`/farms/${farm.id}`, {
+                    method: "DELETE",
+                  });
                   await reload();
                 })
               }
             >
-              Delete farm
+              {tx("Delete farm")}
             </button>
           </form>
         </article>

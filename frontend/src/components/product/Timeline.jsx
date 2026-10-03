@@ -1,3 +1,4 @@
+import { useProductLocale } from "../../features/product/ProductLocale";
 import {
   Sprout,
   CloudSun,
@@ -51,12 +52,13 @@ export function eventDescription(item) {
   return "Saved evidence. Review the source and its limitations.";
 }
 export function Timeline({ items, onMore, busy, offline }) {
+  const { tx } = useProductLocale();
   return (
     <section className="product-card timeline">
       <header className="section-heading">
         <div>
-          <span className="eyebrow">YOUR FIELD RECORD</span>
-          <h2>What happened, and when.</h2>
+          <span className="eyebrow">{tx("YOUR FIELD RECORD")}</span>
+          <h2>{tx("What happened, and when.")}</h2>
         </div>
       </header>
       {items.length ? (
@@ -69,13 +71,17 @@ export function Timeline({ items, onMore, busy, offline }) {
                   <Icon size={18} />
                 </span>
                 <div>
-                  <h3>{EVENT_NAMES[item.kind] || "Field update"}</h3>
+                  <h3>{tx(EVENT_NAMES[item.kind] || "Field update")}</h3>
                   <time dateTime={item.observed_at}>
                     {new Date(item.observed_at).toLocaleString()}
                   </time>
-                  <p>{eventDescription(item)}</p>
+                  <p>
+                    {item.payload?.note
+                      ? item.payload.note
+                      : tx(eventDescription(item))}
+                  </p>
                   <details>
-                    <summary>Source details</summary>
+                    <summary>{tx("Source details")}</summary>
                     <p>
                       {item.source_type?.replaceAll("_", " ")} · {item.source}
                     </p>
@@ -89,8 +95,9 @@ export function Timeline({ items, onMore, busy, offline }) {
         <div className="empty-inline">
           <ClipboardCheck size={30} />
           <p>
-            No field updates yet. Record what you notice and build a useful
-            history.
+            {tx(
+              "No field updates yet. Record what you notice and build a useful history.",
+            )}
           </p>
         </div>
       )}
@@ -100,7 +107,7 @@ export function Timeline({ items, onMore, busy, offline }) {
           disabled={busy || offline}
           onClick={onMore}
         >
-          Load earlier updates
+          {tx("Load earlier updates")}
         </button>
       )}
     </section>

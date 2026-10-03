@@ -6,7 +6,9 @@ import { ScanView } from "./ScanView";
 jest.mock("../../features/farms/api", () => ({
   farmApi: () => new Promise(() => {}),
 }));
-jest.mock("../deferredFeature", () => ({ deferredFeature: () => () => null }));
+jest.mock("../../features/product/deferredProductFeature", () => ({
+  deferredFeature: () => () => null,
+}));
 
 const initial = { selected: "field-a", plot: {}, cycles: [], consents: [] };
 

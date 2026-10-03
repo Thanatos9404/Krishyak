@@ -26,6 +26,8 @@ PLACEHOLDERS = re.compile(r'\{\{\w+\}\}')
 # Sarvam sometimes pads the marker's run of zeroes. The nonzero prefix and
 # ordered numeric suffix still identify each boundary unambiguously.
 BATCH_MARKER = re.compile(r'\[90{7,}([0-9]{1,2})\]')
+GLOSSARY = []
+GLOSSARY_HASH = ''
 
 
 def leaves(value, prefix=()):
@@ -71,7 +73,15 @@ def protect(text):
         token = f'ZXQ{len(mapping)}QXZ'
         mapping[token] = match.group()
         return token
-    return PLACEHOLDERS.sub(replace, text), mapping
+    protected = PLACEHOLDERS.sub(replace, text)
+    for word in sorted(GLOSSARY, key=len, reverse=True):
+        pattern = r'(?<!\w)' + re.escape(word) + r'(?!\w)'
+        def keep(match):
+            token = f'ZXQ{len(mapping)}QXZ'
+            mapping[token] = match.group()
+            return token
+        protected = re.sub(pattern, keep, protected)
+    return protected, mapping
 
 
 def restore(text, source, mapping):
@@ -85,6 +95,13 @@ def restore(text, source, mapping):
 
 
 async def generate(args):
+    global GLOSSARY, GLOSSARY_HASH
+    if args.max_requests <= 0 or args.max_characters <= 0:
+        raise ValueError('Translation budgets must be positive')
+    if args.glossary:
+        glossary_text = Path(args.glossary).read_text(encoding='utf-8')
+        GLOSSARY = json.loads(glossary_text)['preserve']
+        GLOSSARY_HASH = digest(glossary_text)
     load_dotenv(ROOT / 'backend/.env')
     load_dotenv(ROOT / '.env')
     key = os.getenv('SARVAM_API_KEY', '').strip()
@@ -95,25 +112,29 @@ async def generate(args):
     source_text = source_path.read_text(encoding='utf-8')
     source = json.loads(source_text)
     strings = list(dict.fromkeys(value for _, value in leaves(source)))
-    selected = args.languages or LANGUAGES
+    selected = args.languages or [code for code in json.loads((ROOT / 'frontend/src/i18n/pilotLanguages.json').read_text(encoding='utf-8'))['codes'] if code != 'en']
     if set(selected) - set(LANGUAGES):
         raise ValueError('Unknown language')
     semaphore = asyncio.Semaphore(args.workers)
     requests = 0
+    characters = 0
     dispatch_lock = asyncio.Lock()
     last_dispatch = 0.0
 
     async with httpx.AsyncClient(timeout=60) as client:
         async def translate(text, language):
-            nonlocal requests, last_dispatch
+            nonlocal requests, characters, last_dispatch
             if len(text) > 2000:
                 raise ValueError('Source exceeds Sarvam character limit')
             async with semaphore:
                 for attempt in range(8):
                     async with dispatch_lock:
+                        if requests >= args.max_requests or characters + len(text) > args.max_characters:
+                            raise RuntimeError('Translation budget reached; cached progress preserved, no more provider calls')
                         await asyncio.sleep(max(0, 1.5 - (time.monotonic() - last_dispatch)))
                         last_dispatch = time.monotonic()
-                    requests += 1
+                        requests += 1
+                        characters += len(text)
                     response = await client.post('https://api.sarvam.ai/translate',
                         headers={'api-subscription-key': key}, json={
                             'input': text, 'source_language_code': 'en-IN',
@@ -135,7 +156,7 @@ async def generate(args):
         async def language_pack(language):
             cache_file = CACHE / (language + '.json')
             cache = json.loads(cache_file.read_text(encoding='utf-8')) if cache_file.exists() else {}
-            def cache_key(text): return digest(MODEL + '\0' + language + '\0' + text)
+            def cache_key(text): return digest(MODEL + '\0' + language + '\0' + text + GLOSSARY_HASH)
             pending = [s for s in strings if cache_key(s) not in cache]
             # Batch independent labels with stable markers; reject any changed/missing
             # boundary, then retry those labels individually. Never guess alignment.
@@ -179,10 +200,12 @@ async def generate(args):
                             # Some languages transliterate sentinel tokens. Translate
                             # text spans separately, preserving every placeholder at
                             # its exact structural position rather than guessing.
-                            spans = re.split(r'(\{\{\w+\}\})', s)
+                            protected_words = [r'(?<!\w)' + re.escape(word) + r'(?!\w)' for word in sorted(GLOSSARY, key=len, reverse=True)]
+                            span_pattern = '(' + '|'.join([r'\{\{\w+\}\}'] + protected_words) + ')'
+                            spans = re.split(span_pattern, s)
                             translated_spans = []
                             for span in spans:
-                                if PLACEHOLDERS.fullmatch(span) or not span.strip():
+                                if PLACEHOLDERS.fullmatch(span) or span in GLOSSARY or not span.strip():
                                     translated_spans.append(span)
                                 else:
                                     span_key = cache_key(span)
@@ -209,6 +232,7 @@ async def generate(args):
             atomic_json(output_path / (language + '.meta.json'), {'provider': 'Sarvam', 'model': MODEL,
                         'source_sha256': digest(source_text),
                         'pack_sha256': digest((output_path / (language + '.json')).read_text(encoding='utf-8')),
+                        'glossary_sha256': GLOSSARY_HASH or None,
                         'strings': len(list(leaves(source))), 'review_status': 'machine_translated_needs_native_review'})
             print(f'Published {language}', flush=True)
         # A small fixed worker pool avoids uncontrolled API spend/concurrency.
@@ -219,7 +243,7 @@ async def generate(args):
                 language = queue.get_nowait()
                 await language_pack(language)
         await asyncio.gather(*(worker() for _ in range(min(args.workers, len(selected)))))
-    print(f'Complete: {len(selected)} packs; {requests} provider requests', flush=True)
+    print(f'Complete: {len(selected)} packs; {requests} provider requests; {characters} submitted characters', flush=True)
 
 
 if __name__ == '__main__':
@@ -228,4 +252,7 @@ if __name__ == '__main__':
     parser.add_argument('--workers', type=int, choices=range(1, 5), default=3)
     parser.add_argument('--source', help='Optional additive locale source; preserve main UI packs')
     parser.add_argument('--output', help='Optional output directory for additive locale packs')
+    parser.add_argument('--max-requests', type=int, default=1500, help='Hard request budget, including retries')
+    parser.add_argument('--max-characters', type=int, default=2000000, help='Hard submitted-character budget, including retries')
+    parser.add_argument('--glossary', help='Optional protected product/provider/acronym/unit glossary')
     asyncio.run(generate(parser.parse_args()))

@@ -32,7 +32,7 @@
 *::after {
   box-sizing: border-box;
 }
-html[lang="en"] {
+html[lang^="en"] {
   --font: "Geologica", system-ui, sans-serif;
 }
 html {

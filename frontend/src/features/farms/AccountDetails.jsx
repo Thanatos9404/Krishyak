@@ -1,6 +1,6 @@
+import { useProductLocale } from "../product/ProductLocale";
 import React, { useEffect, useState } from "react";
 import { farmApi } from "./api";
-
 export default function AccountDetails({
   farmer,
   language,
@@ -11,6 +11,7 @@ export default function AccountDetails({
   offline,
   onUpdated,
 }) {
+  const { tx } = useProductLocale();
   const [profile, setProfile] = useState({
     display_name: farmer.display_name,
     state: farmer.state || "",
@@ -33,10 +34,11 @@ export default function AccountDetails({
   }, []);
   return (
     <>
-      <h3>My account details</h3>
+      <h3>{tx("My account details")}</h3>
       <p>
-        Your mobile number is used for sign-in. You can use a preferred name;
-        location details below are optional.
+        {tx(
+          "Your mobile number is used for sign-in. You can use a preferred name; location details below are optional.",
+        )}
       </p>
       <form
         onSubmit={(event) => {
@@ -44,7 +46,10 @@ export default function AccountDetails({
           act(async () => {
             const result = await farmApi("/me", {
               method: "PATCH",
-              body: { ...profile, preferred_language: language },
+              body: {
+                ...profile,
+                preferred_language: language,
+              },
             });
             onUpdated(result.farmer);
           });
@@ -53,7 +58,7 @@ export default function AccountDetails({
         {["display_name", "state", "district", "village"].map((key) => (
           <label className="v2-label" key={key}>
             {key === "display_name"
-              ? "Preferred name"
+              ? tx("Preferred name")
               : key[0].toUpperCase() + key.slice(1)}
             <input
               required={key === "display_name"}
@@ -68,13 +73,13 @@ export default function AccountDetails({
             />
           </label>
         ))}
-        <button disabled={busy || offline}>Save account details</button>
+        <button disabled={busy || offline}>{tx("Save account details")}</button>
       </form>
-      <h3>Optional pilot enrollment</h3>
+      <h3>{tx("Optional pilot enrollment")}</h3>
       <p>
-        A pilot organiser provides an enrollment code. Only the fields you
-        select are included in permitted aggregate reports. Yield and income
-        impact remain unmeasured until evidence is collected and evaluated.
+        {tx(
+          "A pilot organiser provides an enrollment code. Only the fields you select are included in permitted aggregate reports. Yield and income impact remain unmeasured until evidence is collected and evaluated.",
+        )}
       </p>
       <form
         onSubmit={(event) => {
@@ -82,7 +87,9 @@ export default function AccountDetails({
           act(async () => {
             await farmApi(`/pilot-enrollments/${cohort}`, {
               method: "POST",
-              body: { plot_ids: selected },
+              body: {
+                plot_ids: selected,
+              },
             });
             setEnrollments((await farmApi("/pilot-enrollments")).items);
             setCohort("");
@@ -90,7 +97,7 @@ export default function AccountDetails({
         }}
       >
         <label className="v2-label">
-          Pilot enrollment code
+          {tx("Pilot enrollment code")}
           <input
             required
             pattern="[a-fA-F0-9-]{36}"
@@ -100,7 +107,7 @@ export default function AccountDetails({
           />
         </label>
         <fieldset>
-          <legend>Fields to enroll</legend>
+          <legend>{tx("Fields to enroll")}</legend>
           {plots.map((plot) => (
             <label className="v2-check" key={plot.id}>
               <input
@@ -126,18 +133,18 @@ export default function AccountDetails({
             !selected.length
           }
         >
-          Join consented pilot
+          {tx("Join consented pilot")}
         </button>
         {!consents.includes("pilot_research") && (
-          <p>Enable optional pilot research consent to enroll.</p>
+          <p>{tx("Enable optional pilot research consent to enroll.")}</p>
         )}
       </form>
       {enrollments
         .filter((item) => !item.withdrawn_at)
         .map((item) => (
           <p key={item.id}>
-            Enrolled {new Date(item.created_at).toLocaleDateString()} ·{" "}
-            {item.plot_ids.length} field(s){" "}
+            {tx("Enrolled")} {new Date(item.created_at).toLocaleDateString()} ·{" "}
+            {item.plot_ids.length} {tx("field(s)")}{" "}
             <button
               disabled={busy || offline}
               onClick={() =>
@@ -149,7 +156,7 @@ export default function AccountDetails({
                 })
               }
             >
-              Withdraw this enrollment
+              {tx("Withdraw this enrollment")}
             </button>
           </p>
         ))}

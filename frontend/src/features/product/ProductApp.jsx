@@ -1,8 +1,8 @@
 "use client";
 import { useEffect, useState } from "react";
-import { I18nProvider, useTranslation } from "../../i18n";
+import { ProductLocaleProvider, useProductLocale } from "./ProductLocale";
 import { useWorkspace } from "./useWorkspace";
-import { deferredFeature } from "../../components/deferredFeature";
+import { deferredFeature } from "../../features/product/deferredProductFeature";
 import { ProductShell } from "../../components/product/ProductShell";
 import { SignIn } from "../../components/product/SignIn";
 const TodayView = deferredFeature(() =>
@@ -47,7 +47,7 @@ const InstitutionConsole = deferredFeature(
 
 function Workspace() {
   const w = useWorkspace(),
-    { language } = useTranslation();
+    { tx } = useProductLocale();
   const { setNotice } = w;
   const [pathname] = useState(() => location.pathname);
   useEffect(() => {
@@ -72,8 +72,8 @@ function Workspace() {
     content = (
       <div className="workspace-loading" role="status">
         <span className="loading-leaf" />
-        <h1>Opening your workspace…</h1>
-        <p>Checking the account and saved records.</p>
+        <h1>{tx("Opening your workspace…")}</h1>
+        <p>{tx("Checking the account and saved records.")}</p>
       </div>
     );
   else if (pathname === "/app/more/planning") content = <PlanningView />;
@@ -83,18 +83,20 @@ function Workspace() {
       w.farmer.role,
     ) ? (
       <>
-        <h1>Institutional workspace</h1>
-        <p>Consented pilot evidence and role-scoped research review.</p>
+        <h1>{tx("Institutional workspace")}</h1>
+        <p>{tx("Consented pilot evidence and role-scoped research review.")}</p>
         <InstitutionConsole farmer={w.farmer} act={w.act} busy={w.busy} />
       </>
     ) : (
       <section className="product-card">
-        <h1>Institutional access is required.</h1>
+        <h1>{tx("Institutional access is required.")}</h1>
         <p>
-          This account does not have permission for the institutional workspace.
+          {tx(
+            "This account does not have permission for the institutional workspace.",
+          )}
         </p>
         <a className="button primary" href="/app/today">
-          Return to my farm
+          {tx("Return to my farm")}
         </a>
       </section>
     );
@@ -107,8 +109,10 @@ function Workspace() {
   else if (pathname === "/app/more/benefits")
     content = (
       <>
-        <h1>Benefits & official services</h1>
-        <p>Use official sources to verify eligibility and enrollment.</p>
+        <h1>{tx("Benefits & official services")}</h1>
+        <p>
+          {tx("Use official sources to verify eligibility and enrollment.")}
+        </p>
         <BenefitsPanel />
       </>
     );
@@ -120,21 +124,14 @@ function Workspace() {
       pathname={pathname}
       institution={pathname === "/institution"}
     >
-      {language !== "en" && (
-        <p className="status-panel">
-          These workspace screens currently use English. The existing planning
-          tools use your selected language; translations still need human
-          review.
-        </p>
-      )}
       {content}
     </ProductShell>
   );
 }
 export default function ProductApp() {
   return (
-    <I18nProvider>
+    <ProductLocaleProvider>
       <Workspace />
-    </I18nProvider>
+    </ProductLocaleProvider>
   );
 }

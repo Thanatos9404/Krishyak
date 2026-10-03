@@ -1,7 +1,8 @@
+import { useProductLocale } from "../product/ProductLocale";
 import React, { useEffect, useState } from "react";
 import { farmApi } from "./api";
 import { readRecord, saveRecord } from "./offline";
-
+import { cancelReadsOnExit } from "../product/readCancellation";
 const PARAMETERS = {
   ph: ["pH"],
   nitrogen: ["mg/kg", "kg/ha"],
@@ -17,7 +18,6 @@ const Input = ({ label, children }) => (
     {children}
   </label>
 );
-
 export default function PlotContext({
   plot,
   owner,
@@ -28,6 +28,7 @@ export default function PlotContext({
   busy,
   onUpdated,
 }) {
+  const { tx } = useProductLocale();
   const [evidence, setEvidence] = useState({}),
     [savedAt, setSavedAt] = useState(null);
   const [parameter, setParameter] = useState("ph"),
@@ -40,17 +41,26 @@ export default function PlotContext({
   const key = `context:${plot.id}`;
   useEffect(() => {
     let cancelled = false;
+    const controller = new AbortController();
+    const endReads = cancelReadsOnExit(controller);
     setEvidence({});
     setSavedAt(null);
     const load = async () => {
       try {
         const [soil, weather] = await Promise.all([
-          farmApi(`/plots/${plot.id}/soil`),
-          farmApi(`/plots/${plot.id}/weather`),
+          farmApi(`/plots/${plot.id}/soil`, { signal: controller.signal }),
+          farmApi(`/plots/${plot.id}/weather`, { signal: controller.signal }),
         ]);
         if (cancelled) return;
-        setEvidence({ soil, weather });
-        if (cache) await saveRecord(owner, key, { soil, weather });
+        setEvidence({
+          soil,
+          weather,
+        });
+        if (cache)
+          await saveRecord(owner, key, {
+            soil,
+            weather,
+          });
       } catch (error) {
         if (!error.network || !cache) return;
         const record = await readRecord(owner, key).catch(() => null);
@@ -63,49 +73,51 @@ export default function PlotContext({
     load();
     return () => {
       cancelled = true;
+      endReads();
     };
   }, [plot.id, plot.revision, owner, key, cache]);
   const soil = evidence.soil?.observation,
     weather = evidence.weather?.observation;
   const permitted = consents.includes("agronomic_analysis");
   return (
-    <section className="v2-card" aria-label="Soil and weather evidence">
-      <h2>Soil and weather evidence</h2>
+    <section className="v2-card" aria-label={tx("Soil and weather evidence")}>
+      <h2>{tx("Soil and weather evidence")}</h2>
       {savedAt && (
         <p>
-          Saved on this device: {new Date(savedAt).toLocaleString()}. Live
-          updates are unavailable offline.
+          {tx("Saved on this device:")} {new Date(savedAt).toLocaleString()}
+          {tx(". Live updates are unavailable offline.")}
         </p>
       )}
-      <h3>Local weather model</h3>
+      <h3>{tx("Local weather model")}</h3>
       {weather ? (
         <>
           <p>
-            {weather.source} · retrieved{" "}
-            {new Date(weather.created_at).toLocaleString()} · conditions at{" "}
+            {weather.source} {tx("\xB7 retrieved")}{" "}
+            {new Date(weather.created_at).toLocaleString()}{" "}
+            {tx("\xB7 conditions at")}{" "}
             {new Date(weather.observed_at).toLocaleString()}
           </p>
           <p>
-            {weather.payload.current.temperature} °C · humidity{" "}
-            {weather.payload.current.humidity}% · wind{" "}
-            {weather.payload.current.wind_speed} km/h
+            {weather.payload.current.temperature} {tx("\xB0C \xB7 humidity")}{" "}
+            {weather.payload.current.humidity}
+            {tx("% \xB7 wind")} {weather.payload.current.wind_speed} km/h
           </p>
           <p>
-            Forecast precipitation, next 24 hours:{" "}
-            {weather.payload.precipitation_next_24h_mm.toFixed(1)} mm. This is
-            forecast rain, not measured rainfall.
+            {tx("Forecast precipitation, next 24 hours:")}{" "}
+            {weather.payload.precipitation_next_24h_mm.toFixed(1)}{" "}
+            {tx("mm. This is forecast rain, not measured rainfall.")}
           </p>
           <details>
-            <summary>Hourly forecast and source limitations</summary>
+            <summary>{tx("Hourly forecast and source limitations")}</summary>
             <div className="v2-table-scroll">
               <table>
-                <caption>48-hour weather model forecast</caption>
+                <caption>{tx("48-hour weather model forecast")}</caption>
                 <thead>
                   <tr>
-                    <th>Time</th>
-                    <th>°C</th>
-                    <th>Humidity %</th>
-                    <th>Rain mm</th>
+                    <th>{tx("Time")}</th>
+                    <th>{tx("\xB0C")}</th>
+                    <th>{tx("Humidity %")}</th>
+                    <th>{tx("Rain mm")}</th>
                     <th>Wind km/h</th>
                   </tr>
                 </thead>
@@ -131,8 +143,9 @@ export default function PlotContext({
         </>
       ) : (
         <p>
-          Weather evidence is unavailable. An approximate mapped boundary and
-          processing permissions are required.
+          {tx(
+            "Weather evidence is unavailable. An approximate mapped boundary and processing permissions are required.",
+          )}
         </p>
       )}
       <button
@@ -147,11 +160,19 @@ export default function PlotContext({
           act(async () => {
             const observation = await farmApi(
               `/plots/${plot.id}/weather/refresh`,
-              { method: "POST", body: { operation_id: crypto.randomUUID() } },
+              {
+                method: "POST",
+                body: {
+                  operation_id: crypto.randomUUID(),
+                },
+              },
             );
             const updated = {
               ...evidence,
-              weather: { observation, status: "available" },
+              weather: {
+                observation,
+                status: "available",
+              },
             };
             setEvidence(updated);
             if (cache) await saveRecord(owner, key, updated);
@@ -159,25 +180,29 @@ export default function PlotContext({
           })
         }
       >
-        Update local weather
+        {tx("Update local weather")}
       </button>
-      <h3>Soil record</h3>
+      <h3>{tx("Soil record")}</h3>
       {soil ? (
         <>
           <p>
-            {soil.source} · reported method: {soil.provenance.method} ·{" "}
-            {new Date(soil.observed_at).toLocaleDateString()}
+            {soil.source} {tx("\xB7 reported method:")} {soil.provenance.method}{" "}
+            · {new Date(soil.observed_at).toLocaleDateString()}
           </p>
           <p>
-            Farmer-reported evidence; source and measurements are not
-            independently verified.
+            {tx(
+              "Farmer-reported evidence; source and measurements are not independently verified.",
+            )}
           </p>
           {Array.isArray(soil.payload.measurements) ? (
             <ul>
               {soil.payload.measurements.map((row) => (
                 <li key={`${row.parameter}:${row.depth_cm}`}>
                   {row.parameter.replaceAll("_", " ")}: {row.value} {row.unit}
-                  {row.depth_cm != null && ` · depth ${row.depth_cm} cm`}
+                  {row.depth_cm != null &&
+                    tx(" \xB7 depth {{v0}} cm", {
+                      v0: row.depth_cm,
+                    })}
                 </li>
               ))}
             </ul>
@@ -187,12 +212,13 @@ export default function PlotContext({
         </>
       ) : (
         <p>
-          No soil measurement is recorded. Satellite indices do not measure soil
-          nutrients.
+          {tx(
+            "No soil measurement is recorded. Satellite indices do not measure soil nutrients.",
+          )}
         </p>
       )}
       <details>
-        <summary>Enter a soil-card, lab or sensor reading</summary>
+        <summary>{tx("Enter a soil-card, lab or sensor reading")}</summary>
         <form
           onSubmit={(event) => {
             event.preventDefault();
@@ -216,7 +242,10 @@ export default function PlotContext({
               });
               const updated = {
                 ...evidence,
-                soil: { observation, status: "available" },
+                soil: {
+                  observation,
+                  status: "available",
+                },
               };
               setEvidence(updated);
               setValue("");
@@ -225,16 +254,16 @@ export default function PlotContext({
             });
           }}
         >
-          <Input label="Soil source name">
+          <Input label={tx("Soil source name")}>
             <input
               required
               value={source}
               maxLength={100}
               onChange={(event) => setSource(event.target.value)}
-              placeholder="Name on your report or sensor"
+              placeholder={tx("Name on your report or sensor")}
             />
           </Input>
-          <Input label="Reported measurement method">
+          <Input label={tx("Reported measurement method")}>
             <select
               value={method}
               onChange={(event) => setMethod(event.target.value)}
@@ -251,7 +280,7 @@ export default function PlotContext({
               ))}
             </select>
           </Input>
-          <Input label="Soil parameter">
+          <Input label={tx("Soil parameter")}>
             <select
               value={parameter}
               onChange={(event) => {
@@ -266,7 +295,7 @@ export default function PlotContext({
               ))}
             </select>
           </Input>
-          <Input label="Soil value">
+          <Input label={tx("Soil value")}>
             <input
               required
               type="number"
@@ -277,7 +306,7 @@ export default function PlotContext({
               onChange={(event) => setValue(event.target.value)}
             />
           </Input>
-          <Input label="Soil unit">
+          <Input label={tx("Soil unit")}>
             <select
               value={unit}
               onChange={(event) => setUnit(event.target.value)}
@@ -287,7 +316,7 @@ export default function PlotContext({
               ))}
             </select>
           </Input>
-          <Input label="Sample depth (cm), if known">
+          <Input label={tx("Sample depth (cm), if known")}>
             <input
               type="number"
               min="0"
@@ -297,7 +326,7 @@ export default function PlotContext({
               onChange={(event) => setDepth(event.target.value)}
             />
           </Input>
-          <Input label="Soil observation date">
+          <Input label={tx("Soil observation date")}>
             <input
               type="date"
               required
@@ -307,7 +336,7 @@ export default function PlotContext({
             />
           </Input>
           <button disabled={busy || offline || !permitted}>
-            Save soil evidence
+            {tx("Save soil evidence")}
           </button>
         </form>
       </details>

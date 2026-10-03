@@ -2,8 +2,8 @@ import { Download, LogOut, ShieldCheck } from "lucide-react";
 import { useConsentChanges } from "../../features/product/useConsentChanges";
 import { farmApi } from "../../features/farms/api";
 import { clearOwner } from "../../features/farms/offline";
-import { useTranslation } from "../../i18n";
-import { deferredFeature } from "../deferredFeature";
+import { useProductLocale } from "../../features/product/ProductLocale";
+import { deferredFeature } from "../../features/product/deferredProductFeature";
 const AccountDetails = deferredFeature(
   () => import("../../features/farms/AccountDetails"),
 );
@@ -38,27 +38,29 @@ const PURPOSES = [
   ],
 ];
 export function SettingsView({ workspace: w }) {
-  const { language } = useTranslation();
+  const { language, tx } = useProductLocale();
   const { states: permissionChanges, change: changePermission } =
     useConsentChanges(w);
   return (
     <>
       <header className="product-page-heading">
         <div>
-          <span className="eyebrow">CLEAR CHOICES, ALWAYS</span>
-          <h1>Your account. Your decisions.</h1>
+          <span className="eyebrow">{tx("CLEAR CHOICES, ALWAYS")}</span>
+          <h1>{tx("Your account. Your decisions.")}</h1>
           <p>
-            Choose which services may use your records, and what this device
-            stores.
+            {tx(
+              "Choose which services may use your records, and what this device stores.",
+            )}
           </p>
         </div>
         <ShieldCheck size={30} />
       </header>
       <section className="product-card">
-        <h2>Privacy & permissions</h2>
+        <h2>{tx("Privacy & permissions")}</h2>
         <p>
-          Turn on only the services you want to use. Research participation is
-          optional.
+          {tx(
+            "Turn on only the services you want to use. Research participation is optional.",
+          )}
         </p>
         <div className="consent-list">
           {PURPOSES.map(([purpose, title, description]) => (
@@ -68,8 +70,8 @@ export function SettingsView({ workspace: w }) {
             >
               <label className="consent-row">
                 <span>
-                  <strong>{title}</strong>
-                  <small>{description}</small>
+                  <strong>{tx(title)}</strong>
+                  <small>{tx(description)}</small>
                 </span>
                 <input
                   type="checkbox"
@@ -91,11 +93,11 @@ export function SettingsView({ workspace: w }) {
                 />
               </label>
               {permissionChanges[purpose]?.saving && (
-                <p role="status">Saving your permission choice…</p>
+                <p role="status">{tx("Saving your permission choice\u2026")}</p>
               )}
               {permissionChanges[purpose]?.error && (
                 <div role="alert">
-                  <p>{permissionChanges[purpose].error}</p>
+                  <p>{tx(permissionChanges[purpose].error)}</p>
                   <button
                     className="button secondary"
                     disabled={w.offline || w.busy}
@@ -106,7 +108,7 @@ export function SettingsView({ workspace: w }) {
                       )
                     }
                   >
-                    Retry permission choice
+                    {tx("Retry permission choice")}
                   </button>
                 </div>
               )}
@@ -115,23 +117,26 @@ export function SettingsView({ workspace: w }) {
         </div>
         {w.offline && (
           <p role="status">
-            Connect to the internet to change permissions. Your saved choices
-            still apply.
+            {tx(
+              "Connect to the internet to change permissions. Your saved choices still apply.",
+            )}
           </p>
         )}
         <p className="small muted">
-          Withdrawing research permissions stops future research linkage and
-          review.
+          {tx(
+            "Withdrawing research permissions stops future research linkage and review.",
+          )}
         </p>
       </section>
       <section className="product-card">
-        <h2>Saved on this device</h2>
+        <h2>{tx("Saved on this device")}</h2>
         <label className="consent-row">
           <span>
-            <strong>Keep farm records for offline use</strong>
+            <strong>{tx("Keep farm records for offline use")}</strong>
             <small>
-              Optional on a private device. Records expire after seven days.
-              Photographs are not saved offline.
+              {tx(
+                "Optional on a private device. Records expire after seven days. Photographs are not saved offline.",
+              )}
             </small>
           </span>
           <input
@@ -143,18 +148,23 @@ export function SettingsView({ workspace: w }) {
         </label>
         <p>
           {w.pending
-            ? `${w.pending} update${w.pending === 1 ? "" : "s"} waiting to sync.`
-            : "All recorded updates have been sent, or there are no queued updates."}
+            ? tx("{{v0}} update{{v1}} waiting to sync.", {
+                v0: w.pending,
+                v1: w.pending === 1 ? "" : "s",
+              })
+            : tx(
+                "All recorded updates have been sent, or there are no queued updates.",
+              )}
         </p>
         <button
           className="button secondary"
           disabled={w.busy || !w.pending}
           onClick={() => w.act(w.sync)}
         >
-          Sync saved updates
+          {tx("Sync saved updates")}
         </button>
         <details>
-          <summary>Advanced sync details</summary>
+          <summary>{tx("Advanced sync details")}</summary>
           <PendingPanel
             owner={w.farmer.id}
             count={w.pending}
@@ -177,7 +187,7 @@ export function SettingsView({ workspace: w }) {
         />
       </section>
       <section className="product-card">
-        <h2>Account controls</h2>
+        <h2>{tx("Account controls")}</h2>
         <div className="button-row">
           <button
             className="button secondary"
@@ -199,7 +209,7 @@ export function SettingsView({ workspace: w }) {
             }
           >
             <Download size={18} />
-            Download my account data
+            {tx("Download my account data")}
           </button>
           <button
             className="button secondary"
@@ -207,14 +217,15 @@ export function SettingsView({ workspace: w }) {
             onClick={w.signOut}
           >
             <LogOut size={18} />
-            Sign out
+            {tx("Sign out")}
           </button>
         </div>
         <details className="danger-details">
-          <summary>Delete my account</summary>
+          <summary>{tx("Delete my account")}</summary>
           <p>
-            This permanently removes the account and its farm records; private
-            photograph removal is queued. This cannot be undone.
+            {tx(
+              "This permanently removes the account and its farm records; private photograph removal is queued. This cannot be undone.",
+            )}
           </p>
           <button
             className="button danger"
@@ -228,19 +239,24 @@ export function SettingsView({ workspace: w }) {
                 )
                   return;
                 const owner = w.farmer.id;
-                await farmApi("/me", { method: "DELETE" });
+                await farmApi("/me", {
+                  method: "DELETE",
+                });
                 w.clearSession();
                 await clearOwner(owner, true);
                 location.reload();
               })
             }
           >
-            Permanently delete account
+            {tx("Permanently delete account")}
           </button>
         </details>
         <p className="small">
-          <a href="/privacy">Privacy Policy</a> · <a href="/terms">Terms</a> ·
-          Draft policies require legal review before commercial release.
+          <a href="/privacy">{tx("Privacy Policy")}</a> ·{" "}
+          <a href="/terms">{tx("Terms")}</a>{" "}
+          {tx(
+            "\xB7 Draft policies require legal review before commercial release.",
+          )}
         </p>
       </section>
     </>

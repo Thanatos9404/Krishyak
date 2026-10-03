@@ -1,14 +1,15 @@
+import { useProductLocale } from "../../features/product/ProductLocale";
 import { useEffect, useRef, useState } from "react";
 import { Camera, Upload, Leaf, ArrowRight } from "lucide-react";
 import { farmApi } from "../../features/farms/api";
-import { deferredFeature } from "../deferredFeature";
+import { deferredFeature } from "../../features/product/deferredProductFeature";
 const ScanHistory = deferredFeature(
   () => import("../../features/farms/ScanHistory"),
 );
 const LIMIT =
   "A photo suggestion is not a diagnosis. Lighting, background and unsupported symptoms can change the result. Verify in the field or with an agronomist before choosing a treatment.";
-
 export function ScanView({ workspace: w }) {
+  const { tx } = useProductLocale();
   const [crop, setCrop] = useState(w.cycles[0]?.crop || "Tomato"),
     [photo, setPhoto] = useState(null),
     [preview, setPreview] = useState(null),
@@ -65,36 +66,38 @@ export function ScanView({ workspace: w }) {
     <>
       <header className="product-page-heading">
         <div>
-          <span className="eyebrow">A CLOSER LOOK AT YOUR CROP</span>
-          <h1>Start with a clear photograph.</h1>
+          <span className="eyebrow">{tx("A CLOSER LOOK AT YOUR CROP")}</span>
+          <h1>{tx("Start with a clear photograph.")}</h1>
           <p>
-            Capture a leaf or upload a photo. Get a suggestion, then check what
-            you see.
+            {tx(
+              "Capture a leaf or upload a photo. Get a suggestion, then check what you see.",
+            )}
           </p>
         </div>
         <span className="badge neutral">
           <Leaf size={15} />
-          Field verification needed
+          {tx("Field verification needed")}
         </span>
       </header>
       {!w.plot && (
         <p className="status-panel">
-          Add a field in <a href="/app/farm">Farm</a> before saving a crop
-          photograph.
+          {tx("Add a field in")} <a href="/app/farm">{tx("Farm")}</a>{" "}
+          {tx("before saving a crop photograph.")}
         </p>
       )}
       <div className="scan-layout">
         <section className="product-card camera-card">
           <div className={`camera-frame ${preview ? "has-photo" : ""}`}>
             {preview ? (
-              <img src={preview} alt="Selected crop photograph" />
+              <img src={preview} alt={tx("Selected crop photograph")} />
             ) : (
               <>
                 <Camera size={54} strokeWidth={1.3} />
-                <h2>Show the leaf clearly.</h2>
+                <h2>{tx("Show the leaf clearly.")}</h2>
                 <p>
-                  Use natural light. Keep the leaf in focus and avoid a busy
-                  background.
+                  {tx(
+                    "Use natural light. Keep the leaf in focus and avoid a busy background.",
+                  )}
                 </p>
               </>
             )}
@@ -105,14 +108,14 @@ export function ScanView({ workspace: w }) {
               onClick={() => camera.current.click()}
             >
               <Camera size={19} />
-              Take a photo
+              {tx("Take a photo")}
             </button>
             <button
               className="button secondary"
               onClick={() => upload.current.click()}
             >
               <Upload size={19} />
-              Upload a photo
+              {tx("Upload a photo")}
             </button>
           </div>
           <input
@@ -120,7 +123,7 @@ export function ScanView({ workspace: w }) {
             tabIndex={-1}
             ref={camera}
             type="file"
-            aria-label="Take crop photo"
+            aria-label={tx("Take crop photo")}
             accept="image/jpeg,image/png,image/webp"
             capture="environment"
             onChange={choose}
@@ -130,16 +133,18 @@ export function ScanView({ workspace: w }) {
             tabIndex={-1}
             ref={upload}
             type="file"
-            aria-label="Choose crop photo"
+            aria-label={tx("Choose crop photo")}
             accept="image/jpeg,image/png,image/webp"
             onChange={choose}
           />
           <p className="small muted">
-            JPEG, PNG or WebP · under 4 MB · saved privately to your field
+            {tx(
+              "JPEG, PNG or WebP \xB7 under 4 MB \xB7 saved privately to your field",
+            )}
           </p>
         </section>
         <section className="product-card scan-details">
-          <h2>A suggestion you can verify.</h2>
+          <h2>{tx("A suggestion you can verify.")}</h2>
           <p>{LIMIT}</p>
           <form
             onSubmit={(event) => {
@@ -169,7 +174,7 @@ export function ScanView({ workspace: w }) {
             }}
           >
             <label className="v2-label">
-              Crop
+              {tx("Crop")}
               {model ? (
                 <select
                   required
@@ -180,7 +185,7 @@ export function ScanView({ workspace: w }) {
                     setResult(null);
                   }}
                 >
-                  <option value="">Choose a supported crop</option>
+                  <option value="">{tx("Choose a supported crop")}</option>
                   <option value="Unsupported">Other / not listed</option>
                   {model.supported_crops.map((name) => (
                     <option key={name}>{name}</option>
@@ -208,34 +213,36 @@ export function ScanView({ workspace: w }) {
                 !w.consents.includes("agronomic_analysis")
               }
             >
-              Check this photograph <ArrowRight size={18} />
+              {tx("Check this photograph")} <ArrowRight size={18} />
             </button>
             {!w.consents.includes("agronomic_analysis") && (
               <p className="small">
-                Enable field analysis in{" "}
-                <a href="/app/more/settings">Settings</a> to use photo analysis.
+                {tx("Enable field analysis in")}{" "}
+                <a href="/app/more/settings">{tx("Settings")}</a>{" "}
+                {tx("to use photo analysis.")}
               </p>
             )}
           </form>
           {result && (
             <article className="scan-result" aria-live="polite">
-              <span className="eyebrow">PHOTO SUGGESTION</span>
+              <span className="eyebrow">{tx("PHOTO SUGGESTION")}</span>
               <h3>
                 {result.result.predicted_class?.replaceAll("_", " ") ||
-                  "No supported classification"}
+                  tx("No supported classification")}
               </h3>
               <p>{String(result.result.status).replaceAll("_", " ")}</p>
               <p>{LIMIT}</p>
               <details>
-                <summary>Model score & limitations</summary>
+                <summary>{tx("Model score & limitations")}</summary>
                 {result.result.model_score != null && (
                   <p>
-                    Raw model score: {result.result.model_score.toFixed(3)}.
-                    This is not a calibrated probability of disease.
+                    {tx("Raw model score:")}{" "}
+                    {result.result.model_score.toFixed(3)}
+                    {tx(". This is not a calibrated probability of disease.")}
                   </p>
                 )}
               </details>
-              <h3>Does this match what you see?</h3>
+              <h3>{tx("Does this match what you see?")}</h3>
               <div className="button-row">
                 {[
                   ["yes", "Yes"],
@@ -268,19 +275,21 @@ export function ScanView({ workspace: w }) {
           )}
           {model && (
             <details className="model-details">
-              <summary>Supported crops & validation</summary>
+              <summary>{tx("Supported crops & validation")}</summary>
               <p>{model.supported_crops.join(", ")}</p>
               <p>
-                {model.release.architecture} · {model.release.classes} classes.
-                Internal test{" "}
-                {(model.release.metrics.test.accuracy * 100).toFixed(2)}%;
-                external PlantDoc{" "}
+                {model.release.architecture} · {model.release.classes}{" "}
+                {tx("classes. Internal test")}{" "}
+                {(model.release.metrics.test.accuracy * 100).toFixed(2)}
+                {tx("%; external PlantDoc")}{" "}
                 {(model.release.metrics.external_test.accuracy * 100).toFixed(
                   2,
                 )}
-                %. These datasets do not establish accuracy on your farm.
+                {tx(
+                  "%. These datasets do not establish accuracy on your farm.",
+                )}
               </p>
-              <a href="/technology">Read the model evidence</a>
+              <a href="/technology">{tx("Read the model evidence")}</a>
             </details>
           )}
         </section>

@@ -10,6 +10,7 @@ import { PlanningView } from "./PlanningView";
 import farmingApi from "../../api/farmingApi";
 
 jest.mock("../../i18n", () => ({
+  I18nProvider: ({ children }) => children,
   useTranslation: () => ({ t: (key) => key, language: "en" }),
 }));
 jest.mock("../../api/farmingApi", () => ({

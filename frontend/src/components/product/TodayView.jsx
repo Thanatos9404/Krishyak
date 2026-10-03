@@ -1,7 +1,8 @@
+import { useProductLocale } from "../../features/product/ProductLocale";
 import { useState } from "react";
 import { ArrowRight, Plus, Sun, Sprout, Info } from "lucide-react";
 import { farmApi } from "../../features/farms/api";
-import { deferredFeature } from "../deferredFeature";
+import { deferredFeature } from "../../features/product/deferredProductFeature";
 import { Dialog } from "./Dialog";
 import { Timeline } from "./Timeline";
 import { ActionSheet } from "./ActionSheet";
@@ -12,8 +13,8 @@ const LocalReadout = deferredFeature(
 const NoticeList = deferredFeature(
   () => import("../../features/farms/NoticeList"),
 );
-
 export function TodayView({ workspace: w }) {
+  const { tx } = useProductLocale();
   const [evidence, setEvidence] = useState(null),
     [recording, setRecording] = useState(false),
     [all, setAll] = useState(false);
@@ -22,34 +23,42 @@ export function TodayView({ workspace: w }) {
     <>
       <header className="product-page-heading">
         <div>
-          <span className="eyebrow">A LITTLE CLARITY, EVERY DAY</span>
-          <h1>Today on your farm.</h1>
+          <span className="eyebrow">{tx("A LITTLE CLARITY, EVERY DAY")}</span>
+          <h1>{tx("Today on your farm.")}</h1>
           <p>
             {w.plot
-              ? `Your next steps for ${w.plot.name}. Inspect the field before acting.`
-              : "Add a field to bring your observations and next steps together."}
+              ? tx(
+                  "Your next steps for {{v0}}. Inspect the field before acting.",
+                  {
+                    v0: w.plot.name,
+                  },
+                )
+              : tx(
+                  "Add a field to bring your observations and next steps together.",
+                )}
           </p>
         </div>
         {w.plot && (
           <button className="button primary" onClick={() => setRecording(true)}>
             <Plus size={18} />
-            Record an update
+            {tx("Record an update")}
           </button>
         )}
       </header>
       {!w.plot ? (
         <section className="product-card welcome-card">
           <Sprout size={42} />
-          <h2>Start with one field.</h2>
+          <h2>{tx("Start with one field.")}</h2>
           <p>
-            Give it a name and an area. You can draw its boundary whenever you
-            are ready.
+            {tx(
+              "Give it a name and an area. You can draw its boundary whenever you are ready.",
+            )}
           </p>
           <a className="button primary" href="/app/farm">
-            Add my first field <ArrowRight size={18} />
+            {tx("Add my first field")} <ArrowRight size={18} />
           </a>
           <a className="text-link" href="/demo">
-            See an example first
+            {tx("See an example first")}
           </a>
         </section>
       ) : (
@@ -57,15 +66,20 @@ export function TodayView({ workspace: w }) {
           <div className="context-strip">
             <Sun size={24} />
             <div>
-              <strong>{w.cycles[0]?.crop || "No crop cycle recorded"}</strong>
+              <strong>
+                {w.cycles[0]?.crop || tx("No crop cycle recorded")}
+              </strong>
               <span>
                 {w.cycles[0]
-                  ? `Sown ${w.cycles[0].sowing_date} · ${w.cycles[0].growth_stage || "stage not recorded"}`
-                  : "Add the crop and sowing date in Farm."}
+                  ? tx("Sown {{v0}} \xB7 {{v1}}", {
+                      v0: w.cycles[0].sowing_date,
+                      v1: w.cycles[0].growth_stage || "stage not recorded",
+                    })
+                  : tx("Add the crop and sowing date in Farm.")}
               </span>
             </div>
             <a href={`/app/farm/${w.selected}`}>
-              View field <ArrowRight size={16} />
+              {tx("View field")} <ArrowRight size={16} />
             </a>
           </div>
           <WeatherStrip
@@ -75,21 +89,23 @@ export function TodayView({ workspace: w }) {
           />
           {w.savedAt && (
             <p className="status-panel">
-              Saved on this device: {new Date(w.savedAt).toLocaleString()}.
-              These next steps reflect that snapshot; confirm current
-              conditions.
+              {tx("Saved on this device:")}{" "}
+              {new Date(w.savedAt).toLocaleString()}
+              {tx(
+                ". These next steps reflect that snapshot; confirm current conditions.",
+              )}
             </p>
           )}
           <section aria-labelledby="attention-heading">
             <div className="section-heading">
-              <h2 id="attention-heading">What needs your attention</h2>
+              <h2 id="attention-heading">{tx("What needs your attention")}</h2>
               <span className="badge neutral">
-                {w.offline ? "Saved view" : "Source-aware guidance"}
+                {w.offline ? tx("Saved view") : tx("Source-aware guidance")}
               </span>
             </div>
             {w.evidenceLoading && !w.today ? (
               <div className="product-card" role="status">
-                Loading your field context…
+                {tx("Loading your field context\u2026")}
               </div>
             ) : actions.length ? (
               <div className="attention-grid">
@@ -101,13 +117,13 @@ export function TodayView({ workspace: w }) {
                     <span className="attention-number">
                       {String(index + 1).padStart(2, "0")}
                     </span>
-                    <h3>{action.title}</h3>
-                    <p>{action.why}</p>
+                    <h3>{tx(action.title)}</h3>
+                    <p>{tx(action.why)}</p>
                     <button
                       className="text-link"
                       onClick={() => setEvidence(action)}
                     >
-                      Why this matters <ArrowRight size={16} />
+                      {tx("Why this matters")} <ArrowRight size={16} />
                     </button>
                   </article>
                 ))}
@@ -117,14 +133,18 @@ export function TodayView({ workspace: w }) {
                 <Info size={28} />
                 <p>
                   {w.today
-                    ? "No next steps are currently stored. This does not confirm that the field is healthy. Keep observing and record anything that changes."
-                    : "Field context is unavailable. Your manual observations remain useful."}
+                    ? tx(
+                        "No next steps are currently stored. This does not confirm that the field is healthy. Keep observing and record anything that changes.",
+                      )
+                    : tx(
+                        "Field context is unavailable. Your manual observations remain useful.",
+                      )}
                 </p>
               </div>
             )}
             {actions.length > 5 && (
               <button className="button text" onClick={() => setAll(!all)}>
-                {all ? "Show fewer" : "See all next steps"}
+                {all ? tx("Show fewer") : tx("See all next steps")}
               </button>
             )}
             {actions.length > 0 && (
@@ -169,32 +189,36 @@ export function TodayView({ workspace: w }) {
         <ActionSheet workspace={w} onClose={() => setRecording(false)} />
       )}{" "}
       {evidence && (
-        <Dialog title="Why this matters" onClose={() => setEvidence(null)}>
+        <Dialog
+          title={tx("Why this matters")}
+          onClose={() => setEvidence(null)}
+        >
           <span className="badge neutral">
             {String(evidence.evidence.freshness).replaceAll("_", " ")}
           </span>
-          <h3>{evidence.title}</h3>
-          <p>{evidence.why}</p>
-          <h3>Where this comes from</h3>
+          <h3>{tx(evidence.title)}</h3>
+          <p>{tx(evidence.why)}</p>
+          <h3>{tx("Where this comes from")}</h3>
           <p>{evidence.evidence.source}</p>
           {evidence.evidence.observed_at && (
             <p>
-              Observed{" "}
+              {tx("Observed")}{" "}
               {new Date(evidence.evidence.observed_at).toLocaleString()}
             </p>
           )}
-          <h3>What to keep in mind</h3>
+          <h3>{tx("What to keep in mind")}</h3>
           <ul>
             {evidence.evidence.limitations.map((limit) => (
-              <li key={limit}>{limit}</li>
+              <li key={limit}>{tx(limit)}</li>
             ))}
           </ul>
           <p className="status-panel">
-            Check the field yourself. This context does not prescribe a
-            fertilizer or pesticide dose.
+            {tx(
+              "Check the field yourself. This context does not prescribe a fertilizer or pesticide dose.",
+            )}
           </p>
           <a className="button secondary" href={`/app/farm/${w.selected}`}>
-            View field evidence
+            {tx("View field evidence")}
           </a>
         </Dialog>
       )}

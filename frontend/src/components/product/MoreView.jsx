@@ -1,3 +1,4 @@
+import { useProductLocale } from "../../features/product/ProductLocale";
 import {
   ArrowUpRight,
   Calculator,
@@ -40,14 +41,17 @@ const ITEMS = [
   ],
 ];
 export function MoreView({ workspace: w }) {
+  const { tx } = useProductLocale();
   return (
     <>
       <header className="product-page-heading">
         <div>
-          <span className="eyebrow">EVERYTHING ELSE, IN ONE PLACE</span>
-          <h1>A little more for your farm.</h1>
+          <span className="eyebrow">{tx("EVERYTHING ELSE, IN ONE PLACE")}</span>
+          <h1>{tx("A little more for your farm.")}</h1>
           <p>
-            Planning tools, official services and settings, when you need them.
+            {tx(
+              "Planning tools, official services and settings, when you need them.",
+            )}
           </p>
         </div>
       </header>
@@ -56,8 +60,8 @@ export function MoreView({ workspace: w }) {
           <a className="more-card" key={href} href={href}>
             <Icon size={28} />
             <div>
-              <h2>{title}</h2>
-              <p>{description}</p>
+              <h2>{tx(title)}</h2>
+              <p>{tx(description)}</p>
             </div>
             <ArrowUpRight size={20} />
           </a>
@@ -68,16 +72,17 @@ export function MoreView({ workspace: w }) {
           <a className="more-card" href="/institution">
             <Building2 size={28} />
             <div>
-              <h2>Institutional workspace</h2>
-              <p>Consented cohort evidence and research review.</p>
+              <h2>{tx("Institutional workspace")}</h2>
+              <p>{tx("Consented cohort evidence and research review.")}</p>
             </div>
             <ArrowUpRight size={20} />
           </a>
         )}
       </div>
       <p className="small muted">
-        Krishyak supports your judgement. It does not replace a field visit or
-        official eligibility verification.
+        {tx(
+          "Krishyak supports your judgement. It does not replace a field visit or official eligibility verification.",
+        )}
       </p>
     </>
   );

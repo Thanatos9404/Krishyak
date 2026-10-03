@@ -1,3 +1,4 @@
+import { useProductLocale } from "../../features/product/ProductLocale";
 import { useState } from "react";
 import {
   ClipboardCheck,
@@ -29,12 +30,13 @@ const CHOICES = [
   ["advisory_usefulness", MessageSquare, "Rate some advice"],
 ];
 export function ActionSheet({ workspace: w, onClose }) {
+  const { tx } = useProductLocale();
   const [kind, setKind] = useState(null),
     [note, setNote] = useState(""),
     [value, setValue] = useState("");
   return (
     <Dialog
-      title={kind ? EVENT_NAMES[kind] : "What would you like to record?"}
+      title={kind ? EVENT_NAMES[kind] : tx("What would you like to record?")}
       onClose={onClose}
       className="action-sheet"
     >
@@ -43,7 +45,7 @@ export function ActionSheet({ workspace: w, onClose }) {
           {CHOICES.map(([id, Icon, label]) => (
             <button key={id} type="button" onClick={() => setKind(id)}>
               <Icon size={23} />
-              <span>{label}</span>
+              <span>{tx(label)}</span>
             </button>
           ))}
         </div>
@@ -52,7 +54,11 @@ export function ActionSheet({ workspace: w, onClose }) {
           onSubmit={(event) => {
             event.preventDefault();
             w.act(async () => {
-              await w.recordObservation({ kind, note, value });
+              await w.recordObservation({
+                kind,
+                note,
+                value,
+              });
               onClose();
             });
           }}
@@ -63,15 +69,17 @@ export function ActionSheet({ workspace: w, onClose }) {
             onClick={() => setKind(null)}
           >
             <ArrowLeft size={16} />
-            Choose a different update
+            {tx("Choose a different update")}
           </button>
           <p>
-            For <strong>{w.plot.name}</strong>. Your record describes what you
-            observed.
+            {tx("For")} <strong>{w.plot.name}</strong>
+            {tx(". Your record describes what you observed.")}
           </p>
           {OUTCOMES[kind] && (
             <label className="v2-label">
-              Amount ({OUTCOMES[kind][1]}) · optional
+              {tx("Amount (")}
+              {OUTCOMES[kind][1]}
+              {tx(") \xB7 optional")}
               <input
                 type="number"
                 step="any"
@@ -91,19 +99,19 @@ export function ActionSheet({ workspace: w, onClose }) {
             </label>
           )}
           <label className="v2-label">
-            What happened?
+            {tx("What happened?")}
             <textarea
               required
               maxLength={2000}
               rows={4}
-              placeholder="Describe what you saw or did…"
+              placeholder={tx("Describe what you saw or did…")}
               value={note}
               onChange={(event) => setNote(event.target.value)}
             />
           </label>
           {w.error && (
             <p role="alert" className="error-panel">
-              {w.error}
+              {tx(w.error)}
             </p>
           )}
           <button
@@ -113,12 +121,13 @@ export function ActionSheet({ workspace: w, onClose }) {
               (!w.consents.includes("agronomic_analysis") && !w.offline)
             }
           >
-            Save field update
+            {tx("Save field update")}
           </button>
           {!w.consents.includes("agronomic_analysis") && !w.offline && (
             <p>
-              Enable field analysis in <a href="/app/more/settings">Settings</a>{" "}
-              to save observations.
+              {tx("Enable field analysis in")}{" "}
+              <a href="/app/more/settings">{tx("Settings")}</a>{" "}
+              {tx("to save observations.")}
             </p>
           )}
         </form>

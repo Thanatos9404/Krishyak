@@ -1,7 +1,8 @@
+import { useProductLocale } from "../product/ProductLocale";
 import React, { useEffect, useState } from "react";
 import { farmApi } from "./api";
-
 export default function ScanHistory({ plotId, refresh, act, busy, offline }) {
+  const { tx } = useProductLocale();
   const [items, setItems] = useState([]),
     [error, setError] = useState(""),
     [more, setMore] = useState(false);
@@ -25,16 +26,18 @@ export default function ScanHistory({ plotId, refresh, act, busy, offline }) {
   }, [plotId, refresh]);
   return (
     <section>
-      <h3>Saved crop photographs</h3>
+      <h3>{tx("Saved crop photographs")}</h3>
       <p>
-        Photographs require a connection. They are not saved in offline storage.
+        {tx(
+          "Photographs require a connection. They are not saved in offline storage.",
+        )}
       </p>
       {error && <p role="alert">{error}</p>}
       {items.map((item) => (
         <article className="v2-event" key={item.id}>
           <p>
             {new Date(item.created_at).toLocaleString()} · {item.result.status}{" "}
-            · {item.result.predicted_class || "No supported classification"}
+            · {item.result.predicted_class || tx("No supported classification")}
           </p>
           <button
             disabled={busy || offline}
@@ -52,7 +55,7 @@ export default function ScanHistory({ plotId, refresh, act, busy, offline }) {
               })
             }
           >
-            Download private photograph
+            {tx("Download private photograph")}
           </button>
           <button
             className="v2-danger"
@@ -74,11 +77,13 @@ export default function ScanHistory({ plotId, refresh, act, busy, offline }) {
               })
             }
           >
-            Delete photograph
+            {tx("Delete photograph")}
           </button>
         </article>
       ))}
-      {!items.length && <p>No stored photographs for the selected field.</p>}
+      {!items.length && (
+        <p>{tx("No stored photographs for the selected field.")}</p>
+      )}
       {more && (
         <button
           disabled={busy || offline}
@@ -92,7 +97,7 @@ export default function ScanHistory({ plotId, refresh, act, busy, offline }) {
             })
           }
         >
-          Load earlier photographs
+          {tx("Load earlier photographs")}
         </button>
       )}
     </section>

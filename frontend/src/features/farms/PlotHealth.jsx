@@ -1,13 +1,13 @@
+import { useProductLocale } from "../product/ProductLocale";
 import React, { useEffect, useRef, useState } from "react";
-import { deferredFeature } from "../../components/deferredFeature";
+import { deferredFeature } from "../../features/product/deferredProductFeature";
 import { farmApi } from "./api";
 import { readRecord, saveRecord } from "./offline";
-
+import { cancelReadsOnExit } from "../product/readCancellation";
 const FieldMap = deferredFeature(() => import("../../components/FieldMap"));
 const FieldTrendChart = deferredFeature(
   () => import("../../components/FieldTrendChart"),
 );
-
 export default function PlotHealth({
   plot,
   owner,
@@ -20,6 +20,7 @@ export default function PlotHealth({
   providerStatus,
   onUpdated,
 }) {
+  const { tx } = useProductLocale();
   const [records, setRecords] = useState([]),
     [job, setJob] = useState(null),
     [error, setError] = useState("");
@@ -41,10 +42,13 @@ export default function PlotHealth({
   useEffect(() => {
     let cancelled = false,
       timer;
+    const controller = new AbortController();
+    const endReads = cancelReadsOnExit(controller);
     const load = async () => {
       try {
         const response = await farmApi(
           `/plots/${plot.id}/remote-sensing?limit=100`,
+          { signal: controller.signal },
         );
         if (cancelled) return;
         setError("");
@@ -85,6 +89,7 @@ export default function PlotHealth({
     load();
     return () => {
       cancelled = true;
+      endReads();
       clearTimeout(timer);
     };
   }, [
@@ -103,36 +108,40 @@ export default function PlotHealth({
   const latest = observations.at(-1);
   return (
     <section className="v2-card">
-      <h2>Plot Health · satellite evidence</h2>
+      <h2>{tx("Plot Health \xB7 satellite evidence")}</h2>
       <p>
-        Vegetation and moisture indices provide inspection context. They do not
-        identify disease, soil nutrients, crop yield or a universal health
-        score.
+        {tx(
+          "Vegetation and moisture indices provide inspection context. They do not identify disease, soil nutrients, crop yield or a universal health score.",
+        )}
       </p>
       {error && <p role="alert">{error}</p>}
       {providerStatus !== "ready" && (
         <p>
-          Satellite access is unavailable:{" "}
-          {providerStatus || "configuration unknown"}. Stored evidence and
-          manual observations remain available.
+          {tx("Satellite access is unavailable:")}{" "}
+          {providerStatus || tx("configuration unknown")}
+          {tx(". Stored evidence and manual observations remain available.")}
         </p>
       )}
       {job && (
         <p>
-          Latest request: {job.status}
-          {job.error_code ? ` · ${job.error_code.replaceAll("_", " ")}` : ""}.
-          Failed requests preserve earlier observations.
+          {tx("Latest request:")} {job.status}
+          {job.error_code
+            ? tx(" \xB7 {{v0}}", {
+                v0: job.error_code.replaceAll("_", " "),
+              })
+            : ""}
+          {tx(". Failed requests preserve earlier observations.")}
         </p>
       )}
       <label className="v2-label">
-        Field context to view
+        {tx("Field context to view")}
         <select
           value={index}
           onChange={(event) => setIndex(event.target.value)}
         >
-          <option value="ndvi">NDVI · vegetation</option>
-          <option value="ndmi">NDMI · moisture context</option>
-          <option value="ndre">NDRE · red-edge vegetation</option>
+          <option value="ndvi">{tx("NDVI \xB7 vegetation")}</option>
+          <option value="ndmi">{tx("NDMI \xB7 moisture context")}</option>
+          <option value="ndre">{tx("NDRE \xB7 red-edge vegetation")}</option>
         </select>
       </label>
       <button
@@ -150,7 +159,10 @@ export default function PlotHealth({
               `/plots/${plot.id}/remote-sensing/refresh`,
               {
                 method: "POST",
-                body: { operation_id: crypto.randomUUID(), index },
+                body: {
+                  operation_id: crypto.randomUUID(),
+                  index,
+                },
               },
             );
             if (active.current) {
@@ -160,34 +172,39 @@ export default function PlotHealth({
           })
         }
       >
-        Request fresh field observations
+        {tx("Request fresh field observations")}
       </button>
       {values.length ? (
         <>
           <details>
-            <summary>View the stored trend and measurement details</summary>
+            <summary>
+              {tx("View the stored trend and measurement details")}
+            </summary>
             <FieldTrendChart
               observations={values}
               index={index}
               description="Stored satellite interval means; cloudy intervals remain missing"
             />
             <p>
-              Latest interval: {latest.payload.observation.start.slice(0, 10)}{" "}
-              to {latest.payload.observation.end.slice(0, 10)} · quality{" "}
-              {latest.payload.observation.quality_status} · valid pixel fraction{" "}
+              {tx("Latest interval:")}{" "}
+              {latest.payload.observation.start.slice(0, 10)} to{" "}
+              {latest.payload.observation.end.slice(0, 10)} {tx("\xB7 quality")}{" "}
+              {latest.payload.observation.quality_status}{" "}
+              {tx("\xB7 valid pixel fraction")}{" "}
               {latest.payload.observation.valid_fraction}
             </p>
             <details>
-              <summary>How this index was measured</summary>
+              <summary>{tx("How this index was measured")}</summary>
               <p>
-                {latest.source} · {latest.provenance.formula} · resolution{" "}
-                {latest.provenance.spatial_resolution_m} m · processing{" "}
-                {latest.provenance.processing_version}
+                {latest.source} · {latest.provenance.formula}{" "}
+                {tx("\xB7 resolution")} {latest.provenance.spatial_resolution_m}{" "}
+                {tx("m \xB7 processing")} {latest.provenance.processing_version}
               </p>
               <p>
-                Processed {new Date(latest.created_at).toLocaleString()}.
-                Interval composites may contain several acquisitions; exact
-                contributing dates are not independently verified.
+                {tx("Processed")} {new Date(latest.created_at).toLocaleString()}
+                {tx(
+                  ". Interval composites may contain several acquisitions; exact contributing dates are not independently verified.",
+                )}
               </p>
               <ul>
                 {(latest.provenance.limitations || []).map((text) => (
@@ -199,18 +216,20 @@ export default function PlotHealth({
         </>
       ) : (
         <p>
-          No observations for this view and the current field boundary are
-          stored. This is missing evidence, not a healthy-field result.
+          {tx(
+            "No observations for this view and the current field boundary are stored. This is missing evidence, not a healthy-field result.",
+          )}
         </p>
       )}
       <details>
-        <summary>Optional field map and satellite preview</summary>
+        <summary>{tx("Optional field map and satellite preview")}</summary>
         <p>
-          Opening the map contacts the basemap provider. A mapped boundary and
-          permissions are required for satellite retrieval.
+          {tx(
+            "Opening the map contacts the basemap provider. A mapped boundary and permissions are required for satellite retrieval.",
+          )}
         </p>
         <button onClick={() => setMapOpen((value) => !value)}>
-          Open or close field map
+          {tx("Open or close field map")}
         </button>
         {mapOpen && plot.boundary && (
           <FieldMap
@@ -225,7 +244,7 @@ export default function PlotHealth({
           />
         )}
         <label className="v2-label">
-          Satellite preview date
+          {tx("Satellite preview date")}
           <input
             type="date"
             value={date}
@@ -246,17 +265,27 @@ export default function PlotHealth({
             act(async () => {
               const blob = await farmApi(
                 `/plots/${plot.id}/remote-sensing/preview`,
-                { method: "POST", body: { date, layer: index }, binary: true },
+                {
+                  method: "POST",
+                  body: {
+                    date,
+                    layer: index,
+                  },
+                  binary: true,
+                },
               );
               if (!active.current) return;
               if (objectUrl.current) URL.revokeObjectURL(objectUrl.current);
               objectUrl.current = URL.createObjectURL(blob);
-              setImage({ geometry: plot.boundary, url: objectUrl.current });
+              setImage({
+                geometry: plot.boundary,
+                url: objectUrl.current,
+              });
               setMapOpen(true);
             })
           }
         >
-          Load quality-masked preview
+          {tx("Load quality-masked preview")}
         </button>
         <p>
           NDVI = (B8 − B4) / (B8 + B4); NDMI = (B8 − B11) / (B8 + B11); NDRE =

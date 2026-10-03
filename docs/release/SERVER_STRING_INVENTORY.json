@@ -1,0 +1,692 @@
+[
+  {
+    "source": "Core storage or usage controls unavailable",
+    "file": "backend/v2/application.py",
+    "line": 142
+  },
+  {
+    "source": "Untrusted request origin",
+    "file": "backend/v2/auth.py",
+    "line": 25
+  },
+  {
+    "source": "Session verification required",
+    "file": "backend/v2/auth.py",
+    "line": 38
+  },
+  {
+    "source": "Sign in required",
+    "file": "backend/v2/auth.py",
+    "line": 45
+  },
+  {
+    "source": "Session expired",
+    "file": "backend/v2/auth.py",
+    "line": 50
+  },
+  {
+    "source": "Account unavailable",
+    "file": "backend/v2/auth.py",
+    "line": 62
+  },
+  {
+    "source": "Session expired",
+    "file": "backend/v2/auth.py",
+    "line": 60
+  },
+  {
+    "source": "Weather provider unavailable or incomplete. Saved evidence remains available.",
+    "file": "backend/v2/context.py",
+    "line": 134
+  },
+  {
+    "source": "Map an approximate field boundary to request local weather",
+    "file": "backend/v2/context.py",
+    "line": 192
+  },
+  {
+    "source": "Field changed during weather retrieval; retry",
+    "file": "backend/v2/context.py",
+    "line": 223
+  },
+  {
+    "source": "Operation ID already used with other soil evidence",
+    "file": "backend/v2/context.py",
+    "line": 85
+  },
+  {
+    "source": "The reported source and measurement have not been independently verified",
+    "file": "backend/v2/context.py",
+    "line": 102
+  },
+  {
+    "source": "No conversion between mg/kg and kg/ha without soil density/depth",
+    "file": "backend/v2/context.py",
+    "line": 103
+  },
+  {
+    "source": "Weather provider returned invalid evidence; saved records remain available.",
+    "file": "backend/v2/context.py",
+    "line": 170
+  },
+  {
+    "source": "Operation ID already used for other evidence",
+    "file": "backend/v2/context.py",
+    "line": 198
+  },
+  {
+    "source": "Operation ID already used for other evidence",
+    "file": "backend/v2/context.py",
+    "line": 229
+  },
+  {
+    "source": "Model conditions are not a field weather-station measurement",
+    "file": "backend/v2/context.py",
+    "line": 246
+  },
+  {
+    "source": "Forecast rain is not observed rainfall",
+    "file": "backend/v2/context.py",
+    "line": 247
+  },
+  {
+    "source": "Provider forecasts and weather models have uncertainty",
+    "file": "backend/v2/context.py",
+    "line": 248
+  },
+  {
+    "source": "Commercial use requires a separately approved provider/license",
+    "file": "backend/v2/context.py",
+    "line": 249
+  },
+  {
+    "source": "No universal farm health score",
+    "file": "backend/v2/evidence.py",
+    "line": 192
+  },
+  {
+    "source": "Farmer-reported measurements and crop identity are not independently verified",
+    "file": "backend/v2/evidence.py",
+    "line": 193
+  },
+  {
+    "source": "Weather rules require agronomic calibration before authoritative use",
+    "file": "backend/v2/evidence.py",
+    "line": 194
+  },
+  {
+    "source": "Record what you see in this field",
+    "file": "backend/v2/evidence.py",
+    "line": 59
+  },
+  {
+    "source": "No farmer observation has been recorded. Field inspection adds context satellite data cannot provide.",
+    "file": "backend/v2/evidence.py",
+    "line": 60
+  },
+  {
+    "source": "Inspect this field for visible changes",
+    "file": "backend/v2/evidence.py",
+    "line": 34
+  },
+  {
+    "source": "Vegetation signal declined compared with the preceding four usable intervals.",
+    "file": "backend/v2/evidence.py",
+    "line": 35
+  },
+  {
+    "source": "This is a request for evidence, not a diagnosed problem",
+    "file": "backend/v2/evidence.py",
+    "line": 66
+  },
+  {
+    "source": "Inspect soil moisture and recent irrigation",
+    "file": "backend/v2/evidence.py",
+    "line": 157
+  },
+  {
+    "source": "The stored moisture-sensitive index declined and the current forecast contains no rain in the next 24 hours. These signals provide context for a field inspection.",
+    "file": "backend/v2/evidence.py",
+    "line": 158
+  },
+  {
+    "source": "Satellite indices cannot determine disease or its cause",
+    "file": "backend/v2/evidence.py",
+    "line": 44
+  },
+  {
+    "source": "Inspect before changing irrigation or treatment",
+    "file": "backend/v2/evidence.py",
+    "line": 45
+  },
+  {
+    "source": "These signals cannot establish water stress or its cause",
+    "file": "backend/v2/evidence.py",
+    "line": 167
+  },
+  {
+    "source": "Forecast rain is not observed rainfall",
+    "file": "backend/v2/evidence.py",
+    "line": 168
+  },
+  {
+    "source": "Verify moisture, crop stage and irrigation history before changing irrigation",
+    "file": "backend/v2/evidence.py",
+    "line": 169
+  },
+  {
+    "source": "Rule has not been calibrated against field outcomes",
+    "file": "backend/v2/evidence.py",
+    "line": 170
+  },
+  {
+    "source": "Thresholds are repository heuristics and have not been agronomically calibrated",
+    "file": "backend/v2/evidence.py",
+    "line": 135
+  },
+  {
+    "source": "Forecasts are not field measurements",
+    "file": "backend/v2/evidence.py",
+    "line": 136
+  },
+  {
+    "source": "No pesticide dose or automatic irrigation is prescribed",
+    "file": "backend/v2/evidence.py",
+    "line": 137
+  },
+  {
+    "source": "This is public program information, not eligibility approval",
+    "file": "backend/v2/government.py",
+    "line": 86
+  },
+  {
+    "source": "Krishyak does not submit applications or access Aadhaar, banking, land or beneficiary records",
+    "file": "backend/v2/government.py",
+    "line": 87
+  },
+  {
+    "source": "Current official rules and state/season deadlines govern",
+    "file": "backend/v2/government.py",
+    "line": 88
+  },
+  {
+    "source": "No combined or guaranteed personal benefit amount is calculated",
+    "file": "backend/v2/government.py",
+    "line": 89
+  },
+  {
+    "source": "Income-support information for landholding farmer families, subject to official exclusions and verification.",
+    "file": "backend/v2/government.py",
+    "line": 33
+  },
+  {
+    "source": "Official portal and exclusion categories checked",
+    "file": "backend/v2/government.py",
+    "line": 37
+  },
+  {
+    "source": "Landholding and family eligibility",
+    "file": "backend/v2/government.py",
+    "line": 39
+  },
+  {
+    "source": "Official exclusion categories",
+    "file": "backend/v2/government.py",
+    "line": 40
+  },
+  {
+    "source": "State/UT verification and required eKYC",
+    "file": "backend/v2/government.py",
+    "line": 41
+  },
+  {
+    "source": "Crop-insurance information. Coverage depends on the notified crop, district, season and enrollment rules.",
+    "file": "backend/v2/government.py",
+    "line": 48
+  },
+  {
+    "source": "Official FAQ indexed; current state notifications require verification",
+    "file": "backend/v2/government.py",
+    "line": 52
+  },
+  {
+    "source": "Crop and area notification for this season",
+    "file": "backend/v2/government.py",
+    "line": 54
+  },
+  {
+    "source": "Current enrollment deadline",
+    "file": "backend/v2/government.py",
+    "line": 55
+  },
+  {
+    "source": "Insurer coverage and official loss-reporting rules",
+    "file": "backend/v2/government.py",
+    "line": 56
+  },
+  {
+    "source": "Information about soil testing and nutrient reports. A recorded card is distinct from a satellite estimate.",
+    "file": "backend/v2/government.py",
+    "line": 63
+  },
+  {
+    "source": "Official support and portal manual checked; individual access not tested",
+    "file": "backend/v2/government.py",
+    "line": 67
+  },
+  {
+    "source": "Local soil collection/testing process",
+    "file": "backend/v2/government.py",
+    "line": 68
+  },
+  {
+    "source": "Your own report and sample date",
+    "file": "backend/v2/government.py",
+    "line": 68
+  },
+  {
+    "source": "External performance differs from internal evaluation",
+    "file": "backend/v2/images.py",
+    "line": 64
+  },
+  {
+    "source": "Scores are uncalibrated",
+    "file": "backend/v2/images.py",
+    "line": 65
+  },
+  {
+    "source": "Severity and field health are not measured",
+    "file": "backend/v2/images.py",
+    "line": 66
+  },
+  {
+    "source": "Model score is not calibrated disease probability",
+    "file": "backend/v2/images.py",
+    "line": 138
+  },
+  {
+    "source": "Healthy-class prediction does not rule out disease",
+    "file": "backend/v2/images.py",
+    "line": 139
+  },
+  {
+    "source": "Classification does not measure field severity",
+    "file": "backend/v2/images.py",
+    "line": 140
+  },
+  {
+    "source": "Chemical treatment and dosing require locally applicable expert/label verification",
+    "file": "backend/v2/images.py",
+    "line": 141
+  },
+  {
+    "source": "Image not found",
+    "file": "backend/v2/images.py",
+    "line": 74
+  },
+  {
+    "source": "Agronomist role required",
+    "file": "backend/v2/images.py",
+    "line": 264
+  },
+  {
+    "source": "Sign in again before expert review",
+    "file": "backend/v2/images.py",
+    "line": 266
+  },
+  {
+    "source": "Consented image not found",
+    "file": "backend/v2/images.py",
+    "line": 310
+  },
+  {
+    "source": "Correction must match the active classifier label set",
+    "file": "backend/v2/images.py",
+    "line": 313
+  },
+  {
+    "source": "Consented image not found",
+    "file": "backend/v2/images.py",
+    "line": 360
+  },
+  {
+    "source": "Photo processing is busy; retry shortly",
+    "file": "backend/v2/images.py",
+    "line": 31
+  },
+  {
+    "source": "Classifier metadata unavailable",
+    "file": "backend/v2/images.py",
+    "line": 50
+  },
+  {
+    "source": "Use a valid single JPEG, PNG or WebP image within size and dimension limits",
+    "file": "backend/v2/images.py",
+    "line": 96
+  },
+  {
+    "source": "Operation ID already used for another photograph",
+    "file": "backend/v2/images.py",
+    "line": 105
+  },
+  {
+    "source": "Photo storage unavailable; retry later",
+    "file": "backend/v2/images.py",
+    "line": 153
+  },
+  {
+    "source": "Operation ID already used for another photograph",
+    "file": "backend/v2/images.py",
+    "line": 164
+  },
+  {
+    "source": "Photo unavailable; retry later",
+    "file": "backend/v2/images.py",
+    "line": 230
+  },
+  {
+    "source": "Operation ID already used for other feedback",
+    "file": "backend/v2/images.py",
+    "line": 251
+  },
+  {
+    "source": "Operation ID already used for another review",
+    "file": "backend/v2/images.py",
+    "line": 324
+  },
+  {
+    "source": "Photo unavailable; retry later",
+    "file": "backend/v2/images.py",
+    "line": 364
+  },
+  {
+    "source": "Request limit reached; retry later",
+    "file": "backend/v2/limits.py",
+    "line": 52
+  },
+  {
+    "source": "Usage controls unavailable",
+    "file": "backend/v2/limits.py",
+    "line": 43
+  },
+  {
+    "source": "Usage controls unavailable; retry later",
+    "file": "backend/v2/limits.py",
+    "line": 40
+  },
+  {
+    "source": "Usage controls busy",
+    "file": "backend/v2/limits.py",
+    "line": 48
+  },
+  {
+    "source": "Notification not found",
+    "file": "backend/v2/notifications.py",
+    "line": 40
+  },
+  {
+    "source": "Record counts are not measured agronomic impact",
+    "file": "backend/v2/pilots.py",
+    "line": 217
+  },
+  {
+    "source": "Farmer-entered outcomes are not independently verified",
+    "file": "backend/v2/pilots.py",
+    "line": 218
+  },
+  {
+    "source": "Distributions require at least five consented farmers",
+    "file": "backend/v2/pilots.py",
+    "line": 219
+  },
+  {
+    "source": "No unrecorded outcome is inferred",
+    "file": "backend/v2/pilots.py",
+    "line": 220
+  },
+  {
+    "source": "Feedback is selected and may be biased",
+    "file": "backend/v2/pilots.py",
+    "line": 264
+  },
+  {
+    "source": "Repeated reviewers/responses are records, not independent samples",
+    "file": "backend/v2/pilots.py",
+    "line": 265
+  },
+  {
+    "source": "Operational agreement is not field accuracy",
+    "file": "backend/v2/pilots.py",
+    "line": 266
+  },
+  {
+    "source": "No images or identity details included",
+    "file": "backend/v2/pilots.py",
+    "line": 267
+  },
+  {
+    "source": "Institutional role required",
+    "file": "backend/v2/pilots.py",
+    "line": 57
+  },
+  {
+    "source": "Sign in again before institutional operations",
+    "file": "backend/v2/pilots.py",
+    "line": 59
+  },
+  {
+    "source": "Pilot cohort not found",
+    "file": "backend/v2/pilots.py",
+    "line": 67
+  },
+  {
+    "source": "Maximum pilot cohorts reached",
+    "file": "backend/v2/pilots.py",
+    "line": 99
+  },
+  {
+    "source": "Available pilot cohort not found",
+    "file": "backend/v2/pilots.py",
+    "line": 120
+  },
+  {
+    "source": "Pilot enrollment not found",
+    "file": "backend/v2/pilots.py",
+    "line": 143
+  },
+  {
+    "source": "Phone sign-in is unavailable",
+    "file": "backend/v2/providers.py",
+    "line": 79
+  },
+  {
+    "source": "Use a configured synthetic development identity",
+    "file": "backend/v2/providers.py",
+    "line": 30
+  },
+  {
+    "source": "Phone verification unavailable",
+    "file": "backend/v2/providers.py",
+    "line": 66
+  },
+  {
+    "source": "Verification temporarily limited; retry later",
+    "file": "backend/v2/providers.py",
+    "line": 51
+  },
+  {
+    "source": "Phone verification unavailable",
+    "file": "backend/v2/providers.py",
+    "line": 60
+  },
+  {
+    "source": "Backups expire according to the operator's retention policy",
+    "file": "backend/v2/rights.py",
+    "line": 128
+  },
+  {
+    "source": "Provider-side processing records require separate provider retention controls",
+    "file": "backend/v2/rights.py",
+    "line": 129
+  },
+  {
+    "source": "Farm accounts are not yet available",
+    "file": "backend/v2/router.py",
+    "line": 40
+  },
+  {
+    "source": "Consent required for ",
+    "file": "backend/v2/router.py",
+    "line": 64
+  },
+  {
+    "source": "Verification expired or invalid; request a new code",
+    "file": "backend/v2/router.py",
+    "line": 143
+  },
+  {
+    "source": "Verification expired or invalid; request a new code",
+    "file": "backend/v2/router.py",
+    "line": 157
+  },
+  {
+    "source": "Incorrect or expired verification code",
+    "file": "backend/v2/router.py",
+    "line": 168
+  },
+  {
+    "source": "Account unavailable",
+    "file": "backend/v2/router.py",
+    "line": 177
+  },
+  {
+    "source": "Use account deletion to end account processing",
+    "file": "backend/v2/router.py",
+    "line": 250
+  },
+  {
+    "source": "Maximum 100 farms per account reached",
+    "file": "backend/v2/router.py",
+    "line": 317
+  },
+  {
+    "source": "Farm changed on another device; refresh before saving",
+    "file": "backend/v2/router.py",
+    "line": 330
+  },
+  {
+    "source": "Field changed on another device; refresh before saving",
+    "file": "backend/v2/router.py",
+    "line": 410
+  },
+  {
+    "source": "Crop cycle not found",
+    "file": "backend/v2/router.py",
+    "line": 489
+  },
+  {
+    "source": "Crop cycle changed; refresh before saving",
+    "file": "backend/v2/router.py",
+    "line": 491
+  },
+  {
+    "source": "Crop cycle overlaps another active or planned cycle",
+    "file": "backend/v2/router.py",
+    "line": 501
+  },
+  {
+    "source": "Crop cycle not found",
+    "file": "backend/v2/router.py",
+    "line": 515
+  },
+  {
+    "source": "Operation ID already used for another farm",
+    "file": "backend/v2/router.py",
+    "line": 314
+  },
+  {
+    "source": "Operation ID already used for another crop cycle",
+    "file": "backend/v2/router.py",
+    "line": 439
+  },
+  {
+    "source": "Crop cycle overlaps an existing active or planned cycle",
+    "file": "backend/v2/router.py",
+    "line": 451
+  },
+  {
+    "source": "Operation ID already used with different evidence",
+    "file": "backend/v2/router.py",
+    "line": 533
+  },
+  {
+    "source": "Not independently verified",
+    "file": "backend/v2/router.py",
+    "line": 544
+  },
+  {
+    "source": "Farm storage unavailable; retry later",
+    "file": "backend/v2/router.py",
+    "line": 47
+  },
+  {
+    "source": "Field geometry exceeds supported limits",
+    "file": "backend/v2/router.py",
+    "line": 364
+  },
+  {
+    "source": "Operation ID already used for another field",
+    "file": "backend/v2/router.py",
+    "line": 391
+  },
+  {
+    "source": "Map a field boundary before requesting imagery",
+    "file": "backend/v2/satellite.py",
+    "line": 63
+  },
+  {
+    "source": "Draw an approximate field boundary before satellite analysis",
+    "file": "backend/v2/satellite.py",
+    "line": 98
+  },
+  {
+    "source": "Satellite observations are unavailable. You can still record field observations.",
+    "file": "backend/v2/satellite.py",
+    "line": 108
+  },
+  {
+    "source": "Field extent exceeds supported satellite processing limits",
+    "file": "backend/v2/satellite.py",
+    "line": 81
+  },
+  {
+    "source": "Operation ID already used for another satellite request",
+    "file": "backend/v2/satellite.py",
+    "line": 103
+  },
+  {
+    "source": "Satellite processing completed",
+    "file": "backend/v2/worker.py",
+    "line": 239
+  },
+  {
+    "source": "Review the latest field evidence and its quality before taking action.",
+    "file": "backend/v2/worker.py",
+    "line": 240
+  },
+  {
+    "source": "Gridded model reanalysis, not a measurement at the farm.",
+    "file": "backend/remote_sensing/climate.py",
+    "line": 94
+  },
+  {
+    "source": "1991–2020 baseline, not a forecast or expected rainfall for this crop season.",
+    "file": "backend/remote_sensing/climate.py",
+    "line": 95
+  },
+  {
+    "source": "No irrigation, disease, crop species or soil nutrient inference.",
+    "file": "backend/remote_sensing/climate.py",
+    "line": 96
+  }
+]
