@@ -1,11 +1,11 @@
 // Cache only public assets and the explicitly anonymous Next app shell.
 // Account data, RSC payloads, private photographs and mutations stay network-only.
-const CACHE = "krishyak-shell-v3-5";
+const CACHE = "krishyak-shell-v3-7";
 const SHELL = [
   "/app/today",
   "/offline",
   "/manifest.json",
-  "/krishyak_logo.png",
+  "/images/official-logo-100.png",
 ];
 self.addEventListener("install", (event) =>
   event.waitUntil(
@@ -83,7 +83,7 @@ self.addEventListener("fetch", (event) => {
     !url.pathname.startsWith("/_next/static/") &&
     !url.pathname.startsWith("/images/") &&
     !url.pathname.startsWith("/fonts/") &&
-    !/^\/locales\/workspace\/(hi|ur|gu|bn|mr|kn|ta|te|ml|pa)\.json$/.test(
+    !/^\/locales\/workspace\/(hi|ur|gu|bn|mr|kn|ta|te|ml|pa|as|brx|doi|ks|kok|mai|mni|ne|or|sa|sat|sd)\.json$/.test(
       url.pathname,
     ) &&
     !SHELL.includes(url.pathname)

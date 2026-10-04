@@ -3,7 +3,7 @@ export function Brand({ compact = false }) {
     <a className="brand" href="/" aria-label="Krishyak home">
       <img
         className="official-logo"
-        src="/krishyak_logo.png"
+        src="/images/official-logo-100.png"
         width="50"
         height="50"
         alt=""

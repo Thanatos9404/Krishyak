@@ -13,8 +13,13 @@ import { Brand } from "../public/Brand";
 import { ProductLanguageChooser } from "./ProductLanguageChooser";
 import { useProductLocale } from "../../features/product/ProductLocale";
 import { useState } from "react";
-import { FormVoiceInput } from "./FormVoiceInput";
+import { deferredFeature } from "../../features/product/deferredProductFeature";
 import { voiceEligible } from "../../features/product/voiceValues";
+const FormVoiceInput = deferredFeature(() =>
+  import("./FormVoiceInput").then((module) => ({
+    default: module.FormVoiceInput,
+  })),
+);
 const NAV = [
   ["/app/today", Sun, "Today"],
   ["/app/farm", Map, "Farm"],
@@ -186,7 +191,7 @@ export function ProductShell({
             </p>
           )}
           {children}
-          {!demo && !institution && w.farmer && (
+          {!demo && !institution && w.farmer && voiceTarget && (
             <FormVoiceInput target={voiceTarget} workspace={w} />
           )}
         </main>

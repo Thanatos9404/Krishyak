@@ -23,7 +23,7 @@ export const OUTCOMES = {
 
 export function useWorkspace() {
   const mutation = useMutation();
-  const [offline, setOffline] = useState(!navigator.onLine),
+  const [offline, setOffline] = useState(false),
     [pending, setPending] = useState(0);
   const account = useAccountSession(mutation);
   const fields = useFieldRecords({
@@ -121,6 +121,7 @@ export function useWorkspace() {
     ...account,
     ...fields,
     ...connection,
+    loading: account.loading || fields.loading,
     offline,
     pending,
     setPending,

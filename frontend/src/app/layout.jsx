@@ -16,8 +16,8 @@ export const metadata = {
   applicationName: "Krishyak",
   manifest: "/manifest.json",
   icons: {
-    icon: { url: "/krishyak_logo.png", type: "image/png" },
-    apple: "/krishyak_logo.png",
+    icon: { url: "/images/official-logo-32.png", type: "image/png" },
+    apple: "/images/official-logo-180.png",
   },
 };
 export const viewport = {

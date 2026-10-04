@@ -1,5 +1,28 @@
 # Product performance report
 
+## Final activation follow-up, 4 October 2026
+
+The production build now server-renders the anonymous workspace loading shell,
+preloads its app bundle, defers form dictation until an eligible input is focused,
+and skips account restoration when the server reports no session cookie. A
+cookie hint grants no authentication. Combined account/field loading state keeps
+the form from appearing ready before bootstrap finishes.
+
+The official supplied logo artwork remains unchanged. Optimized PNG derivatives
+serve the header, favicon and PWA icons; the first entry no longer downloads the
+3,571,981-byte original. Header artwork is 13,340 bytes. Derivative/source hashes
+are recorded in `frontend/public/official-logo-provenance.json`.
+
+The final 23-language build's fresh Chromium interaction check measured 7,047ms
+with the same 360px viewport, 400ms latency, 50,000 bytes/second and 4x CPU slowdown.
+The earlier activation sample was 9,269ms, so this observed entry was about 24%
+faster. The test now requires an editable phone field and verifies that neither
+the original logo nor anonymous account/refresh requests are loaded. No map or
+all-language pack is eagerly fetched. This remains local emulation, exceeds a
+two-second aspiration, and establishes neither physical-device nor public-origin
+performance. The Lighthouse series below predates these activation changes and
+is retained as dated baseline evidence, not new-build Lighthouse certification.
+
 ## Measurement method
 The exact-pinned production build was tested on localhost with Node 24, Playwright Chromium and Lighthouse 13.5.0 on 2026-10-03. scripts/measure-performance.mjs completed eighteen runs: three fresh browser profiles for each of the homepage, For farmers and anonymous Today entry, with the default simulated mobile profile and the separate Lighthouse desktop configuration. It asserts the reported form factor. Raw JSON/HTML artifacts are in ignored output/product/performance; all eighteen aggregate run records are committed in performance-results.json.
 

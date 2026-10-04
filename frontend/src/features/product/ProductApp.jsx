@@ -1,5 +1,6 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { usePathname } from "next/navigation";
 import { ProductLocaleProvider, useProductLocale } from "./ProductLocale";
 import { useWorkspace } from "./useWorkspace";
 import { deferredFeature } from "../../features/product/deferredProductFeature";
@@ -49,7 +50,7 @@ function Workspace() {
   const w = useWorkspace(),
     { tx } = useProductLocale();
   const { setNotice } = w;
-  const [pathname] = useState(() => location.pathname);
+  const pathname = usePathname();
   useEffect(() => {
     const restored = (event) => {
       if (event.persisted) location.reload();

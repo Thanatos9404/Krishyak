@@ -35,6 +35,30 @@ test("a missing account-service route gives anonymous unavailable entry without 
   expect(setError).not.toHaveBeenCalled();
 });
 
+test("a fresh anonymous visitor skips restoration only when the server explicitly reports no session cookie", async () => {
+  farmApi.mockResolvedValue({ enabled: true, session_cookie_present: false });
+  const callbacks = { setError: jest.fn(), setNotice: jest.fn() };
+  const { result } = renderHook(() => useAccountSession(callbacks));
+  await waitFor(() => expect(result.current.loading).toBe(false));
+  expect(result.current.farmer).toBeNull();
+  expect(restoreFarmSession).not.toHaveBeenCalled();
+});
+
+test.each([true, undefined])(
+  "cookie hints never authenticate a visitor (%s)",
+  async (hint) => {
+    farmApi.mockResolvedValue({ enabled: true, session_cookie_present: hint });
+    restoreFarmSession.mockRejectedValue(
+      Object.assign(new Error("Sign in required"), { status: 401 }),
+    );
+    const callbacks = { setError: jest.fn(), setNotice: jest.fn() };
+    const { result } = renderHook(() => useAccountSession(callbacks));
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(restoreFarmSession).toHaveBeenCalledTimes(1);
+    expect(result.current.farmer).toBeNull();
+  },
+);
+
 test("authorization failure remains an error and cannot restore private cached data", async () => {
   sessionStorage.setItem(
     "krishyak_v2_offline_owner",

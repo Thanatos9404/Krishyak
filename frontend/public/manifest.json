@@ -3,9 +3,15 @@
   "name": "Krishyak Field Intelligence",
   "icons": [
     {
-      "src": "krishyak_logo.png",
+      "src": "/images/official-logo-192.png",
       "type": "image/png",
-      "sizes": "2048x2048",
+      "sizes": "192x192",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/official-logo-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
       "purpose": "any"
     }
   ],

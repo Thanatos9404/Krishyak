@@ -70,6 +70,7 @@ export function useAccountSession({ setError, setNotice }) {
         setStatus(provider);
         if (provider.enabled) {
           await revokeDeviceSession();
+          if (provider.session_cookie_present === false) return;
           try {
             const session = await restoreFarmSession();
             if (cancelled) return;

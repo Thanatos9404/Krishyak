@@ -78,6 +78,9 @@ export function useOfflineConnection({
     };
   }, [farmer?.id, setPending]);
   useEffect(() => {
+    if (!navigator.onLine) setOffline(true);
+  }, [setOffline]);
+  useEffect(() => {
     const lost = () => setOffline(true);
     const connected = () =>
       sync().catch((problem) => {
