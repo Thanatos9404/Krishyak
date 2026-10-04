@@ -43,6 +43,10 @@ for (const directory of directories) {
   }
 }
 const serverInventory = path.join(root, "docs/release/SERVER_STRING_INVENTORY.json");
+const cropCatalogFile = "src/features/product/cropCatalog.json";
+for (const crop of JSON.parse(fs.readFileSync(path.join(root, "frontend", cropCatalogFile), "utf8"))) {
+  collect(crop.label, cropCatalogFile, 1, "crop-label", true);
+}
 if (fs.existsSync(serverInventory))
   for (const row of JSON.parse(fs.readFileSync(serverInventory, "utf8"))) collect(row.source, row.file, row.line, "server");
 const entries = [...records.values()].sort((a, b) => a.source.localeCompare(b.source, "en"));

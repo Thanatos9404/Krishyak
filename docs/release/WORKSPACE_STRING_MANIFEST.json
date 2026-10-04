@@ -1,6 +1,6 @@
 {
   "extractor": "Babel AST; literals, JSX text, positional template placeholders",
-  "source_strings": 763,
+  "source_strings": 832,
   "strings": [
     {
       "source": ". Failed requests preserve earlier observations.",
@@ -63,7 +63,7 @@
       "references": [
         {
           "file": "src/components/product/MarketView.jsx",
-          "line": 94,
+          "line": 91,
           "kind": "literal"
         }
       ]
@@ -85,7 +85,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 95,
+          "line": 96,
           "kind": "literal"
         }
       ]
@@ -96,7 +96,7 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 241,
+          "line": 230,
           "kind": "literal"
         }
       ]
@@ -118,7 +118,7 @@
       "references": [
         {
           "file": "src/components/product/MarketView.jsx",
-          "line": 105,
+          "line": 102,
           "kind": "literal"
         },
         {
@@ -189,7 +189,7 @@
       "references": [
         {
           "file": "src/features/farms/FieldManagement.jsx",
-          "line": 13,
+          "line": 15,
           "kind": "literal"
         }
       ]
@@ -299,6 +299,17 @@
       ]
     },
     {
+      "source": "{{v0}} crops match your search",
+      "sha256": "cbf46cf577e2a51c815a8be51f92781466b93bd1b18374e6190377112be4513a",
+      "references": [
+        {
+          "file": "src/components/product/CropPicker.jsx",
+          "line": 55,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "{{v0}} update{{v1}} waiting to sync.",
       "sha256": "7d345ec5460097a37caa34ecd812c0202cb61f3bb90c0d326024559268cb8608",
       "references": [
@@ -315,7 +326,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 155,
+          "line": 156,
           "kind": "template"
         }
       ]
@@ -353,7 +364,7 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 284,
+          "line": 283,
           "kind": "literal"
         }
       ]
@@ -364,7 +375,7 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 289,
+          "line": 288,
           "kind": "literal"
         }
       ]
@@ -424,7 +435,7 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 69,
+          "line": 71,
           "kind": "literal"
         }
       ]
@@ -435,7 +446,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 88,
+          "line": 90,
           "kind": "literal"
         }
       ]
@@ -457,7 +468,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 285,
+          "line": 280,
           "kind": "literal"
         }
       ]
@@ -468,7 +479,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 26,
+          "line": 27,
           "kind": "literal"
         }
       ]
@@ -501,7 +512,7 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 10,
+          "line": 12,
           "kind": "literal"
         }
       ]
@@ -600,7 +611,7 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 147,
+          "line": 149,
           "kind": "literal"
         }
       ]
@@ -720,7 +731,7 @@
         },
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 298,
+          "line": 293,
           "kind": "jsx"
         }
       ]
@@ -742,7 +753,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 253,
+          "line": 248,
           "kind": "literal"
         }
       ]
@@ -764,7 +775,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 137,
+          "line": 140,
           "kind": "literal"
         }
       ]
@@ -775,12 +786,12 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 30,
+          "line": 32,
           "kind": "literal"
         },
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 216,
+          "line": 211,
           "kind": "literal"
         }
       ]
@@ -791,7 +802,7 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 84,
+          "line": 86,
           "kind": "literal"
         }
       ]
@@ -802,7 +813,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 37,
+          "line": 38,
           "kind": "literal"
         }
       ]
@@ -824,7 +835,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 364,
+          "line": 361,
           "kind": "literal"
         }
       ]
@@ -846,12 +857,12 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 394,
+          "line": 391,
           "kind": "literal"
         },
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 58,
+          "line": 59,
           "kind": "literal"
         }
       ]
@@ -862,7 +873,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 78,
+          "line": 79,
           "kind": "literal"
         }
       ]
@@ -906,8 +917,19 @@
       "references": [
         {
           "file": "backend/v2/images.py",
-          "line": 264,
+          "line": 272,
           "kind": "server"
+        }
+      ]
+    },
+    {
+      "source": "All crops",
+      "sha256": "862d922fb5be0617fe661650e40b6eefffd89b4d527335422a5619979a4e29aa",
+      "references": [
+        {
+          "file": "src/components/product/CropPicker.jsx",
+          "line": 44,
+          "kind": "literal"
         }
       ]
     },
@@ -1011,12 +1033,23 @@
       ]
     },
     {
+      "source": "Apple",
+      "sha256": "f223faa96f22916294922b171a2696d868fd1f9129302eb41a45b2a2ea2ebbfd",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
+        }
+      ]
+    },
+    {
       "source": "Area recorded. Boundary optional.",
       "sha256": "c20433961b36c349c65e0b9375b508c78dd7eba0594beea9388d0f9501cf9796",
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 346,
+          "line": 343,
           "kind": "literal"
         }
       ]
@@ -1071,12 +1104,34 @@
       ]
     },
     {
+      "source": "Banana",
+      "sha256": "f9782dd7999dc14b39c1329735e6e4ef72e77a3cf5fa32f2f57bf8d5493f0fc5",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
+        }
+      ]
+    },
+    {
+      "source": "Barley",
+      "sha256": "b904432b6de55a66c7f785bb5c62f8827df5ca7023eaf8b2941254fc7c9dbb94",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
+        }
+      ]
+    },
+    {
       "source": "before saving a crop photograph.",
       "sha256": "f9e94d570594be12d6a05ea1335988a8cf873572a0d4a54471ddf43775627dfc",
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 85,
+          "line": 87,
           "kind": "literal"
         }
       ]
@@ -1109,12 +1164,34 @@
       ]
     },
     {
+      "source": "Black Pepper",
+      "sha256": "fb1d71e54e224a6a7a1020d8c319b655161e4faa35b7c155fc16be1874ffa34b",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
+        }
+      ]
+    },
+    {
+      "source": "Blueberry",
+      "sha256": "d202441495760ec7a52a5761fcabbd046a9ab9fcfa231d304fb42d962524eb09",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
+        }
+      ]
+    },
+    {
       "source": "Boundaries, crop cycles and observations in one place.",
       "sha256": "09847329a6c84ab8f5e34395d821b87e6c7f1107322e1e5865b25eae34a354fa",
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 208,
+          "line": 203,
           "kind": "literal"
         }
       ]
@@ -1125,7 +1202,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 313,
+          "line": 310,
           "kind": "literal"
         }
       ]
@@ -1136,7 +1213,7 @@
       "references": [
         {
           "file": "src/features/farms/FieldManagement.jsx",
-          "line": 133,
+          "line": 145,
           "kind": "literal"
         }
       ]
@@ -1147,7 +1224,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 254,
+          "line": 249,
           "kind": "literal"
         }
       ]
@@ -1158,7 +1235,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 338,
+          "line": 335,
           "kind": "template"
         }
       ]
@@ -1175,13 +1252,79 @@
       ]
     },
     {
+      "source": "Brinjal",
+      "sha256": "0576c51a2f929402a6befa6a4864ad6e13b5755b6e1d9019b45780c18c2c02c9",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
+        }
+      ]
+    },
+    {
+      "source": "Cabbage",
+      "sha256": "d37db9788605b5e15f27aeb62f54e892cf6a0d09df8f6a4645bc4394e7ab2e39",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
+        }
+      ]
+    },
+    {
+      "source": "Capsicum",
+      "sha256": "b1d53785b1e59fcdab85ce6c83f44e28d34ce7a26b227bf706346ceab66c3370",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
+        }
+      ]
+    },
+    {
       "source": "Capture a leaf or upload a photo. Get a suggestion, then check what you see.",
       "sha256": "d766b9e98225476b267779d2137b647919302624b969ca5f26f0283b7d8901af",
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 73,
+          "line": 75,
           "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Cardamom",
+      "sha256": "ffa95babefff0ef16f2594b675599e2efb2f61b7e1afcb03594bb279c37389d8",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
+        }
+      ]
+    },
+    {
+      "source": "Carrot",
+      "sha256": "9e87ba4dd07da92b8ecae2ed4d36e503c875d3e19548db7957402f570cefb39e",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
+        }
+      ]
+    },
+    {
+      "source": "Cauliflower",
+      "sha256": "f0eb3ff1d427ff529b385433a741db84a2ca6cabde7a677eb2004b2fbcb201c5",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
         }
       ]
     },
@@ -1246,7 +1389,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 217,
+          "line": 218,
           "kind": "literal"
         }
       ]
@@ -1257,7 +1400,7 @@
       "references": [
         {
           "file": "src/components/product/MarketView.jsx",
-          "line": 85,
+          "line": 82,
           "kind": "literal"
         }
       ]
@@ -1268,7 +1411,7 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 216,
+          "line": 205,
           "kind": "literal"
         }
       ]
@@ -1290,8 +1433,52 @@
       "references": [
         {
           "file": "backend/v2/images.py",
-          "line": 141,
+          "line": 149,
           "kind": "server"
+        }
+      ]
+    },
+    {
+      "source": "Cherry",
+      "sha256": "abf61b12b0266e8e76b502ff0cdbc55a43bedea98531066d6f7852b1c27d262f",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
+        }
+      ]
+    },
+    {
+      "source": "Chickpea (Gram)",
+      "sha256": "02ffcadaeec790eca1071361640beedb8129458aeb674d6fcb42320bbfec321f",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
+        }
+      ]
+    },
+    {
+      "source": "Chilli",
+      "sha256": "50d3ca25c13d07c4619c6fde1ad0fa2a53466e349f06b63c31fb9ffe6f555a68",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
+        }
+      ]
+    },
+    {
+      "source": "Choose a crop",
+      "sha256": "2be8bc8d2eb98d58d79809d560cdf3fb26499a9255e0598edddc9d5a8d80dc0e",
+      "references": [
+        {
+          "file": "src/components/product/CropPicker.jsx",
+          "line": 44,
+          "kind": "literal"
         }
       ]
     },
@@ -1312,7 +1499,7 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 154,
+          "line": 156,
           "kind": "literal"
         }
       ]
@@ -1334,18 +1521,7 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 57,
-          "kind": "literal"
-        }
-      ]
-    },
-    {
-      "source": "Choose a supported crop",
-      "sha256": "84ad23ff3b9b2c17ea4e825e82430e7be955abd243ed4c8776baa7b8661e379d",
-      "references": [
-        {
-          "file": "src/components/product/ScanView.jsx",
-          "line": 188,
+          "line": 59,
           "kind": "literal"
         }
       ]
@@ -1367,7 +1543,7 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 136,
+          "line": 138,
           "kind": "literal"
         }
       ]
@@ -1411,7 +1587,7 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 282,
+          "line": 281,
           "kind": "literal"
         }
       ]
@@ -1422,7 +1598,7 @@
       "references": [
         {
           "file": "backend/v2/images.py",
-          "line": 140,
+          "line": 148,
           "kind": "server"
         }
       ]
@@ -1466,7 +1642,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 326,
+          "line": 323,
           "kind": "literal"
         }
       ]
@@ -1479,6 +1655,17 @@
           "file": "src/components/product/BoundaryEditor.jsx",
           "line": 87,
           "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Coconut",
+      "sha256": "647594cbde3d8cb0f7c11cfc5050e1565d3be6dced1aeba050d48ee6af81de6b",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
         }
       ]
     },
@@ -1521,7 +1708,7 @@
       "references": [
         {
           "file": "src/components/product/MarketView.jsx",
-          "line": 27,
+          "line": 28,
           "kind": "literal"
         }
       ]
@@ -1653,12 +1840,12 @@
       "references": [
         {
           "file": "backend/v2/images.py",
-          "line": 310,
+          "line": 318,
           "kind": "server"
         },
         {
           "file": "backend/v2/images.py",
-          "line": 360,
+          "line": 368,
           "kind": "server"
         }
       ]
@@ -1708,6 +1895,17 @@
       ]
     },
     {
+      "source": "Coriander",
+      "sha256": "e9f8516a7ff4ea482ab125237c233dda05bba5d671cc6243950b8b7afa047636",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
+        }
+      ]
+    },
+    {
       "source": "Corrected classifier label",
       "sha256": "0b889ff5aeba72dd1924ca99859c45eceb756f37ca058d576b1a7cfca3675e9d",
       "references": [
@@ -1724,8 +1922,19 @@
       "references": [
         {
           "file": "backend/v2/images.py",
-          "line": 313,
+          "line": 321,
           "kind": "server"
+        }
+      ]
+    },
+    {
+      "source": "Cotton",
+      "sha256": "38ba2144543153b75b3c21ce72bc9d3cc2aa5b2b433877b0611d91fdf890d79b",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
         }
       ]
     },
@@ -1735,7 +1944,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 77,
+          "line": 79,
           "kind": "literal"
         }
       ]
@@ -1756,18 +1965,8 @@
       "sha256": "98caf7c43c6f2c35cbc0376c937d27f67edad50c0d3e98dbc451c272c02ce479",
       "references": [
         {
-          "file": "src/components/product/FarmView.jsx",
-          "line": 162,
-          "kind": "literal"
-        },
-        {
-          "file": "src/components/product/MarketView.jsx",
-          "line": 46,
-          "kind": "literal"
-        },
-        {
-          "file": "src/components/product/ScanView.jsx",
-          "line": 177,
+          "file": "src/components/product/CropPicker.jsx",
+          "line": 35,
           "kind": "literal"
         }
       ]
@@ -1838,7 +2037,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 369,
+          "line": 366,
           "kind": "literal"
         }
       ]
@@ -1877,12 +2076,34 @@
       ]
     },
     {
+      "source": "Cucumber",
+      "sha256": "bff0d9f9075b7096af62fb5a292f483f946c1cec702124f8e79e0549ce2f6779",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
+        }
+      ]
+    },
+    {
+      "source": "Cumin",
+      "sha256": "8c21608fb30373776b81b1453a048f1b1491cde2436fa1b0c89fdbf9912f0572",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
+        }
+      ]
+    },
+    {
       "source": "Current crop",
       "sha256": "fa45f10fc166fc1c0b65fe86177a610af5534daa302fb959b9dba3ec83744cbe",
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 309,
+          "line": 304,
           "kind": "literal"
         }
       ]
@@ -1915,7 +2136,7 @@
       "references": [
         {
           "file": "src/features/farms/FieldManagement.jsx",
-          "line": 73,
+          "line": 85,
           "kind": "literal"
         }
       ]
@@ -1926,7 +2147,7 @@
       "references": [
         {
           "file": "src/features/farms/FieldManagement.jsx",
-          "line": 268,
+          "line": 280,
           "kind": "template"
         }
       ]
@@ -1937,7 +2158,7 @@
       "references": [
         {
           "file": "src/features/farms/FieldManagement.jsx",
-          "line": 108,
+          "line": 120,
           "kind": "literal"
         }
       ]
@@ -1948,7 +2169,7 @@
       "references": [
         {
           "file": "src/features/farms/FieldManagement.jsx",
-          "line": 279,
+          "line": 291,
           "kind": "literal"
         }
       ]
@@ -1981,7 +2202,7 @@
       "references": [
         {
           "file": "src/features/farms/FieldManagement.jsx",
-          "line": 211,
+          "line": 223,
           "kind": "literal"
         }
       ]
@@ -1992,7 +2213,7 @@
       "references": [
         {
           "file": "src/features/farms/FieldManagement.jsx",
-          "line": 97,
+          "line": 109,
           "kind": "literal"
         }
       ]
@@ -2003,7 +2224,7 @@
       "references": [
         {
           "file": "src/features/farms/FieldManagement.jsx",
-          "line": 200,
+          "line": 212,
           "kind": "literal"
         }
       ]
@@ -2124,7 +2345,7 @@
       "references": [
         {
           "file": "src/components/product/MarketView.jsx",
-          "line": 64,
+          "line": 61,
           "kind": "literal"
         }
       ]
@@ -2135,7 +2356,7 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 245,
+          "line": 234,
           "kind": "literal"
         }
       ]
@@ -2190,7 +2411,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 349,
+          "line": 346,
           "kind": "literal"
         }
       ]
@@ -2212,7 +2433,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 100,
+          "line": 102,
           "kind": "literal"
         }
       ]
@@ -2223,7 +2444,7 @@
       "references": [
         {
           "file": "src/components/product/MarketView.jsx",
-          "line": 59,
+          "line": 56,
           "kind": "literal"
         }
       ]
@@ -2234,7 +2455,7 @@
       "references": [
         {
           "file": "src/components/product/MarketView.jsx",
-          "line": 68,
+          "line": 65,
           "kind": "literal"
         }
       ]
@@ -2245,23 +2466,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 111,
-          "kind": "literal"
-        }
-      ]
-    },
-    {
-      "source": "e.g. Tomato",
-      "sha256": "607efd82816cc26ca01145cd32013f8dcd36508f4c128bcb35af1ddb357acfd2",
-      "references": [
-        {
-          "file": "src/components/product/FarmView.jsx",
-          "line": 167,
-          "kind": "literal"
-        },
-        {
-          "file": "src/components/product/MarketView.jsx",
-          "line": 50,
+          "line": 113,
           "kind": "literal"
         }
       ]
@@ -2305,7 +2510,7 @@
       "references": [
         {
           "file": "src/features/farms/FieldManagement.jsx",
-          "line": 129,
+          "line": 141,
           "kind": "literal"
         }
       ]
@@ -2321,7 +2526,7 @@
         },
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 220,
+          "line": 209,
           "kind": "literal"
         }
       ]
@@ -2425,7 +2630,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 383,
+          "line": 380,
           "kind": "literal"
         }
       ]
@@ -2557,7 +2762,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 175,
+          "line": 170,
           "kind": "literal"
         }
       ]
@@ -2689,7 +2894,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 72,
+          "line": 74,
           "kind": "literal"
         },
         {
@@ -2699,7 +2904,7 @@
         },
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 84,
+          "line": 86,
           "kind": "literal"
         }
       ]
@@ -2732,7 +2937,29 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 94,
+          "line": 96,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Farm records support this crop. Photo classification is unavailable for this crop or its model metadata.",
+      "sha256": "8923362fa67dc0a1062bfbbe04e48925293e369e75b8f2c00c292ce3eb6313b6",
+      "references": [
+        {
+          "file": "src/components/product/ScanView.jsx",
+          "line": 192,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Farm records: this crop can be saved to your field.",
+      "sha256": "5115db50749c795dd969b56ef59db0b21163250f78b85c1712c53fb82f8cbca3",
+      "references": [
+        {
+          "file": "src/components/product/CropPicker.jsx",
+          "line": 60,
           "kind": "literal"
         }
       ]
@@ -2815,6 +3042,17 @@
       ]
     },
     {
+      "source": "Fenugreek",
+      "sha256": "ae538f7259bb38bfee45e823a0e3c9b771009090e4537cf476ee0620fc89faca",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
+        }
+      ]
+    },
+    {
       "source": "Fertilizer applied",
       "sha256": "6898cde4c1acf8e698ff23426c2f062e509c5a375e6939f97f24a44735931947",
       "references": [
@@ -2836,7 +3074,7 @@
         },
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 292,
+          "line": 287,
           "kind": "literal"
         }
       ]
@@ -2880,7 +3118,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 140,
+          "line": 141,
           "kind": "literal"
         }
       ]
@@ -2946,7 +3184,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 105,
+          "line": 107,
           "kind": "literal"
         }
       ]
@@ -2990,7 +3228,7 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 79,
+          "line": 81,
           "kind": "literal"
         }
       ]
@@ -3034,8 +3272,19 @@
       "references": [
         {
           "file": "src/components/product/MarketView.jsx",
-          "line": 73,
+          "line": 70,
           "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Finger millet (Ragi)",
+      "sha256": "9257b704bda39ed93551541102fdd00d9d5fc62865145ee4ec65ff7c87f416c8",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
         }
       ]
     },
@@ -3122,13 +3371,57 @@
       ]
     },
     {
+      "source": "Garlic",
+      "sha256": "4e7bcd0c8d5b25bdb683b29be3304f89cf6a516eada88f227fe04018b876fdfb",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
+        }
+      ]
+    },
+    {
+      "source": "Ginger",
+      "sha256": "544a9cb451f2a731f20e658e5f6d1547ef51017cd1d4e88f5fdbff73f68300df",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
+        }
+      ]
+    },
+    {
       "source": "Give it a name and an area. You can draw its boundary whenever you are ready.",
       "sha256": "b641f70697f5fad3c7697d52a8952a9727761e53354a12f0384d7795d4a4dcf0",
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 54,
+          "line": 55,
           "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Grapes",
+      "sha256": "d5fab6d3de1d6a40c11a2e92f11e78b1656cd09dee7a63f4623906694ff0e3ff",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
+        }
+      ]
+    },
+    {
+      "source": "Green Peas",
+      "sha256": "3e0e3299107a53aeabd48574024387183309c24eb8638777186c3caabbbe8687",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
         }
       ]
     },
@@ -3140,6 +3433,28 @@
           "file": "backend/remote_sensing/climate.py",
           "line": 94,
           "kind": "server"
+        }
+      ]
+    },
+    {
+      "source": "Groundnut",
+      "sha256": "6bd78231307ae58b48dce79d3816cfc7ac6f02ec7c819682e01fdc0858e9405a",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
+        }
+      ]
+    },
+    {
+      "source": "Guava",
+      "sha256": "3c5cdb8438c853b05ac00da827b4000e3251df2d1f6aeba63849a2c5e82c832f",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
         }
       ]
     },
@@ -3182,7 +3497,7 @@
       "references": [
         {
           "file": "backend/v2/images.py",
-          "line": 139,
+          "line": 147,
           "kind": "server"
         }
       ]
@@ -3198,7 +3513,7 @@
         },
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 304,
+          "line": 299,
           "kind": "jsx"
         }
       ]
@@ -3692,7 +4007,7 @@
       "references": [
         {
           "file": "src/features/farms/FieldManagement.jsx",
-          "line": 184,
+          "line": 196,
           "kind": "literal"
         }
       ]
@@ -3714,8 +4029,19 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 142,
+          "line": 144,
           "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Jute",
+      "sha256": "9ea53a1e3370710198a957da542cedbc0fffa65c17cc84ba1cdd3aa753b4f551",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
         }
       ]
     },
@@ -3736,7 +4062,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 158,
+          "line": 161,
           "kind": "literal"
         }
       ]
@@ -3758,7 +4084,7 @@
       "references": [
         {
           "file": "src/components/product/MarketView.jsx",
-          "line": 23,
+          "line": 24,
           "kind": "literal"
         }
       ]
@@ -3841,6 +4167,28 @@
       ]
     },
     {
+      "source": "Lemon",
+      "sha256": "6d33a9d4d7809052cf8c6b59c84ffbb2d16ef7452c0d403776e7fd16d8f8fc07",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
+        }
+      ]
+    },
+    {
+      "source": "Lentil",
+      "sha256": "c64f07e118cabd3611c4652039af6aa7b7c93abe11440d6114e75b14218ab3e1",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
+        }
+      ]
+    },
+    {
       "source": "Limits",
       "sha256": "dffb64dc70011ecf3ef3ad62cdd271f08f1b86601d7c2bc54f91978a32ca8cf4",
       "references": [
@@ -3848,6 +4196,17 @@
           "file": "src/features/product/DemoApp.jsx",
           "line": 405,
           "kind": "jsx"
+        }
+      ]
+    },
+    {
+      "source": "Litchi",
+      "sha256": "180acf4e87349d831f987eecfee9acaeae9c576a8bb2944e5662a5de765ba876",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
         }
       ]
     },
@@ -3879,7 +4238,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 279,
+          "line": 274,
           "kind": "literal"
         }
       ]
@@ -3912,7 +4271,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 108,
+          "line": 109,
           "kind": "literal"
         }
       ]
@@ -3995,12 +4354,23 @@
       ]
     },
     {
+      "source": "Maize",
+      "sha256": "637a42a546ae3a367d40a0d069f6b21ee732a4b6d34126dc7ae05b895b19ea99",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
+        }
+      ]
+    },
+    {
       "source": "Manage farms, field details & crop cycles",
       "sha256": "0446d186e00bfd0edd5379f599535dcef591c8f8550e044c4e4a72bc56e5f6ac",
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 428,
+          "line": 425,
           "kind": "literal"
         }
       ]
@@ -4011,8 +4381,19 @@
       "references": [
         {
           "file": "src/features/farms/FieldManagement.jsx",
-          "line": 230,
+          "line": 242,
           "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Mango",
+      "sha256": "6455dbcb9597e2174aedccfd387db577d487fc7fc6027c2d66eb7c239cf56922",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
         }
       ]
     },
@@ -4022,12 +4403,12 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 254,
+          "line": 249,
           "kind": "literal"
         },
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 315,
+          "line": 312,
           "kind": "literal"
         }
       ]
@@ -4060,7 +4441,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 315,
+          "line": 312,
           "kind": "literal"
         }
       ]
@@ -4116,6 +4497,17 @@
         {
           "file": "src/features/product/DemoApp.jsx",
           "line": 344,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Market prices: available only when a source returns dated data.",
+      "sha256": "40748af5ebeded180d71897ee1a00a0f87328784752c71ef98a0259e36fb26b8",
+      "references": [
+        {
+          "file": "src/components/product/CropPicker.jsx",
+          "line": 68,
           "kind": "literal"
         }
       ]
@@ -4236,7 +4628,7 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 236,
+          "line": 225,
           "kind": "literal"
         }
       ]
@@ -4247,8 +4639,19 @@
       "references": [
         {
           "file": "backend/v2/images.py",
-          "line": 138,
+          "line": 146,
           "kind": "server"
+        }
+      ]
+    },
+    {
+      "source": "Moong",
+      "sha256": "085fe95070ab957408e313255a6cb5eecbf27d3a417181ce5d00735e2c64fa6a",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
         }
       ]
     },
@@ -4271,6 +4674,17 @@
           "file": "src/features/product/DemoApp.jsx",
           "line": 260,
           "kind": "jsx"
+        }
+      ]
+    },
+    {
+      "source": "Mustard",
+      "sha256": "4ec51082ce795718319202e9321e1f100b4096c43427a6a0a403eecedb593db2",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
         }
       ]
     },
@@ -4302,7 +4716,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 229,
+          "line": 224,
           "kind": "literal"
         }
       ]
@@ -4374,12 +4788,28 @@
       ]
     },
     {
+      "source": "NFKC",
+      "sha256": "c035b71d1f2c20f1f5e3664051cc087fba472e33209f47a61713001bc1d4f662",
+      "references": [
+        {
+          "file": "src/features/product/crops.js",
+          "line": 19,
+          "kind": "literal"
+        },
+        {
+          "file": "src/features/product/crops.js",
+          "line": 22,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "No",
       "sha256": "1ea442a134b2a184bd5d40104401f2a37fbc09ccf3f4bc9da161c6099be3691d",
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 249,
+          "line": 238,
           "kind": "literal"
         }
       ]
@@ -4423,7 +4853,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 70,
+          "line": 71,
           "kind": "literal"
         }
       ]
@@ -4456,7 +4886,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 263,
+          "line": 258,
           "kind": "literal"
         }
       ]
@@ -4506,12 +4936,23 @@
       ]
     },
     {
+      "source": "No matching crops. Try another spelling.",
+      "sha256": "83b073703072fc7ad4fbac5ee9ccf44e8e1955d43c0239c7d3d032ca7304634e",
+      "references": [
+        {
+          "file": "src/components/product/CropPicker.jsx",
+          "line": 56,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "No next steps are currently stored. This does not confirm that the field is healthy. Keep observing and record anything that changes.",
       "sha256": "93439a2a0499d56a302cbce001521cb158024174aae885616e8aec5cf315f784",
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 137,
+          "line": 138,
           "kind": "literal"
         }
       ]
@@ -4577,7 +5018,7 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 231,
+          "line": 220,
           "kind": "literal"
         },
         {
@@ -4648,7 +5089,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 310,
+          "line": 306,
           "kind": "literal"
         }
       ]
@@ -4659,7 +5100,7 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 250,
+          "line": 239,
           "kind": "literal"
         }
       ]
@@ -4692,7 +5133,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 205,
+          "line": 206,
           "kind": "literal"
         }
       ]
@@ -4736,7 +5177,7 @@
       "references": [
         {
           "file": "src/components/product/MarketView.jsx",
-          "line": 91,
+          "line": 88,
           "kind": "literal"
         }
       ]
@@ -4747,7 +5188,7 @@
       "references": [
         {
           "file": "src/components/product/MarketView.jsx",
-          "line": 118,
+          "line": 115,
           "kind": "literal"
         }
       ]
@@ -4863,6 +5304,28 @@
       ]
     },
     {
+      "source": "Okra",
+      "sha256": "2c761615d641eb2f3087cf91c1e6c22bd570c6832e04bd2f5bb92d367c88787b",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
+        }
+      ]
+    },
+    {
+      "source": "Onion",
+      "sha256": "cc278ed65b2d4d792808abde8bcf79848ad5c13f4f9f540eb4cfef3d74902029",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
+        }
+      ]
+    },
+    {
       "source": "Only photographs with current model-improvement consent appear here. Corrections do not retrain or promote a model.",
       "sha256": "2b1868e8bd7b9d410bffbb902cf81b55d672c119848c93e3f5b5d6a54477ee0f",
       "references": [
@@ -4879,7 +5342,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 326,
+          "line": 323,
           "kind": "literal"
         }
       ]
@@ -4956,7 +5419,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 329,
+          "line": 326,
           "kind": "literal"
         }
       ]
@@ -5043,7 +5506,7 @@
         },
         {
           "file": "backend/v2/images.py",
-          "line": 164,
+          "line": 172,
           "kind": "server"
         }
       ]
@@ -5054,7 +5517,7 @@
       "references": [
         {
           "file": "backend/v2/images.py",
-          "line": 324,
+          "line": 332,
           "kind": "server"
         }
       ]
@@ -5092,7 +5555,7 @@
       "references": [
         {
           "file": "backend/v2/images.py",
-          "line": 251,
+          "line": 259,
           "kind": "server"
         }
       ]
@@ -5197,13 +5660,24 @@
       ]
     },
     {
-      "source": "Other / not listed",
-      "sha256": "c8c2bf80306a0bd2ac50ae55612c11d5d876329952f040d334c582ea11956800",
+      "source": "Orange",
+      "sha256": "78e7771b8b46e11ddb34ba48887e1330525215f96d94778980d1186e6f09f6b4",
       "references": [
         {
-          "file": "src/components/product/ScanView.jsx",
-          "line": 189,
-          "kind": "jsx"
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
+        }
+      ]
+    },
+    {
+      "source": "Papaya",
+      "sha256": "193e5e1cb2367d43d35155afb6af96cb40f76dead96873f853562e62e789c7d7",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
         }
       ]
     },
@@ -5215,6 +5689,28 @@
           "file": "src/components/product/SettingsView.jsx",
           "line": 36,
           "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Peach",
+      "sha256": "2b1f3f0b7afa26e4a824521353a48880a0dbb7c6f7a371056fbde0c6ee03f407",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
+        }
+      ]
+    },
+    {
+      "source": "Pearl millet (Bajra)",
+      "sha256": "b5ecbdfc79b32809cd5f53bc6fd636f395faf74da05142745c7a99ba2be6061e",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
         }
       ]
     },
@@ -5317,7 +5813,7 @@
       "references": [
         {
           "file": "backend/v2/images.py",
-          "line": 153,
+          "line": 161,
           "kind": "server"
         }
       ]
@@ -5328,7 +5824,18 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 228,
+          "line": 217,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Photo suggestions: check Scan for this crop's current coverage.",
+      "sha256": "edda5bd167a202fdf3534ba8bb413cf2c6f2ac5b42bf4d9507d2c30a6ec3b121",
+      "references": [
+        {
+          "file": "src/components/product/CropPicker.jsx",
+          "line": 63,
           "kind": "literal"
         }
       ]
@@ -5339,12 +5846,12 @@
       "references": [
         {
           "file": "backend/v2/images.py",
-          "line": 230,
+          "line": 238,
           "kind": "server"
         },
         {
           "file": "backend/v2/images.py",
-          "line": 364,
+          "line": 372,
           "kind": "server"
         }
       ]
@@ -5357,6 +5864,17 @@
           "file": "src/features/farms/ScanHistory.jsx",
           "line": 32,
           "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Pigeon pea (Tur / Arhar)",
+      "sha256": "7c4e28aa197ec7c4bfd1e795d55481eb5189433890c6773b3f8d309ab91aa638",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
         }
       ]
     },
@@ -5476,6 +5994,17 @@
       ]
     },
     {
+      "source": "Pomegranate",
+      "sha256": "ae885a423bc4b8ade068bba709b1e656c27223c21011b0f689157c48e8651c10",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
+        }
+      ]
+    },
+    {
       "source": "portal",
       "sha256": "d0960501f8971be812f2e5494426e08cdbb2cbc3b3190ba60075f14b8da7178a",
       "references": [
@@ -5483,6 +6012,17 @@
           "file": "src/features/farms/BenefitsPanel.jsx",
           "line": 55,
           "kind": "jsx"
+        }
+      ]
+    },
+    {
+      "source": "Potato",
+      "sha256": "6d61374da4b4df53c6f8fbf4c9b05576d647a07da7498b400abaf7e1f4f44124",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
         }
       ]
     },
@@ -5503,7 +6043,7 @@
       "references": [
         {
           "file": "src/components/product/MarketView.jsx",
-          "line": 24,
+          "line": 25,
           "kind": "literal"
         }
       ]
@@ -5673,8 +6213,19 @@
       "references": [
         {
           "file": "src/components/product/MarketView.jsx",
-          "line": 89,
+          "line": 86,
           "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Pumpkin",
+      "sha256": "c6c5211a50793ccc36daff5d97003daf1a6c481267f83757a59ca657a5654bef",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
         }
       ]
     },
@@ -5690,6 +6241,17 @@
       ]
     },
     {
+      "source": "Radish",
+      "sha256": "fb56c2b5e92844be14b6f01cc765cba60a102357ec201e451d00217d7b18f3aa",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
+        }
+      ]
+    },
+    {
       "source": "Rain mm",
       "sha256": "e9535ddee890d78f753c9340f9923a4aa17bacb69651933c7adb1ebb87287853",
       "references": [
@@ -5697,6 +6259,17 @@
           "file": "src/features/farms/PlotContext.jsx",
           "line": 120,
           "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Raspberry",
+      "sha256": "6b9e1f86100c7a63b855407d3032e014cb668c33aec60779cbe1c24381da0980",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
         }
       ]
     },
@@ -5717,7 +6290,7 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 239,
+          "line": 228,
           "kind": "literal"
         }
       ]
@@ -5739,7 +6312,7 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 292,
+          "line": 291,
           "kind": "literal"
         }
       ]
@@ -5772,7 +6345,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 44,
+          "line": 45,
           "kind": "literal"
         }
       ]
@@ -5849,12 +6422,12 @@
       "references": [
         {
           "file": "src/features/farms/FieldManagement.jsx",
-          "line": 251,
+          "line": 263,
           "kind": "literal"
         },
         {
           "file": "src/features/farms/FieldManagement.jsx",
-          "line": 259,
+          "line": 271,
           "kind": "literal"
         }
       ]
@@ -5988,6 +6561,11 @@
           "file": "src/features/product/useSimulation.js",
           "line": 10,
           "kind": "literal"
+        },
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
         }
       ]
     },
@@ -6140,7 +6718,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 184,
+          "line": 179,
           "kind": "literal"
         }
       ]
@@ -6151,7 +6729,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 128,
+          "line": 130,
           "kind": "literal"
         }
       ]
@@ -6233,7 +6811,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 92,
+          "line": 93,
           "kind": "literal"
         },
         {
@@ -6260,7 +6838,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 103,
+          "line": 104,
           "kind": "literal"
         }
       ]
@@ -6310,6 +6888,28 @@
       ]
     },
     {
+      "source": "Search crops",
+      "sha256": "21f9964c1f038ad9e7de458823d25f7fdc38bd24c3d516c2b5c0956dd73a7198",
+      "references": [
+        {
+          "file": "src/components/product/CropPicker.jsx",
+          "line": 23,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Search in your language",
+      "sha256": "46e9b7b97c2265541382ad945756cd90486c2abaa50d9606bc74a1e609635514",
+      "references": [
+        {
+          "file": "src/components/product/CropPicker.jsx",
+          "line": 30,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Search language or region",
       "sha256": "3d41571cc7ab1c6428534141df5e61fcd0a82b70a9b91e99b1c3b1ed1495b1e1",
       "references": [
@@ -6326,7 +6926,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 147,
+          "line": 148,
           "kind": "literal"
         }
       ]
@@ -6337,7 +6937,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 61,
+          "line": 62,
           "kind": "literal"
         }
       ]
@@ -6425,7 +7025,7 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 92,
+          "line": 94,
           "kind": "literal"
         }
       ]
@@ -6460,6 +7060,17 @@
           "file": "src/components/product/SignIn.jsx",
           "line": 105,
           "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Sesame",
+      "sha256": "d45932dd4ca1d7386ee015cc3f946124b8a4ca7ea59cdc00ee1babba863e9c5f",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
         }
       ]
     },
@@ -6501,7 +7112,7 @@
         },
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 221,
+          "line": 210,
           "kind": "literal"
         }
       ]
@@ -6545,7 +7156,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 147,
+          "line": 148,
           "kind": "literal"
         }
       ]
@@ -6556,7 +7167,7 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 96,
+          "line": 98,
           "kind": "literal"
         }
       ]
@@ -6611,7 +7222,7 @@
       "references": [
         {
           "file": "backend/v2/images.py",
-          "line": 266,
+          "line": 274,
           "kind": "server"
         }
       ]
@@ -6803,6 +7414,17 @@
       ]
     },
     {
+      "source": "Sorghum (Jowar)",
+      "sha256": "a91cddf413b5d5c4439b8177690d2d8bed9d3eca159c9328f09c26211a85b70f",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
+        }
+      ]
+    },
+    {
       "source": "Source & limits",
       "sha256": "df728073a070384b8f1434a2f07717771c3596187d6ceff77d347a5aa645aae8",
       "references": [
@@ -6852,7 +7474,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 103,
+          "line": 104,
           "kind": "literal"
         }
       ]
@@ -6863,7 +7485,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 171,
+          "line": 166,
           "kind": "literal"
         }
       ]
@@ -6874,8 +7496,41 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 74,
+          "line": 75,
           "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Soybean",
+      "sha256": "211c88f510052a41e1b9c9a5f8571a7e42a466de764a333ce89b976931c1b482",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
+        }
+      ]
+    },
+    {
+      "source": "Spinach",
+      "sha256": "115848bd1b625cfe983273f195922a7553f0a63022873a97c8c9966d1cbcad47",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
+        }
+      ]
+    },
+    {
+      "source": "Squash",
+      "sha256": "9f9a8456f0eef1e4d02d9d00874d9bb6cc62b7c480b291dedf9d0afeac80b47b",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
         }
       ]
     },
@@ -6885,7 +7540,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 76,
+          "line": 77,
           "kind": "literal"
         }
       ]
@@ -6918,7 +7573,7 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 70,
+          "line": 72,
           "kind": "literal"
         }
       ]
@@ -6929,7 +7584,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 51,
+          "line": 52,
           "kind": "literal"
         }
       ]
@@ -6940,7 +7595,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 30,
+          "line": 32,
           "kind": "literal"
         }
       ]
@@ -6951,7 +7606,7 @@
       "references": [
         {
           "file": "src/components/product/MarketView.jsx",
-          "line": 55,
+          "line": 52,
           "kind": "literal"
         }
       ]
@@ -6979,6 +7634,28 @@
       ]
     },
     {
+      "source": "Strawberry",
+      "sha256": "8b08b70bef0c5f31046c217add159aca8236f286665088b39d872ae5b37c1771",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
+        }
+      ]
+    },
+    {
+      "source": "Sugarcane",
+      "sha256": "ad32d6a383557065fe1cf7ef0d04242ee86b6b12f08bebbcbd3f1219a0de91f1",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
+        }
+      ]
+    },
+    {
       "source": "Summary",
       "sha256": "8e76a94ac8320d515375e625bef1829238b097ecbd33611b59eeefd4ffefebfb",
       "references": [
@@ -6990,12 +7667,23 @@
       ]
     },
     {
+      "source": "Sunflower",
+      "sha256": "875af21cd687e882102a1fccd89ed2a613b922cbd8210b06552884a5e3075914",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
+        }
+      ]
+    },
+    {
       "source": "Supported crops & validation",
       "sha256": "69e84f8f0ffd90672dcd09ab377fc33830c3903f66fb363f7dc3402f2d16635c",
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 278,
+          "line": 267,
           "kind": "literal"
         }
       ]
@@ -7126,7 +7814,7 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 111,
+          "line": 113,
           "kind": "literal"
         }
       ]
@@ -7137,7 +7825,7 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 126,
+          "line": 128,
           "kind": "literal"
         }
       ]
@@ -7224,7 +7912,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 204,
+          "line": 199,
           "kind": "literal"
         }
       ]
@@ -7395,12 +8083,23 @@
       ]
     },
     {
+      "source": "This crop is in the classifier label set. Field accuracy is not established.",
+      "sha256": "426a34863d7f30696505bbcb0f36728b57886077f11308f01b21405edb83a381",
+      "references": [
+        {
+          "file": "src/components/product/ScanView.jsx",
+          "line": 189,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "This field is not available in your account. Choose a saved field below.",
       "sha256": "31b55c4892d5573adcaa6e7225f3af552c6ec38a1a0f370dd2ae5af34f3e54a2",
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 222,
+          "line": 217,
           "kind": "literal"
         }
       ]
@@ -7554,8 +8253,19 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 222,
+          "line": 211,
           "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Tobacco",
+      "sha256": "d00a0fc156922e1b708f379d9e38e497f24502462995661a69797cc7a832d3ef",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
         }
       ]
     },
@@ -7587,7 +8297,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 27,
+          "line": 28,
           "kind": "literal"
         }
       ]
@@ -7598,12 +8308,12 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 13,
+          "line": 15,
           "kind": "literal"
         },
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 39,
+          "line": 41,
           "kind": "literal"
         },
         {
@@ -7615,6 +8325,11 @@
           "file": "src/features/farms/InstitutionConsole.jsx",
           "line": 18,
           "kind": "literal"
+        },
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
         }
       ]
     },
@@ -7692,6 +8407,17 @@
           "file": "src/features/product/DemoApp.jsx",
           "line": 144,
           "kind": "jsx"
+        }
+      ]
+    },
+    {
+      "source": "Turmeric",
+      "sha256": "60f9ceba5d316592e79002b17a92fe3525139f2d2286af36c61dad7ab5bfeb27",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
         }
       ]
     },
@@ -7800,7 +8526,7 @@
       "references": [
         {
           "file": "src/features/farms/FieldManagement.jsx",
-          "line": 88,
+          "line": 100,
           "kind": "literal"
         }
       ]
@@ -7811,7 +8537,7 @@
       "references": [
         {
           "file": "src/features/farms/FieldManagement.jsx",
-          "line": 191,
+          "line": 203,
           "kind": "literal"
         }
       ]
@@ -7833,7 +8559,7 @@
       "references": [
         {
           "file": "src/features/farms/FieldManagement.jsx",
-          "line": 163,
+          "line": 175,
           "kind": "literal"
         }
       ]
@@ -7844,7 +8570,7 @@
       "references": [
         {
           "file": "src/features/farms/FieldManagement.jsx",
-          "line": 172,
+          "line": 184,
           "kind": "literal"
         }
       ]
@@ -7855,8 +8581,19 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 118,
+          "line": 120,
           "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Urad",
+      "sha256": "a3150abefa025a1bd08fd77869ccbbec10bc39c28e54089c6a78c1d0184b6048",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
         }
       ]
     },
@@ -7954,7 +8691,7 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 99,
+          "line": 101,
           "kind": "literal"
         }
       ]
@@ -8102,7 +8839,7 @@
       "references": [
         {
           "file": "src/components/product/MarketView.jsx",
-          "line": 98,
+          "line": 95,
           "kind": "literal"
         }
       ]
@@ -8135,7 +8872,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 82,
+          "line": 83,
           "kind": "literal"
         }
       ]
@@ -8146,7 +8883,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 221,
+          "line": 222,
           "kind": "literal"
         }
       ]
@@ -8157,7 +8894,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 356,
+          "line": 353,
           "kind": "literal"
         }
       ]
@@ -8181,6 +8918,17 @@
           "file": "src/components/product/Timeline.jsx",
           "line": 14,
           "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Watermelon",
+      "sha256": "4b4e11cc0735d5727305af841fd9095f63dab30ff512e7ee2f5797949f840b0a",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
         }
       ]
     },
@@ -8327,7 +9075,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 101,
+          "line": 102,
           "kind": "literal"
         }
       ]
@@ -8338,7 +9086,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 209,
+          "line": 210,
           "kind": "literal"
         }
       ]
@@ -8355,12 +9103,23 @@
       ]
     },
     {
+      "source": "Wheat",
+      "sha256": "cca303e99f5f821dfd9d74b81b18be6a03a7ee271123158a9d6a7092f326b1bf",
+      "references": [
+        {
+          "file": "src/features/product/cropCatalog.json",
+          "line": 1,
+          "kind": "crop-label"
+        }
+      ]
+    },
+    {
       "source": "Where this comes from",
       "sha256": "288a167e9932de781c697f637d348705cfaf4075cd075c0c0a853287c4981753",
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 201,
+          "line": 202,
           "kind": "literal"
         },
         {
@@ -8376,12 +9135,12 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 126,
+          "line": 127,
           "kind": "literal"
         },
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 193,
+          "line": 194,
           "kind": "literal"
         },
         {
@@ -8457,7 +9216,7 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 248,
+          "line": 237,
           "kind": "literal"
         }
       ]
@@ -8479,7 +9238,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 386,
+          "line": 383,
           "kind": "literal"
         }
       ]
@@ -8523,7 +9282,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 206,
+          "line": 201,
           "kind": "literal"
         }
       ]
@@ -8534,7 +9293,7 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 266,
+          "line": 255,
           "kind": "literal"
         }
       ]
@@ -8578,7 +9337,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 64,
+          "line": 66,
           "kind": "literal"
         }
       ]
@@ -8600,7 +9359,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 31,
+          "line": 32,
           "kind": "literal"
         }
       ]

@@ -302,22 +302,22 @@
   {
     "source": "Model score is not calibrated disease probability",
     "file": "backend/v2/images.py",
-    "line": 138
+    "line": 146
   },
   {
     "source": "Healthy-class prediction does not rule out disease",
     "file": "backend/v2/images.py",
-    "line": 139
+    "line": 147
   },
   {
     "source": "Classification does not measure field severity",
     "file": "backend/v2/images.py",
-    "line": 140
+    "line": 148
   },
   {
     "source": "Chemical treatment and dosing require locally applicable expert/label verification",
     "file": "backend/v2/images.py",
-    "line": 141
+    "line": 149
   },
   {
     "source": "Image not found",
@@ -327,27 +327,27 @@
   {
     "source": "Agronomist role required",
     "file": "backend/v2/images.py",
-    "line": 264
+    "line": 272
   },
   {
     "source": "Sign in again before expert review",
     "file": "backend/v2/images.py",
-    "line": 266
+    "line": 274
   },
   {
     "source": "Consented image not found",
     "file": "backend/v2/images.py",
-    "line": 310
+    "line": 318
   },
   {
     "source": "Correction must match the active classifier label set",
     "file": "backend/v2/images.py",
-    "line": 313
+    "line": 321
   },
   {
     "source": "Consented image not found",
     "file": "backend/v2/images.py",
-    "line": 360
+    "line": 368
   },
   {
     "source": "Photo processing is busy; retry shortly",
@@ -372,32 +372,32 @@
   {
     "source": "Photo storage unavailable; retry later",
     "file": "backend/v2/images.py",
-    "line": 153
+    "line": 161
   },
   {
     "source": "Operation ID already used for another photograph",
     "file": "backend/v2/images.py",
-    "line": 164
+    "line": 172
   },
   {
     "source": "Photo unavailable; retry later",
     "file": "backend/v2/images.py",
-    "line": 230
+    "line": 238
   },
   {
     "source": "Operation ID already used for other feedback",
     "file": "backend/v2/images.py",
-    "line": 251
+    "line": 259
   },
   {
     "source": "Operation ID already used for another review",
     "file": "backend/v2/images.py",
-    "line": 324
+    "line": 332
   },
   {
     "source": "Photo unavailable; retry later",
     "file": "backend/v2/images.py",
-    "line": 364
+    "line": 372
   },
   {
     "source": "Request limit reached; retry later",

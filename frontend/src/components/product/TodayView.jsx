@@ -7,6 +7,7 @@ import { Dialog } from "./Dialog";
 import { Timeline } from "./Timeline";
 import { ActionSheet } from "./ActionSheet";
 import { WeatherStrip } from "./WeatherStrip";
+import { cropLabel } from "../../features/product/crops";
 const LocalReadout = deferredFeature(
   () => import("../../features/farms/LocalReadout"),
 );
@@ -67,7 +68,7 @@ export function TodayView({ workspace: w }) {
             <Sun size={24} />
             <div>
               <strong>
-                {w.cycles[0]?.crop || tx("No crop cycle recorded")}
+                {cropLabel(w.cycles[0], tx) || tx("No crop cycle recorded")}
               </strong>
               <span>
                 {w.cycles[0]

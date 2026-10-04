@@ -4,6 +4,7 @@ import { Store } from "lucide-react";
 import { deferredFeature } from "../deferredFeature";
 import supportPrices from "../../data/msp_data.json";
 import { I18nProvider } from "../../i18n";
+import { CropPicker } from "./CropPicker";
 const MandiPriceCard = deferredFeature(() => import("../MandiPriceCard"));
 const MSPRateCard = deferredFeature(() => import("../MSPRateCard"));
 export function MarketView({ workspace: w }) {
@@ -42,15 +43,11 @@ export function MarketView({ workspace: w }) {
             });
           }}
         >
-          <label className="v2-label">
-            {tx("Crop")}
-            <input
-              value={commodity}
-              onChange={(event) => setCommodity(event.target.value)}
-              placeholder={tx("e.g. Tomato")}
-              maxLength={100}
-            />
-          </label>
+          <CropPicker
+            value={commodity}
+            required={false}
+            onChange={(row) => setCommodity(row?.market_commodity || "")}
+          />
           <label className="v2-label">
             {tx("State")}
             <input

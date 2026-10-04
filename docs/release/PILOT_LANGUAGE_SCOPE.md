@@ -30,8 +30,9 @@ only source literals, never runtime farmer data. Pack metadata and the picker
 explicitly disclose machine translation awaiting native-speaker review.
 
 These checks establish structural integrity, not semantic or native-speaker
-approval. User-entered names and notes remain unchanged. Dynamic crop labels,
-complete structured server-message coverage and speech
+approval. User-entered names and notes remain unchanged. Crop identities and
+localized search now have a dedicated [implementation record](CROP_IDENTITIES.md).
+Complete structured server-message coverage and speech
 integration continue under the remaining release requirements.
 
 Dates now use the selected language through `Intl.DateTimeFormat`. Calendar
@@ -53,3 +54,6 @@ The expanded six-test matrix also passes all three engines: keyboard dismissal
 returns focus to the picker, and Hindi/Urdu persist across Today, Farm, Scan,
 Market, More and Settings after real isolated-development sign-in. Browser
 checks retain their page-error assertions; the fixes do not suppress failures.
+
+The crop follow-up has 832 source strings across all ten packs, with 324 passing
+frontend unit tests. Its full database/browser release gates remain pending.

@@ -6,6 +6,8 @@ import { deferredFeature } from "../../features/product/deferredProductFeature";
 import { BoundaryEditor } from "./BoundaryEditor";
 import { Dialog } from "./Dialog";
 import { AreaInput } from "./AreaInput";
+import { CropPicker } from "./CropPicker";
+import { cropLabel } from "../../features/product/crops";
 import { toHectares, formatArea } from "../../features/product/india";
 const FieldMap = deferredFeature(() => import("../FieldMap"));
 const PlotHealth = deferredFeature(
@@ -133,6 +135,7 @@ function AddField({ w, onClose }) {
 }
 function AddCycle({ w, onClose }) {
   const { tx } = useProductLocale();
+  const [crop, setCrop] = useState("");
   return (
     <Dialog title={tx("Add a crop cycle")} onClose={onClose}>
       <form
@@ -144,7 +147,7 @@ function AddCycle({ w, onClose }) {
               method: "POST",
               body: {
                 operation_id: crypto.randomUUID(),
-                crop: data.get("crop"),
+                crop_id: data.get("crop_id"),
                 sowing_date: data.get("sowing"),
                 expected_harvest: data.get("harvest"),
               },
@@ -158,15 +161,7 @@ function AddCycle({ w, onClose }) {
           {tx("Keep the planting and expected harvest dates together for")}{" "}
           {w.plot.name}.
         </p>
-        <label className="v2-label">
-          {tx("Crop")}
-          <input
-            name="crop"
-            required
-            maxLength={100}
-            placeholder={tx("e.g. Tomato")}
-          />
-        </label>
+        <CropPicker value={crop} onChange={(row) => setCrop(row?.id || "")} />
         <label className="v2-label">
           {tx("Sowing date")}
           <input name="sowing" type="date" required />
@@ -307,7 +302,9 @@ export function FarmView({ workspace: w, plotId }) {
                 </div>
                 <div>
                   <span>{tx("Current crop")}</span>
-                  <strong>{w.cycles[0]?.crop || tx("Not recorded")}</strong>
+                  <strong>
+                    {cropLabel(w.cycles[0], tx) || tx("Not recorded")}
+                  </strong>
                 </div>
                 <div>
                   <span>{tx("Boundary")}</span>
@@ -369,7 +366,7 @@ export function FarmView({ workspace: w, plotId }) {
                   <h3>{tx("Crop cycles")}</h3>
                   {w.cycles.map((item) => (
                     <p key={item.id}>
-                      <strong>{item.crop}</strong> ·{" "}
+                      <strong>{cropLabel(item, tx)}</strong> ·{" "}
                       {formatDate(item.sowing_date)} →{" "}
                       {formatDate(item.expected_harvest)} · {item.status}
                     </p>

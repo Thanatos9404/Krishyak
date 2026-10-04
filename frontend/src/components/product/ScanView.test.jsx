@@ -14,21 +14,19 @@ const initial = { selected: "field-a", plot: {}, cycles: [], consents: [] };
 
 test("late crop-cycle evidence preserves the crop explicitly chosen by the farmer", () => {
   const { rerender } = render(<ScanView workspace={initial} />);
-  fireEvent.change(screen.getByRole("textbox", { name: "Crop" }), {
-    target: { value: "Unsupported" },
+  fireEvent.change(screen.getByRole("combobox", { name: "Crop" }), {
+    target: { value: "wheat" },
   });
   rerender(
     <ScanView workspace={{ ...initial, cycles: [{ crop: "Tomato" }] }} />,
   );
-  expect(screen.getByRole("textbox", { name: "Crop" })).toHaveValue(
-    "Unsupported",
-  );
+  expect(screen.getByRole("combobox", { name: "Crop" })).toHaveValue("wheat");
 });
 
 test("a new field uses its own crop cycle rather than the previous field choice", () => {
   const { rerender } = render(<ScanView workspace={initial} />);
-  fireEvent.change(screen.getByRole("textbox", { name: "Crop" }), {
-    target: { value: "Unsupported" },
+  fireEvent.change(screen.getByRole("combobox", { name: "Crop" }), {
+    target: { value: "tomato" },
   });
   rerender(
     <ScanView
@@ -39,5 +37,5 @@ test("a new field uses its own crop cycle rather than the previous field choice"
       }}
     />,
   );
-  expect(screen.getByRole("textbox", { name: "Crop" })).toHaveValue("Wheat");
+  expect(screen.getByRole("combobox", { name: "Crop" })).toHaveValue("wheat");
 });

@@ -120,6 +120,7 @@ class CropCycle(Record, Base):
     __table_args__ = (UniqueConstraint("plot_id", "operation_id"),)
     plot_id: Mapped[UUID] = mapped_column(ForeignKey("v2_plots.id", ondelete="CASCADE"), index=True)
     crop: Mapped[str] = mapped_column(String(100))
+    crop_id: Mapped[str | None] = mapped_column(String(50))
     variety: Mapped[str | None] = mapped_column(String(100))
     sowing_date: Mapped[date] = mapped_column(Date)
     expected_harvest: Mapped[date] = mapped_column(Date)

@@ -108,9 +108,16 @@ def scan(
     metadata, labels = model_release()
     from model_inference import class_crop, predict_from_image
 
-    crop_alias = {"corn": "maize", "grapes": "grape", "citrus": "orange"}.get(crop.casefold(), crop.casefold())
+    from .crops import BY_ID, BY_NAME
+
+    record_crop = BY_ID.get(crop) or BY_NAME.get(crop)
+    crop_alias = (
+        record_crop["photo_name"]
+        if record_crop
+        else {"corn": "maize", "grapes": "grape", "citrus": "orange"}.get(crop.casefold(), crop.casefold())
+    )
     supported = set(filter(None, map(class_crop, labels)))
-    raw = predict_from_image(clean, crop_type=crop) if crop_alias in supported else {"status": "unsupported"}
+    raw = predict_from_image(clean, crop_type=crop_alias) if crop_alias in supported else {"status": "unsupported"}
     status = (
         "unsupported"
         if crop_alias not in supported
@@ -132,6 +139,7 @@ def scan(
         "model_score": raw.get("confidence", (raw.get("disease") or {}).get("confidence")),
         "alternatives": alternatives,
         "crop": crop,
+        "crop_id": record_crop["id"] if record_crop else None,
         "observed_at": utcnow().isoformat(),
         "recommended_next_step": "Inspect symptoms and seek local expert confirmation before treatment.",
         "limitations": [

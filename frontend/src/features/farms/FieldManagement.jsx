@@ -4,13 +4,15 @@ import { farmApi } from "./api";
 import { BoundaryEditor } from "../../components/product/BoundaryEditor";
 import { AreaInput } from "../../components/product/AreaInput";
 import { fromHectares, toHectares } from "../product/india";
+import { cropLabel } from "../product/crops";
+import { CropPicker } from "../../components/product/CropPicker";
 function CycleEditor({ cycle, busy, offline, act, reload }) {
   const { tx } = useProductLocale();
   const [draft, setDraft] = useState(cycle);
   return (
     <details>
       <summary>
-        {cycle.crop} · {cycle.status} {tx("\xB7 edit cycle")}
+        {cropLabel(cycle, tx)} · {tx(cycle.status)} {tx("\xB7 edit cycle")}
       </summary>
       <form
         onSubmit={(event) => {
@@ -18,6 +20,7 @@ function CycleEditor({ cycle, busy, offline, act, reload }) {
           act(async () => {
             const fields = [
               "crop",
+              "crop_id",
               "variety",
               "sowing_date",
               "expected_harvest",
@@ -37,13 +40,22 @@ function CycleEditor({ cycle, busy, offline, act, reload }) {
           });
         }}
       >
-        {["crop", "variety", "growth_stage", "season"].map((key) => (
+        <CropPicker
+          value={draft}
+          onChange={(row) =>
+            setDraft((previous) => ({
+              ...previous,
+              crop_id: row?.id || null,
+              crop: row?.name || null,
+            }))
+          }
+        />
+        {["variety", "growth_stage", "season"].map((key) => (
           <label className="v2-label" key={key}>
             {key.replaceAll("_", " ")}
             <input
               value={draft[key] || ""}
-              required={key === "crop"}
-              maxLength={key === "crop" || key === "variety" ? 100 : 50}
+              maxLength={key === "variety" ? 100 : 50}
               onChange={(event) =>
                 setDraft((value) => ({
                   ...value,

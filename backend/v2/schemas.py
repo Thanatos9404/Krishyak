@@ -106,7 +106,8 @@ class PlotUpdate(PlotInput):
 
 class CycleInput(Input):
     operation_id: UUID = Field(default_factory=uuid4)
-    crop: str = Field(min_length=1, max_length=100)
+    crop: str | None = Field(default=None, min_length=1, max_length=100)
+    crop_id: str | None = Field(default=None, min_length=1, max_length=50)
     variety: str | None = Field(default=None, max_length=100)
     sowing_date: date
     expected_harvest: date
@@ -116,10 +117,9 @@ class CycleInput(Input):
 
     @model_validator(mode="after")
     def dates_and_crop(self):
-        import config
+        from .crops import resolve_crop
 
-        if self.crop not in config.CROPS:
-            raise ValueError("Unsupported planning crop")
+        self.crop_id, self.crop = resolve_crop(self.crop_id, self.crop)
         if not 1 <= (self.expected_harvest - self.sowing_date).days <= 1095:
             raise ValueError("Crop dates must be ordered and within three years")
         if self.status == "active" and self.sowing_date > datetime.now(timezone.utc).date():

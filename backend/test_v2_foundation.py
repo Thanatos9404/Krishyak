@@ -389,6 +389,32 @@ class FoundationIntegrationTests(unittest.TestCase):
         self.assertEqual(first.status_code, 200, first.text)
         self.assertEqual(self.a.put(f"/api/v2/plots/{plot['id']}", json=payload).status_code, 409)
 
+    def test_canonical_crop_identity_persists_and_preserves_replay_and_owner_checks(self):
+        self.sign_in(self.a)
+        self.sign_in(self.b, "+919000000002")
+        _, plot, _ = self.farm_plot(self.a)
+        path = f"/api/v2/plots/{plot['id']}/crop-cycles"
+        body = {
+            "operation_id": str(uuid4()),
+            "crop_id": "tomato",
+            "sowing_date": "2026-09-01",
+            "expected_harvest": "2026-12-01",
+        }
+        first = self.a.post(path, json=body)
+        self.assertEqual(first.status_code, 201, first.text)
+        saved = first.json()
+        self.assertEqual((saved["crop_id"], saved["crop"]), ("tomato", "Tomato"))
+        self.assertEqual(self.a.post(path, json=body).json()["id"], saved["id"])
+        self.assertEqual(self.a.get(path).json()["items"][0]["crop_id"], "tomato")
+        self.assertEqual(self.b.get(path).status_code, 404)
+        changed = {**body, "crop_id": "wheat"}
+        self.assertEqual(self.a.post(path, json=changed).status_code, 409)
+        update = {**body, "crop_id": "blueberry", "revision": 1}
+        response = self.a.put(f"/api/v2/crop-cycles/{saved['id']}", json=update)
+        self.assertEqual(response.status_code, 200, response.text)
+        self.assertEqual(response.json()["crop"], "Blueberry")
+        self.assertEqual(self.a.put(f"/api/v2/crop-cycles/{saved['id']}", json=update).status_code, 409)
+
     def test_idempotency_requires_identical_evidence_and_active_consent(self):
         self.sign_in(self.a)
         _, plot, payload = self.farm_plot(self.a)

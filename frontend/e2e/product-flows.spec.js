@@ -168,7 +168,7 @@ test("field onboarding, permissions, human update, crop cycle and account export
   await page
     .getByRole("dialog")
     .getByLabel("Crop", { exact: true })
-    .fill("Tomato");
+    .selectOption("tomato");
   await page.getByLabel("Sowing date", { exact: true }).fill("2026-09-01");
   await page.getByLabel("Expected harvest", { exact: true }).fill("2026-12-01");
   await page
@@ -246,11 +246,11 @@ test("unsupported crop photo, feedback, private download, deletion and official-
   await expect(
     page
       .getByRole("combobox", { name: "Crop", exact: true })
-      .locator("option", { hasText: "Other / not listed" }),
+      .locator('option[value="wheat"]'),
   ).toHaveCount(1);
   await page
     .getByRole("combobox", { name: "Crop", exact: true })
-    .selectOption("Unsupported");
+    .selectOption("wheat");
   await page.getByLabel("Choose crop photo", { exact: true }).setInputFiles({
     name: "synthetic-pixel.png",
     mimeType: "image/png",

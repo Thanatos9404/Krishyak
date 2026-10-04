@@ -3,6 +3,8 @@ import { useEffect, useRef, useState } from "react";
 import { Camera, Upload, Leaf, ArrowRight } from "lucide-react";
 import { farmApi } from "../../features/farms/api";
 import { deferredFeature } from "../../features/product/deferredProductFeature";
+import { CropPicker } from "./CropPicker";
+import { cropCatalog, cropLabel, findCrop } from "../../features/product/crops";
 const ScanHistory = deferredFeature(
   () => import("../../features/farms/ScanHistory"),
 );
@@ -173,36 +175,23 @@ export function ScanView({ workspace: w }) {
               });
             }}
           >
-            <label className="v2-label">
-              {tx("Crop")}
-              {model ? (
-                <select
-                  required
-                  value={crop}
-                  onChange={(event) => {
-                    cropChosen.current = true;
-                    setCrop(event.target.value);
-                    setResult(null);
-                  }}
-                >
-                  <option value="">{tx("Choose a supported crop")}</option>
-                  <option value="Unsupported">Other / not listed</option>
-                  {model.supported_crops.map((name) => (
-                    <option key={name}>{name}</option>
-                  ))}
-                </select>
-              ) : (
-                <input
-                  required
-                  maxLength={100}
-                  value={crop}
-                  onChange={(event) => {
-                    cropChosen.current = true;
-                    setCrop(event.target.value);
-                  }}
-                />
-              )}
-            </label>
+            <CropPicker
+              value={crop}
+              onChange={(row) => {
+                cropChosen.current = true;
+                setCrop(row?.name || "");
+                setResult(null);
+              }}
+            />
+            <p className="status-panel" role="status">
+              {model?.supported_crops.includes(findCrop(crop)?.photo_name)
+                ? tx(
+                    "This crop is in the classifier label set. Field accuracy is not established.",
+                  )
+                : tx(
+                    "Farm records support this crop. Photo classification is unavailable for this crop or its model metadata.",
+                  )}
+            </p>
             <button
               className="button primary"
               disabled={
@@ -276,7 +265,17 @@ export function ScanView({ workspace: w }) {
           {model && (
             <details className="model-details">
               <summary>{tx("Supported crops & validation")}</summary>
-              <p>{model.supported_crops.join(", ")}</p>
+              <p>
+                {model.supported_crops
+                  .map(
+                    (name) =>
+                      cropLabel(
+                        cropCatalog.find((row) => row.photo_name === name),
+                        tx,
+                      ) || name,
+                  )
+                  .join(", ")}
+              </p>
               <p>
                 {model.release.architecture} · {model.release.classes}{" "}
                 {tx("classes. Internal test")}{" "}
