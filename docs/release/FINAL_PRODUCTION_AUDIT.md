@@ -72,7 +72,8 @@ recording was held in memory and the disposable account was removed. Neither
 smoke represents real microphone accuracy, real phone OTP or public staging.
 Per-language evidence is in [FINAL_LANGUAGE_VOICE_QA.json](FINAL_LANGUAGE_VOICE_QA.json).
 
-The final local suite passed 295 backend tests (two skips), 405 frontend tests
+The final local backend suite ran 295 tests successfully (293 executed passes,
+two skips), alongside 405 frontend tests
 across 65 suites, Ruff/formatting, Bandit and dependency advisory checks with no
 known runtime vulnerabilities. The production frontend build succeeded. A fresh
 backend container passed two runtime checks with network disabled. Disposable
@@ -112,6 +113,31 @@ calls retain their separate bounds. No managed runner has been deployed yet.
 Default worker readiness remains ten minutes. A verified 15-minute runner would
 need an explicitly configured stale threshold; no fabricated heartbeat or cron
 deployment is reported.
+
+## Subsequent CI and cleanup evidence
+
+Revision `db0eaad8d0e4e5ca8d7ac276341a8a667cc5a39e` passed the complete PR
+workflow `37224476967`: 295 backend tests (294 executed passes, one skip),
+405 frontend tests and 40 browser passes with two CDP-only skips. The parallel
+push workflow `37224474204` passed 39 browser checks and failed the WebKit
+authenticated-language case on a five-second heading assertion. The retained
+trace shows fast successful API responses and the correct Telugu heading in
+the failure screenshot after delayed hydration. Functional route readiness now
+has a bounded 15-second assertion, including the settings reload. No retries,
+production quotas, data assertions or separate startup performance gate changed.
+The next exact-head full workflows must pass before this adjustment is accepted.
+
+The corrected local authenticated-language cases passed in all three engines
+before that CI run. Cleanup then removed five generated fields, five empty
+generated farms and five private test objects. A subsequent dry run found zero
+generated fields, with My fields visibly empty and the public demo separate.
+Future local browser runs must repeat guarded fixture cleanup afterward.
+
+Both exact-head `db0eaad` Vercel preview builds succeeded. Authenticated CLI
+inspection verified meaningful headings, titles, descriptions and canonicals
+on all nine public preview pages, with deliberate preview noindex. API readiness
+reported `ready`, `v2: disabled`, `public planning only`. This is preview evidence
+and does not establish public farmer staging or production activation.
 
 ## Live provider rechecks and public staging blockers
 

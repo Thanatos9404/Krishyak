@@ -189,8 +189,13 @@ test("every configured language remains active across authenticated farmer route
       ["/app/more/settings", "Your account. Your decisions."],
     ]) {
       await page.goto(route);
+      // WebKit can spend five seconds hydrating after a full navigation on a
+      // shared CI runner. The failed trace has successful, fast API responses
+      // and the correct heading just after the default assertion deadline.
+      // Bound functional readiness separately from the measured startup test.
       await expect(page.getByRole("heading", { level: 1 })).toHaveText(
         tx(title),
+        { timeout: 15000 },
       );
       await expect(page.locator("html")).toHaveAttribute("lang", `${code}-IN`);
       await expect(page.locator("html")).toHaveAttribute(
@@ -263,6 +268,10 @@ test("every configured language remains active across authenticated farmer route
           district: "Jaipur",
         });
         await page.reload();
+        await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+          tx("Your account. Your decisions."),
+          { timeout: 15000 },
+        );
         await expect(
           page.getByLabel(tx("State or union territory"), { exact: true }),
         ).toHaveValue("8");
