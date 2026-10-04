@@ -13,6 +13,13 @@
 .brand-dot {
   color: var(--earth);
 }
+.brand .official-logo {
+  display: block;
+  width: 50px;
+  height: 50px;
+  flex: 0 0 50px;
+  object-fit: contain;
+}
 .public-header {
   position: sticky;
   top: 16px;
@@ -853,11 +860,18 @@
     min-height: 64px;
   }
   .brand > span {
-    font-size: 24px;
+    font-size: 22px;
   }
-  .brand svg {
-    width: 28px;
-    height: 30px;
+  .brand {
+    gap: 6px;
+  }
+  .brand .official-logo {
+    width: 36px;
+    height: 36px;
+    flex-basis: 36px;
+  }
+  .header-actions {
+    gap: 8px;
   }
   .header-actions .button {
     padding: 10px 13px;

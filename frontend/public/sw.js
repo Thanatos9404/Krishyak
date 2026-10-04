@@ -1,12 +1,11 @@
 // Cache only public assets and the explicitly anonymous Next app shell.
 // Account data, RSC payloads, private photographs and mutations stay network-only.
-const CACHE = "krishyak-shell-v3-4";
+const CACHE = "krishyak-shell-v3-5";
 const SHELL = [
   "/app/today",
   "/offline",
   "/manifest.json",
-  "/icon-192.png",
-  "/icon-512.png",
+  "/krishyak_logo.png",
 ];
 self.addEventListener("install", (event) =>
   event.waitUntil(

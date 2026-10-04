@@ -34,10 +34,10 @@ export function pageMetadata(path, title, description, index = true) {
       type: "website",
       images: [
         {
-          url: "/og-image.png",
-          width: 1200,
-          height: 630,
-          alt: "Krishyak — a clearer view of your farm",
+          url: "/krishyak_logo.png",
+          width: 2048,
+          height: 2048,
+          alt: "Krishyak official logo",
         },
       ],
     },
@@ -45,7 +45,7 @@ export function pageMetadata(path, title, description, index = true) {
       card: "summary_large_image",
       title: `${title} · Krishyak`,
       description,
-      images: ["/og-image.png"],
+      images: ["/krishyak_logo.png"],
     },
   };
 }

@@ -31,7 +31,7 @@ export default function Home() {
               "@type": "Organization",
               name: "Krishyak",
               url: SITE_ORIGIN,
-              logo: `${SITE_ORIGIN}/icon-512.png`,
+              logo: `${SITE_ORIGIN}/krishyak_logo.png`,
               sameAs: ["https://github.com/Thanatos9404/Krishyak"],
             },
             {

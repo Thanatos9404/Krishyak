@@ -1,17 +1,11 @@
 {
   "short_name": "Krishyak",
-  "name": "Krishyak \u00e2\u20ac\u201d Field Intelligence",
+  "name": "Krishyak Field Intelligence",
   "icons": [
     {
-      "src": "icon-192.png",
+      "src": "krishyak_logo.png",
       "type": "image/png",
-      "sizes": "192x192",
-      "purpose": "any"
-    },
-    {
-      "src": "icon-512.png",
-      "type": "image/png",
-      "sizes": "512x512",
+      "sizes": "2048x2048",
       "purpose": "any"
     }
   ],

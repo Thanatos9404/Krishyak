@@ -8,14 +8,17 @@ import { SITE_ORIGIN } from "../lib/seo";
 export const metadata = {
   metadataBase: new URL(SITE_ORIGIN),
   title: {
-    default: "Krishyak — Field intelligence for Indian farmers",
+    default: "Krishyak: Field intelligence for Indian farmers",
     template: "%s | Krishyak",
   },
   description:
     "Keep your fields, crop observations, weather and next inspection steps together. Farm decisions with clear evidence and honest limits.",
   applicationName: "Krishyak",
   manifest: "/manifest.json",
-  icons: { icon: "/favicon.svg", apple: "/icon-192.png" },
+  icons: {
+    icon: { url: "/krishyak_logo.png", type: "image/png" },
+    apple: "/krishyak_logo.png",
+  },
 };
 export const viewport = {
   width: "device-width",
