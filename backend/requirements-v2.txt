@@ -5,6 +5,11 @@ psycopg[binary]==3.3.6
 geoalchemy2==0.20.0
 boto3==1.43.107
 redis==7.4.1
+PyJWT[crypto]==2.15.1
+cryptography==50.0.2
+cffi==2.1.1
+pycparser==3.0
+defusedxml==0.7.1
 # Transitive runtime pins resolved in the Linux production container.
 greenlet==3.5.6
 Mako==1.4.3

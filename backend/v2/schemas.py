@@ -19,6 +19,8 @@ Purpose = Literal[
     "model_improvement",
     "pilot_research",
     "government_integration",
+    "government_identity",
+    "speech_processing",
 ]
 
 

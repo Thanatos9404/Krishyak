@@ -389,6 +389,216 @@ class FoundationIntegrationTests(unittest.TestCase):
         )
         self.assertEqual(self.a.post(path, json={"operation_id": str(uuid4())}).status_code, 403)
 
+    def test_private_context_requires_consent_csrf_and_rechecks_withdrawal(self):
+        self.assertEqual(self.a.post("/api/v2/farm-context", json={"state_code": 8}).status_code, 401)
+        self.sign_in(self.a)
+        service = self.app.state.v2_farm_context
+        from v2.farm_context.settings import ProviderSettings
+
+        old = service.settings
+        service.settings = ProviderSettings(bhuvan_enabled=False)
+        try:
+            self.assertEqual(self.a.post("/api/v2/farm-context", json={"state_code": 8}).status_code, 403)
+            self.consent(self.a, "government_integration")
+            result = self.a.post(
+                "/api/v2/farm-context", json={"state_code": 8, "district_code": 102, "crop_id": "wheat"}
+            )
+            self.assertEqual(result.status_code, 200, result.text)
+            self.assertEqual(result.json()["location"]["data"]["district_lgd_code"], 102)
+            self.assertEqual(result.headers["Cache-Control"], "no-store")
+            self.assertEqual(
+                self.a.post("/api/v2/farm-context", json={"latitude": 26.9, "longitude": 75.8}).status_code, 403
+            )
+            self.consent(self.a, "location_processing")
+
+            async def withdraw(body):
+                with self.factory.begin() as transaction:
+                    consent = transaction.scalar(
+                        select(Consent).where(
+                            Consent.purpose == "government_integration", Consent.withdrawn_at.is_(None)
+                        )
+                    )
+                    consent.withdrawn_at = utcnow()
+                return result.json()
+
+            with patch.object(service, "build", side_effect=withdraw):
+                self.assertEqual(self.a.post("/api/v2/farm-context", json={"state_code": 8}).status_code, 403)
+            self.a.headers.pop("X-CSRF-Token")
+            self.assertEqual(self.a.post("/api/v2/farm-context", json={"state_code": 8}).status_code, 403)
+        finally:
+            service.settings = old
+
+    def test_private_speech_does_not_contact_provider_without_permission(self):
+        self.sign_in(self.a)
+        caps = self.a.get("/api/v2/speech/capabilities")
+        self.assertEqual(caps.status_code, 200, caps.text)
+        self.assertEqual(set(caps.json()["stt_languages"]), set("en hi ur gu bn mr kn ta te ml pa".split()))
+        with patch(
+            "v2.speech.transcribe", AsyncMock(return_value={"transcript": "किसान", "language_code": "hi-IN"})
+        ) as provider:
+
+            def request(language="hi-IN"):
+                return self.a.post(
+                    "/api/v2/speech/transcribe",
+                    files={"file": ("fixture.webm", b"fixture", "audio/webm")},
+                    data={"language": language},
+                )
+
+            self.assertEqual(request().status_code, 403)
+            provider.assert_not_awaited()
+            self.consent(self.a, "speech_processing")
+            self.assertEqual(request("as-IN").status_code, 422)
+            provider.assert_not_awaited()
+            success = request()
+            self.assertEqual(success.status_code, 200, success.text)
+            self.assertEqual(success.json()["transcript"], "किसान")
+            self.assertEqual(provider.await_count, 1)
+
+            async def withdraw(*args):
+                with self.factory.begin() as transaction:
+                    consent = transaction.scalar(
+                        select(Consent).where(Consent.purpose == "speech_processing", Consent.withdrawn_at.is_(None))
+                    )
+                    consent.withdrawn_at = utcnow()
+                return {"transcript": "private draft"}
+
+            provider.side_effect = withdraw
+            self.assertEqual(request().status_code, 403)
+
+    def test_context_planning_uses_existing_engine_and_rechecks_analysis_permission(self):
+        from main import FarmingInput
+        from simulation_engine import SimulationEngine
+        from test_system_integrity import PARAMS
+        from v2.farm_context.settings import ProviderSettings
+
+        self.sign_in(self.a)
+        service = self.app.state.v2_farm_context
+        old = service.settings
+        service.settings = ProviderSettings(bhuvan_enabled=False)
+        self.app.state.planning_input_model = FarmingInput
+        engine = SimulationEngine()
+        self.app.state.planning_engine = engine
+        body = {"context": {"state_code": 8, "crop_id": "rice"}, "farming_input": PARAMS, "num_simulations": 100}
+        try:
+            self.assertEqual(self.a.post("/api/v2/farm-context/planning", json=body).status_code, 403)
+            for purpose in ("government_integration", "agronomic_analysis"):
+                self.consent(self.a, purpose)
+            result = self.a.post("/api/v2/farm-context/planning", json=body)
+            self.assertEqual(result.status_code, 200, result.text)
+            self.assertIn("contextual_evidence", result.json()["data"]["simulation"]["risk"])
+            self.assertEqual(result.headers["Cache-Control"], "no-store")
+            body["context"]["crop_id"] = "wheat"
+            self.assertEqual(self.a.post("/api/v2/farm-context/planning", json=body).status_code, 422)
+            body["context"]["crop_id"] = "rice"
+            original = engine.run_whatif_simulation
+
+            def withdraw(*args, **kwargs):
+                result = original(*args, **kwargs)
+                with self.factory.begin() as transaction:
+                    record = transaction.scalar(
+                        select(Consent).where(Consent.purpose == "agronomic_analysis", Consent.withdrawn_at.is_(None))
+                    )
+                    record.withdrawn_at = utcnow()
+                return result
+
+            with patch.object(engine, "run_whatif_simulation", side_effect=withdraw):
+                self.assertEqual(self.a.post("/api/v2/farm-context/planning", json=body).status_code, 403)
+        finally:
+            service.settings = old
+            del self.app.state.planning_input_model
+            del self.app.state.planning_engine
+
+    def test_government_link_callback_is_owner_bound_replay_safe_and_revocable(self):
+        quota_clock = patch("v2.limits.time.time", return_value=1791100000)
+        quota_clock.start()
+        self.addCleanup(quota_clock.stop)
+        from urllib.parse import parse_qs, urlsplit
+
+        from test_government_auth import GovernmentAuthContracts
+        from v2.government_auth import CALLBACK, COOKIE, Configuration, MeriPehchaanAdapter
+        from v2.limits import Quotas
+
+        GovernmentAuthContracts.setUpClass()
+        secure_origin = "https://localhost:3000"
+        self.settings.origins.append(secure_origin)
+        self.a.close()
+        self.b.close()
+        self.a = TestClient(self.app, base_url=secure_origin, follow_redirects=False)
+        self.b = TestClient(self.app, base_url=secure_origin, follow_redirects=False)
+        self.a.headers["Origin"] = secure_origin
+        self.b.headers["Origin"] = secure_origin
+        self.sign_in(self.a)
+        self.sign_in(self.b, "+919000000002")
+        storage = {}
+        redis = Mock()
+        redis.set.side_effect = lambda key, value, **kwargs: storage.setdefault(key, value) == value
+        redis.getdel.side_effect = lambda key: storage.pop(key, None)
+        quota = Quotas(self.settings)
+        quota.redis = redis
+        adapter = MeriPehchaanAdapter(
+            self.settings,
+            quota,
+            Configuration(
+                enabled=True,
+                approved=True,
+                client_id="synthetic",
+                client_secret="synthetic",
+                redirect_uri=secure_origin + CALLBACK,
+                issuer="https://fixture.example.test",
+                public_key_pem=GovernmentAuthContracts.public,
+            ),
+        )
+        adapter.exchange = AsyncMock(return_value="1" * 64)
+        old = self.app.state.v2_government_auth
+        self.app.state.v2_government_auth = adapter
+
+        def begin(client, mode="link"):
+            result = client.post("/api/v2/government/auth/start", json={"mode": mode})
+            self.assertEqual(result.status_code, 200, result.text)
+            return parse_qs(urlsplit(result.json()["authorization_url"]).query)["state"][0]
+
+        try:
+            self.assertEqual(self.a.post("/api/v2/government/auth/start", json={"mode": "link"}).status_code, 403)
+            self.consent(self.a, "government_identity")
+            self.consent(self.b, "government_identity")
+            state = begin(self.a)
+            self.b.cookies.set(COOKIE, self.a.cookies.get(COOKIE), path="/api/v2/government/auth")
+            mismatch = self.b.get(CALLBACK, params={"state": state, "code": "synthetic"})
+            self.assertEqual(mismatch.status_code, 403, mismatch.text)
+            adapter.exchange.assert_not_awaited()
+            self.assertEqual(self.a.get(CALLBACK, params={"state": state, "code": "synthetic"}).status_code, 400)
+            state = begin(self.a)
+            cancelled = self.a.get(CALLBACK, params={"state": state, "error": "access_denied"})
+            self.assertEqual(cancelled.status_code, 303)
+            self.assertTrue(cancelled.headers["location"].endswith("government=cancelled"))
+            adapter.exchange.assert_not_awaited()
+            state = begin(self.a)
+            previous = self.a.cookies.get("krishyak_session")
+            success = self.a.get(CALLBACK, params={"state": state, "code": "synthetic"})
+            self.assertEqual(success.status_code, 303, success.text)
+            self.assertNotEqual(self.a.cookies.get("krishyak_session"), previous)
+            me = self.a.get("/api/v2/me").json()
+            self.a.headers["X-CSRF-Token"] = me["csrf_token"]
+            export = self.a.get("/api/v2/me/export").json()
+            self.assertNotIn("1" * 64, json.dumps(export))
+            self.b.cookies.delete(COOKIE, path="/api/v2/government/auth")
+            state = begin(self.b)
+            self.assertEqual(self.b.get(CALLBACK, params={"state": state, "code": "synthetic"}).status_code, 409)
+            self.assertEqual(self.a.post("/api/v2/auth/logout").status_code, 200)
+            state = begin(self.a, "login")
+            self.assertEqual(self.a.get(CALLBACK, params={"state": state, "code": "synthetic"}).status_code, 303)
+            self.a.headers["X-CSRF-Token"] = self.a.get("/api/v2/me").json()["csrf_token"]
+            self.assertEqual(self.a.delete("/api/v2/government/auth/link").status_code, 200)
+            self.assertEqual(self.a.post("/api/v2/auth/logout").status_code, 200)
+            self.assertEqual(self.a.post("/api/v2/government/auth/start", json={"mode": "login"}).status_code, 429)
+            # Start a separate quota window to verify login after unlinking.
+            self.app.state.v2_quotas.local.clear()
+            state = begin(self.a, "login")
+            self.assertEqual(self.a.get(CALLBACK, params={"state": state, "code": "synthetic"}).status_code, 403)
+        finally:
+            self.app.state.v2_government_auth = old
+            self.settings.origins.remove(secure_origin)
+
     def test_otp_replay_wrong_attempt_expired_and_session_rotation(self):
         payload, _ = self.sign_in(self.a)
         self.assertEqual(self.a.post("/api/v2/auth/verify-otp", json=payload).status_code, 400)

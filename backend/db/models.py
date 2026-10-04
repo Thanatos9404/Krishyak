@@ -53,6 +53,14 @@ class Farmer(Record, Base):
     role: Mapped[str] = mapped_column(String(30), default="farmer")
 
 
+class GovernmentIdentity(Record, Base):
+    __tablename__ = "v2_government_identities"
+    __table_args__ = (UniqueConstraint("issuer", "subject_hash"), UniqueConstraint("farmer_id", "issuer"))
+    farmer_id: Mapped[UUID] = mapped_column(ForeignKey("v2_farmers.id", ondelete="CASCADE"), index=True)
+    issuer: Mapped[str] = mapped_column(String(200))
+    subject_hash: Mapped[str] = mapped_column(String(64))
+
+
 class AuthChallenge(Record, Base):
     __tablename__ = "v2_auth_challenges"
     mobile: Mapped[str] = mapped_column(String(16), index=True)

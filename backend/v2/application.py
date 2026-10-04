@@ -12,7 +12,11 @@ from db.session import make_database
 from security import normalize_request_id
 
 from .context import router as context_router
+from .farm_context.router import router as farm_context_router
+from .farm_context.service import FarmContextService
 from .government import router as government_router
+from .government_auth import MeriPehchaanAdapter
+from .government_auth import router as government_auth_router
 from .images import router as images_router
 from .limits import Quotas
 from .notifications import router as notifications_router
@@ -21,9 +25,13 @@ from .rights import router as rights_router
 from .router import router
 from .satellite import router as satellite_router
 from .settings import Settings
+from .speech import router as speech_router
 
 
 def install_v2(app, settings=None):
+    from .access_logging import install
+
+    install()
     settings = settings or Settings.from_env()
     app.state.v2_settings = settings
     if settings.enabled:
@@ -32,12 +40,18 @@ def install_v2(app, settings=None):
         schema_head = ScriptDirectory(str(Path(__file__).resolve().parents[1] / "migrations")).get_current_head()
         app.state.v2_engine, app.state.v2_database = make_database(settings)
         app.state.v2_quotas = Quotas(settings)
+        app.state.v2_farm_context = FarmContextService(app.state.v2_quotas)
+        app.state.v2_planning_slots = asyncio.Semaphore(2)
+    app.state.v2_government_auth = MeriPehchaanAdapter(settings, getattr(app.state, "v2_quotas", None))
     app.include_router(router)
     app.include_router(satellite_router)
     app.include_router(images_router)
     app.include_router(rights_router)
     app.include_router(government_router)
+    app.include_router(government_auth_router)
     app.include_router(context_router)
+    app.include_router(farm_context_router)
+    app.include_router(speech_router)
     app.include_router(pilots_router)
     app.include_router(notifications_router)
 
@@ -101,7 +115,11 @@ def install_v2(app, settings=None):
                     )
             if request.method in {"POST", "PUT", "PATCH", "DELETE"}:
                 # Bound body before JSON/multipart parsing, including chunked requests.
-                maximum = 9 * 1024 * 1024 if request.url.path == "/api/v2/disease-scans" else 65536
+                maximum = (
+                    9 * 1024 * 1024
+                    if request.url.path in {"/api/v2/disease-scans", "/api/v2/speech/transcribe"}
+                    else 65536
+                )
                 chunks, size = [], 0
                 try:
                     async with asyncio.timeout(15):

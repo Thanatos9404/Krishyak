@@ -22,7 +22,8 @@ class SimulationEngine:
     def run_whatif_simulation(
         self,
         base_params: Dict,
-        num_simulations: int = 500
+        num_simulations: int = 500,
+        *, farm_context=None, market_quote_index=None, expected_quote_id=None
     ) -> Dict:
         """
         Run multiple simulations with parameter variations
@@ -30,6 +31,10 @@ class SimulationEngine:
         """
         if isinstance(num_simulations, bool) or not isinstance(num_simulations, int) or not 1 <= num_simulations <= 2000:
             raise ValueError("num_simulations must be between 1 and 2000")
+        public_evidence = None
+        if farm_context is not None:
+            from v2.farm_context.engines import scenario_inputs
+            base_params, public_evidence = scenario_inputs(base_params, farm_context, market_quote_index,expected_quote_id)
         context = self._prepare_context(base_params['crop'])
         # Request-local observations are shared by all samples, never across users.
         current_plan = self._simulate_scenario(base_params, scenario_type="current", context=context)
@@ -46,6 +51,9 @@ class SimulationEngine:
         
         # Run Monte Carlo micro-simulations for uncertainty analysis
         micro_simulations = self._run_micro_simulations(base_params, num_simulations, context=context)
+        if public_evidence is not None:
+            for scenario in (current_plan, optimal_plan, worst_plan):
+                scenario['risk']['contextual_evidence'] = deepcopy(public_evidence)
         
         return {
             "current_plan": current_plan,

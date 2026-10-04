@@ -257,6 +257,9 @@ class SimulationRequest(BaseModel):
     farming_input: FarmingInput
     num_simulations: int = Field(500, ge=100, le=2000, description="Number of micro-simulations")
 
+app.state.planning_input_model = FarmingInput
+app.state.planning_engine = simulation_engine
+
 class PriceForecastRequest(BaseModel):
     model_config = {"allow_inf_nan": False}
     commodity: str
