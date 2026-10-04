@@ -39,6 +39,7 @@ def validate(languages, output):
     source_path = ROOT / "frontend/src/features/product/locales/en.json"
     source_text = source_path.read_text(encoding="utf-8")
     source = json.loads(source_text)
+    crop_catalog = json.loads((ROOT / "frontend/src/features/product/cropCatalog.json").read_text(encoding="utf-8"))
     glossary_path = ROOT / "scripts/i18n/glossary.json"
     glossary_text = glossary_path.read_text(encoding="utf-8")
     glossary = json.loads(glossary_text)["preserve"]
@@ -79,6 +80,8 @@ def validate(languages, output):
                 or not addition_keys or not set(addition_keys).issubset(source)):
                 failures.append(f"{code}: additions provenance disclosure missing")
         unchanged = []
+        crop_names = [pack.get(row["label"], "").strip().casefold() for row in crop_catalog]
+        if len(set(crop_names)) != len(crop_names): failures.append(f"{code}: distinct crop identities have ambiguous labels")
         for key in source:
             value = pack.get(key)
             if not isinstance(value, str) or not value.strip():

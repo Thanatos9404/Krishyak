@@ -1,7 +1,7 @@
 {
   "provider": "Sarvam",
   "model": "sarvam-translate:v1",
-  "generated_at": "2026-10-04T17:26:46.104189+00:00",
+  "generated_at": "2026-10-04T18:16:15.965322+00:00",
   "source_sha256": "19cd61e440de48721da3977ea52add413e447df5ca5e370c1824b86d38b69fe2",
   "pack_sha256": "d0102b13087176af666fa3c0a513ab765be23b501a15c9b6f6a34ce296b244d8",
   "glossary_sha256": "1cb7a8df2b9cfaa66adae2b4cdd96a6462644012dfbbe009628aab32ca4acbd1",

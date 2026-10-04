@@ -27,6 +27,15 @@ Kashmiri, Sindhi and Urdu use right-to-left layout. Manipuri uses Meitei Mayek;
 Santali uses Ol Chiki. Machine translation still needs native-speaker review.
 Structural validation cannot establish semantic correctness or agronomic safety.
 
+The expanded browser checks exposed crop-name collisions in six packs. Eight
+labels have explicit Codex machine-draft corrections in
+`scripts/i18n/workspaceCorrections.json`, disclosed in pack metadata. Precise
+native-script loanwords are used where approved common names are unavailable.
+The generator reapplies these corrections and retains the current Arabic Sindhi
+document pack. Both offline validation and frontend tests reject duplicate crop
+labels. A bounded Sarvam chat review returned wrong scripts/identities and was
+rejected, rather than published or counted as native approval.
+
 The browser matrix checks every configured language at mobile and desktop
 widths and through authenticated Today, Farm, Health, Market, More and Settings
 routes. It verifies localized crop/state/district search, saved canonical

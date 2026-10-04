@@ -1,5 +1,18 @@
 # Crop identities for the India pilot
 
+## Final activation follow-up, 4 October 2026
+
+All 22 scheduled workspace packs plus English are now active. Expanded browser
+testing found ambiguous labels in Urdu, Telugu, Assamese, Bodo, Dogri and Kashmiri.
+Eight explicit machine-draft corrections are tracked with provider/method/key
+provenance and applied during regeneration. Native-script precise loanwords
+are used where a reviewed common name is unavailable. Native semantic approval
+is still required. A contextual provider candidate with wrong scripts and crop
+identities was rejected. Static validation and frontend tests now require unique
+display labels for the 62 distinct crop IDs in every pack. The authenticated
+three-engine language rerun must pass before these corrections are accepted for
+release. The test counts below describe earlier dated pilot evidence.
+
 The farm catalog contains 62 stable crop IDs. The backend catalog and frontend
 copy are checked for identical contents by `backend/test_crop_catalog.py`.
 Indian pilot priorities precede other record crops. All prior planning crop

@@ -1,10 +1,23 @@
 {
-  "provider": "Sarvam",
+  "provider": "Sarvam + Codex",
   "model": "sarvam-translate:v1",
-  "generated_at": "2026-10-04T17:26:46.081370+00:00",
+  "generated_at": "2026-10-04T18:16:15.944585+00:00",
   "source_sha256": "19cd61e440de48721da3977ea52add413e447df5ca5e370c1824b86d38b69fe2",
-  "pack_sha256": "2803d4bf464f96057e16da2be775cea152b6b1ce3c7a42ca1902485a27deec37",
+  "pack_sha256": "02eb1d8edc997b579ab6a511ceb1c113ed2ef879cb33647a037e5e1e7bf3b33c",
   "glossary_sha256": "1cb7a8df2b9cfaa66adae2b4cdd96a6462644012dfbbe009628aab32ca4acbd1",
   "strings": 1767,
-  "review_status": "machine_translated_needs_native_review"
+  "review_status": "machine_translated_needs_native_review",
+  "additions": {
+    "provider": "Codex",
+    "method": "model_draft_authored_in_code",
+    "kind": "crop_label_correction",
+    "recorded_at": "2026-10-04T18:14:55.829268+00:00",
+    "review_status": "machine_translated_needs_native_review",
+    "reason": "Different crop identities must have distinct labels. Native-script English loanwords are used where a precise common-name approval is unavailable. These drafts do not establish native semantic approval.",
+    "source_keys": [
+      "Cabbage",
+      "Cauliflower"
+    ],
+    "source_keys_sha256": "662289e709b4598dc20de701a574224d354ceaf75654f9b79b64a044b883603b"
+  }
 }

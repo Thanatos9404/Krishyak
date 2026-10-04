@@ -39,6 +39,10 @@ test("every pilot pack has searchable native labels for every record crop", () =
       ),
     );
     const tx = (label) => pack[label];
+    const labels = cropCatalog.map((row) =>
+      tx(row.label).normalize("NFKC").trim().toLocaleLowerCase(),
+    );
+    expect(new Set(labels).size).toBe(cropCatalog.length);
     for (const row of cropCatalog) {
       expect(typeof tx(row.label)).toBe("string");
       expect(tx(row.label)).not.toBe(row.label);

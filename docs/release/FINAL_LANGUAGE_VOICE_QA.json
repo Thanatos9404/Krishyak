@@ -17,7 +17,9 @@
       "direct_provider_synthetic_tts_smoke": "not_independently_tested",
       "device_voice": "Depends on an installed matching-language local voice; unrelated-language fallback prohibited",
       "native_semantic_approval": "not_established",
-      "physical_microphone_accuracy": "not_established"
+      "physical_microphone_accuracy": "not_established",
+      "crop_label_machine_draft_corrections": [],
+      "distinct_crop_label_validation": "passed"
     },
     {
       "code": "hi",
@@ -31,7 +33,9 @@
       "direct_provider_synthetic_tts_smoke": "passed",
       "device_voice": "Depends on an installed matching-language local voice; unrelated-language fallback prohibited",
       "native_semantic_approval": "not_established",
-      "physical_microphone_accuracy": "not_established"
+      "physical_microphone_accuracy": "not_established",
+      "crop_label_machine_draft_corrections": [],
+      "distinct_crop_label_validation": "passed"
     },
     {
       "code": "ur",
@@ -45,7 +49,12 @@
       "direct_provider_synthetic_tts_smoke": "not_independently_tested",
       "device_voice": "Depends on an installed matching-language local voice; unrelated-language fallback prohibited",
       "native_semantic_approval": "not_established",
-      "physical_microphone_accuracy": "not_established"
+      "physical_microphone_accuracy": "not_established",
+      "crop_label_machine_draft_corrections": [
+        "Cabbage",
+        "Cauliflower"
+      ],
+      "distinct_crop_label_validation": "passed"
     },
     {
       "code": "gu",
@@ -59,7 +68,9 @@
       "direct_provider_synthetic_tts_smoke": "not_independently_tested",
       "device_voice": "Depends on an installed matching-language local voice; unrelated-language fallback prohibited",
       "native_semantic_approval": "not_established",
-      "physical_microphone_accuracy": "not_established"
+      "physical_microphone_accuracy": "not_established",
+      "crop_label_machine_draft_corrections": [],
+      "distinct_crop_label_validation": "passed"
     },
     {
       "code": "bn",
@@ -73,7 +84,9 @@
       "direct_provider_synthetic_tts_smoke": "passed",
       "device_voice": "Depends on an installed matching-language local voice; unrelated-language fallback prohibited",
       "native_semantic_approval": "not_established",
-      "physical_microphone_accuracy": "not_established"
+      "physical_microphone_accuracy": "not_established",
+      "crop_label_machine_draft_corrections": [],
+      "distinct_crop_label_validation": "passed"
     },
     {
       "code": "mr",
@@ -87,7 +100,9 @@
       "direct_provider_synthetic_tts_smoke": "not_independently_tested",
       "device_voice": "Depends on an installed matching-language local voice; unrelated-language fallback prohibited",
       "native_semantic_approval": "not_established",
-      "physical_microphone_accuracy": "not_established"
+      "physical_microphone_accuracy": "not_established",
+      "crop_label_machine_draft_corrections": [],
+      "distinct_crop_label_validation": "passed"
     },
     {
       "code": "kn",
@@ -101,7 +116,9 @@
       "direct_provider_synthetic_tts_smoke": "not_independently_tested",
       "device_voice": "Depends on an installed matching-language local voice; unrelated-language fallback prohibited",
       "native_semantic_approval": "not_established",
-      "physical_microphone_accuracy": "not_established"
+      "physical_microphone_accuracy": "not_established",
+      "crop_label_machine_draft_corrections": [],
+      "distinct_crop_label_validation": "passed"
     },
     {
       "code": "ta",
@@ -115,7 +132,9 @@
       "direct_provider_synthetic_tts_smoke": "passed",
       "device_voice": "Depends on an installed matching-language local voice; unrelated-language fallback prohibited",
       "native_semantic_approval": "not_established",
-      "physical_microphone_accuracy": "not_established"
+      "physical_microphone_accuracy": "not_established",
+      "crop_label_machine_draft_corrections": [],
+      "distinct_crop_label_validation": "passed"
     },
     {
       "code": "te",
@@ -129,7 +148,11 @@
       "direct_provider_synthetic_tts_smoke": "not_independently_tested",
       "device_voice": "Depends on an installed matching-language local voice; unrelated-language fallback prohibited",
       "native_semantic_approval": "not_established",
-      "physical_microphone_accuracy": "not_established"
+      "physical_microphone_accuracy": "not_established",
+      "crop_label_machine_draft_corrections": [
+        "Squash"
+      ],
+      "distinct_crop_label_validation": "passed"
     },
     {
       "code": "ml",
@@ -143,7 +166,9 @@
       "direct_provider_synthetic_tts_smoke": "not_independently_tested",
       "device_voice": "Depends on an installed matching-language local voice; unrelated-language fallback prohibited",
       "native_semantic_approval": "not_established",
-      "physical_microphone_accuracy": "not_established"
+      "physical_microphone_accuracy": "not_established",
+      "crop_label_machine_draft_corrections": [],
+      "distinct_crop_label_validation": "passed"
     },
     {
       "code": "pa",
@@ -157,7 +182,9 @@
       "direct_provider_synthetic_tts_smoke": "not_independently_tested",
       "device_voice": "Depends on an installed matching-language local voice; unrelated-language fallback prohibited",
       "native_semantic_approval": "not_established",
-      "physical_microphone_accuracy": "not_established"
+      "physical_microphone_accuracy": "not_established",
+      "crop_label_machine_draft_corrections": [],
+      "distinct_crop_label_validation": "passed"
     },
     {
       "code": "as",
@@ -171,7 +198,11 @@
       "direct_provider_synthetic_tts_smoke": "not_independently_tested",
       "device_voice": "Depends on an installed matching-language local voice; unrelated-language fallback prohibited",
       "native_semantic_approval": "not_established",
-      "physical_microphone_accuracy": "not_established"
+      "physical_microphone_accuracy": "not_established",
+      "crop_label_machine_draft_corrections": [
+        "Capsicum"
+      ],
+      "distinct_crop_label_validation": "passed"
     },
     {
       "code": "brx",
@@ -185,7 +216,11 @@
       "direct_provider_synthetic_tts_smoke": "not_independently_tested",
       "device_voice": "Depends on an installed matching-language local voice; unrelated-language fallback prohibited",
       "native_semantic_approval": "not_established",
-      "physical_microphone_accuracy": "not_established"
+      "physical_microphone_accuracy": "not_established",
+      "crop_label_machine_draft_corrections": [
+        "Tomato"
+      ],
+      "distinct_crop_label_validation": "passed"
     },
     {
       "code": "doi",
@@ -199,7 +234,11 @@
       "direct_provider_synthetic_tts_smoke": "not_independently_tested",
       "device_voice": "Depends on an installed matching-language local voice; unrelated-language fallback prohibited",
       "native_semantic_approval": "not_established",
-      "physical_microphone_accuracy": "not_established"
+      "physical_microphone_accuracy": "not_established",
+      "crop_label_machine_draft_corrections": [
+        "Squash"
+      ],
+      "distinct_crop_label_validation": "passed"
     },
     {
       "code": "ks",
@@ -213,7 +252,12 @@
       "direct_provider_synthetic_tts_smoke": "not_independently_tested",
       "device_voice": "Depends on an installed matching-language local voice; unrelated-language fallback prohibited",
       "native_semantic_approval": "not_established",
-      "physical_microphone_accuracy": "not_established"
+      "physical_microphone_accuracy": "not_established",
+      "crop_label_machine_draft_corrections": [
+        "Cabbage",
+        "Cauliflower"
+      ],
+      "distinct_crop_label_validation": "passed"
     },
     {
       "code": "kok",
@@ -227,7 +271,9 @@
       "direct_provider_synthetic_tts_smoke": "not_independently_tested",
       "device_voice": "Depends on an installed matching-language local voice; unrelated-language fallback prohibited",
       "native_semantic_approval": "not_established",
-      "physical_microphone_accuracy": "not_established"
+      "physical_microphone_accuracy": "not_established",
+      "crop_label_machine_draft_corrections": [],
+      "distinct_crop_label_validation": "passed"
     },
     {
       "code": "mai",
@@ -241,7 +287,9 @@
       "direct_provider_synthetic_tts_smoke": "not_independently_tested",
       "device_voice": "Depends on an installed matching-language local voice; unrelated-language fallback prohibited",
       "native_semantic_approval": "not_established",
-      "physical_microphone_accuracy": "not_established"
+      "physical_microphone_accuracy": "not_established",
+      "crop_label_machine_draft_corrections": [],
+      "distinct_crop_label_validation": "passed"
     },
     {
       "code": "mni",
@@ -255,7 +303,9 @@
       "direct_provider_synthetic_tts_smoke": "not_independently_tested",
       "device_voice": "Depends on an installed matching-language local voice; unrelated-language fallback prohibited",
       "native_semantic_approval": "not_established",
-      "physical_microphone_accuracy": "not_established"
+      "physical_microphone_accuracy": "not_established",
+      "crop_label_machine_draft_corrections": [],
+      "distinct_crop_label_validation": "passed"
     },
     {
       "code": "ne",
@@ -269,7 +319,9 @@
       "direct_provider_synthetic_tts_smoke": "not_independently_tested",
       "device_voice": "Depends on an installed matching-language local voice; unrelated-language fallback prohibited",
       "native_semantic_approval": "not_established",
-      "physical_microphone_accuracy": "not_established"
+      "physical_microphone_accuracy": "not_established",
+      "crop_label_machine_draft_corrections": [],
+      "distinct_crop_label_validation": "passed"
     },
     {
       "code": "or",
@@ -283,7 +335,9 @@
       "direct_provider_synthetic_tts_smoke": "not_independently_tested",
       "device_voice": "Depends on an installed matching-language local voice; unrelated-language fallback prohibited",
       "native_semantic_approval": "not_established",
-      "physical_microphone_accuracy": "not_established"
+      "physical_microphone_accuracy": "not_established",
+      "crop_label_machine_draft_corrections": [],
+      "distinct_crop_label_validation": "passed"
     },
     {
       "code": "sa",
@@ -297,7 +351,9 @@
       "direct_provider_synthetic_tts_smoke": "not_independently_tested",
       "device_voice": "Depends on an installed matching-language local voice; unrelated-language fallback prohibited",
       "native_semantic_approval": "not_established",
-      "physical_microphone_accuracy": "not_established"
+      "physical_microphone_accuracy": "not_established",
+      "crop_label_machine_draft_corrections": [],
+      "distinct_crop_label_validation": "passed"
     },
     {
       "code": "sat",
@@ -311,7 +367,9 @@
       "direct_provider_synthetic_tts_smoke": "not_independently_tested",
       "device_voice": "Depends on an installed matching-language local voice; unrelated-language fallback prohibited",
       "native_semantic_approval": "not_established",
-      "physical_microphone_accuracy": "not_established"
+      "physical_microphone_accuracy": "not_established",
+      "crop_label_machine_draft_corrections": [],
+      "distinct_crop_label_validation": "passed"
     },
     {
       "code": "sd",
@@ -325,7 +383,9 @@
       "direct_provider_synthetic_tts_smoke": "not_independently_tested",
       "device_voice": "Depends on an installed matching-language local voice; unrelated-language fallback prohibited",
       "native_semantic_approval": "not_established",
-      "physical_microphone_accuracy": "not_established"
+      "physical_microphone_accuracy": "not_established",
+      "crop_label_machine_draft_corrections": [],
+      "distinct_crop_label_validation": "passed"
     }
   ]
 }

@@ -112,10 +112,27 @@ async def generate(args):
     output_path = Path(args.output) if args.output else OUT
     source_text = source_path.read_text(encoding='utf-8')
     source = json.loads(source_text)
+    workspace = source_path.resolve() == (ROOT / 'frontend/src/features/product/locales/en.json').resolve()
+    corrections = json.loads((ROOT / 'scripts/i18n/workspaceCorrections.json').read_text(encoding='utf-8')) if workspace else {}
     strings = list(dict.fromkeys(value for _, value in leaves(source)))
     selected = args.languages or [code for code in json.loads((ROOT / 'frontend/src/i18n/pilotLanguages.json').read_text(encoding='utf-8'))['codes'] if code != 'en']
     if set(selected) - set(LANGUAGES):
         raise ValueError('Unknown language')
+    if workspace and 'sd' in selected:
+        # Translate v1 emits Devanagari Sindhi. Never overwrite a valid Arabic
+        # document pack with that output, or silently reuse a stale source.
+        pack_path, meta_path = output_path / 'sd.json', output_path / 'sd.meta.json'
+        if not pack_path.exists() or not meta_path.exists():
+            raise RuntimeError('Generate Arabic Sindhi with generate_sindhi_document_locale.py first')
+        metadata = json.loads(meta_path.read_text(encoding='utf-8'))
+        pack_text = pack_path.read_text(encoding='utf-8')
+        if (metadata.get('source_sha256') != digest(source_text)
+            or metadata.get('pack_sha256') != digest(pack_text)
+            or metadata.get('method') != 'document_translation_arabic_script_guidelines'
+            or set(json.loads(pack_text)) != set(source)):
+            raise RuntimeError('Arabic Sindhi source/provenance changed; regenerate its document pack first')
+        selected = [code for code in selected if code != 'sd']
+        print('Retained current Arabic Sindhi document pack without translation requests', flush=True)
     semaphore = asyncio.Semaphore(args.workers)
     requests = 0
     characters = 0
@@ -229,13 +246,23 @@ async def generate(args):
                 if Counter(PLACEHOLDERS.findall(value)) != Counter(PLACEHOLDERS.findall(s)):
                     raise ValueError('Cached placeholder mismatch')
                 put(translated, path, value)
+            overrides = corrections.get('languages', {}).get(language, {})
+            if not set(overrides).issubset(source):
+                raise ValueError('Workspace correction refers to a missing source key')
+            for label, value in overrides.items():
+                translated[label] = restore(value, source[label], {})
             atomic_json(output_path / (language + '.json'), translated)
-            atomic_json(output_path / (language + '.meta.json'), {'provider': 'Sarvam', 'model': MODEL,
+            metadata = {'provider': 'Sarvam + Codex' if overrides else 'Sarvam', 'model': MODEL,
                         'generated_at': datetime.now(timezone.utc).isoformat(),
                         'source_sha256': digest(source_text),
                         'pack_sha256': digest((output_path / (language + '.json')).read_text(encoding='utf-8')),
                         'glossary_sha256': GLOSSARY_HASH or None,
-                        'strings': len(list(leaves(source))), 'review_status': 'machine_translated_needs_native_review'})
+                        'strings': len(list(leaves(source))), 'review_status': 'machine_translated_needs_native_review'}
+            if overrides:
+                keys = sorted(overrides)
+                metadata['additions'] = corrections['provenance'] | {
+                    'source_keys': keys, 'source_keys_sha256': digest(json.dumps(keys, ensure_ascii=False))}
+            atomic_json(output_path / (language + '.meta.json'), metadata)
             print(f'Published {language}', flush=True)
         # A small fixed worker pool avoids uncontrolled API spend/concurrency.
         queue = asyncio.Queue()
