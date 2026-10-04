@@ -12,9 +12,9 @@ const records = new Map();
 const human = (value) => /[A-Za-z]/.test(value) &&
   !value.includes("SameSite=") &&
   /[A-Z]/.test(value) && !/^;/.test(value) && !/^(\d{4}-\d{2}-\d{2}T|\{\{v\d+\}\}T\d)/.test(value) &&
-  !/^(\/|\.\.\/|https?:)/.test(value) && !value.includes("${") &&
+  !/^(\/|\.\.?\/|https?:)/.test(value) && !value.includes("${") &&
   !/^[a-z][\w.-]*$/.test(value) && !/^#[\da-f]+$/i.test(value) &&
-  !/^(GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS|SELECT|TEXTAREA|UTC|LOCATION_UNAVAILABLE|Invalid redirect|Content-Type|X-CSRF-Token|SameSite|UTF-8)$/.test(value);
+  !/^(GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS|SELECT|TEXTAREA|UTC|RIFF|WAVE|LOCATION_UNAVAILABLE|Invalid redirect|Content-Type|X-CSRF-Token|SameSite|UTF-8)$/.test(value);
 const cleanText = (value) => value.split(/\r?\n/).map((line) => line.trim()).filter(Boolean).join(" ");
 function collect(value, file, line, kind, force = false) {
   const text = cleanText(value);

@@ -26,6 +26,7 @@ from .router import router
 from .satellite import router as satellite_router
 from .settings import Settings
 from .speech import router as speech_router
+from .tts import ReadAloud
 
 
 def install_v2(app, settings=None):
@@ -42,6 +43,7 @@ def install_v2(app, settings=None):
         app.state.v2_quotas = Quotas(settings)
         app.state.v2_farm_context = FarmContextService(app.state.v2_quotas)
         app.state.v2_planning_slots = asyncio.Semaphore(2)
+        app.state.v2_read_aloud = ReadAloud()
     app.state.v2_government_auth = MeriPehchaanAdapter(settings, getattr(app.state, "v2_quotas", None))
     app.include_router(router)
     app.include_router(satellite_router)
@@ -88,6 +90,7 @@ def install_v2(app, settings=None):
                     "/consent/",
                     "/verify/",
                     "/farmer/profile",
+                    "/speech/",
                 )
             )
             or request.url.path == "/register-farmer"
@@ -154,8 +157,9 @@ def install_v2(app, settings=None):
                 if settings.deployed:
                     recent = connection.execute(
                         text(
-                            "SELECT seen_at > now() - interval '10 minutes' FROM v2_worker_heartbeat WHERE name='evidence-worker'"
-                        )
+                            "SELECT seen_at > now() - :seconds * interval '1 second' FROM v2_worker_heartbeat WHERE name='evidence-worker'"
+                        ),
+                        {"seconds": settings.worker_stale_seconds},
                     ).scalar()
                     if not recent:
                         raise ValueError("Worker unavailable")

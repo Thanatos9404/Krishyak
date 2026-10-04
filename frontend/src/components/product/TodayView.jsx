@@ -150,10 +150,11 @@ export function TodayView({ workspace: w }) {
             )}
             {actions.length > 0 && (
               <LocalReadout
+                workspace={w}
                 text={actions
                   .map(
                     (action) =>
-                      `${action.title}. ${action.why}. Source: ${action.evidence.source}. ${action.evidence.limitations.join(". ")}`,
+                      `${tx(action.title)}. ${tx(action.why)}. ${tx("Source")}: ${tx(action.evidence.source)}. ${action.evidence.limitations.map((value) => tx(value)).join(". ")}`,
                   )
                   .join(". ")}
               />

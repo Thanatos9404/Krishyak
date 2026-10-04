@@ -1,17 +1,4 @@
 {
-  "codes": ["en", "hi", "ur", "gu", "bn", "mr", "kn", "ta", "te", "ml", "pa"],
-  "deferred": [
-    "as",
-    "brx",
-    "doi",
-    "ks",
-    "kok",
-    "mai",
-    "mni",
-    "ne",
-    "or",
-    "sa",
-    "sat",
-    "sd"
-  ]
+  "codes": ["en", "hi", "ur", "gu", "bn", "mr", "kn", "ta", "te", "ml", "pa", "as", "brx", "doi", "ks", "kok", "mai", "mni", "ne", "or", "sa", "sat", "sd"],
+  "deferred": []
 }

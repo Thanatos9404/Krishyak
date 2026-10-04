@@ -15,7 +15,7 @@ from db.models import AuthChallenge, Consent, CropCycle, Farm, Farmer, Observati
 from remote_sensing.geometry import area_details
 from repositories.ownership import owned_farm, owned_plot
 
-from .auth import authenticate, check_origin, clear_session, issue_session
+from .auth import ACCESS_COOKIE, REFRESH_COOKIE, authenticate, check_origin, clear_session, issue_session
 from .providers import otp_provider
 from .schemas import (
     ConsentInput,
@@ -92,6 +92,9 @@ def status(request: Request):
         "environment": settings.environment,
         "development_identity": settings.enabled and settings.otp_provider == "development",
         "otp_available": settings.enabled and settings.otp_provider != "disabled",
+        # This untrusted hint only avoids anonymous bootstrap requests. A true
+        # value still requires the existing authenticated session checks.
+        "session_cookie_present": bool(request.cookies.get(ACCESS_COOKIE) or request.cookies.get(REFRESH_COOKIE)),
         "policy_version": "2026-10-03",
         "satellite_configuration": get_service().status()["status"],
         "satellite_live_access_verified": False,

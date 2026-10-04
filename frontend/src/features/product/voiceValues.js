@@ -2,6 +2,7 @@
 export function voiceDigits(value) {
   const zeroes = [
     0x660, 0x6f0, 0x966, 0x9e6, 0xa66, 0xae6, 0xb66, 0xbe6, 0xc66, 0xce6, 0xd66,
+    0x1c50, 0xabf0,
   ];
   return Array.from(String(value).normalize("NFKC"), (char) => {
     const code = char.codePointAt(0);

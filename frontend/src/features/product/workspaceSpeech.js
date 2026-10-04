@@ -1,17 +1,11 @@
 import { farmApi } from "../farms/api";
+import { boundedWav } from "./wavAudio";
 export const workspaceSpeech = {
-  capabilities: () => farmApi("/speech/capabilities"),
-  transcribe: (blob, language, signal) => {
+  capabilities: (signal) => farmApi("/speech/capabilities", { signal }),
+  transcribe: async (blob, language, signal) => {
+    const audio = await boundedWav(blob, signal);
     const form = new FormData();
-    form.append(
-      "file",
-      blob,
-      blob.type.includes("mp4")
-        ? "recording.m4a"
-        : blob.type.includes("ogg")
-          ? "recording.ogg"
-          : "recording.webm",
-    );
+    form.append("file", audio, "recording.wav");
     form.append("language", language);
     // Explicit recordings are never automatically retried after refresh.
     return farmApi("/speech/transcribe", {
@@ -22,4 +16,12 @@ export const workspaceSpeech = {
       timeoutMs: 70000,
     });
   },
+  synthesize: (text, language, signal) =>
+    farmApi("/speech/synthesize", {
+      method: "POST",
+      body: { text, language },
+      signal,
+      retry: false,
+      timeoutMs: 40000,
+    }),
 };

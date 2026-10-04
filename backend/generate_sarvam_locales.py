@@ -11,6 +11,7 @@ import json
 import os
 import re
 import time
+from datetime import datetime, timezone
 from collections import Counter
 from pathlib import Path
 
@@ -230,6 +231,7 @@ async def generate(args):
                 put(translated, path, value)
             atomic_json(output_path / (language + '.json'), translated)
             atomic_json(output_path / (language + '.meta.json'), {'provider': 'Sarvam', 'model': MODEL,
+                        'generated_at': datetime.now(timezone.utc).isoformat(),
                         'source_sha256': digest(source_text),
                         'pack_sha256': digest((output_path / (language + '.json')).read_text(encoding='utf-8')),
                         'glossary_sha256': GLOSSARY_HASH or None,
@@ -242,7 +244,18 @@ async def generate(args):
             while not queue.empty():
                 language = queue.get_nowait()
                 await language_pack(language)
-        await asyncio.gather(*(worker() for _ in range(min(args.workers, len(selected)))))
+        try:
+            await asyncio.gather(*(worker() for _ in range(min(args.workers, len(selected)))))
+        finally:
+            if args.usage_report:
+                atomic_json(Path(args.usage_report), {
+                    'model': MODEL, 'languages': selected,
+                    'recorded_at': datetime.now(timezone.utc).isoformat(),
+                    'reserved_requests': requests, 'reserved_input_characters': characters,
+                    'maximum_requests': args.max_requests, 'maximum_input_characters': args.max_characters,
+                    'estimated_translation_credits': characters * 2 / 1000,
+                    'basis': 'Dashboard price of 2 existing credits per 1000 input characters. Reserved requests include retries; this is an estimate, not an account billing statement.'
+                })
     print(f'Complete: {len(selected)} packs; {requests} provider requests; {characters} submitted characters', flush=True)
 
 
@@ -255,4 +268,5 @@ if __name__ == '__main__':
     parser.add_argument('--max-requests', type=int, default=1500, help='Hard request budget, including retries')
     parser.add_argument('--max-characters', type=int, default=2000000, help='Hard submitted-character budget, including retries')
     parser.add_argument('--glossary', help='Optional protected product/provider/acronym/unit glossary')
+    parser.add_argument('--usage-report', help='Optional secret-free reserved usage and cost estimate report')
     asyncio.run(generate(parser.parse_args()))

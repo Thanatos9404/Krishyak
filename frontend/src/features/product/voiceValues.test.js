@@ -8,10 +8,11 @@ import {
   voiceEligible,
 } from "./voiceValues";
 
-test("all pilot numeral scripts normalize without converting units", () => {
+test("all workspace numeral scripts normalize without converting units", () => {
   expect(voiceDigits("۱۲ ३४ ৫৬ ૭૮ ੯੦ ೧೨ ௩௪ ౫౬ ൭൮")).toBe(
     "12 34 56 78 90 12 34 56 78",
   );
+  expect(voiceDigits("୧୨ ᱓᱔ ꯵꯶")).toBe("12 34 56");
   const input = document.createElement("input");
   input.type = "number";
   expect(voiceValue("२.५", input, "hi-IN")).toBe("2.5");

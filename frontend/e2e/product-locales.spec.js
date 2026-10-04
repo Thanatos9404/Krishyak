@@ -36,7 +36,7 @@ const names = {
 test("static farmer entry in every configured language, RTL, fonts, keyboard and mobile accessibility", async ({
   page,
 }, info) => {
-  test.setTimeout(240000);
+  test.setTimeout(480000);
   const errors = [],
     translationRequests = [];
   page.on("pageerror", (error) => errors.push(error.message));
@@ -63,7 +63,9 @@ test("static farmer entry in every configured language, RTL, fonts, keyboard and
     await page.getByTestId("workspace-language").click();
     const dialog = page.getByRole("dialog");
     await expect(dialog).toBeVisible();
-    await expect(dialog.locator(".language-option")).toHaveCount(11);
+    await expect(dialog.locator(".language-option")).toHaveCount(
+      pilot.codes.length,
+    );
     await page.keyboard.press("Escape");
     await expect(dialog).not.toBeVisible();
     await expect(page.getByTestId("workspace-language")).toBeFocused();
@@ -122,10 +124,10 @@ test("static farmer entry in every configured language, RTL, fonts, keyboard and
   expect(translationRequests).toEqual([]);
 });
 
-test("Hindi and Urdu remain active across authenticated farmer routes", async ({
+test("every configured language remains active across authenticated farmer routes", async ({
   page,
 }, info) => {
-  test.setTimeout(120000);
+  test.setTimeout(600000);
   const errors = [];
   page.on("pageerror", (error) => errors.push(error.message));
   const status = await (await page.request.get("/api/v2/status")).json();
@@ -152,13 +154,24 @@ test("Hindi and Urdu remain active across authenticated farmer routes", async ({
   await expect(page.getByRole("heading", { level: 1 })).toHaveText(
     "Today on your farm.",
   );
-  for (const code of ["hi", "ur"]) {
-    const pack = JSON.parse(
-      await fs.readFile(
-        path.join(process.cwd(), `public/locales/workspace/${code}.json`),
-        "utf8",
-      ),
-    );
+  let lastLanguageStarted = 0;
+  for (const code of codes) {
+    // Six full authenticated route loads per language create an artificial
+    // burst. Keep the matrix within the unchanged 500-request/minute gateway.
+    const remaining = 11000 - (Date.now() - lastLanguageStarted);
+    if (remaining > 0)
+      await new Promise((resolve) => setTimeout(resolve, remaining));
+    lastLanguageStarted = Date.now();
+    const pack =
+      code === "en"
+        ? {}
+        : JSON.parse(
+            await fs.readFile(
+              path.join(process.cwd(), `public/locales/workspace/${code}.json`),
+              "utf8",
+            ),
+          );
+    const tx = (source) => pack[source] || source;
     await page.getByTestId("workspace-language").click();
     await page
       .getByRole("dialog")
@@ -177,12 +190,12 @@ test("Hindi and Urdu remain active across authenticated farmer routes", async ({
     ]) {
       await page.goto(route);
       await expect(page.getByRole("heading", { level: 1 })).toHaveText(
-        pack[title],
+        tx(title),
       );
       await expect(page.locator("html")).toHaveAttribute("lang", `${code}-IN`);
       await expect(page.locator("html")).toHaveAttribute(
         "dir",
-        code === "ur" ? "rtl" : "ltr",
+        ["ks", "sd", "ur"].includes(code) ? "rtl" : "ltr",
       );
       expect(
         await page.evaluate(
@@ -191,15 +204,15 @@ test("Hindi and Urdu remain active across authenticated farmer routes", async ({
       ).toBe(true);
       if (route === "/app/farm") {
         await page
-          .getByRole("button", { name: pack["Add crop cycle"], exact: true })
+          .getByRole("button", { name: tx("Add crop cycle"), exact: true })
           .click();
         const dialog = page.getByRole("dialog");
-        await dialog.getByRole("searchbox").fill(pack.Tomato);
+        await dialog.getByRole("searchbox").fill(tx("Tomato"));
         await expect(
-          dialog.getByRole("option", { name: pack.Tomato, exact: true }),
+          dialog.getByRole("option", { name: tx("Tomato"), exact: true }),
         ).toHaveCount(1);
         await dialog
-          .getByLabel(pack.Crop, { exact: true })
+          .getByLabel(tx("Crop"), { exact: true })
           .selectOption("tomato");
         await expect(dialog.getByRole("combobox")).toHaveValue("tomato");
         expect(
@@ -212,23 +225,23 @@ test("Hindi and Urdu remain active across authenticated farmer routes", async ({
           fullPage: true,
         });
         await dialog
-          .getByRole("button", { name: pack["Close dialog"], exact: true })
+          .getByRole("button", { name: tx("Close dialog"), exact: true })
           .click();
       }
       if (route === "/app/more/settings") {
-        const state = page.getByLabel(pack["State or union territory"], {
+        const state = page.getByLabel(tx("State or union territory"), {
           exact: true,
         });
-        const district = page.getByLabel(pack.District, { exact: true });
+        const district = page.getByLabel(tx("District"), { exact: true });
         await page
-          .getByLabel(pack["Search states and union territories"], {
+          .getByLabel(tx("Search states and union territories"), {
             exact: true,
           })
-          .fill(pack.Rajasthan);
+          .fill(tx("Rajasthan"));
         await state.selectOption("8");
         await page
-          .getByLabel(pack["Search districts"], { exact: true })
-          .fill(pack.Jaipur);
+          .getByLabel(tx("Search districts"), { exact: true })
+          .fill(tx("Jaipur"));
         await district.selectOption("102");
         const saved = page.waitForResponse(
           (response) =>
@@ -237,7 +250,7 @@ test("Hindi and Urdu remain active across authenticated farmer routes", async ({
         );
         await page
           .getByRole("button", {
-            name: pack["Save account details"],
+            name: tx("Save account details"),
             exact: true,
           })
           .click();
@@ -251,14 +264,17 @@ test("Hindi and Urdu remain active across authenticated farmer routes", async ({
         });
         await page.reload();
         await expect(
-          page.getByLabel(pack["State or union territory"], { exact: true }),
+          page.getByLabel(tx("State or union territory"), { exact: true }),
         ).toHaveValue("8");
         await expect(
-          page.getByLabel(pack.District, { exact: true }),
+          page.getByLabel(tx("District"), { exact: true }),
         ).toHaveValue("102");
-        expect(
-          (await (await page.request.get("/api/v2/me/export")).json()).profile,
-        ).toMatchObject({ state_code: 8, district_code: 102 });
+        const exported = await page.request.get("/api/v2/me/export");
+        expect(exported.ok()).toBe(true);
+        expect((await exported.json()).profile).toMatchObject({
+          state_code: 8,
+          district_code: 102,
+        });
         expect(
           (
             await new AxeBuilder({ page })

@@ -24,7 +24,6 @@ test("English startup needs no locale or translation API request", async () => {
   );
   expect(global.fetch).not.toHaveBeenCalled();
   expect(await result.current.changeLanguage("unsupported")).toBe(false);
-  expect(await result.current.changeLanguage("or")).toBe(false);
   expect(global.fetch).not.toHaveBeenCalled();
 });
 test("selected language loads only its static pack, caches it and preserves placeholders", async () => {

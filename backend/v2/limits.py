@@ -21,7 +21,9 @@ class Quotas:
                 settings.redis_url.get_secret_value(), socket_connect_timeout=2, socket_timeout=2
             )
 
-    def check(self, category, identity, limit, seconds):
+    def check(self, category, identity, limit, seconds, amount=1):
+        if not isinstance(amount, int) or isinstance(amount, bool) or amount <= 0:
+            raise ValueError("Quota amount must be a positive integer")
         bucket = int(time.time()) // seconds
         # Identifiers in Redis are digests, never plaintext phone numbers.
         identity_hash = hmac.new(
@@ -31,10 +33,11 @@ class Quotas:
         if self.redis is not None:
             try:
                 count = self.redis.eval(
-                    "local n=redis.call('INCR',KEYS[1]); if n==1 then redis.call('EXPIRE',KEYS[1],ARGV[1]) end; return n",
+                    "local n=redis.call('INCRBY',KEYS[1],ARGV[2]); if n==tonumber(ARGV[2]) then redis.call('EXPIRE',KEYS[1],ARGV[1]) end; return n",
                     1,
                     key,
                     seconds + 1,
+                    amount,
                 )
             except Exception:
                 raise HTTPException(503, "Usage controls unavailable; retry later") from None
@@ -46,7 +49,7 @@ class Quotas:
                 self.local = {k: v for k, v in self.local.items() if v[1] > now}
                 if key not in self.local and len(self.local) >= 10_000:
                     raise HTTPException(503, "Usage controls busy")
-                count = self.local.get(key, (0, 0))[0] + 1
+                count = self.local.get(key, (0, 0))[0] + amount
                 self.local[key] = (count, now + seconds + 1)
         if count > limit:
             raise HTTPException(429, "Request limit reached; retry later", headers={"Retry-After": str(seconds)})

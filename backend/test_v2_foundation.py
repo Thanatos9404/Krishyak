@@ -28,6 +28,7 @@ from db.models import (
     ObjectDeletion,
     Observation,
     Session,
+    WorkerHeartbeat,
     utcnow,
 )
 from v2.application import install_v2
@@ -42,7 +43,7 @@ POLYGON = {
 
 
 class ConfigAndSchemaTests(unittest.TestCase):
-    def test_profile_language_acceptance_matches_the_first_pilot_scope(self):
+    def test_profile_language_acceptance_matches_the_active_workspace_scope(self):
         pilot = json.loads(
             (Path(__file__).resolve().parents[1] / "frontend/src/i18n/pilotLanguages.json").read_text(encoding="utf-8")
         )
@@ -50,7 +51,7 @@ class ConfigAndSchemaTests(unittest.TestCase):
             with self.subTest(language=code):
                 profile = ProfileInput(display_name="Synthetic farmer", preferred_language=code)
                 self.assertEqual(profile.preferred_language, code)
-        for code in pilot["deferred"]:
+        for code in [*pilot["deferred"], "invalid", "fr"]:
             with self.subTest(deferred=code), self.assertRaises(ValidationError):
                 ProfileInput(display_name="Synthetic farmer", preferred_language=code)
 
@@ -253,6 +254,7 @@ class FoundationIntegrationTests(unittest.TestCase):
 
     def test_readiness_accepts_the_migration_head_and_refuses_previous_schema(self):
         self.assertEqual(self.a.get("/health/ready").status_code, 200)
+
         with self.factory.begin() as db:
             release_head = db.execute(text("SELECT version_num FROM alembic_version")).scalar_one()
             db.execute(text("UPDATE alembic_version SET version_num = 'v2_0004'"))
@@ -262,6 +264,32 @@ class FoundationIntegrationTests(unittest.TestCase):
             with self.factory.begin() as db:
                 db.execute(text("UPDATE alembic_version SET version_num = :head"), {"head": release_head})
         self.assertEqual(self.a.get("/health/ready").status_code, 200)
+
+    def test_status_cookie_hint_never_grants_account_access(self):
+        response = self.a.get("/api/v2/status")
+        self.assertFalse(response.json()["session_cookie_present"])
+        self.assertEqual(response.headers["cache-control"], "no-store")
+        self.a.cookies.set("krishyak_session", "untrusted-cookie", path="/api/v2")
+        self.assertTrue(self.a.get("/api/v2/status").json()["session_cookie_present"])
+        self.assertEqual(self.a.get("/api/v2/me").status_code, 401)
+
+    def test_bounded_worker_batch_persists_heartbeat_and_stops_when_idle(self):
+        from v2.worker import run_batch
+
+        self.assertEqual(run_batch(self.factory, self.settings, Mock()), 0)
+        with self.factory() as db:
+            record = db.get(WorkerHeartbeat, "evidence-worker")
+            self.assertIsNotNone(record)
+            self.assertLess((utcnow() - record.seen_at).total_seconds(), 10)
+        with (
+            patch("v2.worker.run_once", return_value=True) as work,
+            patch("v2.worker.cleanup_once"),
+        ):
+            self.assertEqual(run_batch(self.factory, self.settings, Mock(), max_jobs=2), 2)
+            self.assertEqual(work.call_count, 2)
+        for limit in (0, 11):
+            with self.assertRaises(ValueError):
+                run_batch(self.factory, self.settings, Mock(), max_jobs=limit)
 
     def tearDown(self):
         self.a.close()
@@ -432,7 +460,9 @@ class FoundationIntegrationTests(unittest.TestCase):
         self.sign_in(self.a)
         caps = self.a.get("/api/v2/speech/capabilities")
         self.assertEqual(caps.status_code, 200, caps.text)
-        self.assertEqual(set(caps.json()["stt_languages"]), set("en hi ur gu bn mr kn ta te ml pa".split()))
+        from sarvam_service import LANGUAGES
+
+        self.assertEqual(set(caps.json()["stt_languages"]), set(LANGUAGES))
         with patch(
             "v2.speech.transcribe", AsyncMock(return_value={"transcript": "किसान", "language_code": "hi-IN"})
         ) as provider:
@@ -440,14 +470,14 @@ class FoundationIntegrationTests(unittest.TestCase):
             def request(language="hi-IN"):
                 return self.a.post(
                     "/api/v2/speech/transcribe",
-                    files={"file": ("fixture.webm", b"fixture", "audio/webm")},
+                    files={"file": ("fixture.wav", b"fixture", "audio/wav")},
                     data={"language": language},
                 )
 
             self.assertEqual(request().status_code, 403)
             provider.assert_not_awaited()
             self.consent(self.a, "speech_processing")
-            self.assertEqual(request("as-IN").status_code, 422)
+            self.assertEqual(request("unknown-IN").status_code, 422)
             provider.assert_not_awaited()
             success = request()
             self.assertEqual(success.status_code, 200, success.text)
@@ -464,6 +494,33 @@ class FoundationIntegrationTests(unittest.TestCase):
 
             provider.side_effect = withdraw
             self.assertEqual(request().status_code, 403)
+
+    def test_private_read_aloud_requires_consent_and_rechecks_withdrawal(self):
+        self.sign_in(self.a)
+        payload = {"text": "खेत देखें", "language": "hi"}
+        service = self.app.state.v2_read_aloud
+        with patch.object(service, "synthesize", AsyncMock(return_value={"audios": ["fixture-only"]})) as provider:
+            self.assertEqual(self.a.post("/api/v2/speech/synthesize", json=payload).status_code, 403)
+            provider.assert_not_awaited()
+            self.consent(self.a, "speech_processing")
+            response = self.a.post("/api/v2/speech/synthesize", json=payload)
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.headers["Cache-Control"], "no-store")
+
+            async def withdraw(*args):
+                with self.factory.begin() as transaction:
+                    consent = transaction.scalar(
+                        select(Consent).where(Consent.purpose == "speech_processing", Consent.withdrawn_at.is_(None))
+                    )
+                    consent.withdrawn_at = utcnow()
+                return {"audios": ["private audio"]}
+
+            provider.side_effect = withdraw
+            response = self.a.post("/api/v2/speech/synthesize", json=payload)
+            self.assertEqual(response.status_code, 403)
+            self.assertNotIn("private audio", response.text)
+            self.a.headers.pop("X-CSRF-Token")
+            self.assertEqual(self.a.post("/api/v2/speech/synthesize", json=payload).status_code, 403)
 
     def test_context_planning_uses_existing_engine_and_rechecks_analysis_permission(self):
         from main import FarmingInput

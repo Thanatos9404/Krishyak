@@ -90,9 +90,15 @@ def capabilities():
 
 @router.post('/transcribe')
 async def transcribe(request: Request, file: UploadFile = File(...), language: str = Form('en')):
-    code = language_code(language)
     api_key()
     reserve(request)
+    return await transcribe_audio(file, language)
+
+
+async def transcribe_audio(file, language, *, transport=None):
+    """Shared bounded validation; callers enforce their own usage budgets."""
+    code = language_code(language)
+    api_key()
     try:
         data = await file.read(MAX_AUDIO_BYTES + 1)
     finally:
@@ -118,11 +124,13 @@ async def transcribe(request: Request, file: UploadFile = File(...), language: s
         try:
             with wave.open(io.BytesIO(data), 'rb') as audio:
                 duration = audio.getnframes() / audio.getframerate()
-                if duration > 30:
+                if duration <= 0 or duration > 30:
                     raise HTTPException(422, 'Recordings must be no longer than 30 seconds.')
+                if len(audio.readframes(audio.getnframes())) != audio.getnframes() * audio.getsampwidth() * audio.getnchannels():
+                    raise HTTPException(415, 'Invalid WAV audio.')
         except (wave.Error, EOFError, ZeroDivisionError):
             raise HTTPException(415, 'Invalid WAV audio.') from None
-    result = await sarvam_request('/speech-to-text',
+    result = await (transport or sarvam_request)('/speech-to-text',
         files={'file': ('recording.' + extensions[mime], data, mime)},
         data={'model': 'saaras:v3', 'mode': 'transcribe', 'language_code': code})
     text = result.get('transcript')

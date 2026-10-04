@@ -1,6 +1,6 @@
 {
   "extractor": "Babel AST; literals, JSX text, positional template placeholders",
-  "source_strings": 1763,
+  "source_strings": 1767,
   "strings": [
     {
       "source": ". Failed requests preserve earlier observations.",
@@ -134,7 +134,7 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 149,
+          "line": 154,
           "kind": "literal"
         }
       ]
@@ -271,7 +271,7 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 130,
+          "line": 135,
           "kind": "literal"
         }
       ]
@@ -317,17 +317,6 @@
           "file": "src/components/product/SettingsView.jsx",
           "line": 168,
           "kind": "literal"
-        }
-      ]
-    },
-    {
-      "source": "{{v0}}. {{v1}}. Source: {{v2}}. {{v3}}",
-      "sha256": "950f1f71778a4e7c0db48336c3ff88d5b97efed750a13786806f6ea2dc493c5d",
-      "references": [
-        {
-          "file": "src/components/product/TodayView.jsx",
-          "line": 156,
-          "kind": "template"
         }
       ]
     },
@@ -408,8 +397,8 @@
       ]
     },
     {
-      "source": "10 Indian languages and English. Text translations are machine generated and await native-speaker review.",
-      "sha256": "490e32eeef1ab174043f39d199e47bdba078dc23df5784ede7b02cac2a01bf57",
+      "source": "22 Indian languages and English. Text translations are machine generated and await native-speaker review.",
+      "sha256": "ec562efe31c6270d84053d05a048c87a96c8fef1e974717137778d1b17802052",
       "references": [
         {
           "file": "src/components/product/ProductLanguageChooser.jsx",
@@ -655,7 +644,7 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 112,
+          "line": 117,
           "kind": "literal"
         }
       ]
@@ -1680,12 +1669,12 @@
       "references": [
         {
           "file": "src/components/product/PrivateEntry.jsx",
-          "line": 9,
+          "line": 8,
           "kind": "jsx"
         },
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 75,
+          "line": 80,
           "kind": "literal"
         }
       ]
@@ -2185,7 +2174,7 @@
         },
         {
           "file": "src/features/product/ProductApp.jsx",
-          "line": 113,
+          "line": 114,
           "kind": "literal"
         }
       ]
@@ -3064,7 +3053,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 218,
+          "line": 219,
           "kind": "literal"
         }
       ]
@@ -3108,7 +3097,7 @@
       "references": [
         {
           "file": "src/features/product/ProductApp.jsx",
-          "line": 76,
+          "line": 77,
           "kind": "literal"
         }
       ]
@@ -3768,7 +3757,7 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 147,
+          "line": 152,
           "kind": "literal"
         }
       ]
@@ -3861,7 +3850,7 @@
       "references": [
         {
           "file": "src/features/product/ProductApp.jsx",
-          "line": 88,
+          "line": 89,
           "kind": "literal"
         }
       ]
@@ -4614,7 +4603,7 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 172,
+          "line": 177,
           "kind": "literal"
         }
       ]
@@ -5252,6 +5241,17 @@
       ]
     },
     {
+      "source": "Enable voice processing in permissions to check server read-aloud.",
+      "sha256": "d66eb7e58d3aa002591b6e79e676c0197ae95aad3f40cf1178d797aaef82117c",
+      "references": [
+        {
+          "file": "src/features/farms/LocalReadout.jsx",
+          "line": 160,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Enables location-based context for fields you provide.",
       "sha256": "0f3a729df1df21a3b2360e34f6ea97b705792e517cdb0114d5933e63f568b8d3",
       "references": [
@@ -5696,7 +5696,7 @@
         },
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 20,
+          "line": 25,
           "kind": "literal"
         },
         {
@@ -5992,7 +5992,7 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 194,
+          "line": 199,
           "kind": "literal"
         }
       ]
@@ -7154,7 +7154,7 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 72,
+          "line": 77,
           "kind": "literal"
         }
       ]
@@ -7396,7 +7396,7 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 128,
+          "line": 133,
           "kind": "literal"
         }
       ]
@@ -7605,7 +7605,7 @@
       "references": [
         {
           "file": "src/features/product/ProductApp.jsx",
-          "line": 93,
+          "line": 94,
           "kind": "literal"
         }
       ]
@@ -7632,7 +7632,7 @@
         },
         {
           "file": "src/features/product/ProductApp.jsx",
-          "line": 87,
+          "line": 88,
           "kind": "literal"
         },
         {
@@ -7648,7 +7648,7 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 66,
+          "line": 71,
           "kind": "literal"
         }
       ]
@@ -10232,7 +10232,7 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 22,
+          "line": 27,
           "kind": "literal"
         }
       ]
@@ -10551,7 +10551,7 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 40,
+          "line": 45,
           "kind": "literal"
         }
       ]
@@ -10683,7 +10683,7 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 23,
+          "line": 28,
           "kind": "literal"
         }
       ]
@@ -10815,7 +10815,7 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 115,
+          "line": 120,
           "kind": "literal"
         }
       ]
@@ -11474,17 +11474,6 @@
       ]
     },
     {
-      "source": "No installed English device voice is available. Written advice remains available.",
-      "sha256": "470642ab57deac85ea1013bfba0e51d4c632c75aa834de229f13bccba4bd3168",
-      "references": [
-        {
-          "file": "src/features/farms/LocalReadout.jsx",
-          "line": 66,
-          "kind": "literal"
-        }
-      ]
-    },
-    {
       "source": "No irrigation, disease, crop species or soil nutrient inference.",
       "sha256": "2dd35f1033e28e259b7c8c5479abdb43d9fce0433d322ae998e82ab1da058cbf",
       "references": [
@@ -11556,7 +11545,7 @@
       "references": [
         {
           "file": "src/features/product/useAccountSession.js",
-          "line": 98,
+          "line": 99,
           "kind": "literal"
         }
       ]
@@ -11629,6 +11618,17 @@
           "file": "backend/v2/pilots.py",
           "line": 220,
           "kind": "server"
+        }
+      ]
+    },
+    {
+      "source": "No voice is available for this language. Written advice remains available.",
+      "sha256": "64909adbef8a181463246754492381fa30025a3faa10375b9420b0b50d1e037f",
+      "references": [
+        {
+          "file": "src/features/farms/LocalReadout.jsx",
+          "line": 153,
+          "kind": "literal"
         }
       ]
     },
@@ -11836,7 +11836,7 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 78,
+          "line": 83,
           "kind": "literal"
         }
       ]
@@ -11852,7 +11852,7 @@
         },
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 206,
+          "line": 207,
           "kind": "literal"
         }
       ]
@@ -11945,7 +11945,7 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 146,
+          "line": 151,
           "kind": "literal"
         }
       ]
@@ -11956,7 +11956,7 @@
       "references": [
         {
           "file": "src/features/product/ProductApp.jsx",
-          "line": 66,
+          "line": 67,
           "kind": "literal"
         }
       ]
@@ -11989,7 +11989,7 @@
       "references": [
         {
           "file": "src/features/product/useOfflineConnection.js",
-          "line": 154,
+          "line": 157,
           "kind": "literal"
         }
       ]
@@ -12000,7 +12000,7 @@
       "references": [
         {
           "file": "src/features/product/useOfflineConnection.js",
-          "line": 153,
+          "line": 156,
           "kind": "literal"
         }
       ]
@@ -12154,7 +12154,7 @@
       "references": [
         {
           "file": "src/components/product/PrivateEntry.jsx",
-          "line": 8,
+          "line": 7,
           "kind": "jsx"
         }
       ]
@@ -12209,7 +12209,7 @@
       "references": [
         {
           "file": "src/features/product/ProductApp.jsx",
-          "line": 75,
+          "line": 76,
           "kind": "literal"
         },
         {
@@ -13311,7 +13311,7 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 195,
+          "line": 200,
           "kind": "literal"
         }
       ]
@@ -13371,7 +13371,7 @@
       "references": [
         {
           "file": "src/features/product/useAccountSession.js",
-          "line": 123,
+          "line": 124,
           "kind": "literal"
         }
       ]
@@ -14019,12 +14019,23 @@
       ]
     },
     {
-      "source": "Read today’s advice aloud in English",
-      "sha256": "0ecd7cdcdfb3b6033f19f997c5945fa3600eeb18a239bb30d7980967be89ad23",
+      "source": "Read today’s advice aloud",
+      "sha256": "ea578758ab1f40b741f32ff80ae37d91ca4b1aef46189139be465300848c3664",
       "references": [
         {
           "file": "src/features/farms/LocalReadout.jsx",
-          "line": 58,
+          "line": 141,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Read-aloud covers the first 2,500 characters. The full advice remains written above.",
+      "sha256": "ef3466b7c3a3b1c3a0acc60cd984e0b2be66c70bfab0d8fb9817cf723bd987fe",
+      "references": [
+        {
+          "file": "src/features/farms/LocalReadout.jsx",
+          "line": 168,
           "kind": "literal"
         }
       ]
@@ -14035,7 +14046,12 @@
       "references": [
         {
           "file": "src/features/farms/LocalReadout.jsx",
-          "line": 48,
+          "line": 91,
+          "kind": "literal"
+        },
+        {
+          "file": "src/features/farms/LocalReadout.jsx",
+          "line": 134,
           "kind": "literal"
         }
       ]
@@ -14227,7 +14243,7 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 179,
+          "line": 184,
           "kind": "literal"
         }
       ]
@@ -14260,7 +14276,7 @@
       "references": [
         {
           "file": "src/features/product/ProductApp.jsx",
-          "line": 100,
+          "line": 101,
           "kind": "literal"
         }
       ]
@@ -14957,7 +14973,7 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 21,
+          "line": 26,
           "kind": "literal"
         }
       ]
@@ -15154,7 +15170,7 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 97,
+          "line": 102,
           "kind": "literal"
         }
       ]
@@ -15231,7 +15247,7 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 93,
+          "line": 98,
           "kind": "literal"
         }
       ]
@@ -15254,6 +15270,17 @@
         {
           "file": "src/components/product/FormVoiceInput.jsx",
           "line": 44,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Selected text is sent to the configured speech service. Krishyak does not save the text or audio.",
+      "sha256": "cef521d45b0e1ff0f1167086cfd36d15e0fe5b0747f403f7c1d1a4953ae9e789",
+      "references": [
+        {
+          "file": "src/features/farms/LocalReadout.jsx",
+          "line": 150,
           "kind": "literal"
         }
       ]
@@ -15604,7 +15631,7 @@
       "references": [
         {
           "file": "src/features/product/useAccountSession.js",
-          "line": 94,
+          "line": 95,
           "kind": "literal"
         }
       ]
@@ -15692,7 +15719,7 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 120,
+          "line": 125,
           "kind": "literal"
         }
       ]
@@ -15956,7 +15983,7 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 60,
+          "line": 65,
           "kind": "literal"
         }
       ]
@@ -16155,6 +16182,17 @@
           "file": "src/features/product/cropCatalog.json",
           "line": 1,
           "kind": "crop-label"
+        }
+      ]
+    },
+    {
+      "source": "Source",
+      "sha256": "0e570ca6fabe24f94e52c1833f3ffd25567022beb826fa16891f3322051bc221",
+      "references": [
+        {
+          "file": "src/components/product/TodayView.jsx",
+          "line": 157,
+          "kind": "literal"
         }
       ]
     },
@@ -16412,6 +16450,17 @@
       ]
     },
     {
+      "source": "Speech usage limit reached. Try later or read the written advice.",
+      "sha256": "39c61503a373014fc08e3f32e19ba1b179068ed72c3645b02e80421ddf7104ad",
+      "references": [
+        {
+          "file": "src/features/farms/LocalReadout.jsx",
+          "line": 133,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Spinach",
       "sha256": "115848bd1b625cfe983273f195922a7553f0a63022873a97c8c9966d1cbcad47",
       "references": [
@@ -16527,7 +16576,7 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 134,
+          "line": 139,
           "kind": "literal"
         }
       ]
@@ -16604,7 +16653,7 @@
       "references": [
         {
           "file": "src/features/farms/LocalReadout.jsx",
-          "line": 57,
+          "line": 141,
           "kind": "literal"
         }
       ]
@@ -16791,7 +16840,7 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 156,
+          "line": 161,
           "kind": "literal"
         }
       ]
@@ -17054,7 +17103,7 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 196,
+          "line": 201,
           "kind": "literal"
         },
         {
@@ -17399,7 +17448,7 @@
       "references": [
         {
           "file": "src/features/product/ProductApp.jsx",
-          "line": 96,
+          "line": 97,
           "kind": "literal"
         }
       ]
@@ -17762,7 +17811,7 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 19,
+          "line": 24,
           "kind": "literal"
         }
       ]
@@ -17980,7 +18029,7 @@
       "references": [
         {
           "file": "src/features/product/useOfflineConnection.js",
-          "line": 119,
+          "line": 122,
           "kind": "literal"
         }
       ]
@@ -18142,6 +18191,16 @@
         {
           "file": "src/components/product/FarmContextCard.jsx",
           "line": 380,
+          "kind": "literal"
+        },
+        {
+          "file": "src/features/farms/LocalReadout.jsx",
+          "line": 99,
+          "kind": "literal"
+        },
+        {
+          "file": "src/features/farms/LocalReadout.jsx",
+          "line": 101,
           "kind": "literal"
         }
       ]
@@ -18493,7 +18552,7 @@
       "references": [
         {
           "file": "src/features/product/ProductApp.jsx",
-          "line": 115,
+          "line": 116,
           "kind": "literal"
         }
       ]
@@ -18537,7 +18596,7 @@
       "references": [
         {
           "file": "src/features/farms/LocalReadout.jsx",
-          "line": 63,
+          "line": 146,
           "kind": "literal"
         }
       ]
@@ -18762,7 +18821,7 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 80,
+          "line": 85,
           "kind": "literal"
         }
       ]
@@ -18850,7 +18909,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 222,
+          "line": 223,
           "kind": "literal"
         }
       ]
@@ -19381,7 +19440,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 210,
+          "line": 211,
           "kind": "literal"
         }
       ]
@@ -19414,7 +19473,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 202,
+          "line": 203,
           "kind": "literal"
         },
         {
@@ -19435,7 +19494,7 @@
         },
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 194,
+          "line": 195,
           "kind": "literal"
         },
         {
@@ -19500,7 +19559,7 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 39,
+          "line": 44,
           "kind": "literal"
         }
       ]
@@ -19643,7 +19702,7 @@
       "references": [
         {
           "file": "src/components/product/PrivateEntry.jsx",
-          "line": 7,
+          "line": 6,
           "kind": "jsx"
         }
       ]
@@ -19687,7 +19746,7 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 67,
+          "line": 72,
           "kind": "literal"
         }
       ]

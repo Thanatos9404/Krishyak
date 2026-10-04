@@ -1,74 +1,47 @@
-# First pilot language scope
+# India-first workspace language scope
 
-The user's 3 October 2026 instruction narrows the first pilot to ten Indian
-languages: Hindi, Urdu, Gujarati, Bengali, Marathi, Kannada, Tamil, Telugu,
-Malayalam and Punjabi. English remains available. The remaining twelve scheduled
-languages are deferred; this does not defer the rest of the release brief.
+The final activation brief supersedes the earlier ten-language pilot restriction.
+All 22 scheduled Indian languages and Indian English are active. The shared
+`frontend/src/i18n/pilotLanguages.json` registry drives the picker, generation,
+validation and browser matrix. Profile updates accept the same 23 codes and
+reject unsupported languages.
 
-`frontend/src/i18n/pilotLanguages.json` defines the active choices and deferred
-codes. Both translation providers and server-side profile updates accept only
-active choices, with a server contract test checking the shared pilot list. Older saved
-preferences for a deferred language resolve to an active browser language or
-English. Default workspace generation, validation and browser testing use the
-same pilot list. The service worker caches only active workspace packs. Static
-pack requests include the English source digest so a new UI version cannot
-reuse an older pack from the offline cache; CI validates that digest.
+Each Indian language has 1,767 static workspace labels. Selecting a language
+loads only its versioned static JSON pack, with no runtime translation call.
+The service worker caches selected public packs. Source hashes prevent stale
+translations from being reused after a UI change. User-entered names and notes
+remain unchanged, and localized labels preserve canonical API values.
 
-Workspace translations are static Sarvam output, generated explicitly with
-bounded requests and submitted characters. Selecting a language does not call
-a translation provider. The initial pilot completion used 95 provider requests
-and 69,974 submitted characters; two additional fallback labels used 10 requests
-and 630 characters. These runs used existing credits and purchased nothing.
-Earlier work before the scope change is excluded from these run totals.
+Most packs use Sarvam Translate v1. Its Sindhi output used Devanagari, so the
+Sindhi pack instead uses Sarvam's document translation API with explicit Arabic
+script guidelines. A four-label public probe established Arabic output and HTML
+identifier preservation before the full bounded run. The full document had
+44,459 submitted text characters, an estimated 223 existing credits, and a hard
+250-credit limit. No credits were purchased. Sindhi metadata identifies the
+actual document API and provider-managed model instead of claiming Translate v1.
+The resumable generator is `backend/generate_sindhi_document_locale.py`.
 
-The initial English source had 762 strings. The locale-date follow-up adds
-“Stage not recorded” (763 total), using ten additional requests and 300 submitted
-characters from existing credits. All ten packs pass source and pack hashes,
-placeholder parity, protected glossary identity and script checks in
-`WORKSPACE_LOCALE_VALIDATION.json`. The static server-message inventory contains
-only source literals, never runtime farmer data. Pack metadata and the picker
-explicitly disclose machine translation awaiting native-speaker review.
+`WORKSPACE_LOCALE_VALIDATION.json` records all 22 packs passing exact source key,
+hash, interpolation, protected glossary, critical-label and script checks.
+Kashmiri, Sindhi and Urdu use right-to-left layout. Manipuri uses Meitei Mayek;
+Santali uses Ol Chiki. Machine translation still needs native-speaker review.
+Structural validation cannot establish semantic correctness or agronomic safety.
 
-These checks establish structural integrity, not semantic or native-speaker
-approval. User-entered names and notes remain unchanged. Crop identities and
-localized search now have a dedicated [implementation record](CROP_IDENTITIES.md).
-Complete structured server-message coverage and speech
-integration continue under the remaining release requirements.
+The browser matrix checks every configured language at mobile and desktop
+widths and through authenticated Today, Farm, Health, Market, More and Settings
+routes. It verifies localized crop/state/district search, saved canonical
+values, language persistence, right-to-left layout and accessibility. The current
+release audit records which runs actually completed; this matrix definition
+alone is not a claim that production, physical phones or native review passed.
 
-Dates now use the selected language through `Intl.DateTimeFormat`. Calendar
-dates retain their original day; UTC timestamps display in Asia/Kolkata time.
-Missing or invalid dates display a dash. Date input values and stored ISO/UTC
-values remain unchanged. This applies to crop summaries, timelines, notices,
-weather, soil, satellite processing, scans, enrollment and institution records.
-Eight formatter regression tests cover day boundaries, Hindi/Urdu and invalid
-dates. The follow-up frontend unit suite passes 319 tests. The backend suite
-passes 236 tests against a separate named local PostGIS test database, with two
-expected skips (the Linux container-only check and unconfigured live CDSE smoke).
+Private speech is separately capability-gated. Sarvam STT uses its documented
+23 language tags; server TTS exposes only languages actually available from the
+configured provider. Device readout selects a voice for the chosen language.
+Bhashini remains disabled until usable credentials and production approval exist.
+Unavailable voice support displays a localized written-advice fallback without
+switching the farmer to an unrelated language. Explicit consent, authenticated
+requests, weighted Redis budgets and bounded audio processing apply to private
+speech. Live synthetic speech probes are not real farmer microphone validation.
 
-Local validation: production build and formatting pass; 305 frontend tests pass.
-The entry language matrix passes Chromium, Firefox and WebKit at 360 and 1440px,
-including Urdu RTL, preference persistence, zero accessibility violations and
-zero runtime translation calls. The complete seven-test WebKit product flow
-also passes with passive requests cancelled during document navigation.
-The expanded six-test matrix also passes all three engines: keyboard dismissal
-returns focus to the picker, and Hindi/Urdu persist across Today, Farm, Scan,
-Market, More and Settings after real isolated-development sign-in. Browser
-checks retain their page-error assertions; the fixes do not suppress failures.
-
-The crop follow-up has 830 source strings across all ten packs after retiring
-old demo names, with 324 passing frontend unit tests and 242 backend tests with
-two existing environment/provider skips. All 37 production browser checks pass
-across Chromium, Firefox and WebKit, with two existing CDP-only performance
-skips. Native Hindi/Urdu crop search and stable IDs are included. Semantic
-native-speaker approval remains required.
-
-The official-location follow-up expands the ten packs to 1,654 strings each,
-including directory display names. Generation used 440 requests and 188,928
-submitted characters under fixed existing-access caps. All packs pass offline
-structural/provenance checks. Hindi/Urdu location search, canonical IDs,
-authenticated save/reload, private export and account accessibility pass in all
-three engines. The full browser rerun passes 37 checks with the same two CDP-only
-skips; frontend unit coverage now passes 331 tests across 59 suites. Translated
-directory labels are machine output awaiting native review. Language selection
-is available before sign-in; the complete ordered first-run setup wizard remains
-pending. [Location record](INDIA_LOCATIONS.md).
+The [crop identity record](CROP_IDENTITIES.md), [India integration status](INDIA_DATA_INTEGRATIONS.md)
+and [final activation audit](FINAL_PRODUCTION_AUDIT.md) carry related evidence.

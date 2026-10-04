@@ -32,6 +32,7 @@ class Settings(BaseModel):
     audit_retention_days: int = Field(default=180, ge=30, le=3650)
     satellite_schedule_enabled: bool = False
     satellite_schedule_plots_per_day: int = Field(default=10, ge=1, le=50)
+    worker_stale_seconds: int = Field(default=600, ge=600, le=3600)
 
     @property
     def deployed(self) -> bool:
@@ -108,4 +109,5 @@ class Settings(BaseModel):
             audit_retention_days=os.getenv("V2_AUDIT_RETENTION_DAYS") or 180,
             satellite_schedule_enabled=os.getenv("V2_SATELLITE_SCHEDULE_ENABLED", "false").lower() == "true",
             satellite_schedule_plots_per_day=os.getenv("V2_SATELLITE_SCHEDULE_PLOTS_PER_DAY") or 10,
+            worker_stale_seconds=os.getenv("V2_WORKER_STALE_SECONDS") or 600,
         )

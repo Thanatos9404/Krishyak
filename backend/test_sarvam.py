@@ -87,6 +87,14 @@ class SpeechTests(unittest.TestCase):
         self.assertEqual(self.client.post('/speech/transcribe', content=b'x' * (7*1024*1024+1)).status_code, 413)
         self.assertEqual(self.client.post('/speech/transcribe', files={'file': ('a.wav', b'not audio', 'audio/wav')}).status_code, 415)
 
+    def test_wave_duration_and_truncation_rejected_before_provider(self):
+        data = bytearray(wav())
+        # WAV data chunk claims more frames than are present in the upload.
+        data[40:44] = (64000).to_bytes(4, 'little')
+        with patch.object(service, 'sarvam_request', new_callable=AsyncMock) as provider:
+            self.assertEqual(self.client.post('/speech/transcribe', files={'file': ('a.wav', bytes(data), 'audio/wav')}).status_code, 415)
+            provider.assert_not_awaited()
+
     def test_cross_site_post_is_rejected_before_provider_spend(self):
         with patch.object(service, 'sarvam_request', new_callable=AsyncMock) as provider:
             self.assertEqual(self.client.post('/speech/synthesize', json={'text': 'Hello'}, headers={'Origin': 'https://unrelated.example'}).status_code, 403)

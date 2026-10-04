@@ -45,7 +45,7 @@ export function ProductLanguageChooser() {
         >
           <p>
             {tx(
-              "10 Indian languages and English. Text translations are machine generated and await native-speaker review.",
+              "22 Indian languages and English. Text translations are machine generated and await native-speaker review.",
             )}
           </p>
           <label className="v2-label">

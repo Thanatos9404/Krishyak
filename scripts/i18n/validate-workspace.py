@@ -7,19 +7,27 @@ import hashlib
 import json
 import re
 from collections import Counter
+from datetime import datetime
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 LANGUAGES = "as bn brx doi gu hi kn ks kok mai ml mni mr ne or pa sa sat sd ta te ur".split()
 PILOT = [code for code in json.loads((ROOT / "frontend/src/i18n/pilotLanguages.json").read_text(encoding="utf-8"))["codes"] if code != "en"]
 PLACEHOLDERS = re.compile(r"\{\{\w+\}\}")
+CRITICAL = {
+    "Mobile number", "Six-digit code", "Send sign-in code", "Verify & continue",
+    "Today on your farm.", "Your farm, field by field.", "Record an update",
+    "Save account details", "Choose your language", "Read today’s advice aloud",
+    "Your account. Your decisions.", "Start with a clear photograph.",
+    "Prices with a place and a date.", "No voice is available for this language. Written advice remains available.",
+}
 BLOCKS = {
     "as": [(0x980, 0x9FF)], "bn": [(0x980, 0x9FF)],
     "gu": [(0xA80, 0xAFF)], "kn": [(0xC80, 0xCFF)],
     "ml": [(0xD00, 0xD7F)], "or": [(0xB00, 0xB7F)],
     "pa": [(0xA00, 0xA7F)], "ta": [(0xB80, 0xBFF)], "te": [(0xC00, 0xC7F)],
     "ks": [(0x600, 0x6FF)], "sd": [(0x600, 0x6FF)], "ur": [(0x600, 0x6FF)],
-    "sat": [(0x1C50, 0x1C7F)], "mni": [(0xABC0, 0xABFF), (0x980, 0x9FF)],
+    "sat": [(0x1C50, 0x1C7F)], "mni": [(0xABC0, 0xABFF)],
 }
 for code in ["hi", "brx", "doi", "kok", "mai", "mr", "ne", "sa"]:
     BLOCKS[code] = [(0x900, 0x97F)]
@@ -52,6 +60,15 @@ def validate(languages, output):
         if meta.get("source_sha256") != sha(source_text): failures.append(f"{code}: source hash mismatch")
         if meta.get("pack_sha256") != sha(text): failures.append(f"{code}: pack hash mismatch")
         if meta.get("glossary_sha256") != sha(glossary_text): failures.append(f"{code}: glossary hash mismatch")
+        document_sindhi = (code == "sd" and meta.get("provider") == "Sarvam"
+            and meta.get("model") == "provider-managed-document-translation"
+            and meta.get("method") == "document_translation_arabic_script_guidelines"
+            and meta.get("api") == "/translate/document/jobs")
+        if meta.get("model") != "sarvam-translate:v1" and not document_sindhi: failures.append(f"{code}: model provenance missing")
+        try:
+            generated = datetime.fromisoformat(meta["generated_at"])
+            if generated.utcoffset() is None: raise ValueError()
+        except (KeyError, TypeError, ValueError): failures.append(f"{code}: dated generation provenance missing")
         if meta.get("provider") not in {"Sarvam", "Sarvam + Codex"} or meta.get("review_status") != "machine_translated_needs_native_review": failures.append(f"{code}: provenance/review disclosure missing")
         if meta.get("provider") == "Sarvam + Codex":
             additions = meta.get("additions", {})
@@ -78,6 +95,7 @@ def validate(languages, output):
                 if len(re.findall(pattern, key)) != len(re.findall(pattern, value)):
                     failures.append(f"{code}: glossary identity changed: {word}")
             if value == source[key] and len(key) > 8 and " " in key: unchanged.append(key)
+            if key in CRITICAL and value == source[key]: failures.append(f"{code}: critical English label untranslated: {key}")
         letters = [char for value in pack.values() for char in value if char.isalpha()]
         script_letters = sum(any(start <= ord(char) <= end for start, end in BLOCKS[code]) for char in letters)
         script_fraction = script_letters / max(1, len(letters))

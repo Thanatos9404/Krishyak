@@ -1,6 +1,5 @@
 /**
- * Ten Indian pilot languages, plus Indian English. Other registry entries
- * remain available for later releases but are excluded from active choices.
+ * All 22 scheduled Indian languages, plus Indian English.
  * Locale packs are loaded only after selection to keep the first mobile load small.
  */
 

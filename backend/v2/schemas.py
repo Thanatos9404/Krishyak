@@ -84,6 +84,18 @@ class ProfileInput(Input):
             "ta",
             "te",
             "ur",
+            "as",
+            "brx",
+            "doi",
+            "ks",
+            "kok",
+            "mai",
+            "mni",
+            "ne",
+            "or",
+            "sa",
+            "sat",
+            "sd",
         }:
             raise ValueError("Unsupported language")
         return value
