@@ -197,37 +197,37 @@
   {
     "source": "A normalized farm context is required",
     "file": "backend/v2/farm_context/engines.py",
-    "line": 10
+    "line": 13
   },
   {
     "source": "Short-range context only. Seasonal rainfall remains the farmer's scenario assumption.",
     "file": "backend/v2/farm_context/engines.py",
-    "line": 41
+    "line": 44
   },
   {
     "source": "No soil estimate is converted into fertilizer kg/ha or a laboratory soil type.",
     "file": "backend/v2/farm_context/engines.py",
-    "line": 47
+    "line": 50
   },
   {
     "source": "Choose a fresh available market quote",
     "file": "backend/v2/farm_context/engines.py",
-    "line": 22
+    "line": 25
   },
   {
     "source": "Market quote changed. Review the updated quote before using it.",
     "file": "backend/v2/farm_context/engines.py",
-    "line": 25
+    "line": 28
   },
   {
     "source": "Market quote crop, unit or date is not comparable",
     "file": "backend/v2/farm_context/engines.py",
-    "line": 32
+    "line": 35
   },
   {
     "source": "Cotton simulation needs lint prices; a mandi quote has no verified lint basis",
     "file": "backend/v2/farm_context/engines.py",
-    "line": 34
+    "line": 37
   },
   {
     "source": "Partner-approved login configured; connection is checked only during an explicit login",

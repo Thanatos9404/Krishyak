@@ -9,7 +9,7 @@ from unittest.mock import AsyncMock, Mock, patch
 import httpx
 from pydantic import ValidationError
 
-from v2.farm_context.engines import scenario_inputs
+from v2.farm_context.engines import reviewed_market_history, scenario_inputs
 from v2.farm_context.models import ContextInput, MarketRecord, Soil, Source, india_today, now
 from v2.farm_context.providers import imd, normalize_capabilities, normalize_markets, normalize_soil, open_meteo
 from v2.farm_context.service import FarmContextService
@@ -140,6 +140,126 @@ class ContextModelsTests(unittest.TestCase):
                 self.assertEqual(len(quotes), expected_count)
                 if quotes:
                     self.assertEqual(quotes[0]["observed_date"], "2026-10-05")
+
+
+class MarketHistoryTests(unittest.IsolatedAsyncioTestCase):
+    async def asyncSetUp(self):
+        from test_system_integrity import PARAMS
+
+        self.parameters = PARAMS
+        self.context = await FarmContextService(quotas(), ProviderSettings(bhuvan_enabled=False)).build(
+            ContextInput(state_code=8)
+        )
+        self.context.market.source = Source(
+            provider="ogd",
+            status="success",
+            source_url="https://www.data.gov.in/",
+            valid_until=now() + timedelta(hours=1),
+        )
+
+    def quote(self, days=0, **overrides):
+        values = {
+            "commodity": self.parameters["crop"],
+            "market": "Fixture market",
+            "variety": "Fixture variety",
+            "district": "Jaipur",
+            "state": "Rajasthan",
+            "modal_price": 2100 + days * 10,
+            "observed_date": india_today() - timedelta(days=days),
+        }
+        return MarketRecord(**(values | overrides))
+
+    def simulate(self):
+        from simulation_engine import SimulationEngine
+
+        quote = self.context.market.data[0]
+        return SimulationEngine().run_whatif_simulation(
+            self.parameters, 2, farm_context=self.context, market_quote_index=0, expected_quote_id=quote.quote_id
+        )
+
+    async def test_history_cannot_mix_markets_varieties_crops_or_administrative_areas(self):
+        quote = self.quote()
+        self.context.market.data = [
+            quote,
+            self.quote(1),
+            self.quote(2, market="Other market"),
+            self.quote(2, variety="Other variety"),
+            self.quote(2, commodity="Wheat"),
+            self.quote(2, district="Jodhpur"),
+            self.quote(2, state="Gujarat"),
+            self.quote(31),
+            self.quote(-1),
+        ]
+        frame, stats, source = reviewed_market_history(self.context, quote.model_dump(mode="json"))
+        self.assertEqual(frame["Modal_x0020_Price"].tolist(), [2110, 2100])
+        self.assertEqual(stats["observations"], 2)
+        self.assertEqual(source["market"], "Fixture market")
+        self.assertEqual(source["variety"], "Fixture variety")
+        self.assertEqual(source["unit"], "INR/quintal")
+        self.assertFalse(source["complete_archive"])
+        self.assertFalse(source["missing_days_filled"])
+
+    async def test_consecutive_normalized_records_reach_forecaster_and_risk_once(self):
+        self.context.market.data = [self.quote(i) for i in range(21)]
+        with patch("v2.farm_context.engines.reviewed_market_history", wraps=reviewed_market_history) as history:
+            result = self.simulate()
+        self.assertEqual(history.call_count, 1)
+        for name in ("current_plan", "ai_optimal_plan", "worst_case_plan"):
+            with self.subTest(name=name):
+                forecast = result[name]["price_forecast"]
+                self.assertEqual(forecast["historical_days"], 21)
+                self.assertEqual(forecast["consecutive_returns"], 20)
+                self.assertFalse(forecast["forecast_validated"])
+                self.assertEqual(forecast["method"], "persistence_baseline")
+                self.assertEqual(forecast["prediction_interval"]["kind"], "uncalibrated_log_return_interval")
+                self.assertEqual(forecast["history_metadata"]["provider"], "ogd")
+                self.assertEqual(result[name]["risk"]["component_evidence"]["price"], "historical_price_dispersion")
+                self.assertEqual(result[name]["risk"]["contextual_evidence"]["market"]["history"]["observations"], 21)
+        self.assertEqual(
+            result["current_plan"]["price_forecast"]["source_metadata"]["source_type"], "reviewed_public_quote"
+        )
+        worst_source = result["worst_case_plan"]["price_forecast"]["source_metadata"]
+        self.assertEqual(worst_source["source_type"], "scenario_assumption")
+        self.assertTrue(worst_source["is_scenario_adjustment"])
+        self.assertEqual(worst_source["reference_price"], 2100)
+
+    async def test_one_quote_does_not_borrow_unrelated_local_history(self):
+        import pandas as pd
+
+        from simulation_engine import SimulationEngine
+
+        quote = self.quote()
+        self.context.market.data = [quote]
+        engine = SimulationEngine()
+        unrelated = pd.DataFrame(
+            {"Arrival_Date": pd.date_range(end=india_today(), periods=30), "Modal_x0020_Price": range(4000, 4030)}
+        )
+        with patch.object(engine.price_forecaster.data_loader, "get_commodity_prices", return_value=unrelated):
+            result = engine.run_whatif_simulation(
+                self.parameters, 2, farm_context=self.context, market_quote_index=0, expected_quote_id=quote.quote_id
+            )
+        forecast = result["current_plan"]["price_forecast"]
+        self.assertEqual(forecast["historical_days"], 1)
+        self.assertEqual(forecast["consecutive_returns"], 0)
+        self.assertIsNone(forecast["prediction_interval"])
+        self.assertEqual(forecast["volatility_level"], "Unknown")
+        self.assertEqual(
+            result["current_plan"]["risk"]["component_evidence"]["price"], "assumed_baseline_insufficient_history"
+        )
+
+    async def test_date_gaps_and_conflicting_duplicates_are_not_filled_or_averaged(self):
+        quote = self.quote()
+        self.context.market.data = [self.quote(i) for i in range(0, 29, 2)] + [
+            self.quote(4),
+            self.quote(6, modal_price=3100),
+        ]
+        frame, _, source = reviewed_market_history(self.context, quote.model_dump(mode="json"))
+        self.assertEqual(len(frame), 14)
+        self.assertNotIn(india_today() - timedelta(days=6), frame["Arrival_Date"].dt.date.tolist())
+        self.assertFalse(source["missing_days_filled"])
+        forecast = self.simulate()["current_plan"]["price_forecast"]
+        self.assertEqual(forecast["consecutive_returns"], 0)
+        self.assertIsNone(forecast["prediction_interval"])
 
 
 class GatewayTests(unittest.IsolatedAsyncioTestCase):
