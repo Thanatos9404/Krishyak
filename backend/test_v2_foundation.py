@@ -247,6 +247,33 @@ class FoundationIntegrationTests(unittest.TestCase):
         self.b.close()
         self.images.cleanup()
 
+    def test_profile_location_codes_are_canonical_owner_scoped_and_exported(self):
+        self.sign_in(self.a)
+        self.sign_in(self.b, "+919000000002")
+        body = {
+            "display_name": "Location test farmer",
+            "preferred_language": "hi",
+            "state": "Rajsthan",
+            "district": " jaipur ",
+            "subdistrict": "Farmer-reported tehsil",
+            "village": "Farmer-reported village",
+            "pin_code": "302001",
+        }
+        response = self.a.patch("/api/v2/me", json=body)
+        self.assertEqual(response.status_code, 200, response.text)
+        farmer = response.json()["farmer"]
+        self.assertEqual((farmer["state_code"], farmer["district_code"]), (8, 102))
+        self.assertEqual((farmer["state"], farmer["district"]), ("Rajasthan", "Jaipur"))
+        other = self.b.get("/api/v2/me").json()["farmer"]
+        self.assertIsNone(other["state_code"])
+        self.assertIsNone(other["district_code"])
+        rejected = self.a.patch("/api/v2/me", json={**body, "state_code": 27})
+        self.assertEqual(rejected.status_code, 422)
+        self.assertEqual(self.a.get("/api/v2/me").json()["farmer"]["state_code"], 8)
+        exported = self.a.get("/api/v2/me/export")
+        self.assertEqual(exported.status_code, 200)
+        self.assertEqual(exported.json()["profile"]["district_code"], 102)
+
     def sign_in(self, client, mobile="+919000000001"):
         challenge = client.post("/api/v2/auth/request-otp", json={"mobile": mobile})
         self.assertEqual(challenge.status_code, 200, challenge.text)

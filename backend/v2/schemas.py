@@ -47,6 +47,23 @@ class ProfileInput(Input):
     state: str | None = Field(default=None, max_length=100)
     district: str | None = Field(default=None, max_length=100)
     village: str | None = Field(default=None, max_length=100)
+    state_code: StrictInt | None = Field(default=None, gt=0, le=9999)
+    district_code: StrictInt | None = Field(default=None, gt=0, le=999999)
+    subdistrict: str | None = Field(default=None, max_length=100)
+    pin_code: str | None = Field(default=None, pattern=r"^[1-9][0-9]{5}$")
+
+    @field_validator("pin_code", mode="before")
+    @classmethod
+    def optional_pin(cls, value):
+        return value.strip() or None if isinstance(value, str) else value
+
+    @model_validator(mode="after")
+    def canonical_location(self):
+        from .locations import resolve_location
+
+        for name, value in resolve_location(self.state_code, self.district_code, self.state, self.district).items():
+            setattr(self, name, value)
+        return self
 
     @field_validator("preferred_language")
     @classmethod

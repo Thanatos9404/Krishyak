@@ -69,3 +69,23 @@ writes. Retired demo names were removed from the ten packs without provider
 calls; each pack now contains 830 source strings. These results validate this
 stage; provider provisioning, production promotion and native semantic approval
 remain unverified under the broader release requirements.
+
+
+Official location foundation (4 October 2026): anonymous LGD metadata requests
+supplied a dated snapshot of 36 states/UTs and 784 districts. Public source rows,
+source/published hashes and response receipts are preserved. Profile validation
+stores canonical LGD codes/names, enforces state/district parentage and rejects
+unknown or conflicting identities. Optional tehsil/village remain reported text;
+optional PIN is format-checked without inferring an address. Nullable migration
+`v2_0006` backfills known names from a frozen catalogue without rewriting reports.
+
+Local backend verification passes 250 tests with two existing environment/provider
+skips. Seven catalogue/identity tests cover all 784 parent pairs, real duplicate
+district names, type/PIN constraints and provenance. Actual owner-isolated profile
+updates and exports pass. Six historical PostGIS cases preserve names and leave
+unknown or cross-state codes null. Migration round trip, schema comparison and a
+disposable empty-database dump/restore pass. The local API becomes ready at
+`v2_0006`, confirming the migration-head readiness fix handles the next migration.
+No new local field fixtures were created. Structured selectors and translated
+names in account, market and first-run onboarding remain required; these location
+requirements are expressly incomplete. [Location record](INDIA_LOCATIONS.md).

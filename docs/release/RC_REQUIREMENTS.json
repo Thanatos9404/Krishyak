@@ -84,15 +84,29 @@
       "number": 11,
       "requirement": "INDIA-FIRST LOCATION MODEL",
       "source_sha256": "8cce2df9f56582ada738706dd69640e6bbd1344e42d36e191a9aa3f39ae2a27c",
-      "status": "unverified",
-      "evidence": []
+      "status": "backend_implemented_ui_and_localization_pending",
+      "evidence": [
+        "docs/release/INDIA_LOCATIONS.md",
+        "backend/v2/locations.py",
+        "backend/v2/india_locations.meta.json",
+        "backend/test_india_locations.py",
+        "scripts/verify_india_location_backfill.py",
+        "backend/test_v2_foundation.py"
+      ]
     },
     {
       "number": 12,
       "requirement": "LOCATION NORMALIZATION",
       "source_sha256": "f0115670923e849a25065a6014ed5ca56abcd24058e1da28ba2509f2de4717e3",
-      "status": "unverified",
-      "evidence": []
+      "status": "backend_implemented_ui_and_localization_pending",
+      "evidence": [
+        "docs/release/INDIA_LOCATIONS.md",
+        "backend/v2/locations.py",
+        "backend/v2/india_locations.meta.json",
+        "backend/test_india_locations.py",
+        "scripts/verify_india_location_backfill.py",
+        "backend/test_v2_foundation.py"
+      ]
     },
     {
       "number": 13,
