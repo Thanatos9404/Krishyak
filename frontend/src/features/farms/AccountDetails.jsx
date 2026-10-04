@@ -1,6 +1,8 @@
 import { useProductLocale } from "../product/ProductLocale";
 import React, { useEffect, useState } from "react";
 import { farmApi } from "./api";
+import { IndiaLocationPicker } from "../../components/product/IndiaLocationPicker";
+import { locationFromProfile } from "../product/indiaLocations";
 export default function AccountDetails({
   farmer,
   language,
@@ -14,10 +16,12 @@ export default function AccountDetails({
   const { tx, formatDate } = useProductLocale();
   const [profile, setProfile] = useState({
     display_name: farmer.display_name,
-    state: farmer.state || "",
-    district: farmer.district || "",
+    ...locationFromProfile(farmer),
     village: farmer.village || "",
+    subdistrict: farmer.subdistrict || "",
+    pin_code: farmer.pin_code || "",
   });
+  const [locationChanged, setLocationChanged] = useState(false);
   const [enrollments, setEnrollments] = useState([]),
     [cohort, setCohort] = useState(""),
     [selected, setSelected] = useState([]);
@@ -47,22 +51,59 @@ export default function AccountDetails({
             const result = await farmApi("/me", {
               method: "PATCH",
               body: {
-                ...profile,
+                display_name: profile.display_name,
+                village: profile.village,
+                subdistrict: profile.subdistrict,
+                pin_code: profile.pin_code || null,
+                ...(locationChanged
+                  ? {
+                      state_code: profile.state_code,
+                      district_code: profile.district_code,
+                      state: profile.state,
+                      district: profile.district,
+                    }
+                  : {}),
                 preferred_language: language,
               },
             });
             onUpdated(result.farmer);
+            setLocationChanged(false);
           });
         }}
       >
-        {["display_name", "state", "district", "village"].map((key) => (
+        <label className="v2-label">
+          {tx("Preferred name")}
+          <input
+            required
+            maxLength={100}
+            value={profile.display_name}
+            onChange={(event) =>
+              setProfile((previous) => ({
+                ...previous,
+                display_name: event.target.value,
+              }))
+            }
+          />
+        </label>
+        <IndiaLocationPicker
+          value={profile}
+          disabled={busy || offline}
+          onChange={(location) => {
+            setProfile((previous) => ({ ...previous, ...location }));
+            setLocationChanged(true);
+          }}
+        />
+        {[
+          ["subdistrict", "Tehsil or subdistrict (optional)"],
+          ["village", "Village (optional)"],
+          ["pin_code", "PIN code (optional)"],
+        ].map(([key, label]) => (
           <label className="v2-label" key={key}>
-            {key === "display_name"
-              ? tx("Preferred name")
-              : key[0].toUpperCase() + key.slice(1)}
+            {tx(label)}
             <input
-              required={key === "display_name"}
-              maxLength={100}
+              maxLength={key === "pin_code" ? 6 : 100}
+              inputMode={key === "pin_code" ? "numeric" : undefined}
+              pattern={key === "pin_code" ? "[1-9][0-9]{5}" : undefined}
               value={profile[key]}
               onChange={(event) =>
                 setProfile((previous) => ({

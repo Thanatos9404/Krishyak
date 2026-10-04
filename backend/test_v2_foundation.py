@@ -273,6 +273,27 @@ class FoundationIntegrationTests(unittest.TestCase):
         exported = self.a.get("/api/v2/me/export")
         self.assertEqual(exported.status_code, 200)
         self.assertEqual(exported.json()["profile"]["district_code"], 102)
+        renamed = self.a.patch("/api/v2/me", json={"display_name": "New preferred name"})
+        self.assertEqual(renamed.status_code, 200, renamed.text)
+        preserved = renamed.json()["farmer"]
+        self.assertEqual((preserved["state_code"], preserved["district_code"]), (8, 102))
+        self.assertEqual(preserved["preferred_language"], "hi")
+        self.assertEqual(preserved["pin_code"], "302001")
+        with self.factory.begin() as db:
+            db.execute(
+                text(
+                    "UPDATE v2_farmers SET state = 'Historical state', district = 'Old district', "
+                    "state_code = NULL, district_code = NULL WHERE id = :id"
+                ),
+                {"id": farmer["id"]},
+            )
+        legacy = self.a.patch("/api/v2/me", json={"display_name": "Name only"})
+        self.assertEqual(legacy.status_code, 200, legacy.text)
+        self.assertEqual(legacy.json()["farmer"]["state"], "Historical state")
+        cleared = self.a.patch("/api/v2/me", json={"display_name": "Name only", "state": "", "district": ""})
+        self.assertEqual(cleared.status_code, 200, cleared.text)
+        self.assertIsNone(cleared.json()["farmer"]["state"])
+        self.assertIsNone(cleared.json()["farmer"]["district_code"])
 
     def sign_in(self, client, mobile="+919000000001"):
         challenge = client.post("/api/v2/auth/request-otp", json={"mobile": mobile})

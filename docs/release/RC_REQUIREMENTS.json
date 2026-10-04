@@ -84,39 +84,54 @@
       "number": 11,
       "requirement": "INDIA-FIRST LOCATION MODEL",
       "source_sha256": "8cce2df9f56582ada738706dd69640e6bbd1344e42d36e191a9aa3f39ae2a27c",
-      "status": "backend_implemented_ui_and_localization_pending",
+      "status": "structured_account_and_market_implemented_onboarding_pending",
       "evidence": [
         "docs/release/INDIA_LOCATIONS.md",
         "backend/v2/locations.py",
         "backend/v2/india_locations.meta.json",
         "backend/test_india_locations.py",
         "scripts/verify_india_location_backfill.py",
-        "backend/test_v2_foundation.py"
+        "backend/test_v2_foundation.py",
+        "frontend/src/components/product/IndiaLocationPicker.jsx",
+        "frontend/src/components/product/IndiaLocationPicker.test.jsx",
+        "frontend/src/features/farms/AccountDetails.jsx",
+        "frontend/src/features/farms/AccountDetails.test.jsx",
+        "frontend/src/components/product/MarketView.test.jsx",
+        "frontend/e2e/product-locales.spec.js",
+        "docs/release/WORKSPACE_LOCALE_VALIDATION.json"
       ]
     },
     {
       "number": 12,
       "requirement": "LOCATION NORMALIZATION",
       "source_sha256": "f0115670923e849a25065a6014ed5ca56abcd24058e1da28ba2509f2de4717e3",
-      "status": "backend_implemented_ui_and_localization_pending",
+      "status": "stable_ids_and_pilot_localization_implemented_native_review_pending",
       "evidence": [
         "docs/release/INDIA_LOCATIONS.md",
         "backend/v2/locations.py",
         "backend/v2/india_locations.meta.json",
         "backend/test_india_locations.py",
         "scripts/verify_india_location_backfill.py",
-        "backend/test_v2_foundation.py"
+        "backend/test_v2_foundation.py",
+        "frontend/src/components/product/IndiaLocationPicker.jsx",
+        "frontend/src/components/product/IndiaLocationPicker.test.jsx",
+        "frontend/src/features/farms/AccountDetails.jsx",
+        "frontend/src/features/farms/AccountDetails.test.jsx",
+        "frontend/src/components/product/MarketView.test.jsx",
+        "frontend/e2e/product-locales.spec.js",
+        "docs/release/WORKSPACE_LOCALE_VALIDATION.json"
       ]
     },
     {
       "number": 13,
       "requirement": "LANGUAGE-FIRST ONBOARDING",
       "source_sha256": "12c7829e45365e6658f3a3f9cc2b297986d99e2e3c9b5246bbbbf67feeff3457",
-      "status": "implemented_local_validation",
+      "status": "language_selection_implemented_ordered_first_run_flow_pending",
       "evidence": [
         "docs/release/PILOT_LANGUAGE_SCOPE.md",
         "docs/release/WORKSPACE_LOCALE_VALIDATION.json",
-        "frontend/e2e/product-locales.spec.js"
+        "frontend/e2e/product-locales.spec.js",
+        "docs/release/INDIA_LOCATIONS.md"
       ]
     },
     {

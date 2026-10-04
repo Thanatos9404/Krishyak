@@ -89,3 +89,34 @@ disposable empty-database dump/restore pass. The local API becomes ready at
 No new local field fixtures were created. Structured selectors and translated
 names in account, market and first-run onboarding remain required; these location
 requirements are expressly incomplete. [Location record](INDIA_LOCATIONS.md).
+
+Location selector stage (4 October 2026): account and market views now share a
+searchable state/UT and parent-scoped district picker. Canonical IDs survive
+language/search changes; changing a state clears its previous district. Legacy
+saved names are preserved until an explicit choice. A real PostGIS regression
+confirms profile PATCH does not erase omitted location, PIN or language fields,
+and an explicit clear remains supported. Market filters retain canonical source
+names while showing translated choices. All ten static pilot packs now contain
+1,654 strings; offline integrity/provenance validation passes. Bounded generation
+used 440 requests and 188,928 characters, within the authorized existing-access
+caps, without new subscriptions or runtime translation requests.
+
+The current frontend suite passes 331 tests across 59 suites, and the backend
+suite passes 250 tests with the same two environment/provider skips. Production
+build, lint and formatting pass. Public crawl passes nine SSR pages and twenty
+resources with zero orphans. The first browser run found a real WebKit Market
+overflow at 320px; constraining grid tracks and selector minimum widths fixes the
+original strict check. The full rerun passes 37 production browser checks with
+the same two CDP-only performance skips and no failures. The guarded runner
+removes all three generated fields and three empty generated farms afterward;
+local private-photo cleanup leaves no queued objects. A dry run confirms zero
+generated fields and zero other fields in the named fixture accounts.
+Ordered first-run onboarding and native-speaker semantic review remain pending;
+the ledger now records that distinction rather than claiming complete onboarding
+from language-selection tests alone.
+
+The prior backend foundation commit `76edd74aa365e46940e1b78db6c0627bcbf064f9`
+passes both exact-head GitHub quality runs: [push](https://github.com/Thanatos9404/Krishyak/actions/runs/37186187719)
+and [pull request](https://github.com/Thanatos9404/Krishyak/actions/runs/37186190454).
+Backend, frontend/browser and container jobs all succeed. In particular, CI API
+startup accepts `v2_0006`, confirming the readiness fix handles a later migration.

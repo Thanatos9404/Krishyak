@@ -61,6 +61,8 @@ class ProfileInput(Input):
     def canonical_location(self):
         from .locations import resolve_location
 
+        if not self.model_fields_set.intersection({"state", "district", "state_code", "district_code"}):
+            return self
         for name, value in resolve_location(self.state_code, self.district_code, self.state, self.district).items():
             setattr(self, name, value)
         return self

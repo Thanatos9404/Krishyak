@@ -5,17 +5,18 @@ import { deferredFeature } from "../deferredFeature";
 import supportPrices from "../../data/msp_data.json";
 import { I18nProvider } from "../../i18n";
 import { CropPicker } from "./CropPicker";
+import { IndiaLocationPicker } from "./IndiaLocationPicker";
+import { locationFromProfile } from "../../features/product/indiaLocations";
 const MandiPriceCard = deferredFeature(() => import("../MandiPriceCard"));
 const MSPRateCard = deferredFeature(() => import("../MSPRateCard"));
 export function MarketView({ workspace: w }) {
   const { tx, language } = useProductLocale();
   const [commodity, setCommodity] = useState(w.cycles[0]?.crop || ""),
-    [state, setState] = useState(w.farmer?.state || ""),
-    [district, setDistrict] = useState(w.farmer?.district || "");
+    [location, setLocation] = useState(() => locationFromProfile(w.farmer));
   const [filters, setFilters] = useState({
     commodity: commodity || null,
-    state: state || null,
-    district: district || null,
+    state: location.state || null,
+    district: location.district || null,
   });
   return (
     <>
@@ -38,8 +39,8 @@ export function MarketView({ workspace: w }) {
             event.preventDefault();
             setFilters({
               commodity: commodity.trim() || null,
-              state: state.trim() || null,
-              district: district.trim() || null,
+              state: location.state || null,
+              district: location.district || null,
             });
           }}
         >
@@ -48,24 +49,7 @@ export function MarketView({ workspace: w }) {
             required={false}
             onChange={(row) => setCommodity(row?.market_commodity || "")}
           />
-          <label className="v2-label">
-            {tx("State")}
-            <input
-              value={state}
-              onChange={(event) => setState(event.target.value)}
-              placeholder={tx("e.g. Maharashtra")}
-              maxLength={100}
-            />
-          </label>
-          <label className="v2-label">
-            {tx("District")}
-            <input
-              value={district}
-              onChange={(event) => setDistrict(event.target.value)}
-              placeholder={tx("e.g. Nashik")}
-              maxLength={100}
-            />
-          </label>
+          <IndiaLocationPicker value={location} onChange={setLocation} />
           <button className="button primary">
             {tx("Find reported prices")}
           </button>

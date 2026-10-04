@@ -47,6 +47,11 @@ const cropCatalogFile = "src/features/product/cropCatalog.json";
 for (const crop of JSON.parse(fs.readFileSync(path.join(root, "frontend", cropCatalogFile), "utf8"))) {
   collect(crop.label, cropCatalogFile, 1, "crop-label", true);
 }
+const locationsFile = "src/features/product/indiaLocations.json";
+const locations = JSON.parse(fs.readFileSync(path.join(root, "frontend", locationsFile), "utf8"));
+for (const row of [...locations.states, ...locations.districts]) {
+  collect(row.name, locationsFile, 1, "location-name", true);
+}
 if (fs.existsSync(serverInventory))
   for (const row of JSON.parse(fs.readFileSync(serverInventory, "utf8"))) collect(row.source, row.file, row.line, "server");
 const entries = [...records.values()].sort((a, b) => a.source.localeCompare(b.source, "en"));

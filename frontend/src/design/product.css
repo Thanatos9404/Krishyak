@@ -733,9 +733,12 @@
 }
 .market-filters {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto;
   gap: 18px;
   align-items: end;
+}
+.market-filters > * {
+  min-width: 0;
 }
 .support-price-list > div {
   padding: 16px 0;
@@ -759,6 +762,17 @@
 }
 .market-filters > .button {
   margin-bottom: 0;
+}
+.india-location-picker {
+  min-width: 0;
+}
+.india-location-picker .v2-label select {
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
+}
+.market-filters .india-location-picker .v2-label {
+  margin-top: 12px;
 }
 .market-results {
   display: grid;
@@ -1194,7 +1208,7 @@ html[dir="rtl"] .workspace-field-picker select {
     grid-template-columns: 230px minmax(0, 1fr);
   }
   .market-filters {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .signin-layout {
     gap: 28px;
@@ -1425,7 +1439,7 @@ html[dir="rtl"] .workspace-field-picker select {
     padding: 24px 20px;
   }
   .market-filters {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
   .market-filters > .v2-label + .v2-label {
     margin-top: 0;

@@ -61,3 +61,14 @@ two existing environment/provider skips. All 37 production browser checks pass
 across Chromium, Firefox and WebKit, with two existing CDP-only performance
 skips. Native Hindi/Urdu crop search and stable IDs are included. Semantic
 native-speaker approval remains required.
+
+The official-location follow-up expands the ten packs to 1,654 strings each,
+including directory display names. Generation used 440 requests and 188,928
+submitted characters under fixed existing-access caps. All packs pass offline
+structural/provenance checks. Hindi/Urdu location search, canonical IDs,
+authenticated save/reload, private export and account accessibility pass in all
+three engines. The full browser rerun passes 37 checks with the same two CDP-only
+skips; frontend unit coverage now passes 331 tests across 59 suites. Translated
+directory labels are machine output awaiting native review. Language selection
+is available before sign-in; the complete ordered first-run setup wizard remains
+pending. [Location record](INDIA_LOCATIONS.md).

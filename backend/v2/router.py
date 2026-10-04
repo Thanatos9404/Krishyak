@@ -231,7 +231,7 @@ def session_context(request: Request, db=Depends(database, scope="function")):
 
 @router.patch("/me")
 def update_me(body: ProfileInput, farmer=Depends(current_farmer)):
-    for name, value in body.model_dump().items():
+    for name, value in body.model_dump(exclude_unset=True).items():
         setattr(farmer, name, value)
     return {"farmer": profile(farmer)}
 

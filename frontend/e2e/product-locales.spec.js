@@ -215,6 +215,58 @@ test("Hindi and Urdu remain active across authenticated farmer routes", async ({
           .getByRole("button", { name: pack["Close dialog"], exact: true })
           .click();
       }
+      if (route === "/app/more/settings") {
+        const state = page.getByLabel(pack["State or union territory"], {
+          exact: true,
+        });
+        const district = page.getByLabel(pack.District, { exact: true });
+        await page
+          .getByLabel(pack["Search states and union territories"], {
+            exact: true,
+          })
+          .fill(pack.Rajasthan);
+        await state.selectOption("8");
+        await page
+          .getByLabel(pack["Search districts"], { exact: true })
+          .fill(pack.Jaipur);
+        await district.selectOption("102");
+        const saved = page.waitForResponse(
+          (response) =>
+            response.url().endsWith("/api/v2/me") &&
+            response.request().method() === "PATCH",
+        );
+        await page
+          .getByRole("button", {
+            name: pack["Save account details"],
+            exact: true,
+          })
+          .click();
+        const response = await saved;
+        expect(response.ok()).toBe(true);
+        expect(response.request().postDataJSON()).toMatchObject({
+          state_code: 8,
+          district_code: 102,
+          state: "Rajasthan",
+          district: "Jaipur",
+        });
+        await page.reload();
+        await expect(
+          page.getByLabel(pack["State or union territory"], { exact: true }),
+        ).toHaveValue("8");
+        await expect(
+          page.getByLabel(pack.District, { exact: true }),
+        ).toHaveValue("102");
+        expect(
+          (await (await page.request.get("/api/v2/me/export")).json()).profile,
+        ).toMatchObject({ state_code: 8, district_code: 102 });
+        expect(
+          (
+            await new AxeBuilder({ page })
+              .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
+              .analyze()
+          ).violations,
+        ).toEqual([]);
+      }
     }
   }
   expect(errors).toEqual([]);
