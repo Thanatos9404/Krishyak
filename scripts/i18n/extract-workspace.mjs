@@ -14,7 +14,7 @@ const human = (value) => /[A-Za-z]/.test(value) &&
   /[A-Z]/.test(value) && !/^;/.test(value) && !/^(\d{4}-\d{2}-\d{2}T|\{\{v\d+\}\}T\d)/.test(value) &&
   !/^(\/|\.\.\/|https?:)/.test(value) && !value.includes("${") &&
   !/^[a-z][\w.-]*$/.test(value) && !/^#[\da-f]+$/i.test(value) &&
-  !/^(GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS|Content-Type|X-CSRF-Token|SameSite|UTF-8)$/.test(value);
+  !/^(GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS|SELECT|TEXTAREA|UTC|LOCATION_UNAVAILABLE|Invalid redirect|Content-Type|X-CSRF-Token|SameSite|UTF-8)$/.test(value);
 const cleanText = (value) => value.split(/\r?\n/).map((line) => line.trim()).filter(Boolean).join(" ");
 function collect(value, file, line, kind, force = false) {
   const text = cleanText(value);
@@ -34,7 +34,11 @@ for (const directory of directories) {
         if (parent.type === "JSXAttribute" && !["aria-label", "placeholder", "title", "alt", "label"].includes(parent.name.name)) return;
         collect(node.value, file, node.loc.start.line, "literal", parent.type === "CallExpression" && parent.callee.name === "tx");
       },
-      JSXText({ node }) { collect(node.value, file, node.loc.start.line, "jsx", /[A-Za-z]/.test(node.value)); },
+      JSXText({ node }) {
+        const text = cleanText(node.value);
+        if (/^(: pH|°C ·|g\/kg)$/.test(text)) return;
+        collect(node.value, file, node.loc.start.line, "jsx", /[A-Za-z]/.test(node.value));
+      },
       TemplateLiteral({ node }) {
         const text = node.quasis.map((part, index) => part.value.cooked + (index < node.expressions.length ? `{{v${index}}}` : "")).join("");
         collect(text, file, node.loc.start.line, "template");

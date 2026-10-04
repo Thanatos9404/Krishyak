@@ -52,7 +52,15 @@ def validate(languages, output):
         if meta.get("source_sha256") != sha(source_text): failures.append(f"{code}: source hash mismatch")
         if meta.get("pack_sha256") != sha(text): failures.append(f"{code}: pack hash mismatch")
         if meta.get("glossary_sha256") != sha(glossary_text): failures.append(f"{code}: glossary hash mismatch")
-        if meta.get("provider") != "Sarvam" or meta.get("review_status") != "machine_translated_needs_native_review": failures.append(f"{code}: provenance/review disclosure missing")
+        if meta.get("provider") not in {"Sarvam", "Sarvam + Codex"} or meta.get("review_status") != "machine_translated_needs_native_review": failures.append(f"{code}: provenance/review disclosure missing")
+        if meta.get("provider") == "Sarvam + Codex":
+            additions = meta.get("additions", {})
+            addition_keys = additions.get("source_keys", [])
+            if (additions.get("provider") != "Codex" or additions.get("method") != "model_draft_authored_in_code"
+                or additions.get("review_status") != "machine_translated_needs_native_review"
+                or additions.get("source_keys_sha256") != sha(json.dumps(addition_keys, ensure_ascii=False))
+                or not addition_keys or not set(addition_keys).issubset(source)):
+                failures.append(f"{code}: additions provenance disclosure missing")
         unchanged = []
         for key in source:
             value = pack.get(key)

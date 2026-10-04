@@ -122,6 +122,7 @@ sleeping free API alone cannot provide persistent production v2 services.
   [privacy](docs/v2/PRIVACY.md), [offline](docs/v2/OFFLINE_ARCHITECTURE.md),
   [deployment](docs/v2/DEPLOYMENT.md), [recovery](docs/v2/DISASTER_RECOVERY.md).
 - [Government boundary](docs/v2/GOVERNMENT_INTEGRATION.md),
+- [Automatic farm context, voice and government provider setup](docs/government-data-integrations.md),
   [pilot protocol](docs/v2/PILOT_PLAN.md), [due diligence](docs/v2/DUE_DILIGENCE.md),
   [cost model](docs/v2/COST_MODEL.md), [datasets](datasetused.md).
 

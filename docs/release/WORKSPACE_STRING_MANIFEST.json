@@ -1,6 +1,6 @@
 {
   "extractor": "Babel AST; literals, JSX text, positional template placeholders",
-  "source_strings": 1654,
+  "source_strings": 1763,
   "strings": [
     {
       "source": ". Failed requests preserve earlier observations.",
@@ -134,7 +134,7 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 145,
+          "line": 149,
           "kind": "literal"
         }
       ]
@@ -178,7 +178,7 @@
       "references": [
         {
           "file": "src/components/product/SettingsView.jsx",
-          "line": 258,
+          "line": 275,
           "kind": "literal"
         }
       ]
@@ -271,7 +271,7 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 126,
+          "line": 130,
           "kind": "literal"
         }
       ]
@@ -315,7 +315,7 @@
       "references": [
         {
           "file": "src/components/product/SettingsView.jsx",
-          "line": 151,
+          "line": 168,
           "kind": "literal"
         }
       ]
@@ -446,7 +446,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 90,
+          "line": 91,
           "kind": "literal"
         }
       ]
@@ -457,7 +457,7 @@
       "references": [
         {
           "file": "src/components/product/SignIn.jsx",
-          "line": 24,
+          "line": 26,
           "kind": "literal"
         }
       ]
@@ -468,7 +468,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 280,
+          "line": 282,
           "kind": "literal"
         }
       ]
@@ -507,6 +507,17 @@
       ]
     },
     {
+      "source": "A normalized farm context is required",
+      "sha256": "5affb40d5a370db416e735fdbfb651a9c836910dff41e549051520ef6f7fde63",
+      "references": [
+        {
+          "file": "backend/v2/farm_context/engines.py",
+          "line": 10,
+          "kind": "server"
+        }
+      ]
+    },
+    {
       "source": "A photo suggestion is not a diagnosis. Lighting, background and unsupported symptoms can change the result. Verify in the field or with an agronomist before choosing a treatment.",
       "sha256": "db6d9569077fff9d3c5442ed66f307ffbc7bb78f3f1a35ff6a3681a1bd2118ca",
       "references": [
@@ -534,7 +545,7 @@
       "references": [
         {
           "file": "src/features/farms/AccountDetails.jsx",
-          "line": 103,
+          "line": 122,
           "kind": "literal"
         }
       ]
@@ -644,7 +655,7 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 108,
+          "line": 112,
           "kind": "literal"
         }
       ]
@@ -655,7 +666,7 @@
       "references": [
         {
           "file": "src/components/product/SettingsView.jsx",
-          "line": 190,
+          "line": 207,
           "kind": "literal"
         }
       ]
@@ -666,7 +677,7 @@
       "references": [
         {
           "file": "src/components/product/SignIn.jsx",
-          "line": 124,
+          "line": 126,
           "kind": "literal"
         }
       ]
@@ -678,6 +689,11 @@
         {
           "file": "backend/v2/auth.py",
           "line": 62,
+          "kind": "server"
+        },
+        {
+          "file": "backend/v2/government_auth.py",
+          "line": 330,
           "kind": "server"
         },
         {
@@ -731,7 +747,7 @@
         },
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 293,
+          "line": 295,
           "kind": "jsx"
         }
       ]
@@ -753,7 +769,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 248,
+          "line": 250,
           "kind": "literal"
         }
       ]
@@ -775,7 +791,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 140,
+          "line": 141,
           "kind": "literal"
         }
       ]
@@ -786,12 +802,12 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 32,
+          "line": 33,
           "kind": "literal"
         },
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 211,
+          "line": 212,
           "kind": "literal"
         }
       ]
@@ -835,7 +851,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 361,
+          "line": 363,
           "kind": "literal"
         }
       ]
@@ -857,7 +873,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 391,
+          "line": 393,
           "kind": "literal"
         },
         {
@@ -895,7 +911,7 @@
       "references": [
         {
           "file": "src/components/product/SettingsView.jsx",
-          "line": 167,
+          "line": 184,
           "kind": "literal"
         }
       ]
@@ -1082,7 +1098,56 @@
       "references": [
         {
           "file": "src/components/product/SettingsView.jsx",
-          "line": 156,
+          "line": 173,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Allow my device location for this lookup",
+      "sha256": "c87550277221d97c330407918b77ac53204d1a36724b095bd80131ffe6ce56ec",
+      "references": [
+        {
+          "file": "src/components/product/FarmContextCard.jsx",
+          "line": 223,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Allow optional government sign-in",
+      "sha256": "e826618e0580ea596d4ca42822ce6dbf491aff5f72eb85b8e3928603ab836902",
+      "references": [
+        {
+          "file": "src/components/product/SettingsView.jsx",
+          "line": 17,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Allow public agricultural context for my chosen area",
+      "sha256": "0a44101a22031e0be5bb1ef62fdc784c61c9289c0c01efe6e9cb3d1dc9f6bbc7",
+      "references": [
+        {
+          "file": "src/components/product/FarmContextCard.jsx",
+          "line": 204,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Allow voice processing for form entry",
+      "sha256": "688250bbc1ff574c15f9d6243bc89a64cda445b9113bb3ba78398d025b53be52",
+      "references": [
+        {
+          "file": "src/components/product/FormVoiceInput.jsx",
+          "line": 184,
+          "kind": "literal"
+        },
+        {
+          "file": "src/components/product/SettingsView.jsx",
+          "line": 22,
           "kind": "literal"
         }
       ]
@@ -1104,7 +1169,7 @@
       "references": [
         {
           "file": "src/features/product/useSimulation.js",
-          "line": 11,
+          "line": 12,
           "kind": "literal"
         }
       ]
@@ -1269,7 +1334,7 @@
       "references": [
         {
           "file": "src/components/product/SettingsView.jsx",
-          "line": 26,
+          "line": 42,
           "kind": "literal"
         }
       ]
@@ -1313,7 +1378,7 @@
       "references": [
         {
           "file": "src/components/product/SignIn.jsx",
-          "line": 101,
+          "line": 103,
           "kind": "literal"
         }
       ]
@@ -1396,6 +1461,17 @@
       ]
     },
     {
+      "source": "Approved partner registration and verified OAuth configuration required",
+      "sha256": "6d2e97e4417bd402c3b5cb03c86bc1580d65ae3dcfecdd2255c3bd2821e5ef4f",
+      "references": [
+        {
+          "file": "backend/v2/farm_context/service.py",
+          "line": 229,
+          "kind": "server"
+        }
+      ]
+    },
+    {
       "source": "Araria",
       "sha256": "176eaea3bcd0670b8ee31761ce0d4cba96a0714ed705d9fb0b6de5b18b5901fa",
       "references": [
@@ -1407,12 +1483,23 @@
       ]
     },
     {
+      "source": "Area coordinates are rounded before public-provider requests. Device coordinates are not saved in your account. Soil estimates are not laboratory tests.",
+      "sha256": "2c974654818e816e91ea0d0641b3233a4c0d9cb1eb40dc8b4a70d7855d698057",
+      "references": [
+        {
+          "file": "src/components/product/FarmContextCard.jsx",
+          "line": 209,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Area recorded. Boundary optional.",
       "sha256": "c20433961b36c349c65e0b9375b508c78dd7eba0594beea9388d0f9501cf9796",
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 343,
+          "line": 345,
           "kind": "literal"
         }
       ]
@@ -1495,6 +1582,22 @@
       ]
     },
     {
+      "source": "Audio is sent to the configured speech service. Krishyak does not save the audio. You can turn this off in permissions.",
+      "sha256": "af4621a05f8a970afca4662036302b90d07b41cbc77f67150ba536336b8af09d",
+      "references": [
+        {
+          "file": "src/components/product/FormVoiceInput.jsx",
+          "line": 174,
+          "kind": "literal"
+        },
+        {
+          "file": "src/components/product/SettingsView.jsx",
+          "line": 23,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Auraiya",
       "sha256": "b2fcbb5725b082433434bf7300d2391bf830558bc0787bf41c46f8d23c62f4d8",
       "references": [
@@ -1513,6 +1616,28 @@
           "file": "src/features/product/indiaLocations.json",
           "line": 1,
           "kind": "location-name"
+        }
+      ]
+    },
+    {
+      "source": "Automatic area lookup is disabled. Choose your state and district.",
+      "sha256": "23476440fd87c99f6e595e68e72633081f2ce904231c72e87221926e9e68a0a5",
+      "references": [
+        {
+          "file": "backend/v2/farm_context/service.py",
+          "line": 59,
+          "kind": "server"
+        }
+      ]
+    },
+    {
+      "source": "Available",
+      "sha256": "e674447337e83c1346f6122ed69f35bf5526e2a11842b2f2b788f3fb67d714ca",
+      "references": [
+        {
+          "file": "src/components/product/FarmContextCard.jsx",
+          "line": 9,
+          "kind": "literal"
         }
       ]
     },
@@ -1560,7 +1685,7 @@
         },
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 71,
+          "line": 75,
           "kind": "literal"
         }
       ]
@@ -1571,7 +1696,7 @@
       "references": [
         {
           "file": "backend/v2/rights.py",
-          "line": 128,
+          "line": 134,
           "kind": "server"
         }
       ]
@@ -2060,7 +2185,7 @@
         },
         {
           "file": "src/features/product/ProductApp.jsx",
-          "line": 112,
+          "line": 113,
           "kind": "literal"
         }
       ]
@@ -2264,6 +2389,17 @@
       ]
     },
     {
+      "source": "Bhuvan public map catalogue is disabled",
+      "sha256": "5b0c8701af2b683f673c0b6ae50bdc327fe9e9235bad91b951ec3978e7fe86e1",
+      "references": [
+        {
+          "file": "backend/v2/farm_context/service.py",
+          "line": 164,
+          "kind": "server"
+        }
+      ]
+    },
+    {
       "source": "Bichom",
       "sha256": "d12656465b911ef4b59901f256283c695f5ffa33433f29b98e21dca8d0d1aae2",
       "references": [
@@ -2450,7 +2586,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 203,
+          "line": 204,
           "kind": "literal"
         }
       ]
@@ -2461,7 +2597,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 310,
+          "line": 312,
           "kind": "literal"
         }
       ]
@@ -2483,7 +2619,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 249,
+          "line": 251,
           "kind": "literal"
         }
       ]
@@ -2494,7 +2630,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 335,
+          "line": 337,
           "kind": "template"
         }
       ]
@@ -2617,6 +2753,28 @@
           "file": "src/features/product/indiaLocations.json",
           "line": 1,
           "kind": "location-name"
+        }
+      ]
+    },
+    {
+      "source": "Cached evidence has expired; refresh before acting",
+      "sha256": "436a36d16974c1b9bfc4fa8da5a851611141010b6b1903342481163a3a3824fa",
+      "references": [
+        {
+          "file": "backend/v2/farm_context/transport.py",
+          "line": 161,
+          "kind": "server"
+        }
+      ]
+    },
+    {
+      "source": "Cancel lookup",
+      "sha256": "0d086bba92bd067b65a570a197f06bf4628d4dd57f25dae0a0f723e72eb30606",
+      "references": [
+        {
+          "file": "src/components/product/FarmContextCard.jsx",
+          "line": 253,
+          "kind": "literal"
         }
       ]
     },
@@ -2818,7 +2976,7 @@
       "references": [
         {
           "file": "src/components/product/SignIn.jsx",
-          "line": 118,
+          "line": 120,
           "kind": "literal"
         }
       ]
@@ -2829,7 +2987,7 @@
       "references": [
         {
           "file": "src/components/product/PlanningView.jsx",
-          "line": 58,
+          "line": 68,
           "kind": "literal"
         }
       ]
@@ -2919,6 +3077,17 @@
           "file": "src/components/product/MarketView.jsx",
           "line": 66,
           "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Check the scenario values and supported units",
+      "sha256": "823f682ee28c9e1f666352c6c42f33a8b1dd8b03e6611a8d1256eb754ad8d55f",
+      "references": [
+        {
+          "file": "backend/v2/farm_context/router.py",
+          "line": 67,
+          "kind": "server"
         }
       ]
     },
@@ -3170,7 +3339,7 @@
       "references": [
         {
           "file": "src/components/product/IndiaLocationPicker.jsx",
-          "line": 55,
+          "line": 106,
           "kind": "literal"
         }
       ]
@@ -3198,6 +3367,17 @@
       ]
     },
     {
+      "source": "Choose a fresh available market quote",
+      "sha256": "f2777ffaa8218317fc88d77302d969c1c50a552b03656a58806a37662d7bb5ad",
+      "references": [
+        {
+          "file": "backend/v2/farm_context/engines.py",
+          "line": 22,
+          "kind": "server"
+        }
+      ]
+    },
+    {
       "source": "Choose a JPEG, PNG or WebP photograph smaller than 4 MB.",
       "sha256": "e7b39a5d988466696b7469e02f5f9e1d8c12c158bf06314675298f26a922041e",
       "references": [
@@ -3214,7 +3394,7 @@
       "references": [
         {
           "file": "src/components/product/IndiaLocationPicker.jsx",
-          "line": 55,
+          "line": 107,
           "kind": "literal"
         }
       ]
@@ -3225,7 +3405,7 @@
       "references": [
         {
           "file": "src/components/product/IndiaLocationPicker.jsx",
-          "line": 36,
+          "line": 64,
           "kind": "literal"
         }
       ]
@@ -3242,6 +3422,28 @@
       ]
     },
     {
+      "source": "Choose an area and crop, or use your device location. Confirm detected details before saving. You can skip this and add your field now.",
+      "sha256": "12a1f3a9419dc5293cfc647cbc41fea951251215203d7d32e5c7241ec6bd2429",
+      "references": [
+        {
+          "file": "src/components/product/FarmContextCard.jsx",
+          "line": 166,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Choose an input again before using this text.",
+      "sha256": "ea3e7657a44be249f4775c232f83e08c34fb02869a0d498d526ec740e16a3de6",
+      "references": [
+        {
+          "file": "src/components/product/FormVoiceInput.jsx",
+          "line": 250,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Choose crop photo",
       "sha256": "6e394889c85ba30950e1cba5ed67379c1677f2960192c52fc5bd99d18553a5d6",
       "references": [
@@ -3249,6 +3451,17 @@
           "file": "src/components/product/ScanView.jsx",
           "line": 138,
           "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Choose the same supported crop for context and scenario",
+      "sha256": "9146fa36660f6adfb289fb0ea51811ddde7d9df4253094bb28ee0b5fb24a1bc0",
+      "references": [
+        {
+          "file": "backend/v2/farm_context/router.py",
+          "line": 74,
+          "kind": "server"
         }
       ]
     },
@@ -3269,8 +3482,19 @@
       "references": [
         {
           "file": "src/components/product/SettingsView.jsx",
-          "line": 52,
+          "line": 68,
           "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Choose your crop and state to load dated market quotes",
+      "sha256": "ffac439500140b65ad12a0547dcfb69d21a0da21cd08355b2ebac48c82131fc0",
+      "references": [
+        {
+          "file": "backend/v2/farm_context/service.py",
+          "line": 180,
+          "kind": "server"
         }
       ]
     },
@@ -3357,7 +3581,18 @@
       "references": [
         {
           "file": "src/components/product/SettingsView.jsx",
-          "line": 48,
+          "line": 64,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Clear context selection",
+      "sha256": "be62e112d41b653a6bd76b364f7bade3bbe4ff097bda6a8a01e81c1e27b69eee",
+      "references": [
+        {
+          "file": "src/components/product/PlanningView.jsx",
+          "line": 104,
           "kind": "literal"
         }
       ]
@@ -3379,7 +3614,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 323,
+          "line": 325,
           "kind": "literal"
         }
       ]
@@ -3392,6 +3627,17 @@
           "file": "src/components/product/BoundaryEditor.jsx",
           "line": 87,
           "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Coarse area name matched to LGD. Confirm it. Village codes and land ownership are not inferred.",
+      "sha256": "306bbf56fd965e4e1b303deb47b0b4a01f3b7cb30c7a5304e82c279f89b885e5",
+      "references": [
+        {
+          "file": "backend/v2/farm_context/service.py",
+          "line": 117,
+          "kind": "server"
         }
       ]
     },
@@ -3467,7 +3713,7 @@
       "references": [
         {
           "file": "src/components/product/PlanningView.jsx",
-          "line": 97,
+          "line": 136,
           "kind": "literal"
         }
       ]
@@ -3479,6 +3725,17 @@
         {
           "file": "src/features/farms/PlotHealth.jsx",
           "line": 121,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Confirm and save this area",
+      "sha256": "274e1aa4f2c2bf153a39a8baae6acf162c5005fc94ee8a1c0f5a68e1025a62f1",
+      "references": [
+        {
+          "file": "src/components/product/FarmContextCard.jsx",
+          "line": 281,
           "kind": "literal"
         }
       ]
@@ -3500,7 +3757,7 @@
       "references": [
         {
           "file": "src/components/product/SettingsView.jsx",
-          "line": 121,
+          "line": 138,
           "kind": "literal"
         }
       ]
@@ -3511,7 +3768,7 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 143,
+          "line": 147,
           "kind": "literal"
         }
       ]
@@ -3604,7 +3861,7 @@
       "references": [
         {
           "file": "src/features/product/ProductApp.jsx",
-          "line": 87,
+          "line": 88,
           "kind": "literal"
         }
       ]
@@ -3621,12 +3878,23 @@
       ]
     },
     {
+      "source": "Continue with MeriPehchaan",
+      "sha256": "f5d6545c0d7c0c87a18f942707fb8b5795b99cf2195bbe257b4e0d64a8ebeb34",
+      "references": [
+        {
+          "file": "src/components/product/GovernmentLogin.jsx",
+          "line": 69,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Contribute to model improvement",
       "sha256": "d8fe103ada83dbb751b767377a23bb388063be8e29ab6312be97a5bc08772877",
       "references": [
         {
           "file": "src/components/product/SettingsView.jsx",
-          "line": 31,
+          "line": 47,
           "kind": "literal"
         }
       ]
@@ -3648,7 +3916,7 @@
       "references": [
         {
           "file": "backend/v2/application.py",
-          "line": 142,
+          "line": 165,
           "kind": "server"
         }
       ]
@@ -3698,12 +3966,23 @@
       ]
     },
     {
+      "source": "Cotton simulation needs lint prices; a mandi quote has no verified lint basis",
+      "sha256": "e53e28cffefc4b35daa9d7e20a7bd6c1cff56361b97bb0a1f9f44a659eacde13",
+      "references": [
+        {
+          "file": "backend/v2/farm_context/engines.py",
+          "line": 33,
+          "kind": "server"
+        }
+      ]
+    },
+    {
       "source": "Create a new farm",
       "sha256": "5dd6859d3a99cb3491e847c3d77c4d577a9eca17668229129479547285d72087",
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 79,
+          "line": 80,
           "kind": "literal"
         }
       ]
@@ -3796,7 +4075,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 366,
+          "line": 368,
           "kind": "literal"
         }
       ]
@@ -3873,7 +4152,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 304,
+          "line": 306,
           "kind": "literal"
         }
       ]
@@ -4033,6 +4312,17 @@
       ]
     },
     {
+      "source": "Dated market quotes are older than two days. Verify locally before selling.",
+      "sha256": "d6078a07ff348f3abdb41f95a8a4a596b8a83079a5ecc551cfb5bec1312581f8",
+      "references": [
+        {
+          "file": "backend/v2/farm_context/service.py",
+          "line": 199,
+          "kind": "server"
+        }
+      ]
+    },
+    {
       "source": "Datia",
       "sha256": "6d6bfdf3fd7f048ee8018168fc7f39ee0603ec3bf0c6f1505496dc8e1dd276e9",
       "references": [
@@ -4137,7 +4427,7 @@
       "references": [
         {
           "file": "src/components/product/SettingsView.jsx",
-          "line": 224,
+          "line": 241,
           "kind": "literal"
         }
       ]
@@ -4275,6 +4565,39 @@
       ]
     },
     {
+      "source": "Detected and selected areas disagree. Choose your area manually.",
+      "sha256": "58bf6a646e398f808dcb2b9525edbe603acecd63700d532ed00dba3699f42f7f",
+      "references": [
+        {
+          "file": "backend/v2/farm_context/service.py",
+          "line": 100,
+          "kind": "server"
+        }
+      ]
+    },
+    {
+      "source": "Detected area",
+      "sha256": "949c96993d98e39a241ea87d5fc62952c23a88cd3ebb3acfef7d670e8dff1fc0",
+      "references": [
+        {
+          "file": "src/components/product/FarmContextCard.jsx",
+          "line": 266,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Detected area is outside India. Choose your area manually.",
+      "sha256": "d0f3a820d42f68f7800618df61b62e9d4b5353a4a7d9a769e0090039d46b5641",
+      "references": [
+        {
+          "file": "backend/v2/farm_context/service.py",
+          "line": 84,
+          "kind": "server"
+        }
+      ]
+    },
+    {
       "source": "Devbhumi Dwarka",
       "sha256": "99eea1acdf3fcf97f2285f085643c32f1f1eaa0cf7d9c6d008e5121dfd3d9bf3",
       "references": [
@@ -4291,7 +4614,7 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 165,
+          "line": 172,
           "kind": "literal"
         }
       ]
@@ -4517,6 +4840,17 @@
       ]
     },
     {
+      "source": "Disabled",
+      "sha256": "75081b593d15cf6e631971bc6768723f593b88b172477e40ae7d363e4829816d",
+      "references": [
+        {
+          "file": "src/components/product/FarmContextCard.jsx",
+          "line": 12,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Discard saved observation",
       "sha256": "dc8363edb510bd3cb696c4281dbcc52b19190594011bcd8115ff6abae676eefd",
       "references": [
@@ -4566,7 +4900,7 @@
       "references": [
         {
           "file": "src/components/product/IndiaLocationPicker.jsx",
-          "line": 48,
+          "line": 87,
           "kind": "literal"
         }
       ]
@@ -4610,7 +4944,7 @@
       "references": [
         {
           "file": "src/components/product/SettingsView.jsx",
-          "line": 212,
+          "line": 229,
           "kind": "literal"
         }
       ]
@@ -4665,7 +4999,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 346,
+          "line": 348,
           "kind": "literal"
         }
       ]
@@ -4720,7 +5054,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 102,
+          "line": 103,
           "kind": "literal"
         }
       ]
@@ -4731,7 +5065,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 113,
+          "line": 114,
           "kind": "literal"
         }
       ]
@@ -4852,7 +5186,7 @@
       "references": [
         {
           "file": "src/components/product/PlanningView.jsx",
-          "line": 89,
+          "line": 128,
           "kind": "literal"
         }
       ]
@@ -4896,12 +5230,23 @@
       ]
     },
     {
+      "source": "Enable field analysis permission to use public context in a scenario.",
+      "sha256": "07db0f2f39575a36acbfac37206e75abf41593e47f4b8a3062f1b1f2c6ece68d",
+      "references": [
+        {
+          "file": "src/components/product/FarmContextCard.jsx",
+          "line": 363,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Enable optional pilot research consent to enroll.",
       "sha256": "4cb2075c0d68a84196814fb14b7de381758f435de6eccd3943501bd81cf2ba68",
       "references": [
         {
           "file": "src/features/farms/AccountDetails.jsx",
-          "line": 161,
+          "line": 180,
           "kind": "literal"
         }
       ]
@@ -4912,7 +5257,7 @@
       "references": [
         {
           "file": "src/components/product/SettingsView.jsx",
-          "line": 17,
+          "line": 33,
           "kind": "literal"
         }
       ]
@@ -4923,7 +5268,7 @@
       "references": [
         {
           "file": "src/components/product/SettingsView.jsx",
-          "line": 27,
+          "line": 43,
           "kind": "literal"
         }
       ]
@@ -4934,7 +5279,7 @@
       "references": [
         {
           "file": "src/features/farms/AccountDetails.jsx",
-          "line": 168,
+          "line": 187,
           "kind": "literal"
         }
       ]
@@ -5011,6 +5356,17 @@
       ]
     },
     {
+      "source": "Estimated",
+      "sha256": "b774599a9cd1f9a734a815fc5cf99ad188547aee7c727468d51b73dfd02988f9",
+      "references": [
+        {
+          "file": "src/components/product/FarmContextCard.jsx",
+          "line": 301,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Etah",
       "sha256": "9f163b03eb3855d63e3750eef86fcc54d6abe72b4e01758834bb238e08440aae",
       "references": [
@@ -5038,7 +5394,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 380,
+          "line": 382,
           "kind": "literal"
         }
       ]
@@ -5170,7 +5526,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 170,
+          "line": 171,
           "kind": "literal"
         }
       ]
@@ -5247,7 +5603,7 @@
       "references": [
         {
           "file": "src/components/product/PlanningView.jsx",
-          "line": 54,
+          "line": 64,
           "kind": "literal"
         }
       ]
@@ -5280,7 +5636,7 @@
       "references": [
         {
           "file": "src/components/product/SignIn.jsx",
-          "line": 139,
+          "line": 141,
           "kind": "literal"
         }
       ]
@@ -5293,6 +5649,17 @@
           "file": "backend/v2/images.py",
           "line": 64,
           "kind": "server"
+        }
+      ]
+    },
+    {
+      "source": "Fallback",
+      "sha256": "325e84939c6410fa2e09372b2b49328fdf22136efbd5ca1d6746667edfb92abc",
+      "references": [
+        {
+          "file": "src/components/product/FarmContextCard.jsx",
+          "line": 10,
+          "kind": "literal"
         }
       ]
     },
@@ -5324,12 +5691,12 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 74,
+          "line": 75,
           "kind": "literal"
         },
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 17,
+          "line": 20,
           "kind": "literal"
         },
         {
@@ -5367,7 +5734,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 96,
+          "line": 97,
           "kind": "literal"
         }
       ]
@@ -5570,7 +5937,7 @@
         },
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 287,
+          "line": 289,
           "kind": "literal"
         }
       ]
@@ -5625,7 +5992,7 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 184,
+          "line": 194,
           "kind": "literal"
         }
       ]
@@ -5680,7 +6047,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 107,
+          "line": 108,
           "kind": "literal"
         }
       ]
@@ -5735,7 +6102,7 @@
       "references": [
         {
           "file": "src/features/farms/AccountDetails.jsx",
-          "line": 169,
+          "line": 188,
           "kind": "literal"
         }
       ]
@@ -5746,7 +6113,7 @@
       "references": [
         {
           "file": "src/features/farms/AccountDetails.jsx",
-          "line": 132,
+          "line": 151,
           "kind": "literal"
         }
       ]
@@ -6032,6 +6399,17 @@
       ]
     },
     {
+      "source": "Generated",
+      "sha256": "827ec8d9f99d052149cd4fce69d14f57563bd5c972074172777670c36907a5a7",
+      "references": [
+        {
+          "file": "src/components/product/FarmContextCard.jsx",
+          "line": 263,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Ghaziabad",
       "sha256": "1ba3ccd9dac1cd1ef0410956f2fdc73d1138dcf40aa884757eaf459f8fe84275",
       "references": [
@@ -6193,6 +6571,119 @@
           "file": "src/features/product/indiaLocations.json",
           "line": 1,
           "kind": "location-name"
+        }
+      ]
+    },
+    {
+      "source": "Government account link requires the original signed-in account",
+      "sha256": "886b8943f6309c560b5cd86806a15ef44eb0e582dd0f66a957336864f2fc77d6",
+      "references": [
+        {
+          "file": "backend/v2/government_auth.py",
+          "line": 299,
+          "kind": "server"
+        },
+        {
+          "file": "backend/v2/government_auth.py",
+          "line": 311,
+          "kind": "server"
+        }
+      ]
+    },
+    {
+      "source": "Government identity is already linked to another account",
+      "sha256": "6ca0d3f18b71eb9075e2d1cf029230af2ca9e089a512692bb5b675722f12572a",
+      "references": [
+        {
+          "file": "backend/v2/government_auth.py",
+          "line": 314,
+          "kind": "server"
+        }
+      ]
+    },
+    {
+      "source": "Government identity link changed. Sign in by phone and review the link.",
+      "sha256": "e782b8b3018dac81b287e60bd1da3ca3ed3d8682ee06203ccf4853acb9124212",
+      "references": [
+        {
+          "file": "backend/v2/government_auth.py",
+          "line": 336,
+          "kind": "server"
+        }
+      ]
+    },
+    {
+      "source": "Government login could not be verified. Use phone sign-in.",
+      "sha256": "f0dc1ba33fb2383847ce41db6d0d373441efd9f3defd54aa50236db622ff5935",
+      "references": [
+        {
+          "file": "src/components/product/GovernmentLogin.jsx",
+          "line": 48,
+          "kind": "literal"
+        },
+        {
+          "file": "backend/v2/government_auth.py",
+          "line": 221,
+          "kind": "server"
+        }
+      ]
+    },
+    {
+      "source": "Government login expired or verification failed",
+      "sha256": "f1a54302010d857ae088259f3cfc34d2577158a804410ec1b36e3f8192ffab4b",
+      "references": [
+        {
+          "file": "backend/v2/government_auth.py",
+          "line": 159,
+          "kind": "server"
+        }
+      ]
+    },
+    {
+      "source": "Government login is not configured. Use phone sign-in.",
+      "sha256": "12dc369aa5927a66ead54785cc453a7c43091293cd000cfc1ad63762277f4b30",
+      "references": [
+        {
+          "file": "src/components/product/GovernmentLogin.jsx",
+          "line": 24,
+          "kind": "literal"
+        },
+        {
+          "file": "backend/v2/government_auth.py",
+          "line": 252,
+          "kind": "server"
+        },
+        {
+          "file": "backend/v2/government_auth.py",
+          "line": 109,
+          "kind": "server"
+        }
+      ]
+    },
+    {
+      "source": "Government login state storage unavailable",
+      "sha256": "c10be402f5a0ce332be327fcd77c71a9b5ef27f22e7799d02cd4e1704e6b2891",
+      "references": [
+        {
+          "file": "backend/v2/government_auth.py",
+          "line": 128,
+          "kind": "server"
+        },
+        {
+          "file": "backend/v2/government_auth.py",
+          "line": 126,
+          "kind": "server"
+        }
+      ]
+    },
+    {
+      "source": "Government login verification failed",
+      "sha256": "91e8484a4dd9ee653f7e4360e6ab2cc7290c58a14b15f0e5ad78f8a685d96635",
+      "references": [
+        {
+          "file": "backend/v2/government_auth.py",
+          "line": 150,
+          "kind": "server"
         }
       ]
     },
@@ -6553,7 +7044,7 @@
         },
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 299,
+          "line": 301,
           "kind": "jsx"
         }
       ]
@@ -6663,7 +7154,7 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 68,
+          "line": 72,
           "kind": "literal"
         }
       ]
@@ -6729,7 +7220,7 @@
       "references": [
         {
           "file": "src/components/product/SignIn.jsx",
-          "line": 100,
+          "line": 102,
           "kind": "literal"
         }
       ]
@@ -6861,7 +7352,7 @@
       "references": [
         {
           "file": "src/components/product/PlanningView.jsx",
-          "line": 98,
+          "line": 137,
           "kind": "literal"
         }
       ]
@@ -6905,7 +7396,7 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 124,
+          "line": 128,
           "kind": "literal"
         }
       ]
@@ -6927,7 +7418,7 @@
       "references": [
         {
           "file": "src/components/product/SignIn.jsx",
-          "line": 19,
+          "line": 20,
           "kind": "literal"
         }
       ]
@@ -7114,7 +7605,7 @@
       "references": [
         {
           "file": "src/features/product/ProductApp.jsx",
-          "line": 92,
+          "line": 93,
           "kind": "literal"
         }
       ]
@@ -7141,7 +7632,7 @@
         },
         {
           "file": "src/features/product/ProductApp.jsx",
-          "line": 86,
+          "line": 87,
           "kind": "literal"
         },
         {
@@ -7157,7 +7648,7 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 62,
+          "line": 66,
           "kind": "literal"
         }
       ]
@@ -7586,7 +8077,7 @@
       "references": [
         {
           "file": "src/features/farms/AccountDetails.jsx",
-          "line": 158,
+          "line": 177,
           "kind": "literal"
         }
       ]
@@ -8081,7 +8572,18 @@
       "references": [
         {
           "file": "src/components/product/SettingsView.jsx",
-          "line": 135,
+          "line": 152,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Keep my price assumption",
+      "sha256": "c3878d81ea03097e5c6692a5656378d72142767ebcc39738a37c7474cae8e0f3",
+      "references": [
+        {
+          "file": "src/components/product/FarmContextCard.jsx",
+          "line": 321,
           "kind": "literal"
         }
       ]
@@ -8092,7 +8594,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 161,
+          "line": 162,
           "kind": "literal"
         }
       ]
@@ -8321,6 +8823,11 @@
       "source": "km/h",
       "sha256": "3c9db5a7f5e155197a023f73c8b925c68073a2a3d660e865b35f6a85742876ca",
       "references": [
+        {
+          "file": "src/components/product/FarmContextCard.jsx",
+          "line": 289,
+          "kind": "jsx"
+        },
         {
           "file": "src/features/farms/PlotContext.jsx",
           "line": 103,
@@ -8912,6 +9419,39 @@
       ]
     },
     {
+      "source": "Link a verified government account to my existing phone account. No documents or benefit approval are requested.",
+      "sha256": "f55296d1b15480fda4bbc06a64c1a25ba6f965997f2dba475080597c9ba23fc8",
+      "references": [
+        {
+          "file": "src/components/product/SettingsView.jsx",
+          "line": 18,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Link government sign-in",
+      "sha256": "99c4cac9885c4793a206e40ccfe2311d146a97eee4d18956efa7aa40be35f926",
+      "references": [
+        {
+          "file": "src/components/product/GovernmentLogin.jsx",
+          "line": 69,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Listening",
+      "sha256": "49c4605816cfbf30455bf95871bcd0ff7c634d728b9d34a85d1ec9f75235d1d4",
+      "references": [
+        {
+          "file": "src/components/product/FormVoiceInput.jsx",
+          "line": 210,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Litchi",
       "sha256": "180acf4e87349d831f987eecfee9acaeae9c576a8bb2944e5662a5de765ba876",
       "references": [
@@ -8919,6 +9459,17 @@
           "file": "src/features/product/cropCatalog.json",
           "line": 1,
           "kind": "crop-label"
+        }
+      ]
+    },
+    {
+      "source": "Load area context",
+      "sha256": "d03bfcfbaa4e12936cf1a3fb9c7327ffbc92d6909b4ec25501f545e5925d22e8",
+      "references": [
+        {
+          "file": "src/components/product/FarmContextCard.jsx",
+          "line": 236,
+          "kind": "literal"
         }
       ]
     },
@@ -8950,7 +9501,18 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 274,
+          "line": 276,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Load public agricultural context",
+      "sha256": "0f457080b722c0a750c8f699ed0df64c037fbf2c8c5e0e626406eafe06656a71",
+      "references": [
+        {
+          "file": "src/components/product/SettingsView.jsx",
+          "line": 27,
           "kind": "literal"
         }
       ]
@@ -8973,6 +9535,17 @@
         {
           "file": "src/features/farms/BenefitsPanel.jsx",
           "line": 75,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Loading public sources",
+      "sha256": "c36f3fbb485189379e3dfb81519972fa829767d81ae5b84dc76a3fd968636072",
+      "references": [
+        {
+          "file": "src/components/product/FarmContextCard.jsx",
+          "line": 258,
           "kind": "literal"
         }
       ]
@@ -9027,7 +9600,7 @@
       "references": [
         {
           "file": "src/components/product/IndiaLocationPicker.jsx",
-          "line": 63,
+          "line": 126,
           "kind": "literal"
         }
       ]
@@ -9039,6 +9612,17 @@
         {
           "file": "src/components/product/BoundaryEditor.jsx",
           "line": 51,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Location or public data is unavailable. Choose your area manually or retry.",
+      "sha256": "d4a48af6718cd20c3bb67b620056b449c68218a8c37af021b9887a7113294cf3",
+      "references": [
+        {
+          "file": "src/components/product/FarmContextCard.jsx",
+          "line": 132,
           "kind": "literal"
         }
       ]
@@ -9434,7 +10018,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 425,
+          "line": 427,
           "kind": "literal"
         }
       ]
@@ -9566,12 +10150,12 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 249,
+          "line": 251,
           "kind": "literal"
         },
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 312,
+          "line": 314,
           "kind": "literal"
         }
       ]
@@ -9604,7 +10188,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 312,
+          "line": 314,
           "kind": "literal"
         }
       ]
@@ -9648,7 +10232,7 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 19,
+          "line": 22,
           "kind": "literal"
         }
       ]
@@ -9687,12 +10271,56 @@
       ]
     },
     {
+      "source": "Market prices",
+      "sha256": "90412821e46a510c567733e04e77fd31b2e462babb4be4551749859feddf2c40",
+      "references": [
+        {
+          "file": "src/components/product/FarmContextCard.jsx",
+          "line": 305,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Market prices: available only when a source returns dated data.",
       "sha256": "40748af5ebeded180d71897ee1a00a0f87328784752c71ef98a0259e36fb26b8",
       "references": [
         {
           "file": "src/components/product/CropPicker.jsx",
           "line": 68,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Market quote changed. Review the updated quote before using it.",
+      "sha256": "0453c0212b44d1e32a9d3079492ef9e23d44173ad2368061782e356df21b8f60",
+      "references": [
+        {
+          "file": "backend/v2/farm_context/engines.py",
+          "line": 25,
+          "kind": "server"
+        }
+      ]
+    },
+    {
+      "source": "Market quote crop, unit or date is not comparable",
+      "sha256": "a0a543e112fcfd5624035e43a4fbe19fb097ad6b06730a87cfe60b49d8a8ab64",
+      "references": [
+        {
+          "file": "backend/v2/farm_context/engines.py",
+          "line": 31,
+          "kind": "server"
+        }
+      ]
+    },
+    {
+      "source": "Market quote for this scenario",
+      "sha256": "46a5510503bf2f8eca4cd522e3317cecc86ebceb51f5482462359d72a4d763e5",
+      "references": [
+        {
+          "file": "src/components/product/FarmContextCard.jsx",
+          "line": 316,
           "kind": "literal"
         }
       ]
@@ -9841,6 +10469,17 @@
       ]
     },
     {
+      "source": "MeriPehchaan login is optional. First sign in by phone and link your government account. No government documents are requested.",
+      "sha256": "c77462193e350fea5b7a88a31b7b0f9ad8b2098c126bb58e4ff7f7ef5cc711bd",
+      "references": [
+        {
+          "file": "src/components/product/GovernmentLogin.jsx",
+          "line": 56,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Minimum",
       "sha256": "735beee2e390c7979f936104c3cb5a30c752d73d68844eefc028c403aee8229b",
       "references": [
@@ -9901,7 +10540,7 @@
       "references": [
         {
           "file": "src/components/product/SignIn.jsx",
-          "line": 63,
+          "line": 65,
           "kind": "literal"
         }
       ]
@@ -9912,7 +10551,7 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 36,
+          "line": 40,
           "kind": "literal"
         }
       ]
@@ -10044,7 +10683,7 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 20,
+          "line": 23,
           "kind": "literal"
         }
       ]
@@ -10176,7 +10815,7 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 111,
+          "line": 115,
           "kind": "literal"
         }
       ]
@@ -10198,7 +10837,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 224,
+          "line": 226,
           "kind": "literal"
         }
       ]
@@ -10615,6 +11254,11 @@
         },
         {
           "file": "src/features/product/indiaLocations.js",
+          "line": 7,
+          "kind": "literal"
+        },
+        {
+          "file": "src/features/product/voiceValues.js",
           "line": 6,
           "kind": "literal"
         }
@@ -10639,6 +11283,17 @@
           "file": "src/features/product/indiaLocations.json",
           "line": 1,
           "kind": "location-name"
+        }
+      ]
+    },
+    {
+      "source": "Nitrogen",
+      "sha256": "ed657064daf740734d4a4ae31406cb294a17dc2dbd422ce90a86ed9816f0ded4",
+      "references": [
+        {
+          "file": "src/components/product/FarmContextCard.jsx",
+          "line": 302,
+          "kind": "literal"
         }
       ]
     },
@@ -10687,12 +11342,56 @@
       ]
     },
     {
+      "source": "No authorized farmer registry API configured",
+      "sha256": "eeba534edf0da14e1ced7293e8a096e3ba5c41437377c0ac472b43654e1f0b3d",
+      "references": [
+        {
+          "file": "backend/v2/farm_context/service.py",
+          "line": 232,
+          "kind": "server"
+        }
+      ]
+    },
+    {
+      "source": "No authorized report API configured",
+      "sha256": "ae21422952552d873a82bdc649613b8e66a34fa99882a5c3a1372558fd196354",
+      "references": [
+        {
+          "file": "backend/v2/farm_context/service.py",
+          "line": 231,
+          "kind": "server"
+        }
+      ]
+    },
+    {
+      "source": "No authorized trading API configured",
+      "sha256": "884c49a27c8e5d2ea0a23f3f03e1288b2eed659f83c79d48f3519b3d756f9318",
+      "references": [
+        {
+          "file": "backend/v2/farm_context/service.py",
+          "line": 233,
+          "kind": "server"
+        }
+      ]
+    },
+    {
       "source": "No combined or guaranteed personal benefit amount is calculated",
       "sha256": "9256cdeb8d2ab7b53c14c5999bd801cddd57674d298bcf2a5ce0f7b780de16ff",
       "references": [
         {
           "file": "backend/v2/government.py",
           "line": 89,
+          "kind": "server"
+        }
+      ]
+    },
+    {
+      "source": "No comparable market quotes were returned for this crop and area.",
+      "sha256": "6be40cb0d0d2069d5975d426a9c13cf4f2f0b3bf52fc9e553a0136c5d094fec1",
+      "references": [
+        {
+          "file": "backend/v2/farm_context/service.py",
+          "line": 202,
           "kind": "server"
         }
       ]
@@ -10758,7 +11457,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 258,
+          "line": 260,
           "kind": "literal"
         }
       ]
@@ -10859,6 +11558,17 @@
           "file": "src/features/product/useAccountSession.js",
           "line": 98,
           "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "No soil estimate is converted into fertilizer kg/ha or a laboratory soil type.",
+      "sha256": "262791ec9262dab6eaa5b258e9900832d9e50784ee3704a1969ab86ce4b22af3",
+      "references": [
+        {
+          "file": "backend/v2/farm_context/engines.py",
+          "line": 46,
+          "kind": "server"
         }
       ]
     },
@@ -11060,7 +11770,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 306,
+          "line": 308,
           "kind": "literal"
         }
       ]
@@ -11126,7 +11836,7 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 74,
+          "line": 78,
           "kind": "literal"
         }
       ]
@@ -11135,6 +11845,11 @@
       "source": "Observed",
       "sha256": "64fa8a14a90feef5d86951352195391dfead1194f932aaed0755021c504e2a15",
       "references": [
+        {
+          "file": "src/components/product/FarmContextCard.jsx",
+          "line": 392,
+          "kind": "literal"
+        },
         {
           "file": "src/components/product/TodayView.jsx",
           "line": 206,
@@ -11202,6 +11917,11 @@
       "sha256": "a0d02d2dcf947271927e9ea50ff377c343394f9db792f3265d6cbd975c556212",
       "references": [
         {
+          "file": "src/components/product/FarmContextCard.jsx",
+          "line": 402,
+          "kind": "literal"
+        },
+        {
           "file": "src/components/product/MarketView.jsx",
           "line": 99,
           "kind": "literal"
@@ -11225,7 +11945,7 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 142,
+          "line": 146,
           "kind": "literal"
         }
       ]
@@ -11368,7 +12088,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 323,
+          "line": 325,
           "kind": "literal"
         }
       ]
@@ -11412,8 +12132,19 @@
       "references": [
         {
           "file": "src/components/product/SignIn.jsx",
-          "line": 142,
+          "line": 144,
           "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Open-Meteo fallback. IMD is unavailable or awaiting approved access.",
+      "sha256": "bccb1e218ea518e4b3eb79a2277e34bce361d66134d591afe9e87cb074912526",
+      "references": [
+        {
+          "file": "backend/v2/farm_context/service.py",
+          "line": 145,
+          "kind": "server"
         }
       ]
     },
@@ -11445,7 +12176,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 326,
+          "line": 328,
           "kind": "literal"
         }
       ]
@@ -11631,6 +12362,17 @@
       ]
     },
     {
+      "source": "Optional approved government login",
+      "sha256": "deb80a9e9877c62ed5fd2733860cdaf0b3a185e20658350336ddd3ae62eabee8",
+      "references": [
+        {
+          "file": "backend/v2/government_auth.py",
+          "line": 250,
+          "kind": "server"
+        }
+      ]
+    },
+    {
       "source": "Optional field map and satellite preview",
       "sha256": "adef48c4a650c672a32af7958f5ccff12330a0fd320c165227f95e6a0064ce94",
       "references": [
@@ -11647,7 +12389,7 @@
       "references": [
         {
           "file": "src/components/product/SettingsView.jsx",
-          "line": 138,
+          "line": 155,
           "kind": "literal"
         }
       ]
@@ -11658,7 +12400,7 @@
       "references": [
         {
           "file": "src/features/farms/AccountDetails.jsx",
-          "line": 100,
+          "line": 119,
           "kind": "literal"
         }
       ]
@@ -11669,7 +12411,7 @@
       "references": [
         {
           "file": "src/components/product/SettingsView.jsx",
-          "line": 37,
+          "line": 53,
           "kind": "literal"
         }
       ]
@@ -11680,7 +12422,7 @@
       "references": [
         {
           "file": "src/components/product/SettingsView.jsx",
-          "line": 32,
+          "line": 48,
           "kind": "literal"
         }
       ]
@@ -11895,13 +12637,35 @@
       ]
     },
     {
+      "source": "Partial",
+      "sha256": "a4d50fb85403654840e078e3ffe72dffe37df3ae280c6d98f39a41d346c88a14",
+      "references": [
+        {
+          "file": "src/components/product/FarmContextCard.jsx",
+          "line": 13,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Participate in pilot research",
       "sha256": "06cd6e7a9127e8c9d0668d64c7931702bf67059a1ac7d3c4acd0c1d4ab38d3f5",
       "references": [
         {
           "file": "src/components/product/SettingsView.jsx",
-          "line": 36,
+          "line": 52,
           "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Partner-approved login configured; connection is checked only during an explicit login",
+      "sha256": "350cf086254855f01e33a93431b4936153888000dd985c6643851508f1775996",
+      "references": [
+        {
+          "file": "backend/v2/farm_context/router.py",
+          "line": 51,
+          "kind": "server"
         }
       ]
     },
@@ -12087,7 +12851,7 @@
       "references": [
         {
           "file": "src/components/product/SettingsView.jsx",
-          "line": 251,
+          "line": 268,
           "kind": "literal"
         }
       ]
@@ -12098,7 +12862,7 @@
       "references": [
         {
           "file": "src/components/product/SettingsView.jsx",
-          "line": 237,
+          "line": 254,
           "kind": "literal"
         }
       ]
@@ -12328,7 +13092,7 @@
       "references": [
         {
           "file": "src/features/farms/AccountDetails.jsx",
-          "line": 122,
+          "line": 141,
           "kind": "literal"
         }
       ]
@@ -12350,7 +13114,7 @@
       "references": [
         {
           "file": "src/features/farms/AccountDetails.jsx",
-          "line": 81,
+          "line": 99,
           "kind": "literal"
         }
       ]
@@ -12525,7 +13289,7 @@
       "references": [
         {
           "file": "src/features/farms/AccountDetails.jsx",
-          "line": 73,
+          "line": 75,
           "kind": "literal"
         }
       ]
@@ -12547,7 +13311,7 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 185,
+          "line": 195,
           "kind": "literal"
         }
       ]
@@ -12558,7 +13322,7 @@
       "references": [
         {
           "file": "src/components/product/SettingsView.jsx",
-          "line": 59,
+          "line": 75,
           "kind": "literal"
         }
       ]
@@ -12580,12 +13344,12 @@
       "references": [
         {
           "file": "src/components/product/SettingsView.jsx",
-          "line": 255,
+          "line": 272,
           "kind": "literal"
         },
         {
           "file": "src/components/product/SignIn.jsx",
-          "line": 101,
+          "line": 103,
           "kind": "literal"
         }
       ]
@@ -12618,7 +13382,7 @@
       "references": [
         {
           "file": "src/components/product/SignIn.jsx",
-          "line": 135,
+          "line": 137,
           "kind": "literal"
         }
       ]
@@ -12641,6 +13405,17 @@
         {
           "file": "src/features/farms/PlotHealth.jsx",
           "line": 204,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Processing voice",
+      "sha256": "4e2ac0a21a8ed50fae688513fed56047af74bc598da3ef37208bf8c1a9d0ae53",
+      "references": [
+        {
+          "file": "src/components/product/FormVoiceInput.jsx",
+          "line": 211,
           "kind": "literal"
         }
       ]
@@ -12695,7 +13470,40 @@
       "references": [
         {
           "file": "backend/v2/rights.py",
-          "line": 129,
+          "line": 135,
+          "kind": "server"
+        }
+      ]
+    },
+    {
+      "source": "Public context for your farm",
+      "sha256": "7ea33177b23c18cf5038ddc0fc49ad53d387bf60c92d34981dc35d2af671bfba",
+      "references": [
+        {
+          "file": "src/components/product/FarmContextCard.jsx",
+          "line": 163,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Public data is unavailable. Your saved farm records are still available.",
+      "sha256": "2feeddd4a0f21fc8dfc835d4ea4f05d2419452b85160e0be57d32310376fc36f",
+      "references": [
+        {
+          "file": "src/components/product/FarmContextCard.jsx",
+          "line": 133,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Public map catalogue only. No plot land-use or flood measurement was retrieved.",
+      "sha256": "62fb31e9abde6df2f17828ef0a9edec566dacffdff61c480499e5eae84a0d7e8",
+      "references": [
+        {
+          "file": "backend/v2/farm_context/service.py",
+          "line": 171,
           "kind": "server"
         }
       ]
@@ -12852,6 +13660,16 @@
       "source": "quintal",
       "sha256": "f8c6d4dda7ea5a5ee5d2f12d69f5573bf3f8441e4e9ad8e6ca41e3d6e6bc714d",
       "references": [
+        {
+          "file": "src/components/product/FarmContextCard.jsx",
+          "line": 309,
+          "kind": "literal"
+        },
+        {
+          "file": "src/components/product/FarmContextCard.jsx",
+          "line": 325,
+          "kind": "literal"
+        },
         {
           "file": "src/features/product/DemoApp.jsx",
           "line": 347,
@@ -13030,7 +13848,7 @@
       "references": [
         {
           "file": "src/features/product/indiaLocations.js",
-          "line": 7,
+          "line": 11,
           "kind": "literal"
         }
       ]
@@ -13387,7 +14205,18 @@
       "references": [
         {
           "file": "src/components/product/SettingsView.jsx",
-          "line": 21,
+          "line": 37,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Retrieved",
+      "sha256": "4790277aa10cc1d7e5611645b9b6248f6ae72ecf40156932a5ea2d6849a602eb",
+      "references": [
+        {
+          "file": "src/components/product/FarmContextCard.jsx",
+          "line": 388,
           "kind": "literal"
         }
       ]
@@ -13398,7 +14227,7 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 172,
+          "line": 179,
           "kind": "literal"
         }
       ]
@@ -13409,7 +14238,7 @@
       "references": [
         {
           "file": "src/components/product/SettingsView.jsx",
-          "line": 111,
+          "line": 128,
           "kind": "literal"
         }
       ]
@@ -13420,7 +14249,7 @@
       "references": [
         {
           "file": "src/components/product/PlanningView.jsx",
-          "line": 80,
+          "line": 119,
           "kind": "literal"
         }
       ]
@@ -13431,7 +14260,29 @@
       "references": [
         {
           "file": "src/features/product/ProductApp.jsx",
-          "line": 99,
+          "line": 100,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Review spoken text",
+      "sha256": "f07479a5ff73f626c3e89ff6f3e5fa63cc41320547de85f6dd793f1691da18c5",
+      "references": [
+        {
+          "file": "src/components/product/FormVoiceInput.jsx",
+          "line": 217,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Review the context again after changing crop or price assumptions.",
+      "sha256": "c5da4858b7ab909dea1d3015f9777ff091f74fa5b795446d18280014ea1a8ed5",
+      "references": [
+        {
+          "file": "src/features/product/useSimulation.js",
+          "line": 97,
           "kind": "literal"
         }
       ]
@@ -13444,6 +14295,17 @@
           "file": "backend/v2/worker.py",
           "line": 240,
           "kind": "server"
+        }
+      ]
+    },
+    {
+      "source": "Reviewed public context will accompany this scenario. Seasonal rainfall and fertilizer inputs remain your assumptions.",
+      "sha256": "79d515a5e27943c5bb381c9392833db3b005569d067abad92ac1ff6cb246ca49",
+      "references": [
+        {
+          "file": "src/components/product/PlanningView.jsx",
+          "line": 97,
+          "kind": "literal"
         }
       ]
     },
@@ -13486,7 +14348,7 @@
       "references": [
         {
           "file": "src/features/product/useSimulation.js",
-          "line": 10,
+          "line": 11,
           "kind": "literal"
         },
         {
@@ -13546,7 +14408,7 @@
       "references": [
         {
           "file": "src/components/product/PlanningView.jsx",
-          "line": 112,
+          "line": 151,
           "kind": "literal"
         }
       ]
@@ -13920,7 +14782,7 @@
       "references": [
         {
           "file": "src/features/farms/AccountDetails.jsx",
-          "line": 98,
+          "line": 117,
           "kind": "literal"
         }
       ]
@@ -13942,7 +14804,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 179,
+          "line": 180,
           "kind": "literal"
         }
       ]
@@ -13953,7 +14815,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 130,
+          "line": 131,
           "kind": "literal"
         }
       ]
@@ -14019,7 +14881,7 @@
       "references": [
         {
           "file": "src/components/product/SettingsView.jsx",
-          "line": 132,
+          "line": 149,
           "kind": "literal"
         },
         {
@@ -14073,7 +14935,7 @@
       "references": [
         {
           "file": "src/components/product/SettingsView.jsx",
-          "line": 96,
+          "line": 113,
           "kind": "literal"
         }
       ]
@@ -14095,8 +14957,30 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 18,
+          "line": 21,
           "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Scenario engine is busy. Retry shortly.",
+      "sha256": "3eb27cd05bd0a460765e0cd384c63208f772c09962d2fbee689563d8bd4daba9",
+      "references": [
+        {
+          "file": "backend/v2/farm_context/router.py",
+          "line": 80,
+          "kind": "server"
+        }
+      ]
+    },
+    {
+      "source": "Scenario engine is unavailable",
+      "sha256": "47c5cf4fecd8a77f7b33142bcaaef72a323491fc5e022b3b6caa2459aebfdb36",
+      "references": [
+        {
+          "file": "backend/v2/farm_context/router.py",
+          "line": 63,
+          "kind": "server"
         }
       ]
     },
@@ -14106,7 +14990,18 @@
       "references": [
         {
           "file": "src/components/product/PlanningView.jsx",
-          "line": 136,
+          "line": 175,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Scheme information is not benefit approval. Check current official rules before applying.",
+      "sha256": "5d7790af2f5c6aeac7c12cb8c4932f834720d74dac6abf4e122be590fe16d920",
+      "references": [
+        {
+          "file": "src/components/product/FarmContextCard.jsx",
+          "line": 409,
           "kind": "literal"
         }
       ]
@@ -14139,7 +15034,7 @@
       "references": [
         {
           "file": "src/components/product/IndiaLocationPicker.jsx",
-          "line": 42,
+          "line": 75,
           "kind": "literal"
         }
       ]
@@ -14155,12 +15050,12 @@
         },
         {
           "file": "src/components/product/IndiaLocationPicker.jsx",
-          "line": 25,
+          "line": 40,
           "kind": "literal"
         },
         {
           "file": "src/components/product/IndiaLocationPicker.jsx",
-          "line": 45,
+          "line": 83,
           "kind": "literal"
         }
       ]
@@ -14182,7 +15077,7 @@
       "references": [
         {
           "file": "src/components/product/IndiaLocationPicker.jsx",
-          "line": 22,
+          "line": 32,
           "kind": "literal"
         }
       ]
@@ -14259,7 +15154,7 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 93,
+          "line": 97,
           "kind": "literal"
         }
       ]
@@ -14272,6 +15167,17 @@
           "file": "src/features/farms/InstitutionConsole.jsx",
           "line": 119,
           "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Select a supported pilot language",
+      "sha256": "a749e5bc8e5aade93b41d64f4281e4eab715db79e3e529c1310dd35e6482346e",
+      "references": [
+        {
+          "file": "backend/v2/speech.py",
+          "line": 30,
+          "kind": "server"
         }
       ]
     },
@@ -14298,6 +15204,17 @@
       ]
     },
     {
+      "source": "Selected administrative area, not land ownership verification",
+      "sha256": "b7036b9f41b10a87bcf4de36c3bf0a82521e00bd6775277540da759011862a18",
+      "references": [
+        {
+          "file": "backend/v2/farm_context/service.py",
+          "line": 49,
+          "kind": "server"
+        }
+      ]
+    },
+    {
       "source": "Selected crop photograph",
       "sha256": "1f2cbf30031cad430544ad9bbca8816a2cdb49b87cea2ee9f30e48b4ba8bdee9",
       "references": [
@@ -14314,7 +15231,7 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 89,
+          "line": 93,
           "kind": "literal"
         }
       ]
@@ -14326,6 +15243,17 @@
         {
           "file": "src/features/farms/InstitutionConsole.jsx",
           "line": 268,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Selected input",
+      "sha256": "de5b80d6f4c69dd968fc752ee51da7352c0d91be25dd23d62b82016cf29e7c28",
+      "references": [
+        {
+          "file": "src/components/product/FormVoiceInput.jsx",
+          "line": 44,
           "kind": "literal"
         }
       ]
@@ -14347,7 +15275,7 @@
       "references": [
         {
           "file": "src/components/product/SignIn.jsx",
-          "line": 105,
+          "line": 107,
           "kind": "literal"
         }
       ]
@@ -14382,6 +15310,17 @@
           "file": "src/features/product/indiaLocations.json",
           "line": 1,
           "kind": "location-name"
+        }
+      ]
+    },
+    {
+      "source": "Server API key is missing. No market price has been invented.",
+      "sha256": "a97db626627c90f5feb00c2a4c2deffb26ed90808aabaf79dff97efa9568a49f",
+      "references": [
+        {
+          "file": "backend/v2/farm_context/service.py",
+          "line": 178,
+          "kind": "server"
         }
       ]
     },
@@ -14616,6 +15555,17 @@
       ]
     },
     {
+      "source": "Short-range context only. Seasonal rainfall remains the farmer's scenario assumption.",
+      "sha256": "902d71ea14620cb542d254b901608a1b213ca885b28567d99ec10a78f7929ef9",
+      "references": [
+        {
+          "file": "backend/v2/farm_context/engines.py",
+          "line": 40,
+          "kind": "server"
+        }
+      ]
+    },
+    {
       "source": "Show an example result",
       "sha256": "c5a486d907e11b636d7ed7e49b2e863493a02f7ec33ebcc45916a063282cfcf2",
       "references": [
@@ -14665,7 +15615,7 @@
       "references": [
         {
           "file": "src/components/product/PlanningView.jsx",
-          "line": 72,
+          "line": 111,
           "kind": "literal"
         }
       ]
@@ -14742,7 +15692,7 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 116,
+          "line": 120,
           "kind": "literal"
         }
       ]
@@ -14781,6 +15731,17 @@
       ]
     },
     {
+      "source": "Sign in by phone and link your government account first",
+      "sha256": "3e66ccc7951e54d8d1ef5069588a8be801e44a7e115f710235388d31720dc540",
+      "references": [
+        {
+          "file": "backend/v2/government_auth.py",
+          "line": 327,
+          "kind": "server"
+        }
+      ]
+    },
+    {
       "source": "Sign in required",
       "sha256": "255346f25669fce12875a9610ec696967138d102614a832c6a27468e5ad754a6",
       "references": [
@@ -14797,7 +15758,7 @@
       "references": [
         {
           "file": "src/components/product/SignIn.jsx",
-          "line": 27,
+          "line": 29,
           "kind": "literal"
         }
       ]
@@ -14819,7 +15780,7 @@
       "references": [
         {
           "file": "src/components/product/SettingsView.jsx",
-          "line": 220,
+          "line": 237,
           "kind": "literal"
         }
       ]
@@ -14863,7 +15824,7 @@
       "references": [
         {
           "file": "src/components/product/PlanningView.jsx",
-          "line": 94,
+          "line": 133,
           "kind": "literal"
         }
       ]
@@ -14984,7 +15945,7 @@
       "references": [
         {
           "file": "src/components/product/SignIn.jsx",
-          "line": 80,
+          "line": 82,
           "kind": "literal"
         }
       ]
@@ -14995,7 +15956,18 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 56,
+          "line": 60,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Soil",
+      "sha256": "032b5a60d38e3fc05748e9c836789fbe3dbad338ecd16e7330d8b62b048febb1",
+      "references": [
+        {
+          "file": "src/components/product/FarmContextCard.jsx",
+          "line": 298,
           "kind": "literal"
         }
       ]
@@ -15084,6 +16056,17 @@
           "file": "src/features/farms/PlotContext.jsx",
           "line": 298,
           "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "SoilGrids REST is paused by its publisher. Add a measured report instead.",
+      "sha256": "1ce9ab87eb39c7e7ba08d904dfb396780a5a36b76aa5d1b6e1889ded06665eec",
+      "references": [
+        {
+          "file": "backend/v2/farm_context/service.py",
+          "line": 152,
+          "kind": "server"
         }
       ]
     },
@@ -15209,6 +16192,17 @@
       ]
     },
     {
+      "source": "Source returned public information",
+      "sha256": "02a2e33636e94854150e3ab51a9a730071879aa8fdb21b2a895ac9b2ee3e4fb0",
+      "references": [
+        {
+          "file": "src/components/product/FarmContextCard.jsx",
+          "line": 384,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Source review:",
       "sha256": "d4dcd05617e0b14f19f4ab0444c69a5b19445d561c989307b4c8761dc5f8637c",
       "references": [
@@ -15226,6 +16220,17 @@
         {
           "file": "src/components/product/TodayView.jsx",
           "line": 104,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Sources and availability",
+      "sha256": "2c98a702f9c3b38361f0f183e47adca42266484f121fb193766d6b3c44c8bd65",
+      "references": [
+        {
+          "file": "src/components/product/FarmContextCard.jsx",
+          "line": 370,
           "kind": "literal"
         }
       ]
@@ -15357,7 +16362,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 166,
+          "line": 167,
           "kind": "literal"
         }
       ]
@@ -15381,6 +16386,28 @@
           "file": "src/features/product/cropCatalog.json",
           "line": 1,
           "kind": "crop-label"
+        }
+      ]
+    },
+    {
+      "source": "Speak",
+      "sha256": "cb09d412cce28fbba90874502fea7b38c3f87a944b5626c6e1217b157fba1652",
+      "references": [
+        {
+          "file": "src/components/product/FormVoiceInput.jsx",
+          "line": 200,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Speak in your selected language. Check the text before using it.",
+      "sha256": "887f38ed518bf1f5e11ea5bde2aa453f685675e217327b2fa48e544b1ee351d6",
+      "references": [
+        {
+          "file": "src/components/product/FormVoiceInput.jsx",
+          "line": 166,
+          "kind": "literal"
         }
       ]
     },
@@ -15484,12 +16511,23 @@
       ]
     },
     {
+      "source": "Stale",
+      "sha256": "40c9e59c5e152b0ae9affc84d8461c29b75a7709e4506307eeedf246b526014e",
+      "references": [
+        {
+          "file": "src/components/product/FarmContextCard.jsx",
+          "line": 11,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Start my farm",
       "sha256": "88bfeb0df4cf0c2158834faec9d48a29ea2ef0a6b5bd957b26e8aa33d2cadd1d",
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 130,
+          "line": 134,
           "kind": "literal"
         }
       ]
@@ -15533,7 +16571,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 32,
+          "line": 33,
           "kind": "literal"
         }
       ]
@@ -15544,7 +16582,7 @@
       "references": [
         {
           "file": "src/components/product/IndiaLocationPicker.jsx",
-          "line": 28,
+          "line": 44,
           "kind": "literal"
         }
       ]
@@ -15567,6 +16605,17 @@
         {
           "file": "src/features/farms/LocalReadout.jsx",
           "line": 57,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Stop recording",
+      "sha256": "3d591e826d5459191fd5be2539bd138b17318f021ed3c687c6975e4089a0bcec",
+      "references": [
+        {
+          "file": "src/components/product/FormVoiceInput.jsx",
+          "line": 200,
           "kind": "literal"
         }
       ]
@@ -15632,7 +16681,7 @@
       "references": [
         {
           "file": "src/components/product/PlanningView.jsx",
-          "line": 96,
+          "line": 135,
           "kind": "literal"
         }
       ]
@@ -15742,7 +16791,7 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 152,
+          "line": 156,
           "kind": "literal"
         }
       ]
@@ -15753,7 +16802,7 @@
       "references": [
         {
           "file": "src/components/product/SettingsView.jsx",
-          "line": 164,
+          "line": 181,
           "kind": "literal"
         }
       ]
@@ -15961,7 +17010,7 @@
       "references": [
         {
           "file": "src/features/farms/AccountDetails.jsx",
-          "line": 81,
+          "line": 97,
           "kind": "literal"
         }
       ]
@@ -16005,17 +17054,17 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 186,
+          "line": 196,
           "kind": "literal"
         },
         {
           "file": "src/components/product/SettingsView.jsx",
-          "line": 256,
+          "line": 273,
           "kind": "literal"
         },
         {
           "file": "src/components/product/SignIn.jsx",
-          "line": 100,
+          "line": 102,
           "kind": "literal"
         }
       ]
@@ -16059,7 +17108,7 @@
       "references": [
         {
           "file": "src/components/product/SignIn.jsx",
-          "line": 127,
+          "line": 129,
           "kind": "literal"
         }
       ]
@@ -16070,7 +17119,18 @@
       "references": [
         {
           "file": "src/features/farms/api.js",
-          "line": 68,
+          "line": 80,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "The context scenario could not be completed. Check permissions and retry.",
+      "sha256": "1824bae56c76fe5742ddf3b9f2c37bad428c90f88ee1a587c385c457a9249b17",
+      "references": [
+        {
+          "file": "src/features/product/useSimulation.js",
+          "line": 164,
           "kind": "literal"
         }
       ]
@@ -16125,7 +17185,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 199,
+          "line": 200,
           "kind": "literal"
         }
       ]
@@ -16136,7 +17196,7 @@
       "references": [
         {
           "file": "src/features/farms/api.js",
-          "line": 63,
+          "line": 75,
           "kind": "literal"
         }
       ]
@@ -16158,7 +17218,7 @@
       "references": [
         {
           "file": "src/features/farms/api.js",
-          "line": 97,
+          "line": 116,
           "kind": "literal"
         }
       ]
@@ -16191,7 +17251,7 @@
       "references": [
         {
           "file": "src/features/product/useSimulation.js",
-          "line": 137,
+          "line": 188,
           "kind": "literal"
         }
       ]
@@ -16202,7 +17262,12 @@
       "references": [
         {
           "file": "src/features/product/useSimulation.js",
-          "line": 91,
+          "line": 117,
+          "kind": "literal"
+        },
+        {
+          "file": "src/features/product/useSimulation.js",
+          "line": 135,
           "kind": "literal"
         }
       ]
@@ -16235,7 +17300,7 @@
       "references": [
         {
           "file": "src/components/product/PlanningView.jsx",
-          "line": 66,
+          "line": 76,
           "kind": "literal"
         }
       ]
@@ -16318,12 +17383,23 @@
       ]
     },
     {
+      "source": "This account already has a different government identity link",
+      "sha256": "8d823a534e0553725e09990a7c12b3cc5a9ceca8a53bb858c2c2d44d7d64a57d",
+      "references": [
+        {
+          "file": "backend/v2/government_auth.py",
+          "line": 321,
+          "kind": "server"
+        }
+      ]
+    },
+    {
       "source": "This account does not have permission for the institutional workspace.",
       "sha256": "52c3f9655d02017c56745e0a2b6bfe2f59acddc54a19e7a98c731ce55bcdda7e",
       "references": [
         {
           "file": "src/features/product/ProductApp.jsx",
-          "line": 95,
+          "line": 96,
           "kind": "literal"
         }
       ]
@@ -16356,7 +17432,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 217,
+          "line": 218,
           "kind": "literal"
         }
       ]
@@ -16433,7 +17509,7 @@
       "references": [
         {
           "file": "src/components/product/SettingsView.jsx",
-          "line": 227,
+          "line": 244,
           "kind": "literal"
         }
       ]
@@ -16450,6 +17526,17 @@
       ]
     },
     {
+      "source": "This source is unavailable. Other sections remain usable.",
+      "sha256": "5169367fa984e39cf0012d3c16282a3f8f92fd96602d6cc23bf8c78447c8d578",
+      "references": [
+        {
+          "file": "backend/v2/farm_context/transport.py",
+          "line": 175,
+          "kind": "server"
+        }
+      ]
+    },
+    {
       "source": "This update stays in this demo visit. It is not saved to a farmer account.",
       "sha256": "ba1b0ad103a6cbb9b1692f121c2cf4bc0cddfe9d9d6c87e13ce1b93648cbf54c",
       "references": [
@@ -16457,6 +17544,17 @@
           "file": "src/features/product/DemoApp.jsx",
           "line": 411,
           "kind": "jsx"
+        }
+      ]
+    },
+    {
+      "source": "This value is unclear. Correct the text or enter it manually.",
+      "sha256": "0cef1d492ba5b45cbfd8b4d0986dfd67d2ca419a82bc8af9d8691bb53ba9bff2",
+      "references": [
+        {
+          "file": "src/components/product/FormVoiceInput.jsx",
+          "line": 228,
+          "kind": "literal"
         }
       ]
     },
@@ -16664,7 +17762,7 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 16,
+          "line": 19,
           "kind": "literal"
         }
       ]
@@ -16871,7 +17969,7 @@
       "references": [
         {
           "file": "src/components/product/SettingsView.jsx",
-          "line": 62,
+          "line": 79,
           "kind": "literal"
         }
       ]
@@ -16998,6 +18096,57 @@
       ]
     },
     {
+      "source": "Unavailable",
+      "sha256": "ca184496974204a0bd3fd4925e0540bc4b0df6fcc232994d29754272b7183812",
+      "references": [
+        {
+          "file": "src/components/product/FarmContextCard.jsx",
+          "line": 14,
+          "kind": "literal"
+        },
+        {
+          "file": "src/components/product/FarmContextCard.jsx",
+          "line": 267,
+          "kind": "literal"
+        },
+        {
+          "file": "src/components/product/FarmContextCard.jsx",
+          "line": 268,
+          "kind": "literal"
+        },
+        {
+          "file": "src/components/product/FarmContextCard.jsx",
+          "line": 287,
+          "kind": "literal"
+        },
+        {
+          "file": "src/components/product/FarmContextCard.jsx",
+          "line": 288,
+          "kind": "literal"
+        },
+        {
+          "file": "src/components/product/FarmContextCard.jsx",
+          "line": 289,
+          "kind": "literal"
+        },
+        {
+          "file": "src/components/product/FarmContextCard.jsx",
+          "line": 301,
+          "kind": "literal"
+        },
+        {
+          "file": "src/components/product/FarmContextCard.jsx",
+          "line": 302,
+          "kind": "literal"
+        },
+        {
+          "file": "src/components/product/FarmContextCard.jsx",
+          "line": 380,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Understand the experience",
       "sha256": "c3a4daec4b7040e365a6ec04df5c86aa82e34403ef1774bd03641e33e8a00f8e",
       "references": [
@@ -17060,6 +18209,17 @@
           "file": "src/features/product/DemoApp.jsx",
           "line": 334,
           "kind": "jsx"
+        }
+      ]
+    },
+    {
+      "source": "Unlink government sign-in",
+      "sha256": "8d1147b7286c834cf196f10656968c1288abc34d22d4969f8fa5e6ac0963ad2f",
+      "references": [
+        {
+          "file": "src/components/product/GovernmentLogin.jsx",
+          "line": 85,
+          "kind": "literal"
         }
       ]
     },
@@ -17251,12 +18411,56 @@
       ]
     },
     {
+      "source": "Use device location",
+      "sha256": "d742b9c7f54883c8e11109b86005f757b6b32393b183cd38608e2857c2ec5577",
+      "references": [
+        {
+          "file": "src/components/product/FarmContextCard.jsx",
+          "line": 249,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Use location with permission to load area weather",
+      "sha256": "42029ed50bc590e51f5d1a1569fe1813ae3564e395de7f828756e942e84b80c6",
+      "references": [
+        {
+          "file": "backend/v2/farm_context/service.py",
+          "line": 128,
+          "kind": "server"
+        }
+      ]
+    },
+    {
+      "source": "Use location with permission to request a soil estimate",
+      "sha256": "14db0222940082af92e2339a392b13dde96425563c851365a2c1fe58273db199",
+      "references": [
+        {
+          "file": "backend/v2/farm_context/service.py",
+          "line": 157,
+          "kind": "server"
+        }
+      ]
+    },
+    {
+      "source": "Use my chosen area for public weather, soil estimates, markets and scheme information. No ownership or benefit approval is inferred.",
+      "sha256": "336b3b27acaf4cb38aa596500bab9a736e561cf6abe2b82d2eea9dae7f3c2cbc",
+      "references": [
+        {
+          "file": "src/components/product/SettingsView.jsx",
+          "line": 28,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Use my field location",
       "sha256": "f4471af96bb4a89ef01fccfdc6369462924587963df8e9474297844b7ef0ed9c",
       "references": [
         {
           "file": "src/components/product/SettingsView.jsx",
-          "line": 16,
+          "line": 32,
           "kind": "literal"
         }
       ]
@@ -17289,7 +18493,18 @@
       "references": [
         {
           "file": "src/features/product/ProductApp.jsx",
-          "line": 114,
+          "line": 115,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Use reviewed context in scenario",
+      "sha256": "f8ded22ac215291dfa38f7d0084589a794ac74c5c34eb4b77a8f0cc272915296",
+      "references": [
+        {
+          "file": "src/components/product/FarmContextCard.jsx",
+          "line": 358,
           "kind": "literal"
         }
       ]
@@ -17302,6 +18517,17 @@
           "file": "src/features/product/DemoApp.jsx",
           "line": 310,
           "kind": "jsx"
+        }
+      ]
+    },
+    {
+      "source": "Use this value",
+      "sha256": "0993941563770d1239381714594250f218976a40290a6d1459c2471acb751543",
+      "references": [
+        {
+          "file": "src/components/product/FormVoiceInput.jsx",
+          "line": 253,
+          "kind": "literal"
         }
       ]
     },
@@ -17322,7 +18548,7 @@
       "references": [
         {
           "file": "src/components/product/SettingsView.jsx",
-          "line": 22,
+          "line": 38,
           "kind": "literal"
         }
       ]
@@ -17427,6 +18653,17 @@
       ]
     },
     {
+      "source": "Value to use",
+      "sha256": "5b9c43939b26f59dbed615229f38bc8bb972ed4ef589f0cbcb8a452727f5610e",
+      "references": [
+        {
+          "file": "src/components/product/FormVoiceInput.jsx",
+          "line": 233,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Varanasi",
       "sha256": "7efce17fca2828b32aa2a5e8e33b9feafffbdf8de82274be7d4b045650ac9776",
       "references": [
@@ -17514,7 +18751,7 @@
       "references": [
         {
           "file": "src/components/product/SignIn.jsx",
-          "line": 105,
+          "line": 107,
           "kind": "literal"
         }
       ]
@@ -17525,7 +18762,7 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 76,
+          "line": 80,
           "kind": "literal"
         }
       ]
@@ -17624,7 +18861,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 353,
+          "line": 355,
           "kind": "literal"
         }
       ]
@@ -17679,7 +18916,18 @@
       "references": [
         {
           "file": "src/features/farms/AccountDetails.jsx",
-          "line": 81,
+          "line": 98,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Village codes and land ownership have not been verified.",
+      "sha256": "17af6a455938fde35664979699872ddd9b03312ba030218785115506b9a2e85a",
+      "references": [
+        {
+          "file": "src/components/product/FarmContextCard.jsx",
+          "line": 271,
           "kind": "literal"
         }
       ]
@@ -17725,6 +18973,48 @@
           "file": "src/features/product/indiaLocations.json",
           "line": 1,
           "kind": "location-name"
+        }
+      ]
+    },
+    {
+      "source": "Voice input",
+      "sha256": "8748f23993a862456b9399c319f5a524ea4540343e0050c241721bf02c38057d",
+      "references": [
+        {
+          "file": "src/components/product/FormVoiceInput.jsx",
+          "line": 159,
+          "kind": "literal"
+        },
+        {
+          "file": "src/components/product/FormVoiceInput.jsx",
+          "line": 163,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Voice input is unavailable. You can still type.",
+      "sha256": "c756749bb6fe8787a94ed0d02c957b69e6ddd829e4025433bf5a51e9094de51a",
+      "references": [
+        {
+          "file": "src/components/product/FormVoiceInput.jsx",
+          "line": 82,
+          "kind": "literal"
+        },
+        {
+          "file": "src/components/product/FormVoiceInput.jsx",
+          "line": 135,
+          "kind": "literal"
+        },
+        {
+          "file": "src/components/product/FormVoiceInput.jsx",
+          "line": 146,
+          "kind": "literal"
+        },
+        {
+          "file": "src/components/product/FormVoiceInput.jsx",
+          "line": 204,
+          "kind": "literal"
         }
       ]
     },
@@ -17802,6 +19092,17 @@
           "file": "src/features/product/indiaLocations.json",
           "line": 1,
           "kind": "location-name"
+        }
+      ]
+    },
+    {
+      "source": "Weather",
+      "sha256": "a0bba638124664064545edb48049c05385d1542084b2b79bb6ec0cfea6d636c9",
+      "references": [
+        {
+          "file": "src/components/product/FarmContextCard.jsx",
+          "line": 284,
+          "kind": "literal"
         }
       ]
     },
@@ -18014,7 +19315,7 @@
       "references": [
         {
           "file": "src/components/product/PlanningView.jsx",
-          "line": 55,
+          "line": 65,
           "kind": "literal"
         }
       ]
@@ -18166,7 +19467,7 @@
       "references": [
         {
           "file": "src/features/farms/AccountDetails.jsx",
-          "line": 181,
+          "line": 200,
           "kind": "literal"
         }
       ]
@@ -18177,7 +19478,7 @@
       "references": [
         {
           "file": "src/components/product/SettingsView.jsx",
-          "line": 127,
+          "line": 144,
           "kind": "literal"
         }
       ]
@@ -18199,7 +19500,7 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 35,
+          "line": 39,
           "kind": "literal"
         }
       ]
@@ -18298,7 +19599,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 383,
+          "line": 385,
           "kind": "literal"
         }
       ]
@@ -18309,7 +19610,29 @@
       "references": [
         {
           "file": "src/components/product/SettingsView.jsx",
-          "line": 49,
+          "line": 65,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Your browser's speech service processes this recording. Krishyak does not save the audio.",
+      "sha256": "ec0b6349728dac61a9037f82e3d089c9fead58572cb6d6df4537421308f2159c",
+      "references": [
+        {
+          "file": "src/components/product/FormVoiceInput.jsx",
+          "line": 171,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Your confirmed area was saved.",
+      "sha256": "f33a45bd50ab048e49ba86108f8915957f0fa5e6af410fd31d3c8e1ede8ad398",
+      "references": [
+        {
+          "file": "src/components/product/FarmContextCard.jsx",
+          "line": 155,
           "kind": "literal"
         }
       ]
@@ -18331,7 +19654,7 @@
       "references": [
         {
           "file": "src/components/product/SignIn.jsx",
-          "line": 23,
+          "line": 25,
           "kind": "literal"
         }
       ]
@@ -18342,7 +19665,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 201,
+          "line": 202,
           "kind": "literal"
         }
       ]
@@ -18364,7 +19687,7 @@
       "references": [
         {
           "file": "src/components/product/ProductShell.jsx",
-          "line": 63,
+          "line": 67,
           "kind": "literal"
         }
       ]
@@ -18397,7 +19720,7 @@
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
-          "line": 66,
+          "line": 67,
           "kind": "literal"
         }
       ]
@@ -18458,6 +19781,17 @@
       ]
     },
     {
+      "source": "Your permission could not be saved. Please retry.",
+      "sha256": "b9f05cb9da51619d07d2fa436a3eb6fcbd2a2d9da2c28d4d69159c74903ae9b7",
+      "references": [
+        {
+          "file": "src/components/product/FormVoiceInput.jsx",
+          "line": 115,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Your permission could not be saved. Your previous choice is shown. Please retry.",
       "sha256": "c8272359c1326e36e9f27e2f64b7e48b28fa056f0d95b584dd2b268bc1647ef2",
       "references": [
@@ -18485,7 +19819,7 @@
       "references": [
         {
           "file": "src/components/product/IndiaLocationPicker.jsx",
-          "line": 61,
+          "line": 120,
           "kind": "literal"
         }
       ]

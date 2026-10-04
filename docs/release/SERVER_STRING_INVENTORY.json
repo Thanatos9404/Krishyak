@@ -2,7 +2,7 @@
   {
     "source": "Core storage or usage controls unavailable",
     "file": "backend/v2/application.py",
-    "line": 142
+    "line": 165
   },
   {
     "source": "Untrusted request origin",
@@ -195,6 +195,171 @@
     "line": 137
   },
   {
+    "source": "A normalized farm context is required",
+    "file": "backend/v2/farm_context/engines.py",
+    "line": 10
+  },
+  {
+    "source": "Short-range context only. Seasonal rainfall remains the farmer's scenario assumption.",
+    "file": "backend/v2/farm_context/engines.py",
+    "line": 40
+  },
+  {
+    "source": "No soil estimate is converted into fertilizer kg/ha or a laboratory soil type.",
+    "file": "backend/v2/farm_context/engines.py",
+    "line": 46
+  },
+  {
+    "source": "Choose a fresh available market quote",
+    "file": "backend/v2/farm_context/engines.py",
+    "line": 22
+  },
+  {
+    "source": "Market quote changed. Review the updated quote before using it.",
+    "file": "backend/v2/farm_context/engines.py",
+    "line": 25
+  },
+  {
+    "source": "Market quote crop, unit or date is not comparable",
+    "file": "backend/v2/farm_context/engines.py",
+    "line": 31
+  },
+  {
+    "source": "Cotton simulation needs lint prices; a mandi quote has no verified lint basis",
+    "file": "backend/v2/farm_context/engines.py",
+    "line": 33
+  },
+  {
+    "source": "Partner-approved login configured; connection is checked only during an explicit login",
+    "file": "backend/v2/farm_context/router.py",
+    "line": 51
+  },
+  {
+    "source": "Scenario engine is unavailable",
+    "file": "backend/v2/farm_context/router.py",
+    "line": 63
+  },
+  {
+    "source": "Scenario engine is busy. Retry shortly.",
+    "file": "backend/v2/farm_context/router.py",
+    "line": 80
+  },
+  {
+    "source": "Check the scenario values and supported units",
+    "file": "backend/v2/farm_context/router.py",
+    "line": 67
+  },
+  {
+    "source": "Choose the same supported crop for context and scenario",
+    "file": "backend/v2/farm_context/router.py",
+    "line": 74
+  },
+  {
+    "source": "Coarse area name matched to LGD. Confirm it. Village codes and land ownership are not inferred.",
+    "file": "backend/v2/farm_context/service.py",
+    "line": 117
+  },
+  {
+    "source": "Detected area is outside India. Choose your area manually.",
+    "file": "backend/v2/farm_context/service.py",
+    "line": 84
+  },
+  {
+    "source": "Public map catalogue only. No plot land-use or flood measurement was retrieved.",
+    "file": "backend/v2/farm_context/service.py",
+    "line": 171
+  },
+  {
+    "source": "Detected and selected areas disagree. Choose your area manually.",
+    "file": "backend/v2/farm_context/service.py",
+    "line": 100
+  },
+  {
+    "source": "Use location with permission to load area weather",
+    "file": "backend/v2/farm_context/service.py",
+    "line": 128
+  },
+  {
+    "source": "Open-Meteo fallback. IMD is unavailable or awaiting approved access.",
+    "file": "backend/v2/farm_context/service.py",
+    "line": 145
+  },
+  {
+    "source": "SoilGrids REST is paused by its publisher. Add a measured report instead.",
+    "file": "backend/v2/farm_context/service.py",
+    "line": 152
+  },
+  {
+    "source": "Use location with permission to request a soil estimate",
+    "file": "backend/v2/farm_context/service.py",
+    "line": 157
+  },
+  {
+    "source": "Bhuvan public map catalogue is disabled",
+    "file": "backend/v2/farm_context/service.py",
+    "line": 164
+  },
+  {
+    "source": "Server API key is missing. No market price has been invented.",
+    "file": "backend/v2/farm_context/service.py",
+    "line": 178
+  },
+  {
+    "source": "Choose your crop and state to load dated market quotes",
+    "file": "backend/v2/farm_context/service.py",
+    "line": 180
+  },
+  {
+    "source": "Dated market quotes are older than two days. Verify locally before selling.",
+    "file": "backend/v2/farm_context/service.py",
+    "line": 199
+  },
+  {
+    "source": "No comparable market quotes were returned for this crop and area.",
+    "file": "backend/v2/farm_context/service.py",
+    "line": 202
+  },
+  {
+    "source": "Approved partner registration and verified OAuth configuration required",
+    "file": "backend/v2/farm_context/service.py",
+    "line": 229
+  },
+  {
+    "source": "No authorized report API configured",
+    "file": "backend/v2/farm_context/service.py",
+    "line": 231
+  },
+  {
+    "source": "No authorized farmer registry API configured",
+    "file": "backend/v2/farm_context/service.py",
+    "line": 232
+  },
+  {
+    "source": "No authorized trading API configured",
+    "file": "backend/v2/farm_context/service.py",
+    "line": 233
+  },
+  {
+    "source": "Selected administrative area, not land ownership verification",
+    "file": "backend/v2/farm_context/service.py",
+    "line": 49
+  },
+  {
+    "source": "Automatic area lookup is disabled. Choose your state and district.",
+    "file": "backend/v2/farm_context/service.py",
+    "line": 59
+  },
+  {
+    "source": "Cached evidence has expired; refresh before acting",
+    "file": "backend/v2/farm_context/transport.py",
+    "line": 161
+  },
+  {
+    "source": "This source is unavailable. Other sections remain usable.",
+    "file": "backend/v2/farm_context/transport.py",
+    "line": 175
+  },
+  {
     "source": "This is public program information, not eligibility approval",
     "file": "backend/v2/government.py",
     "line": 86
@@ -283,6 +448,81 @@
     "source": "Your own report and sample date",
     "file": "backend/v2/government.py",
     "line": 68
+  },
+  {
+    "source": "Optional approved government login",
+    "file": "backend/v2/government_auth.py",
+    "line": 250
+  },
+  {
+    "source": "Government login is not configured. Use phone sign-in.",
+    "file": "backend/v2/government_auth.py",
+    "line": 252
+  },
+  {
+    "source": "Government login is not configured. Use phone sign-in.",
+    "file": "backend/v2/government_auth.py",
+    "line": 109
+  },
+  {
+    "source": "Government login state storage unavailable",
+    "file": "backend/v2/government_auth.py",
+    "line": 128
+  },
+  {
+    "source": "Government login verification failed",
+    "file": "backend/v2/government_auth.py",
+    "line": 150
+  },
+  {
+    "source": "Government account link requires the original signed-in account",
+    "file": "backend/v2/government_auth.py",
+    "line": 299
+  },
+  {
+    "source": "Government account link requires the original signed-in account",
+    "file": "backend/v2/government_auth.py",
+    "line": 311
+  },
+  {
+    "source": "Government identity is already linked to another account",
+    "file": "backend/v2/government_auth.py",
+    "line": 314
+  },
+  {
+    "source": "This account already has a different government identity link",
+    "file": "backend/v2/government_auth.py",
+    "line": 321
+  },
+  {
+    "source": "Sign in by phone and link your government account first",
+    "file": "backend/v2/government_auth.py",
+    "line": 327
+  },
+  {
+    "source": "Account unavailable",
+    "file": "backend/v2/government_auth.py",
+    "line": 330
+  },
+  {
+    "source": "Government identity link changed. Sign in by phone and review the link.",
+    "file": "backend/v2/government_auth.py",
+    "line": 336
+  },
+  {
+    "source": "Government login state storage unavailable",
+    "file": "backend/v2/government_auth.py",
+    "line": 126
+  },
+  {
+    "source": "Government login expired or verification failed",
+    "file": "backend/v2/government_auth.py",
+    "line": 159
+  },
+  {
+    "source": "Government login could not be verified. Use phone sign-in.",
+    "file": "backend/v2/government_auth.py",
+    "line": 221
   },
   {
     "source": "External performance differs from internal evaluation",
@@ -522,12 +762,12 @@
   {
     "source": "Backups expire according to the operator's retention policy",
     "file": "backend/v2/rights.py",
-    "line": 128
+    "line": 134
   },
   {
     "source": "Provider-side processing records require separate provider retention controls",
     "file": "backend/v2/rights.py",
-    "line": 129
+    "line": 135
   },
   {
     "source": "Farm accounts are not yet available",
@@ -663,6 +903,11 @@
     "source": "Operation ID already used for another satellite request",
     "file": "backend/v2/satellite.py",
     "line": 103
+  },
+  {
+    "source": "Select a supported pilot language",
+    "file": "backend/v2/speech.py",
+    "line": 30
   },
   {
     "source": "Satellite processing completed",
