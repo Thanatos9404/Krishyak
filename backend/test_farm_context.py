@@ -199,6 +199,14 @@ class MarketHistoryTests(unittest.IsolatedAsyncioTestCase):
         self.assertFalse(source["complete_archive"])
         self.assertFalse(source["missing_days_filled"])
 
+    async def test_provider_crop_normalization_also_applies_during_review(self):
+        quote = self.quote(commodity="  ＲＩＣＥ  ")
+        self.context.market.data = [quote]
+        reviewed, evidence = scenario_inputs(self.parameters, self.context, 0, quote.quote_id)
+        self.assertEqual(reviewed["current_market_price"], quote.modal_price)
+        self.assertEqual(evidence["market"]["selected_quote"]["commodity"], "  ＲＩＣＥ  ")
+        self.assertEqual(self.simulate()["current_plan"]["price_forecast"]["historical_days"], 1)
+
     async def test_consecutive_normalized_records_reach_forecaster_and_risk_once(self):
         self.context.market.data = [self.quote(i) for i in range(21)]
         with patch("v2.farm_context.engines.reviewed_market_history", wraps=reviewed_market_history) as history:

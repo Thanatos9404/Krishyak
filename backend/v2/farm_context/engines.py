@@ -28,7 +28,7 @@ def scenario_inputs(parameters, context: FarmContext, quote_index=None, expected
             raise ValueError("Market quote changed. Review the updated quote before using it.")
         today = india_today()
         if (
-            quote.commodity.casefold() != parameters["crop"].casefold()
+            normalized_name(quote.commodity) != normalized_name(parameters["crop"])
             or quote.unit != "INR/quintal"
             or not today - timedelta(days=2) <= quote.observed_date <= today
         ):
