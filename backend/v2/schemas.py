@@ -1,6 +1,6 @@
 """Bounded public contracts. No caller-selected owner or role fields."""
 
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 from typing import Literal
 from uuid import UUID, uuid4
 
@@ -172,7 +172,9 @@ class ObservationInput(Input):
     @field_validator("observed_at")
     @classmethod
     def aware_past(cls, value):
-        if value.tzinfo is None or value > datetime.now(timezone.utc):
+        # Farmer devices and API hosts may differ by a few seconds. Preserve
+        # reported UTC time, but reject materially future observations.
+        if value.tzinfo is None or value > datetime.now(timezone.utc) + timedelta(seconds=30):
             raise ValueError("Observation time must be timezone-aware and not future")
         return value.astimezone(timezone.utc)
 

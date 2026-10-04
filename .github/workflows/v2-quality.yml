@@ -11,7 +11,8 @@ concurrency:
   cancel-in-progress: true
 jobs:
   backend:
-    runs-on: ubuntu-latest
+    # Keep the tested OS family stable when GitHub moves ubuntu-latest.
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     services:
       postgres:
@@ -66,7 +67,7 @@ jobs:
           python scripts/check_product_release.py
           python scripts/i18n/validate-workspace.py
   frontend-and-browsers:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 25
     services:
       postgres:
@@ -142,7 +143,7 @@ jobs:
             /tmp/v2-web.log
           retention-days: 7
   container:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6

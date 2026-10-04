@@ -6,7 +6,7 @@ import io
 import json
 import os
 import unittest
-from datetime import timedelta
+from datetime import timedelta, timezone
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest.mock import AsyncMock, Mock, patch
@@ -196,6 +196,27 @@ class ConfigAndSchemaTests(unittest.TestCase):
         for when in ["2026-01-01T00:00:00", (utcnow() + timedelta(days=1)).isoformat()]:
             with self.assertRaises(ValidationError):
                 ObservationInput(operation_id=uuid4(), kind="farmer_observation", observed_at=when, note="Synthetic")
+
+    def test_reported_observation_time_allows_only_bounded_device_skew(self):
+        now = utcnow()
+        with patch("v2.schemas.datetime") as clock:
+            clock.now.return_value = now
+            for seconds in [-3600, 0, 1, 30]:
+                value = now + timedelta(seconds=seconds)
+                record = ObservationInput(
+                    operation_id=uuid4(), kind="farmer_observation", observed_at=value, note="Synthetic"
+                )
+                self.assertEqual(record.observed_at, value)
+                self.assertEqual(record.observed_at.tzinfo, timezone.utc)
+            for value in [
+                now + timedelta(seconds=30, microseconds=1),
+                now + timedelta(days=1),
+                now.replace(tzinfo=None),
+            ]:
+                with self.subTest(value=value), self.assertRaises(ValidationError):
+                    ObservationInput(
+                        operation_id=uuid4(), kind="farmer_observation", observed_at=value, note="Synthetic"
+                    )
 
 
 @unittest.skipUnless(os.getenv("V2_TEST_DATABASE_URL"), "Dedicated disposable PostGIS test URL required")

@@ -153,9 +153,16 @@ test("field onboarding, permissions, human update, crop cycle and account export
   await page
     .getByLabel("What happened?", { exact: true })
     .fill("Synthetic inspection; no measured crop outcome.");
+  const updateSaved = page.waitForResponse(
+    (response) =>
+      response.url().endsWith("/observations") &&
+      response.request().method() === "POST",
+  );
   await page
     .getByRole("button", { name: "Save field update", exact: true })
     .click();
+  expect((await updateSaved).ok()).toBe(true);
+  await expect(page.getByRole("dialog")).not.toBeVisible();
   await expect(
     page.getByText("Synthetic inspection; no measured crop outcome.", {
       exact: true,
@@ -361,6 +368,12 @@ test("farmer routes, zoom, reduced motion and accessible navigation", async ({},
     await expect(
       page.getByRole("heading", { name: "Opening your workspace…" }),
     ).not.toBeVisible();
+    // Always exercise the long unselected location prompt. A saved short state
+    // name must not hide native-select overflow in repeat local runs.
+    if (route === "/app/market")
+      await page
+        .getByLabel("State or union territory", { exact: true })
+        .selectOption("");
     for (const width of [320, 360, 375, 390, 412, 768, 1024, 1280, 1440]) {
       await page.setViewportSize({ width, height: width > 800 ? 900 : 844 });
       await expect
@@ -372,6 +385,25 @@ test("farmer routes, zoom, reduced motion and accessible navigation", async ({},
           { message: `${route} at ${width}px` },
         )
         .toBe(true);
+    }
+    if (route === "/app/market") {
+      await page
+        .getByLabel("State or union territory", { exact: true })
+        .selectOption("38");
+      await page.setViewportSize({ width: 320, height: 844 });
+      await expect
+        .poll(
+          () =>
+            page.evaluate(
+              () => document.documentElement.scrollWidth <= innerWidth,
+            ),
+          { message: "Longest state/UT name at 320px" },
+        )
+        .toBe(true);
+      await page
+        .getByLabel("State or union territory", { exact: true })
+        .selectOption("");
+      await page.setViewportSize({ width: 1440, height: 900 });
     }
     const axe = await new AxeBuilder({ page })
       .withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"])

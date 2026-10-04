@@ -120,3 +120,26 @@ passes both exact-head GitHub quality runs: [push](https://github.com/Thanatos94
 and [pull request](https://github.com/Thanatos9404/Krishyak/actions/runs/37186190454).
 Backend, frontend/browser and container jobs all succeed. In particular, CI API
 startup accepts `v2_0006`, confirming the readiness fix handles a later migration.
+
+Linux browser CI repair (4 October 2026): the location selector revision
+`eae4765e25937838702f25b9431e64c5dd1589f7` passed backend/container jobs but
+failed both frontend/browser jobs on WebKit Market overflow at 320px. Actual
+Ubuntu 24.04 reproduction found native select rendering enlarged document width
+despite constrained element boxes; a saved short state name hid it in repeat
+Windows checks. Explicit select appearance fixes the internal overflow while
+retaining native keyboard/label semantics and RTL placement. The browser audit
+now exercises the empty prompt and longest state/UT name independently of saved
+profile state. All jobs pin the verified Ubuntu 24.04 OS family.
+
+The complete local suite also ran in the official Playwright 1.63.0 Ubuntu 24.04
+container through guarded loopback forwarding: 37 checks pass, two existing
+CDP-only performance checks skip, and none fail. It exposed fractional device/API
+clock skew rejecting a reported observation; validation now permits at most 30
+seconds and preserves reported UTC time. A frozen-clock test rejects larger
+future values and naive times. The browser test requires a successful POST and
+closed dialog, preventing an unsaved textarea from satisfying the saved-entry
+assertion. Backend verification runs 251 tests with two existing skips; frontend
+verification passes 331 tests. Public crawl and static locale validation pass.
+The guarded runner removes three generated fields and three empty farms.
+These are local results; exact-head GitHub results belong in the PR after the
+repair is pushed and both workflows complete. [CI record](CI_RELIABILITY.md).

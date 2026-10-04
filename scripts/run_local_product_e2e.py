@@ -15,6 +15,11 @@ CLEANUP = ROOT / "scripts/cleanup_local_e2e_fields.py"
 
 
 def main():
+    browser_server = os.environ.get("V2_E2E_BROWSER_WS")
+    if browser_server and browser_server != "ws://127.0.0.1:9333/":
+        raise SystemExit(
+            "Remote local test browsers must use the fixed loopback server"
+        )
     if (
         os.environ.get("V2_E2E_FRONTEND", "http://localhost:3000")
         != "http://localhost:3000"
