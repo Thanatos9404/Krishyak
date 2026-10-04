@@ -1,11 +1,12 @@
 """One transient context, independent sources, no new farmer identity system."""
 
 import asyncio
+from datetime import date, timedelta
 
 from ..crops import resolve_crop
 from ..government import PublicInformationAdapter
 from ..locations import resolve_location
-from .models import FarmContext, Location, Source
+from .models import FarmContext, Location, Source, india_today
 from .providers import bhuvan, imd, ogd, open_meteo, soilgrids
 from .settings import ProviderSettings
 from .transport import ENDPOINTS, Gateway, Unavailable
@@ -188,11 +189,9 @@ class FarmContextService:
                 stale_seconds=3600,
             )
             if section["data"]:
-                from datetime import datetime, timedelta, timezone
-
-                stamp = datetime.fromisoformat(section["data"][0]["observed_date"]).replace(tzinfo=timezone.utc)
-                section["source"].observed_at = stamp
-                if stamp < datetime.now(timezone.utc) - timedelta(days=2):
+                stamp = date.fromisoformat(section["data"][0]["observed_date"])
+                # OGD supplies an arrival date, not an intraday observation timestamp.
+                if stamp < india_today() - timedelta(days=2):
                     section["source"].status = "stale"
                     section[
                         "source"

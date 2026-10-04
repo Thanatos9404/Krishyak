@@ -1,8 +1,8 @@
 """Normalized evidence boundary for the existing scenario engines."""
 
-from datetime import date, timedelta
+from datetime import timedelta
 
-from .models import FarmContext, now
+from .models import FarmContext, india_today, now
 
 
 def scenario_inputs(parameters, context: FarmContext, quote_index=None, expected_quote_id=None):
@@ -23,10 +23,11 @@ def scenario_inputs(parameters, context: FarmContext, quote_index=None, expected
         quote = section.data[quote_index]
         if not expected_quote_id or quote.quote_id != expected_quote_id:
             raise ValueError("Market quote changed. Review the updated quote before using it.")
+        today = india_today()
         if (
             quote.commodity.casefold() != parameters["crop"].casefold()
             or quote.unit != "INR/quintal"
-            or quote.observed_date < date.today() - timedelta(days=2)
+            or not today - timedelta(days=2) <= quote.observed_date <= today
         ):
             raise ValueError("Market quote crop, unit or date is not comparable")
         if parameters["crop"] == "Cotton":

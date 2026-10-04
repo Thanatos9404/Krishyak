@@ -1,12 +1,12 @@
 """Normalize documented public-provider payloads, never invent evidence."""
 
 import math
-from datetime import date, datetime, timedelta, timezone
+from datetime import datetime, timedelta, timezone
 
 from defusedxml import ElementTree
 
 from ..locations import normalized_name
-from .models import ForecastDay, ForecastHour, MarketRecord, Soil, Spatial, Weather, now
+from .models import ForecastDay, ForecastHour, MarketRecord, Soil, Spatial, Weather, india_today, now
 from .transport import Unavailable
 
 
@@ -198,6 +198,7 @@ def normalize_markets(payload, state, district, crop):
     if not isinstance(rows, list) or len(rows) > 100:
         raise Unavailable()
     result = {}
+    today = india_today()
     for row in rows:
         try:
             if (
@@ -208,7 +209,7 @@ def normalize_markets(payload, state, district, crop):
             ):
                 continue
             stamp = datetime.strptime(row["arrival_date"], "%d/%m/%Y").date()
-            if stamp > date.today() or (date.today() - stamp).days > 30:
+            if stamp > today or (today - stamp).days > 30:
                 continue
             record = MarketRecord(
                 commodity=row["commodity"],

@@ -2,7 +2,7 @@
 
 import hashlib
 import json
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 from typing import Generic, Literal, TypeVar
 
 from pydantic import AwareDatetime, BaseModel, ConfigDict, Field, StrictInt, model_validator
@@ -12,6 +12,11 @@ from ..schemas import Input, Number
 
 def now():
     return datetime.now(timezone.utc)
+
+
+def india_today():
+    """Mandi reporting uses Indian calendar dates, regardless of server timezone."""
+    return now().astimezone(timezone(timedelta(hours=5, minutes=30))).date()
 
 
 class ContextInput(Input):

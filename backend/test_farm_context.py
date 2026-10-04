@@ -3,14 +3,14 @@
 import asyncio
 import copy
 import unittest
-from datetime import date, timedelta
-from unittest.mock import AsyncMock, Mock
+from datetime import date, datetime, timedelta, timezone
+from unittest.mock import AsyncMock, Mock, patch
 
 import httpx
 from pydantic import ValidationError
 
 from v2.farm_context.engines import scenario_inputs
-from v2.farm_context.models import ContextInput, MarketRecord, Soil, Source, now
+from v2.farm_context.models import ContextInput, MarketRecord, Soil, Source, india_today, now
 from v2.farm_context.providers import imd, normalize_capabilities, normalize_markets, normalize_soil, open_meteo
 from v2.farm_context.service import FarmContextService
 from v2.farm_context.settings import ProviderSettings
@@ -87,7 +87,7 @@ class ContextModelsTests(unittest.TestCase):
             "commodity": "Wheat",
             "variety": "Other",
             "market": "Fixture",
-            "arrival_date": date.today().strftime("%d/%m/%Y"),
+            "arrival_date": india_today().strftime("%d/%m/%Y"),
             "min_price": "2000",
             "max_price": "2200",
             "modal_price": "2100",
@@ -110,6 +110,36 @@ class ContextModelsTests(unittest.TestCase):
         self.assertEqual(
             normalize_markets({"records": [row, row | {"modal_price": "2050"}]}, "Rajasthan", "Jaipur", "Wheat"), []
         )
+
+    def test_mandi_calendar_rolls_at_indian_midnight_and_rejects_future_dates(self):
+        row = {
+            "state": "Rajasthan",
+            "district": "Jaipur",
+            "commodity": "Wheat",
+            "variety": "Other",
+            "market": "Fixture",
+            "arrival_date": "05/10/2026",
+            "min_price": "2000",
+            "max_price": "2200",
+            "modal_price": "2100",
+        }
+        for minute, expected_date, expected_count in ((29, date(2026, 10, 4), 0), (30, date(2026, 10, 5), 1)):
+            with (
+                self.subTest(minute=minute),
+                patch(
+                    "v2.farm_context.models.now", return_value=datetime(2026, 10, 4, 18, minute, tzinfo=timezone.utc)
+                ),
+            ):
+                self.assertEqual(india_today(), expected_date)
+                quotes = normalize_markets(
+                    {"records": [row, row | {"arrival_date": "06/10/2026"}, row | {"arrival_date": "03/09/2026"}]},
+                    "Rajasthan",
+                    "Jaipur",
+                    "Wheat",
+                )
+                self.assertEqual(len(quotes), expected_count)
+                if quotes:
+                    self.assertEqual(quotes[0]["observed_date"], "2026-10-05")
 
 
 class GatewayTests(unittest.IsolatedAsyncioTestCase):
@@ -165,7 +195,7 @@ class GatewayTests(unittest.IsolatedAsyncioTestCase):
         imd_row = {
             "Latitude": "26.91",
             "Longitude": "75.81",
-            "Date": date.today().isoformat(),
+            "Date": india_today().isoformat(),
             "Station_Name": "Fixture Jaipur",
         }
         for i in range(7):
@@ -177,7 +207,7 @@ class GatewayTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(len(official.daily_forecast), 7)
         self.assertIsNone(official.temperature_c)
         self.assertIsNone(official.precipitation_next_24h_mm)
-        imd_row["Date"] = (date.today() - timedelta(days=4)).isoformat()
+        imd_row["Date"] = (india_today() - timedelta(days=4)).isoformat()
         with self.assertRaises(Unavailable):
             await imd(gateway, 26.91, 75.81)
 
@@ -202,7 +232,7 @@ class GatewayTests(unittest.IsolatedAsyncioTestCase):
             district="Jaipur",
             state="Rajasthan",
             modal_price=2700,
-            observed_date=date.today(),
+            observed_date=india_today(),
         )
         context.market.data = [quote]
         context.market.source = Source(
@@ -225,6 +255,81 @@ class GatewayTests(unittest.IsolatedAsyncioTestCase):
         context.market.source.status = "stale"
         with self.assertRaises(ValueError):
             scenario_inputs(PARAMS, context, 0, quote.quote_id)
+
+    async def test_mandi_freshness_and_review_use_the_same_indian_calendar(self):
+        from test_system_integrity import PARAMS
+
+        clock = datetime(2026, 10, 4, 18, 30, tzinfo=timezone.utc)
+        with (
+            patch("v2.farm_context.models.now", return_value=clock),
+            patch("v2.farm_context.engines.now", return_value=clock),
+            patch("v2.farm_context.transport.now", return_value=clock),
+        ):
+            for stamp, status in ((date(2026, 10, 3), "success"), (date(2026, 10, 2), "stale")):
+                with self.subTest(stamp=stamp):
+                    gateway = Gateway(quotas())
+                    gateway.read = AsyncMock(
+                        return_value={
+                            "records": [
+                                {
+                                    "state": "Rajasthan",
+                                    "district": "Jaipur",
+                                    "commodity": PARAMS["crop"],
+                                    "variety": "Other",
+                                    "market": "Fixture",
+                                    "arrival_date": stamp.strftime("%d/%m/%Y"),
+                                    "min_price": "2000",
+                                    "max_price": "2200",
+                                    "modal_price": "2100",
+                                }
+                            ]
+                        }
+                    )
+                    context = await FarmContextService(
+                        quotas(), ProviderSettings(ogd_key="synthetic-test-key", bhuvan_enabled=False), gateway
+                    ).build(ContextInput(state_code=8, district_code=102, crop_id="rice"))
+                    self.assertEqual(context.market.source.status, status)
+                    self.assertIsNone(context.market.source.observed_at)
+                    quote = context.market.data[0]
+                    self.assertEqual(quote.observed_date, stamp)
+                    if status == "success":
+                        reviewed, _ = scenario_inputs(PARAMS, context, 0, quote.quote_id)
+                        self.assertEqual(reviewed["current_market_price"], 2100)
+                    else:
+                        with self.assertRaises(ValueError):
+                            scenario_inputs(PARAMS, context, 0, quote.quote_id)
+
+    async def test_review_rejects_future_and_calendar_stale_quotes_independently_of_cache(self):
+        from test_system_integrity import PARAMS
+
+        context = await FarmContextService(quotas(), ProviderSettings(bhuvan_enabled=False)).build(
+            ContextInput(state_code=8)
+        )
+        clock = datetime(2026, 10, 4, 18, 30, tzinfo=timezone.utc)
+        context.market.source = Source(
+            provider="ogd",
+            status="success",
+            source_url="https://www.data.gov.in/",
+            valid_until=clock + timedelta(hours=1),
+        )
+        with (
+            patch("v2.farm_context.models.now", return_value=clock),
+            patch("v2.farm_context.engines.now", return_value=clock),
+        ):
+            for stamp in (date(2026, 10, 6), date(2026, 10, 2)):
+                with self.subTest(stamp=stamp):
+                    quote = MarketRecord(
+                        commodity=PARAMS["crop"],
+                        market="Fixture",
+                        variety="Other",
+                        district="Jaipur",
+                        state="Rajasthan",
+                        modal_price=2100,
+                        observed_date=stamp,
+                    )
+                    context.market.data = [quote]
+                    with self.assertRaisesRegex(ValueError, "not comparable"):
+                        scenario_inputs(PARAMS, context, 0, quote.quote_id)
 
     async def test_singleflight_cache_stale_bounds_and_circuit(self):
         clock = [0.0]
