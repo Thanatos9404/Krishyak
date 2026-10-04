@@ -397,39 +397,48 @@
       "number": 47,
       "requirement": "CROP NAMES",
       "source_sha256": "cf3c096cfe6f19b964c1ebd877dc99eb7ad362dfb00bd5f7d4045028cb868335",
-      "status": "implemented_pending_database_and_browser_validation",
+      "status": "implemented_local_validation",
       "evidence": [
         "docs/release/CROP_IDENTITIES.md",
         "backend/v2/crops.py",
         "backend/test_crop_catalog.py",
         "frontend/src/components/product/CropPicker.jsx",
-        "frontend/src/features/product/crops.test.js"
+        "frontend/src/features/product/crops.test.js",
+        "frontend/e2e/product-locales.spec.js",
+        "backend/test_v2_foundation.py",
+        "docs/release/CI_RELIABILITY.md"
       ]
     },
     {
       "number": 48,
       "requirement": "CROP SEARCH",
       "source_sha256": "1da686445e14312ea80699afdc905a54040922b6408d15046aee18a02e316d9f",
-      "status": "implemented_pending_database_and_browser_validation",
+      "status": "implemented_local_validation",
       "evidence": [
         "docs/release/CROP_IDENTITIES.md",
         "backend/v2/crops.py",
         "backend/test_crop_catalog.py",
         "frontend/src/components/product/CropPicker.jsx",
-        "frontend/src/features/product/crops.test.js"
+        "frontend/src/features/product/crops.test.js",
+        "frontend/e2e/product-locales.spec.js",
+        "backend/test_v2_foundation.py",
+        "docs/release/CI_RELIABILITY.md"
       ]
     },
     {
       "number": 49,
       "requirement": "INDIA-SPECIFIC CROP CATALOG",
       "source_sha256": "95baaf83e2d651fa737a6265abdd0c1d3605893bf31b8469f98cffd0e6d744e6",
-      "status": "implemented_pending_database_and_browser_validation",
+      "status": "implemented_local_validation",
       "evidence": [
         "docs/release/CROP_IDENTITIES.md",
         "backend/v2/crops.py",
         "backend/test_crop_catalog.py",
         "frontend/src/components/product/CropPicker.jsx",
-        "frontend/src/features/product/crops.test.js"
+        "frontend/src/features/product/crops.test.js",
+        "frontend/e2e/product-locales.spec.js",
+        "backend/test_v2_foundation.py",
+        "docs/release/CI_RELIABILITY.md"
       ]
     },
     {

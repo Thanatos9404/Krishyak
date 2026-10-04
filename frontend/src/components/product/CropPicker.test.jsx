@@ -22,6 +22,9 @@ test("native-language search selects a stable identity and keeps it across langu
   const { rerender } = render(
     <CropPicker value="tomato" onChange={onChange} />,
   );
+  expect(screen.getByLabelText("Crop", { exact: true })).toBe(
+    screen.getByRole("combobox"),
+  );
   fireEvent.change(screen.getByRole("searchbox"), { target: { value: "टमा" } });
   expect(screen.getByRole("option", { name: "टमाटर" })).toHaveValue("tomato");
   expect(

@@ -1,6 +1,6 @@
 {
   "extractor": "Babel AST; literals, JSX text, positional template placeholders",
-  "source_strings": 832,
+  "source_strings": 830,
   "strings": [
     {
       "source": ". Failed requests preserve earlier observations.",
@@ -200,7 +200,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 154,
+          "line": 153,
           "kind": "jsx"
         }
       ]
@@ -501,7 +501,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 29,
+          "line": 28,
           "kind": "literal"
         }
       ]
@@ -523,7 +523,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 132,
+          "line": 131,
           "kind": "literal"
         }
       ]
@@ -545,7 +545,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 222,
+          "line": 221,
           "kind": "jsx"
         }
       ]
@@ -556,7 +556,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 284,
+          "line": 283,
           "kind": "jsx"
         }
       ]
@@ -567,7 +567,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 33,
+          "line": 32,
           "kind": "literal"
         }
       ]
@@ -589,7 +589,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 40,
+          "line": 39,
           "kind": "literal"
         }
       ]
@@ -600,7 +600,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 283,
+          "line": 282,
           "kind": "jsx"
         }
       ]
@@ -622,7 +622,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 232,
+          "line": 231,
           "kind": "jsx"
         }
       ]
@@ -846,7 +846,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 444,
+          "line": 443,
           "kind": "jsx"
         }
       ]
@@ -939,7 +939,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 137,
+          "line": 136,
           "kind": "jsx"
         }
       ]
@@ -983,7 +983,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 130,
+          "line": 129,
           "kind": "literal"
         }
       ]
@@ -994,7 +994,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 134,
+          "line": 133,
           "kind": "literal"
         }
       ]
@@ -1005,7 +1005,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 26,
+          "line": 25,
           "kind": "literal"
         }
       ]
@@ -1334,7 +1334,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 372,
+          "line": 371,
           "kind": "literal"
         }
       ]
@@ -1378,7 +1378,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 25,
+          "line": 24,
           "kind": "literal"
         }
       ]
@@ -1697,7 +1697,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 326,
+          "line": 325,
           "kind": "jsx"
         }
       ]
@@ -1741,7 +1741,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 296,
+          "line": 295,
           "kind": "jsx"
         }
       ]
@@ -2257,7 +2257,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 428,
+          "line": 427,
           "kind": "template"
         }
       ]
@@ -2268,7 +2268,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 436,
+          "line": 435,
           "kind": "literal"
         }
       ]
@@ -2477,19 +2477,8 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 257,
+          "line": 256,
           "kind": "jsx"
-        }
-      ]
-    },
-    {
-      "source": "East field",
-      "sha256": "ce49c01a8fcbbb2ec094a8f04f9d16a5f598d9476a3a5580bf39eb9c54594b3c",
-      "references": [
-        {
-          "file": "src/features/product/DemoApp.jsx",
-          "line": 21,
-          "kind": "literal"
         }
       ]
     },
@@ -2652,7 +2641,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 211,
+          "line": 210,
           "kind": "jsx"
         }
       ]
@@ -2663,7 +2652,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 217,
+          "line": 216,
           "kind": "jsx"
         }
       ]
@@ -2674,7 +2663,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 112,
+          "line": 111,
           "kind": "literal"
         }
       ]
@@ -2685,7 +2674,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 304,
+          "line": 303,
           "kind": "literal"
         }
       ]
@@ -2696,7 +2685,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 187,
+          "line": 186,
           "kind": "jsx"
         }
       ]
@@ -2707,7 +2696,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 334,
+          "line": 333,
           "kind": "jsx"
         }
       ]
@@ -2718,7 +2707,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 166,
+          "line": 165,
           "kind": "jsx"
         }
       ]
@@ -2729,7 +2718,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 51,
+          "line": 50,
           "kind": "literal"
         }
       ]
@@ -2740,7 +2729,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 59,
+          "line": 58,
           "kind": "literal"
         }
       ]
@@ -2751,7 +2740,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 291,
+          "line": 290,
           "kind": "jsx"
         }
       ]
@@ -2817,7 +2806,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 371,
+          "line": 370,
           "kind": "literal"
         }
       ]
@@ -2850,7 +2839,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 125,
+          "line": 124,
           "kind": "jsx"
         }
       ]
@@ -3464,7 +3453,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 213,
+          "line": 212,
           "kind": "jsx"
         }
       ]
@@ -3475,7 +3464,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 198,
+          "line": 197,
           "kind": "jsx"
         }
       ]
@@ -3733,7 +3722,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 230,
+          "line": 229,
           "kind": "jsx"
         }
       ]
@@ -3744,7 +3733,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 272,
+          "line": 271,
           "kind": "jsx"
         }
       ]
@@ -3766,7 +3755,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 70,
+          "line": 69,
           "kind": "literal"
         }
       ]
@@ -3788,7 +3777,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 41,
+          "line": 40,
           "kind": "literal"
         }
       ]
@@ -3799,7 +3788,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 329,
+          "line": 328,
           "kind": "jsx"
         }
       ]
@@ -4194,7 +4183,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 405,
+          "line": 404,
           "kind": "jsx"
         }
       ]
@@ -4337,7 +4326,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 32,
+          "line": 31,
           "kind": "literal"
         }
       ]
@@ -4474,7 +4463,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 342,
+          "line": 341,
           "kind": "literal"
         }
       ]
@@ -4485,7 +4474,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 343,
+          "line": 342,
           "kind": "literal"
         }
       ]
@@ -4496,7 +4485,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 344,
+          "line": 343,
           "kind": "literal"
         }
       ]
@@ -4518,7 +4507,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 336,
+          "line": 335,
           "kind": "jsx"
         }
       ]
@@ -4551,7 +4540,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 335,
+          "line": 334,
           "kind": "jsx"
         }
       ]
@@ -4672,7 +4661,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 260,
+          "line": 259,
           "kind": "jsx"
         }
       ]
@@ -5062,17 +5051,6 @@
       ]
     },
     {
-      "source": "North field",
-      "sha256": "2d8fa9e814a3d3c43e371fd26e5590625cdff5d1198e63baf00c5ea40a417da7",
-      "references": [
-        {
-          "file": "src/features/product/DemoApp.jsx",
-          "line": 20,
-          "kind": "literal"
-        }
-      ]
-    },
-    {
       "source": "Not independently verified",
       "sha256": "7f68705c331e06b3d7f5e620c45d4aa540f6ac85430733e3af8efbdb02b60a8d",
       "references": [
@@ -5353,7 +5331,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 360,
+          "line": 359,
           "kind": "jsx"
         }
       ]
@@ -6235,7 +6213,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 350,
+          "line": 349,
           "kind": "jsx"
         }
       ]
@@ -6367,7 +6345,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 39,
+          "line": 38,
           "kind": "literal"
         }
       ]
@@ -6948,7 +6926,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 231,
+          "line": 230,
           "kind": "jsx"
         }
       ]
@@ -6959,7 +6937,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 378,
+          "line": 377,
           "kind": "literal"
         }
       ]
@@ -6970,7 +6948,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 315,
+          "line": 314,
           "kind": "jsx"
         }
       ]
@@ -7145,7 +7123,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 278,
+          "line": 277,
           "kind": "jsx"
         }
       ]
@@ -7266,7 +7244,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 384,
+          "line": 383,
           "kind": "literal"
         }
       ]
@@ -7562,7 +7540,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 383,
+          "line": 382,
           "kind": "literal"
         }
       ]
@@ -7716,7 +7694,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 91,
+          "line": 90,
           "kind": "jsx"
         }
       ]
@@ -7727,17 +7705,17 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 52,
+          "line": 51,
           "kind": "literal"
         },
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 60,
+          "line": 59,
           "kind": "literal"
         },
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 429,
+          "line": 428,
           "kind": "literal"
         }
       ]
@@ -7748,7 +7726,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 400,
+          "line": 399,
           "kind": "jsx"
         }
       ]
@@ -7759,7 +7737,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 34,
+          "line": 33,
           "kind": "literal"
         }
       ]
@@ -7770,7 +7748,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 290,
+          "line": 289,
           "kind": "jsx"
         }
       ]
@@ -7781,7 +7759,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 323,
+          "line": 322,
           "kind": "jsx"
         }
       ]
@@ -7792,7 +7770,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 27,
+          "line": 26,
           "kind": "literal"
         }
       ]
@@ -7803,7 +7781,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 243,
+          "line": 242,
           "kind": "literal"
         }
       ]
@@ -8022,7 +8000,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 43,
+          "line": 42,
           "kind": "literal"
         }
       ]
@@ -8033,7 +8011,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 356,
+          "line": 355,
           "kind": "jsx"
         }
       ]
@@ -8132,7 +8110,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 292,
+          "line": 291,
           "kind": "jsx"
         }
       ]
@@ -8198,7 +8176,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 414,
+          "line": 413,
           "kind": "jsx"
         }
       ]
@@ -8286,7 +8264,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 128,
+          "line": 127,
           "kind": "literal"
         }
       ]
@@ -8318,7 +8296,7 @@
         },
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 218,
+          "line": 217,
           "kind": "jsx"
         },
         {
@@ -8350,7 +8328,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 135,
+          "line": 134,
           "kind": "literal"
         }
       ]
@@ -8372,7 +8350,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 413,
+          "line": 412,
           "kind": "literal"
         }
       ]
@@ -8394,7 +8372,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 308,
+          "line": 307,
           "kind": "jsx"
         }
       ]
@@ -8405,7 +8383,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 144,
+          "line": 143,
           "kind": "jsx"
         }
       ]
@@ -8449,7 +8427,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 377,
+          "line": 376,
           "kind": "literal"
         }
       ]
@@ -8471,7 +8449,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 236,
+          "line": 235,
           "kind": "jsx"
         }
       ]
@@ -8482,7 +8460,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 407,
+          "line": 406,
           "kind": "jsx"
         }
       ]
@@ -8504,7 +8482,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 337,
+          "line": 336,
           "kind": "jsx"
         }
       ]
@@ -8713,7 +8691,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 313,
+          "line": 312,
           "kind": "jsx"
         }
       ]
@@ -8861,7 +8839,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 160,
+          "line": 159,
           "kind": "jsx"
         }
       ]
@@ -8965,7 +8943,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 155,
+          "line": 154,
           "kind": "jsx"
         }
       ]
@@ -9031,7 +9009,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 440,
+          "line": 439,
           "kind": "jsx"
         }
       ]
@@ -9064,7 +9042,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 165,
+          "line": 164,
           "kind": "jsx"
         }
       ]
@@ -9124,7 +9102,7 @@
         },
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 403,
+          "line": 402,
           "kind": "jsx"
         }
       ]
@@ -9145,12 +9123,12 @@
         },
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 174,
+          "line": 173,
           "kind": "jsx"
         },
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 399,
+          "line": 398,
           "kind": "literal"
         }
       ]
@@ -9205,7 +9183,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 36,
+          "line": 35,
           "kind": "literal"
         }
       ]

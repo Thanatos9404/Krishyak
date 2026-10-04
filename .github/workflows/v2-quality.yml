@@ -120,6 +120,16 @@ jobs:
         working-directory: frontend
       - name: Public crawl and orphan-page check
         run: python scripts/audit_product_site.py
+      - name: API and frontend failure diagnostics
+        if: failure()
+        run: |
+          for log in /tmp/v2-api.log /tmp/v2-web.log; do
+            if [ -f "$log" ]; then
+              echo "::group::$log"
+              tail -n 100 "$log"
+              echo "::endgroup::"
+            fi
+          done
       - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
         if: always()
         with:
@@ -128,6 +138,8 @@ jobs:
             output/playwright
             output/product/screenshots
             output/mobile-performance.json
+            /tmp/v2-api.log
+            /tmp/v2-web.log
           retention-days: 7
   container:
     runs-on: ubuntu-latest

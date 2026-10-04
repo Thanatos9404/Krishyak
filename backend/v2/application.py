@@ -1,7 +1,9 @@
 """Attach v2 without breaking public v1 planning routes."""
 
 import asyncio
+from pathlib import Path
 
+from alembic.script import ScriptDirectory
 from fastapi import HTTPException
 from fastapi.responses import JSONResponse
 from sqlalchemy import text
@@ -25,6 +27,9 @@ def install_v2(app, settings=None):
     settings = settings or Settings.from_env()
     app.state.v2_settings = settings
     if settings.enabled:
+        # Read the release's migration head, so adding a migration cannot leave
+        # readiness pinned to an older schema and prevent browser CI startup.
+        schema_head = ScriptDirectory(str(Path(__file__).resolve().parents[1] / "migrations")).get_current_head()
         app.state.v2_engine, app.state.v2_database = make_database(settings)
         app.state.v2_quotas = Quotas(settings)
     app.include_router(router)
@@ -125,7 +130,7 @@ def install_v2(app, settings=None):
         try:
             with app.state.v2_engine.connect() as connection:
                 version = connection.execute(text("SELECT version_num FROM alembic_version")).scalar()
-                if version != "v2_0004":
+                if version != schema_head:
                     raise ValueError("Migration required")
                 connection.execute(text("SELECT PostGIS_Version()"))
                 if settings.deployed:

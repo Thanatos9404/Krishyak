@@ -55,5 +55,9 @@ returns focus to the picker, and Hindi/Urdu persist across Today, Farm, Scan,
 Market, More and Settings after real isolated-development sign-in. Browser
 checks retain their page-error assertions; the fixes do not suppress failures.
 
-The crop follow-up has 832 source strings across all ten packs, with 324 passing
-frontend unit tests. Its full database/browser release gates remain pending.
+The crop follow-up has 830 source strings across all ten packs after retiring
+old demo names, with 324 passing frontend unit tests and 242 backend tests with
+two existing environment/provider skips. All 37 production browser checks pass
+across Chromium, Firefox and WebKit, with two existing CDP-only performance
+skips. Native Hindi/Urdu crop search and stable IDs are included. Semantic
+native-speaker approval remains required.

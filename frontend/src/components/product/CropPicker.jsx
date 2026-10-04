@@ -31,8 +31,8 @@ export function CropPicker({
           aria-describedby={`${id}-results`}
         />
       </label>
-      <label className="v2-label" htmlFor={`${id}-crop`}>
-        {tx("Crop")}
+      <div className="v2-label">
+        <label htmlFor={`${id}-crop`}>{tx("Crop")}</label>
         <select
           id={`${id}-crop`}
           name={name}
@@ -49,7 +49,7 @@ export function CropPicker({
             </option>
           ))}
         </select>
-      </label>
+      </div>
       <p id={`${id}-results`} className="small muted" role="status">
         {matches.length
           ? tx("{{v0}} crops match your search", { v0: matches.length })

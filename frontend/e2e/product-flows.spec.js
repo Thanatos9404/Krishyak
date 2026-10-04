@@ -431,7 +431,11 @@ test("offline reload, idempotent synchronization and logout clears private recor
   await expect(
     page.getByRole("heading", { name: "Today on your farm.", exact: true }),
   ).toBeVisible();
-  await expect(page.getByText(/Saved on this device:/).first()).toBeVisible();
+  // The heading renders before evidence restoration. A real origin outage can
+  // take the API's bounded 20 seconds to fail before IndexedDB is read.
+  await expect(page.getByText(/Saved on this device:/).first()).toBeVisible({
+    timeout: 25000,
+  });
   await page
     .getByRole("button", { name: "Record an update", exact: true })
     .click();

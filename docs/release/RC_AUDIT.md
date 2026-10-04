@@ -44,3 +44,28 @@ First correction verification: 326 tests / 47 frontend suites passed; formatting
 Authenticated Sarvam billing inspection found existing credits available and auto top-up not configured, with no payment history. No credit purchase, paid plan or auto-recharge was enabled. Static generation and tiny live smokes can use the user's existing credits with bounded usage. Official references: [translation model](https://docs.sarvam.ai/api/getting-started/models/sarvam-translate), [billing](https://docs.sarvam.ai/api/platform/billing), [SoilGrids fair-use](https://rest.isric.org/), [Firebase pricing](https://firebase.google.com/pricing), [MSG91 default OTP widget](https://msg91.com/help/sendotp/how-to-integrate-the-new-login-with-otp-widget/msg91-otp-widget-subscription-). Provider selection is still under investigation; no production OTP claim is made.
 
 India phone/area stage: server and client accept Indian ten-digit or formatted +91 numbers and preserve one canonical E.164 identity; foreign and invalid numbers fail validation. Acre input is the default, hectare input is available, and conversion uses 0.40468564224 hectares per acre. Unchanged field edits preserve the original area. No generic bigha conversion is provided. Frontend: 338 tests / 49 suites, formatting, lint and production build passed. Backend: 235 tests passed with two environment-specific skips. All three engines passed sign-in with spaced +91 numbers, onboarding, permissions, observations, crop-cycle and export flows, with the exact 2.5-acre request asserted as 1.0117141056 hectares. Logs: `rc-india-unit.log`, `rc-india-backend.log`, `rc-india-build.log`, `rc-india-onboarding.log` under ignored `output/product/`. These results do not establish completion of onboarding geography, crop selection, localization or deployment.
+
+
+Crop identity and CI reliability stage (4 October 2026): 62 stable IDs preserve
+legacy provider names, separate record/photo/market coverage, and support native
+crop search in all ten pilot languages. Validation passes 324 frontend tests,
+242 backend tests with two existing environment/provider skips, production
+build/formatting, migration round trip, disposable empty database restore and
+37 complete production browser checks with two existing CDP-only performance
+skips. Hindi/Urdu stable crop form values, unsupported photos, ownership,
+revision controls, offline recovery and accessibility are checked. The public
+crawl passes nine SSR pages and 20 resources with no orphans.
+
+The GitHub startup regression was a stale hard-coded migration version;
+readiness now obtains the release migration head and rejects an old database.
+WebKit offline evidence restoration awaits the existing bounded API timeout.
+The chart legend has readable text and the crop select has an exact associated
+label. [Details and local cleanup runner](CI_RELIABILITY.md).
+
+After full local tests finished, the guarded cleanup removed 70 generated fields
+and 55 empty generated farms from `krishyak_v2_e2e`, preserving other fields.
+The separate public demo contains exactly one `demo field` and makes no account
+writes. Retired demo names were removed from the ten packs without provider
+calls; each pack now contains 830 source strings. These results validate this
+stage; provider provisioning, production promotion and native semantic approval
+remain unverified under the broader release requirements.

@@ -189,6 +189,32 @@ test("Hindi and Urdu remain active across authenticated farmer routes", async ({
           () => document.documentElement.scrollWidth <= innerWidth + 1,
         ),
       ).toBe(true);
+      if (route === "/app/farm") {
+        await page
+          .getByRole("button", { name: pack["Add crop cycle"], exact: true })
+          .click();
+        const dialog = page.getByRole("dialog");
+        await dialog.getByRole("searchbox").fill(pack.Tomato);
+        await expect(
+          dialog.getByRole("option", { name: pack.Tomato, exact: true }),
+        ).toHaveCount(1);
+        await dialog
+          .getByLabel(pack.Crop, { exact: true })
+          .selectOption("tomato");
+        await expect(dialog.getByRole("combobox")).toHaveValue("tomato");
+        expect(
+          await dialog
+            .locator("form")
+            .evaluate((form) => new FormData(form).get("crop_id")),
+        ).toBe("tomato");
+        await page.screenshot({
+          path: `../output/product/screenshots/locales/${info.project.name}/crop-search-${code}.png`,
+          fullPage: true,
+        });
+        await dialog
+          .getByRole("button", { name: pack["Close dialog"], exact: true })
+          .click();
+      }
     }
   }
   expect(errors).toEqual([]);

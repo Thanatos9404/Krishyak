@@ -148,6 +148,11 @@ test("public interactions, keyboard dialog, demo isolation and responsive access
       api.push(request.url());
   });
   await page.goto("/demo");
+  const demoFields = page.getByRole("combobox", { name: "Selected field" });
+  await expect(demoFields.locator('option[value="demo-field"]')).toHaveText(
+    "demo field",
+  );
+  await expect(demoFields.locator("option")).toHaveCount(2);
   await expect(
     page.getByRole("heading", { name: "Today on an example farm." }),
   ).toBeVisible();

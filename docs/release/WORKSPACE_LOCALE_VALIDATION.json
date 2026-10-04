@@ -1,5 +1,5 @@
 {
-  "source_sha256": "519f32481eaace3ebbd930cf97d0308d6ac46205b9e84fe4110a1bba367dd006",
+  "source_sha256": "551b0a8635014c4d8914eb940b2d1220989099ff880e7e8307d0e1760cea93f4",
   "languages_checked": [
     "hi",
     "ur",
@@ -15,8 +15,8 @@
   "results": [
     {
       "language": "hi",
-      "strings": 832,
-      "bytes": 127826,
+      "strings": 830,
+      "bytes": 126874,
       "script_letter_fraction": 0.9885,
       "unchanged_english_labels": [],
       "structural_pass": true,
@@ -25,9 +25,9 @@
     },
     {
       "language": "ur",
-      "strings": 832,
-      "bytes": 100615,
-      "script_letter_fraction": 0.9925,
+      "strings": 830,
+      "bytes": 99700,
+      "script_letter_fraction": 0.9924,
       "unchanged_english_labels": [],
       "structural_pass": true,
       "semantic_approval": "not_established",
@@ -35,9 +35,9 @@
     },
     {
       "language": "gu",
-      "strings": 832,
-      "bytes": 123652,
-      "script_letter_fraction": 0.9861,
+      "strings": 830,
+      "bytes": 122703,
+      "script_letter_fraction": 0.986,
       "unchanged_english_labels": [],
       "structural_pass": true,
       "semantic_approval": "not_established",
@@ -45,8 +45,8 @@
     },
     {
       "language": "bn",
-      "strings": 832,
-      "bytes": 133172,
+      "strings": 830,
+      "bytes": 132220,
       "script_letter_fraction": 0.9879,
       "unchanged_english_labels": [],
       "structural_pass": true,
@@ -55,8 +55,8 @@
     },
     {
       "language": "mr",
-      "strings": 832,
-      "bytes": 126968,
+      "strings": 830,
+      "bytes": 126030,
       "script_letter_fraction": 0.9771,
       "unchanged_english_labels": [],
       "structural_pass": true,
@@ -65,8 +65,8 @@
     },
     {
       "language": "kn",
-      "strings": 832,
-      "bytes": 137660,
+      "strings": 830,
+      "bytes": 136711,
       "script_letter_fraction": 0.9878,
       "unchanged_english_labels": [],
       "structural_pass": true,
@@ -75,8 +75,8 @@
     },
     {
       "language": "ta",
-      "strings": 832,
-      "bytes": 150465,
+      "strings": 830,
+      "bytes": 149522,
       "script_letter_fraction": 0.9888,
       "unchanged_english_labels": [],
       "structural_pass": true,
@@ -85,8 +85,8 @@
     },
     {
       "language": "te",
-      "strings": 832,
-      "bytes": 135392,
+      "strings": 830,
+      "bytes": 134434,
       "script_letter_fraction": 0.9865,
       "unchanged_english_labels": [],
       "structural_pass": true,
@@ -95,8 +95,8 @@
     },
     {
       "language": "ml",
-      "strings": 832,
-      "bytes": 146781,
+      "strings": 830,
+      "bytes": 145835,
       "script_letter_fraction": 0.9882,
       "unchanged_english_labels": [],
       "structural_pass": true,
@@ -105,8 +105,8 @@
     },
     {
       "language": "pa",
-      "strings": 832,
-      "bytes": 126903,
+      "strings": 830,
+      "bytes": 125972,
       "script_letter_fraction": 0.9863,
       "unchanged_english_labels": [],
       "structural_pass": true,

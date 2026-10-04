@@ -16,10 +16,7 @@ import { Dialog } from "../../components/product/Dialog";
 import { Timeline } from "../../components/product/Timeline";
 import { Photo } from "../../components/public/Photo";
 
-const FIELDS = [
-  { id: "example-north", name: "North field", area: 1.6 },
-  { id: "example-east", name: "East field", area: 0.8 },
-];
+const FIELDS = [{ id: "demo-field", name: "demo field", area: 1.6 }];
 const ACTIONS = [
   {
     title: "Check the drier corner.",

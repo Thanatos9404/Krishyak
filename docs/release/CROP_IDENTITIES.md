@@ -37,7 +37,18 @@ incremental Sarvam runs used 53 requests and 19,407 submitted characters from
 existing credits. No purchases or billing changes were made. Structural pack
 validation passes; native-speaker semantic approval remains outstanding.
 
-Local frontend validation passes 324 unit tests and the production build.
-Full database and browser verification is required before this change is
-treated as release-validated. The previous browser run was interrupted after
-22 checks; it is not recorded as a completed pass.
+Local validation passes 324 frontend unit tests, formatting and the production
+build. Backend verification passes 242 tests on the dedicated PostGIS test
+database, with two existing environment/provider skips. Migration upgrade,
+downgrade, upgrade and schema comparison pass, along with a disposable empty
+database dump/restore drill. A read-only historical check found 65 known crop
+records and no ID/name mismatches after backfill.
+
+The complete production browser suite passes 37 checks across Chromium,
+Firefox and WebKit with two existing CDP-only performance skips. This includes
+native Hindi/Urdu crop search and stable form identity, record creation/export,
+revision checks, unsupported photo handling, real offline recovery and
+accessibility. The current ten static packs have 830 strings after the old
+demo field names were retired without translation requests.
+See [CI reliability and fixture cleanup](CI_RELIABILITY.md) for the startup,
+accessible-label and offline-restoration regressions addressed during verification.

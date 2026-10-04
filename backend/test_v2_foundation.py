@@ -16,7 +16,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.testclient import TestClient
 from PIL import Image
 from pydantic import ValidationError
-from sqlalchemy import delete, select
+from sqlalchemy import delete, select, text
 
 from db.models import (
     AuthChallenge,
@@ -229,6 +229,18 @@ class FoundationIntegrationTests(unittest.TestCase):
         self.b = TestClient(self.app)
         self.a.headers["Origin"] = ORIGIN
         self.b.headers["Origin"] = ORIGIN
+
+    def test_readiness_accepts_the_migration_head_and_refuses_previous_schema(self):
+        self.assertEqual(self.a.get("/health/ready").status_code, 200)
+        with self.factory.begin() as db:
+            release_head = db.execute(text("SELECT version_num FROM alembic_version")).scalar_one()
+            db.execute(text("UPDATE alembic_version SET version_num = 'v2_0004'"))
+        try:
+            self.assertEqual(self.a.get("/health/ready").status_code, 503)
+        finally:
+            with self.factory.begin() as db:
+                db.execute(text("UPDATE alembic_version SET version_num = :head"), {"head": release_head})
+        self.assertEqual(self.a.get("/health/ready").status_code, 200)
 
     def tearDown(self):
         self.a.close()
