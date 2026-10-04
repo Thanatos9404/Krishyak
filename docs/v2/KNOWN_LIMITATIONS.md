@@ -14,7 +14,8 @@ successes. The owner permitted leaving keys blank; no paid service was enabled.
 | ML | Active release retained; external PlantDoc accuracy 57.21%; field calibration/domain generalization not established |
 | Advice/economics | Draft heuristics and persistence/Monte Carlo estimates; no pesticide dose or guaranteed outcome |
 | Pilot | Infrastructure/records present; real farmer recruitment, consent, inspections and impact study not performed |
-| Languages | Pilot enables English and ten Indian languages: Hindi, Urdu, Gujarati, Bengali, Marathi, Kannada, Tamil, Telugu, Malayalam and Punjabi. Ten workspace packs contain 1,763 strings each and pass structural checks. Other languages are paused; native semantic review is still required. |
+| Languages | English and all 22 scheduled Indian languages are active. Each Indian pack has 1,767 labels and passes script/key/placeholder/glossary and distinct-crop checks. Eight explicit machine-draft corrections resolve observed ambiguities. Native semantic review is still required. |
+| Speech | Private consent/authentication and live synthetic Sarvam probes pass. STT documents 23 tags; Sarvam TTS supports eleven languages including English. Bhashini has no issued credential/approved application and stays disabled. Physical microphone accuracy, matching voices on real phones and public staging are unverified. |
 | Devices/accessibility | Automated browser/Axe/viewport testing; physical Android/iOS and human accessibility review absent |
 | Offline | Device cache is not encrypted; offline logout revokes server session only on reconnection; photos remain online |
 | Scale | Bounded local read test, not high-volume production/soak/image throughput certification |

@@ -1,15 +1,17 @@
-# Krishyak — Field Intelligence
+# Krishyak: Field Intelligence
 
 Private farm records, source-labelled field evidence and decision support for
 Indian farmer pilots. The new farmer workspace starts at `/app/today`; scenario
 planning lives under `/app/more/planning`. Legacy links redirect permanently.
 
-**Release status, 3 October 2026:** the product and public SSR rebuild is on
+**Release status, 4 October 2026:** the product and public SSR rebuild is on
 `feat/krishyak-v2-product-experience-seo`, based on verified v2 engineering.
 See the [product delivery report](docs/product/UI_REBUILD_REPORT.md),
 [frontend migration](docs/product/FRONTEND_MIGRATION.md),
 [SEO report](docs/seo/FINAL_SEO_REPORT.md) and
 [design system](docs/product/DESIGN_SYSTEM.md).
+The [final activation audit](docs/release/FINAL_PRODUCTION_AUDIT.md) distinguishes
+the new language, speech and startup checks from unverified public staging.
 Local PostGIS, Docker, security and restore foundations are documented in
 [the v2 test report](docs/v2/TEST_REPORT.md).
 Public hosting continues its existing deployment. Production v2 activation
@@ -33,11 +35,13 @@ there is no production demo login or fabricated provider data.
 - Installable public PWA shell; optional owner-scoped offline snapshots and
   bounded idempotent observation queue, explicit conflicts and logout cleanup.
 - Farmer Today/Farm/Scan/Market/More screens; on-demand
-  map/chart/planning modules, device-only English readout and written fallback.
+  map/chart/planning modules, matching-language device readout, consent-protected
+  server speech and a written fallback when the selected language has no voice.
 - Existing simulation, fertilizer, market, MSP, weather and 23 legacy language
-  packs preserved. The new product screens use an explicit English fallback;
-  the selected language remains available in the planning tools. Draft pilot
-  translations require human field review before localization is certified.
+  packs preserved. Product screens support all 22 scheduled Indian languages
+  plus English through static, versioned packs. Eight machine-draft crop-label
+  corrections preserve distinct identities. Native and farmer review is required
+  before localization is certified.
 
 Unsafe legacy personal-data endpoints are disabled in deployed environments.
 Public government cards link official information and require verification;
