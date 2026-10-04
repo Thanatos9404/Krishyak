@@ -6,15 +6,15 @@ successes. The owner permitted leaving keys blank; no paid service was enabled.
 
 | Area | Current boundary |
 |---|---|
-| Public deployment | Existing main-branch app remains live; new persistent v2 services are not provisioned there |
+| Public deployment | Existing public app remains live. Feature-branch frontend/API previews build successfully; authenticated API liveness passes, while readiness explicitly reports v2 disabled and public planning only. Persistent farmer services are not provisioned there. |
 | OTP/private storage | Production adapters implemented; real Verify delivery and bucket policy/storage smoke not run |
 | Satellite | Quality/geometry/worker fixtures pass; real CDSE credentials/access and scientific validation absent |
 | Weather | Free public smoke performed; forecasts are model output, commercial license/provider contract unverified |
-| Government | Public information only; no authorized Aadhaar/bank/land/Farmer Registry/AgriStack/Krishi-DSS access |
+| Government | Consent-gated public farm context and optional approved identity boundary are implemented. Local OGD key is configured privately, but no live quote response is verified. IMD/member approval is missing; Bhuvan is unavailable and SoilGrids REST is paused. No authorized Aadhaar/bank/land/Farmer Registry/AgriStack/Krishi-DSS access. |
 | ML | Active release retained; external PlantDoc accuracy 57.21%; field calibration/domain generalization not established |
 | Advice/economics | Draft heuristics and persistence/Monte Carlo estimates; no pesticide dose or guaranteed outcome |
 | Pilot | Infrastructure/records present; real farmer recruitment, consent, inspections and impact study not performed |
-| Languages | Legacy 23 packs retained; v2 English/Hindi core strings, other languages explicit English fallback; new forms need native review |
+| Languages | Pilot enables English and ten Indian languages: Hindi, Urdu, Gujarati, Bengali, Marathi, Kannada, Tamil, Telugu, Malayalam and Punjabi. Ten workspace packs contain 1,763 strings each and pass structural checks. Other languages are paused; native semantic review is still required. |
 | Devices/accessibility | Automated browser/Axe/viewport testing; physical Android/iOS and human accessibility review absent |
 | Offline | Device cache is not encrypted; offline logout revokes server session only on reconnection; photos remain online |
 | Scale | Bounded local read test, not high-volume production/soak/image throughput certification |

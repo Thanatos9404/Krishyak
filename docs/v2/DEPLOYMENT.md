@@ -52,8 +52,9 @@ support transient storage recovery. Do not run `down --volumes` on retained data
 ## Production contract
 
 Use HTTPS same-origin API forwarding so Secure SameSite cookies work reliably.
-`frontend/vercel.json` currently targets the existing Vercel API; replace that
-destination with an approved persistent API before v2 activation there. The
+`frontend/next.config.mjs` forwards same-origin API paths to the existing Vercel
+API in hosted builds. Set `KRISHYAK_API_ORIGIN` to an approved persistent API
+before v2 activation there. The
 frontend build alone needs no provider secret. The API and worker require:
 
 | Settings | Requirement |
@@ -71,6 +72,14 @@ frontend build alone needs no provider secret. The API and worker require:
 
 Missing deployment prerequisites fail startup or leave v2 explicitly disabled;
 there is no production test login. Blank placeholders are retained for the owner.
+The authenticated 4 October feature-branch preview health check returns live,
+but readiness reports `v2: disabled` and `scope: public planning only`. Existing
+production environment names contain no v2 database, Redis, OTP or private
+storage configuration. Preview build success does not establish farmer readiness.
+Use the existing authorized [Vercel CLI curl](https://vercel.com/docs/cli/curl)
+for protected preview checks without disabling deployment protection. Check
+both liveness and readiness; require `v2: enabled` and the current schema before
+admitting farmers. Do not print authorization headers or save them in source.
 The existing free Render service sleeps and has ephemeral application storage;
 it is not a durable database, object bucket or always-on worker. No upgrade was
 purchased. A production operator must approve hosting/provider terms and costs.

@@ -60,7 +60,9 @@ Satellite indices cannot diagnose disease, soil NPK, yield or irrigation dose.
 Farmer-entered soil/outcomes are not independently verified. No measured income
 improvement, government approval or field-validation claim is made.
 
-Missing CDSE, production SMS/storage and mandi credentials remain blank/unavailable.
+Missing CDSE and production SMS/storage credentials remain blank/unavailable.
+The OGD key is configured privately for local use; live mandi quotes remain
+unavailable when the government endpoint does not respond.
 No paid service was activated. [Known limitations](docs/v2/KNOWN_LIMITATIONS.md)
 list live-provider, legal, agronomic, physical-device and pilot release gates.
 
