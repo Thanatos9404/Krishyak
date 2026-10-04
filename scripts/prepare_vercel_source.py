@@ -30,7 +30,7 @@ def prepare(component):
     (stage/'.vercel').mkdir(); shutil.copyfile(link,stage/'.vercel/project.json')
     (stage/'.vercelignore').write_text('.vercel/\n')
     if component=='backend':
-        for needed in ['main.py','requirements.txt','models/active/model.tflite','models/active/class_indices.json','models/active/runtime-verification.json']:
+        for needed in ['main.py','requirements.txt','requirements-v2.txt','models/active/model.tflite','models/active/class_indices.json','models/active/runtime-verification.json']:
             if not (stage/component/needed).is_file(): raise SystemExit(f'Missing committed runtime file: {needed}')
         if (stage/component/'models/active/model.keras').exists(): raise SystemExit('Full Keras artifact must remain outside the serverless package')
     print(json.dumps({'path':str(stage),'source_bytes':size}))

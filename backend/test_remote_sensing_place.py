@@ -8,7 +8,7 @@ from remote_sensing.providers.base import ProviderError
 
 class PlaceTests(unittest.TestCase):
     def setUp(self):
-        self.enabled=patch.dict(os.environ,{'REMOTE_SENSING_PLACE_LOOKUP_ENABLED':'true'});self.enabled.start()
+        self.enabled=patch.dict(os.environ,{'REMOTE_SENSING_PLACE_LOOKUP_ENABLED':'true','FARM_CONTEXT_NOMINATIM_ENABLED':'false'});self.enabled.start()
     def tearDown(self):
         self.enabled.stop()
     def service(self, handler, clock=lambda:10):
