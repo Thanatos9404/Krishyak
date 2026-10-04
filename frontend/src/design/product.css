@@ -786,6 +786,25 @@ html[dir="rtl"] .india-location-picker select,
 html[dir="rtl"] .crop-picker select {
   background-position: left 15px center;
 }
+.form-voice-entry {
+  margin-block: 16px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface, #fff);
+  min-width: 0;
+  max-width: 100%;
+}
+.form-voice-entry strong {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.form-voice-entry textarea {
+  width: 100%;
+  min-width: 0;
+}
 .market-filters .india-location-picker .v2-label {
   margin-top: 12px;
 }
@@ -1558,4 +1577,14 @@ html[dir="rtl"] .workspace-field-picker select {
   .weather-source {
     margin-inline-start: 0;
   }
+}
+.context-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+.context-source {
+  border-block-start: 1px solid var(--line);
+  padding-block: 0.75rem;
+  overflow-wrap: anywhere;
 }

@@ -4,6 +4,7 @@ import { farmApi } from "../../features/farms/api";
 import { clearOwner } from "../../features/farms/offline";
 import { useProductLocale } from "../../features/product/ProductLocale";
 import { deferredFeature } from "../../features/product/deferredProductFeature";
+import { GovernmentLogin } from "./GovernmentLogin";
 const AccountDetails = deferredFeature(
   () => import("../../features/farms/AccountDetails"),
 );
@@ -11,6 +12,21 @@ const PendingPanel = deferredFeature(
   () => import("../../features/farms/PendingPanel"),
 );
 const PURPOSES = [
+  [
+    "government_identity",
+    "Allow optional government sign-in",
+    "Link a verified government account to my existing phone account. No documents or benefit approval are requested.",
+  ],
+  [
+    "speech_processing",
+    "Allow voice processing for form entry",
+    "Audio is sent to the configured speech service. Krishyak does not save the audio. You can turn this off in permissions.",
+  ],
+  [
+    "government_integration",
+    "Load public agricultural context",
+    "Use my chosen area for public weather, soil estimates, markets and scheme information. No ownership or benefit approval is inferred.",
+  ],
   [
     "location_processing",
     "Use my field location",
@@ -57,6 +73,7 @@ export function SettingsView({ workspace: w }) {
       </header>
       <section className="product-card">
         <h2>{tx("Privacy & permissions")}</h2>
+        <GovernmentLogin workspace={w} link />
         <p>
           {tx(
             "Turn on only the services you want to use. Research participation is optional.",

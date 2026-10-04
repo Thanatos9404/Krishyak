@@ -4,7 +4,7 @@ import { getSpeechCapabilities, speechError, transcribeAudio } from '../api/spee
 export const STATUS = { IDLE: 'idle', LISTENING: 'listening', PROCESSING: 'processing', ERROR: 'error', NO_SUPPORT: 'no_support' };
 const canRecord = () => typeof navigator !== 'undefined' && !!navigator.mediaDevices?.getUserMedia && typeof MediaRecorder !== 'undefined';
 
-export default function useSarvamRecognition({ speechCode = 'en-IN', errorMessages = {} } = {}) {
+export default function useSarvamRecognition({ speechCode = 'en-IN', errorMessages = {}, transport } = {}) {
   const [status, setStatus] = useState(STATUS.IDLE);
   const [transcript, setTranscript] = useState('');
   const [error, setError] = useState(null);
@@ -36,11 +36,11 @@ export default function useSarvamRecognition({ speechCode = 'en-IN', errorMessag
     setTranscript('');
     setStatus(STATUS.IDLE);
     if (!canRecord()) { setSupported(false); return () => { alive = false; cancel(); }; }
-    getSpeechCapabilities().then((caps) => {
+    (transport?.capabilities || getSpeechCapabilities)().then((caps) => {
       if (alive) setSupported(caps.configured && caps.stt_languages.includes(speechCode.split('-')[0]));
     }).catch(() => { if (alive) setSupported(false); });
     return () => { alive = false; cancel(); };
-  }, [speechCode, cancel]);
+  }, [speechCode, cancel, transport]);
 
   const stopListening = useCallback(() => {
     clearTimeout(timer.current);
@@ -87,7 +87,7 @@ export default function useSarvamRecognition({ speechCode = 'en-IN', errorMessag
         setStatus(STATUS.PROCESSING);
         const controller = new AbortController(); request.current = controller;
         try {
-          const result = await transcribeAudio(new Blob(chunks, { type: mime }), code, controller.signal);
+          const result = await (transport?.transcribe || transcribeAudio)(new Blob(chunks, { type: mime }), code, controller.signal);
           if (sequence.current !== id) return;
           if (!result.transcript?.trim()) throw new Error('No speech detected.');
           setTranscript(result.transcript);
@@ -113,7 +113,7 @@ export default function useSarvamRecognition({ speechCode = 'en-IN', errorMessag
         : (messages.couldNotStart || 'Could not record audio. Please use text input.'));
       return false;
     }
-  }, [cancel, isSupported, stopListening]);
+  }, [cancel, isSupported, stopListening, transport]);
 
   const resetTranscript = useCallback(() => { cancel(); setTranscript(''); setError(null); setStatus(STATUS.IDLE); }, [cancel]);
   const setManualTranscript = useCallback((text) => { cancel(); setTranscript(text); setError(null); setStatus(STATUS.IDLE); }, [cancel]);

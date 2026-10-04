@@ -12,6 +12,9 @@ import {
 import { Brand } from "../public/Brand";
 import { ProductLanguageChooser } from "./ProductLanguageChooser";
 import { useProductLocale } from "../../features/product/ProductLocale";
+import { useState } from "react";
+import { FormVoiceInput } from "./FormVoiceInput";
+import { voiceEligible } from "../../features/product/voiceValues";
 const NAV = [
   ["/app/today", Sun, "Today"],
   ["/app/farm", Map, "Farm"],
@@ -27,6 +30,7 @@ export function ProductShell({
   institution = false,
 }) {
   const { tx, info } = useProductLocale();
+  const [voiceTarget, setVoiceTarget] = useState(null);
   const nav = (location) => (
     <nav
       className={`product-nav ${location}`}
@@ -159,6 +163,9 @@ export function ProductShell({
           className="workspace-content"
           lang={info.speechCode}
           dir={info.direction}
+          onFocusCapture={(event) => {
+            if (voiceEligible(event.target)) setVoiceTarget(event.target);
+          }}
         >
           {w.status?.development_identity && (
             <p role="status" className="status-panel">
@@ -179,6 +186,9 @@ export function ProductShell({
             </p>
           )}
           {children}
+          {!demo && !institution && w.farmer && (
+            <FormVoiceInput target={voiceTarget} workspace={w} />
+          )}
         </main>
         <footer className="workspace-footer">
           {tx("Field context supports your judgement. Verify before acting.")}{" "}

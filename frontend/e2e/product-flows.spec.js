@@ -440,6 +440,96 @@ test("farmer routes, zoom, reduced motion and accessible navigation", async ({},
   await page.setViewportSize({ width: 1440, height: 900 });
 });
 
+test("consent-aware public context, denied GPS and reviewed voice remain usable on mobile", async () => {
+  test.setTimeout(90000);
+  await page.goto("/app/more/settings");
+  const permission = page.getByRole("checkbox", {
+    name: /Load public agricultural context/,
+  });
+  if (!(await permission.isChecked())) await permission.check();
+  await expect(permission).toBeEnabled();
+  const gps = page.getByRole("checkbox", { name: /Use my field location/ });
+  if (!(await gps.isChecked())) await gps.check();
+  await expect(gps).toBeEnabled();
+  await page.setViewportSize({ width: 320, height: 740 });
+  await page.goto("/app/farm");
+  const card = page.locator(".farm-context-card");
+  await card
+    .getByRole("combobox", { name: "State or union territory", exact: true })
+    .selectOption("8");
+  await card
+    .getByRole("combobox", { name: "District", exact: true })
+    .selectOption("102");
+  await card
+    .getByRole("combobox", { name: "Crop", exact: true })
+    .selectOption("wheat");
+  await card
+    .getByRole("button", { name: "Load area context", exact: true })
+    .click();
+  await expect(card.getByText(/Detected area: Rajasthan/)).toBeVisible({
+    timeout: 35000,
+  });
+  await expect(
+    card.getByText("Village codes and land ownership have not been verified.", {
+      exact: true,
+    }),
+  ).toBeVisible();
+  expect(
+    await page.evaluate(
+      () => document.documentElement.scrollWidth <= innerWidth,
+    ),
+  ).toBe(true);
+  await page.evaluate(() => {
+    Object.defineProperty(navigator, "geolocation", {
+      configurable: true,
+      value: {
+        getCurrentPosition: (_success, failure) => failure({ code: 1 }),
+      },
+    });
+  });
+  await card
+    .getByRole("button", { name: "Use device location", exact: true })
+    .click();
+  await expect(card.getByRole("alert")).toContainText(
+    "Choose your area manually",
+  );
+  await expect(
+    card.getByRole("button", { name: "Load area context", exact: true }),
+  ).toBeEnabled();
+  await page.evaluate(() => {
+    window.SpeechRecognition = class {
+      start() {
+        queueMicrotask(() => {
+          this.onresult?.({ results: [[{ transcript: "Wheat" }]] });
+          this.onend?.();
+        });
+      }
+      abort() {}
+      stop() {
+        this.onend?.();
+      }
+    };
+  });
+  await card
+    .getByRole("searchbox", { name: "Search crops", exact: true })
+    .focus();
+  const voice = card.locator(".form-voice-entry");
+  await voice.getByRole("button", { name: "Speak", exact: true }).click();
+  await expect(
+    voice.getByLabel("Review spoken text", { exact: true }),
+  ).toHaveValue("Wheat");
+  await expect(
+    card.getByRole("searchbox", { name: "Search crops", exact: true }),
+  ).toHaveValue("");
+  await voice
+    .getByRole("button", { name: "Use this value", exact: true })
+    .click();
+  await expect(
+    card.getByRole("searchbox", { name: "Search crops", exact: true }),
+  ).toHaveValue("Wheat");
+  await page.setViewportSize({ width: 1440, height: 900 });
+});
+
 test("offline reload, idempotent synchronization and logout clears private records", async () => {
   // Real origin outages, SW reload, recovery and deferred logout are separate
   // bounded operations; allow Windows WebKit enough time for the whole journey.

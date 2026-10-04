@@ -1,5 +1,6 @@
 import { useProductLocale } from "../../features/product/ProductLocale";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { FarmContextCard } from "./FarmContextCard";
 import { SlidersHorizontal, Calculator } from "lucide-react";
 import { I18nProvider, useTranslation } from "../../i18n";
 import { useSimulation } from "../../features/product/useSimulation";
@@ -15,17 +16,26 @@ const RecommendationPanel = deferredFeature(
   () => import("../RecommendationPanel"),
 );
 const VoiceInputModal = deferredFeature(() => import("../VoiceInputModal"));
-export function PlanningView() {
+export function PlanningView({ workspace }) {
   const { language } = useProductLocale();
   return (
     <I18nProvider preferredLanguage={language}>
-      <PlanningContent />
+      <PlanningContent workspace={workspace} />
     </I18nProvider>
   );
 }
-function PlanningContent() {
+function PlanningContent({ workspace: w }) {
   const { tx } = useProductLocale();
-  const simulation = useSimulation(),
+  const [contextSelection, setContextSelection] = useState(null);
+  const owner = w?.farmer?.id,
+    publicAllowed = w?.consents?.includes("government_integration"),
+    analysisAllowed = w?.consents?.includes("agronomic_analysis"),
+    gpsAllowed = w?.consents?.includes("location_processing");
+  useEffect(
+    () => setContextSelection(null),
+    [owner, publicAllowed, analysisAllowed, gpsAllowed],
+  );
+  const simulation = useSimulation({ contextSelection }),
     { crops, soilTypes } = useFarmCatalog(),
     { language } = useTranslation();
   const [view, setView] = useState("summary"),
@@ -66,6 +76,35 @@ function PlanningContent() {
           "These are scenario assumptions, not measurements of your field. Defaults are illustrative. Simulated profit improvements are not measured real-world gains.",
         )}
       </p>
+      {w?.farmer && (
+        <FarmContextCard
+          workspace={w}
+          onReviewed={(selection) => {
+            simulation.setFormData((previous) => ({
+              ...previous,
+              crop: selection.crop_name,
+              ...(selection.price !== null
+                ? { current_market_price: selection.price }
+                : {}),
+            }));
+            setContextSelection(selection);
+          }}
+        />
+      )}
+      {contextSelection && (
+        <p className="status-panel">
+          {tx(
+            "Reviewed public context will accompany this scenario. Seasonal rainfall and fertilizer inputs remain your assumptions.",
+          )}{" "}
+          <button
+            type="button"
+            className="button text"
+            onClick={() => setContextSelection(null)}
+          >
+            {tx("Clear context selection")}
+          </button>
+        </p>
+      )}
       {simulation.saved && (
         <p className="status-panel" role="status">
           {tx(
@@ -75,7 +114,7 @@ function PlanningContent() {
       )}
       {simulation.error && (
         <p role="alert" className="error-panel">
-          {simulation.error}{" "}
+          {tx(simulation.error)}{" "}
           <button className="button text" onClick={run}>
             {tx("Retry simulation")}
           </button>
@@ -103,7 +142,7 @@ function PlanningContent() {
                 disabled={id !== "summary" && !simulation.data}
                 onClick={() => setView(id)}
               >
-                {title}
+                {tx(title)}
               </button>
             ))}
           </div>

@@ -5,6 +5,7 @@ import { farmApi } from "../../features/farms/api";
 import { revokeDeviceSession } from "../../features/product/useAccountSession";
 import { Photo } from "../public/Photo";
 import { normalizeIndianMobile } from "../../features/product/india";
+import { GovernmentLogin } from "./GovernmentLogin";
 export function SignIn({ workspace: w }) {
   const { tx } = useProductLocale();
   const [mobile, setMobile] = useState(""),
@@ -20,6 +21,7 @@ export function SignIn({ workspace: w }) {
         </span>
       </div>
       <section className="signin-card">
+        <GovernmentLogin workspace={w} />
         <span className="eyebrow">{tx("YOUR FARM WORKSPACE")}</span>
         <h1>{tx("A good day starts with a clearer picture.")}</h1>
         <p>

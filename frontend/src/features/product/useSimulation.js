@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import farmingApi from "../../api/farmingApi";
+import { farmApi } from "../farms/api";
 import {
   readSimulationCache,
   sameFarmInputs,
@@ -22,19 +23,29 @@ export const DEFAULT_SIMULATION = {
   current_market_price: 2500,
   seed_quantity_kg: 100,
 };
-export function useSimulation() {
+export function useSimulation({ contextSelection = null } = {}) {
   const [formData, setFormData] = useState(DEFAULT_SIMULATION),
     [loading, setLoading] = useState(false),
     [data, setData] = useState(null),
     [error, setError] = useState(""),
     [saved, setSaved] = useState(false);
   const sequence = useRef(0),
+    privateRequest = useRef(null),
     current = useRef(formData),
     inputsForResult = useRef(null);
   current.current = formData;
+  useEffect(() => {
+    sequence.current++;
+    privateRequest.current?.abort();
+    setLoading(false);
+    setError("");
+    setData(null);
+    setSaved(false);
+  }, [contextSelection]);
   useEffect(
     () => () => {
       sequence.current++;
+      privateRequest.current?.abort();
     },
     [],
   );
@@ -76,6 +87,39 @@ export function useSimulation() {
     setError("");
     setSaved(false);
     try {
+      if (contextSelection) {
+        if (
+          contextSelection.crop_name !== inputs.crop ||
+          (contextSelection.price !== null &&
+            contextSelection.price !== inputs.current_market_price)
+        )
+          throw new Error(
+            "Review the context again after changing crop or price assumptions.",
+          );
+        const controller = new AbortController();
+        privateRequest.current = controller;
+        const result = await farmApi("/farm-context/planning", {
+          method: "POST",
+          retry: false,
+          timeoutMs: 70000,
+          signal: controller.signal,
+          body: {
+            context: contextSelection.context,
+            farming_input: inputs,
+            market_quote_index: contextSelection.market_quote_index,
+            expected_quote_id: contextSelection.expected_quote_id,
+            num_simulations: 300,
+          },
+        });
+        if (!valid()) return;
+        if (!result?.success || !result.data)
+          throw new Error(
+            "The simulation response was incomplete. Please retry.",
+          );
+        inputsForResult.current = inputs;
+        setData(result.data);
+        return;
+      }
       const [simulation, comparison, recommendations] = await Promise.all([
         farmingApi.simulate(inputs, 500),
         farmingApi.compareScenarios(inputs, 500),
@@ -114,6 +158,13 @@ export function useSimulation() {
       }
     } catch (problem) {
       if (!valid()) return;
+      if (contextSelection) {
+        setError(
+          problem.message ||
+            "The context scenario could not be completed. Check permissions and retry.",
+        );
+        return;
+      }
       let cache = null;
       try {
         cache = readSimulationCache(

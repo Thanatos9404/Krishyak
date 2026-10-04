@@ -8,6 +8,7 @@ import { Dialog } from "./Dialog";
 import { AreaInput } from "./AreaInput";
 import { CropPicker } from "./CropPicker";
 import { cropLabel } from "../../features/product/crops";
+import { FarmContextCard } from "./FarmContextCard";
 import { toHectares, formatArea } from "../../features/product/india";
 const FieldMap = deferredFeature(() => import("../FieldMap"));
 const PlotHealth = deferredFeature(
@@ -218,6 +219,7 @@ export function FarmView({ workspace: w, plotId }) {
           )}
         </p>
       )}
+      {!w.demo && w.farmer && <FarmContextCard workspace={w} />}
       <div className="farm-layout">
         <section className="field-list product-card">
           <div className="section-heading">

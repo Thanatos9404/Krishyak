@@ -20,14 +20,26 @@ export async function restoreFarmSession() {
 
 export async function farmApi(
   path,
-  { method = "GET", body, retry = true, binary = false, signal } = {},
+  {
+    method = "GET",
+    body,
+    retry = true,
+    binary = false,
+    signal,
+    timeoutMs = 20000,
+  } = {},
 ) {
   const controller = new AbortController();
   let timedOut = false;
-  const timeout = setTimeout(() => {
-    timedOut = true;
-    controller.abort();
-  }, 20000);
+  const timeout = setTimeout(
+    () => {
+      timedOut = true;
+      controller.abort();
+    },
+    Number.isFinite(timeoutMs)
+      ? Math.min(70000, Math.max(1000, timeoutMs))
+      : 20000,
+  );
   const endRead = method === "GET" ? cancelReadsOnExit(controller) : null;
   const cancel = () => controller.abort();
   if (signal?.aborted) cancel();
@@ -87,7 +99,14 @@ export async function farmApi(
           refreshPromise = null;
         });
     await refreshPromise;
-    return farmApi(path, { method, body, retry: false, binary, signal });
+    return farmApi(path, {
+      method,
+      body,
+      retry: false,
+      binary,
+      signal,
+      timeoutMs,
+    });
   }
   if (response.ok && binary) return result;
   if (!response.ok) {

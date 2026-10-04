@@ -76,7 +76,8 @@ function Workspace() {
         <p>{tx("Checking the account and saved records.")}</p>
       </div>
     );
-  else if (pathname === "/app/more/planning") content = <PlanningView />;
+  else if (pathname === "/app/more/planning")
+    content = <PlanningView workspace={w} />;
   else if (!w.farmer) content = <SignIn workspace={w} />;
   else if (pathname === "/institution")
     content = ["admin", "organisation_admin", "agronomist"].includes(
