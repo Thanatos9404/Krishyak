@@ -380,6 +380,39 @@ class PasskeyIntegrationTests(unittest.TestCase):
         self.assertEqual(done.status_code, 200, done.text)
         self.assertEqual(done.json()["schema"], done.json()["head"])
 
+    def test_empty_satellite_answer_is_retried_not_reported_complete(self):
+        from v2.worker import run_once
+
+        self.register()
+        for purpose in ("location_processing", "satellite_processing"):
+            self.client.post(
+                "/api/v2/consents", json={"purpose": purpose, "granted": True, "policy_version": "2026-10-03"}
+            )
+        farm = self.client.post("/api/v2/farms", json={"operation_id": str(uuid4()), "name": "Synthetic"}).json()
+        boundary = {
+            "type": "Polygon",
+            "coordinates": [[[75.787, 26.912], [75.788, 26.912], [75.788, 26.913], [75.787, 26.913], [75.787, 26.912]]],
+        }
+        plot = self.client.post(
+            "/api/v2/plots",
+            json={"operation_id": str(uuid4()), "farm_id": farm["id"], "name": "Mapped", "boundary": boundary},
+        ).json()
+        service = Mock()
+        service.execute.return_value = ({"observations": [], "provenance": {}}, False)
+        service.status.return_value = {"status": "ready"}
+        with patch("remote_sensing.router.get_service", return_value=service):
+            queued = self.client.post(
+                f"/api/v2/plots/{plot['id']}/remote-sensing/refresh",
+                json={"operation_id": str(uuid4()), "index": "ndvi"},
+            )
+        self.assertEqual(queued.status_code, 202, queued.text)
+        with self.factory.begin() as db:
+            db.execute(Job.__table__.update().values(available_at=Job.created_at))
+        run_once(self.factory, self.settings, service)
+        with self.factory() as db:
+            job = db.scalar(select(Job))
+            self.assertEqual((job.status, job.error_code), ("retry", "no_observations"))
+
     def test_request_mode_readiness_fails_when_queue_is_stranded(self):
         from datetime import timedelta
 

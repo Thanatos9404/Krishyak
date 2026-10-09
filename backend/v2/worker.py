@@ -193,6 +193,10 @@ def run_once(factory, settings, service=None):
             ):
                 job.status = "cancelled"
                 return True
+            if not result.get("observations"):
+                # A multi-week window always has intervals (clear or not). An
+                # empty answer is a provider anomaly: retry, never report done.
+                raise ProviderError("no_observations", "Satellite provider returned no intervals", 503)
             import hashlib
             import json
 

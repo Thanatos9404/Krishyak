@@ -181,7 +181,10 @@ test("a live Copernicus job is drained by the serverless worker", async () => {
     await page.waitForTimeout(5000);
   }
   expect(latest.latest_job.status).toBe("completed");
-  expect(latest.items.length).toBeGreaterThan(0);
+  expect(
+    latest.items.length,
+    JSON.stringify({ job: latest.latest_job, status: latest.status }),
+  ).toBeGreaterThan(0);
 });
 
 test("market page answers honestly for the farmer's crop and district", async () => {
