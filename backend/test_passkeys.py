@@ -368,6 +368,18 @@ class PasskeyIntegrationTests(unittest.TestCase):
             self.client.post(f"/api/v2/plots/{plot.json()['id']}/weather/refresh", json={"operation_id": str(uuid4())})
         self.assertEqual(captured, {"lat": 26.91, "lon": 75.79})
 
+    def test_http_migration_is_hidden_unless_enabled_and_authorized(self):
+        auth = {"Authorization": f"Bearer {SECRET}"}
+        self.assertEqual(self.client.post("/api/v2/internal/migrate", headers=auth).status_code, 404)
+        with patch.dict(
+            os.environ,
+            {"V2_HTTP_MIGRATIONS": "true", "V2_MIGRATION_DATABASE_URL": os.environ["V2_TEST_DATABASE_URL"]},
+        ):
+            self.assertEqual(self.client.post("/api/v2/internal/migrate").status_code, 404)
+            done = self.client.post("/api/v2/internal/migrate", headers=auth)
+        self.assertEqual(done.status_code, 200, done.text)
+        self.assertEqual(done.json()["schema"], done.json()["head"])
+
     def test_request_mode_readiness_fails_when_queue_is_stranded(self):
         from datetime import timedelta
 
@@ -405,3 +417,23 @@ class PasskeyIntegrationTests(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class ProviderUrlTests(unittest.TestCase):
+    def test_neon_and_upstash_standard_variables_are_accepted(self):
+        env = {
+            "DATABASE_URL": "postgresql://user:pw@ep-x-pooler.ap-southeast-1.aws.neon.tech/neondb?sslmode=require",
+            "DATABASE_URL_UNPOOLED": "postgres://user:pw@ep-x.ap-southeast-1.aws.neon.tech/neondb?sslmode=require",
+            "KV_URL": "rediss://default:pw@x.upstash.io:6379",
+            "V2_DATABASE_URL": "",
+            "V2_MIGRATION_DATABASE_URL": "",
+            "V2_REDIS_URL": "",
+        }
+        with patch.dict(os.environ, env):
+            from v2.settings import migration_url_from_env
+
+            settings = Settings.from_env()
+            self.assertTrue(settings.database_url.get_secret_value().startswith("postgresql+psycopg://"))
+            self.assertIn("-pooler.", settings.database_url.get_secret_value())
+            self.assertEqual(settings.redis_url.get_secret_value(), env["KV_URL"])
+            self.assertTrue(migration_url_from_env().startswith("postgresql+psycopg://user:pw@ep-x.ap-"))

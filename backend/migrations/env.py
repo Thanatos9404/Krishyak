@@ -1,13 +1,12 @@
 """Migration URL comes from environment; never checked into Git or printed."""
 
-import os
-
 from alembic import context
-from sqlalchemy import create_engine, pool
+from sqlalchemy import create_engine, pool, text
 
 from db.models import Base
+from v2.settings import migration_url_from_env
 
-url = os.environ["V2_DATABASE_URL"]
+url = migration_url_from_env()
 if not url.startswith("postgresql+psycopg://"):
     raise ValueError("Migrations require PostgreSQL/PostGIS")
 
@@ -28,4 +27,6 @@ else:
     with engine.connect() as connection:
         context.configure(connection=connection, target_metadata=Base.metadata, include_object=include_object)
         with context.begin_transaction():
+            # Concurrent deploys or triggers wait instead of racing DDL.
+            connection.execute(text("SELECT pg_advisory_xact_lock(4207150823)"))
             context.run_migrations()

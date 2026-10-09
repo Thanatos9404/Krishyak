@@ -8,6 +8,28 @@ from urllib.parse import parse_qs, urlsplit
 from pydantic import BaseModel, ConfigDict, Field, SecretStr, model_validator
 
 
+def psycopg_url(value):
+    """Accept provider-standard URLs (Neon, Vercel Postgres) for the psycopg driver."""
+    value = (value or "").strip()
+    for prefix in ("postgres://", "postgresql://"):
+        if value.startswith(prefix):
+            return "postgresql+psycopg://" + value[len(prefix) :]
+    return value
+
+
+def database_url_from_env():
+    return os.getenv("V2_DATABASE_URL") or psycopg_url(os.getenv("DATABASE_URL", ""))
+
+
+def migration_url_from_env():
+    """Migrations use a direct connection; transaction poolers break DDL locks."""
+    return (
+        os.getenv("V2_MIGRATION_DATABASE_URL")
+        or psycopg_url(os.getenv("DATABASE_URL_UNPOOLED", ""))
+        or database_url_from_env()
+    )
+
+
 class Settings(BaseModel):
     model_config = ConfigDict(extra="forbid")
     enabled: bool = False
@@ -106,7 +128,7 @@ class Settings(BaseModel):
             enabled=os.getenv("KRISHYAK_V2_ENABLED", "false").lower() == "true",
             environment=os.getenv("ENVIRONMENT", "production" if hosted else "development"),
             hosted=hosted,
-            database_url=os.getenv("V2_DATABASE_URL", ""),
+            database_url=database_url_from_env(),
             auth_secret=os.getenv("V2_AUTH_SECRET", ""),
             origins=[x.strip() for x in os.getenv("CORS_ORIGINS", "http://localhost:3000").split(",") if x.strip()],
             otp_provider=os.getenv("V2_OTP_PROVIDER", "disabled"),
@@ -120,7 +142,8 @@ class Settings(BaseModel):
             s3_endpoint=os.getenv("V2_S3_ENDPOINT", ""),
             blob_token=os.getenv("BLOB_READ_WRITE_TOKEN", ""),
             passkey_enabled=os.getenv("V2_PASSKEY_ENABLED", "true").lower() == "true",
-            redis_url=os.getenv("V2_REDIS_URL", ""),
+            # Upstash on Vercel provides KV_URL / REDIS_URL (rediss://).
+            redis_url=os.getenv("V2_REDIS_URL") or os.getenv("KV_URL") or os.getenv("REDIS_URL", ""),
             image_retention_days=os.getenv("V2_IMAGE_RETENTION_DAYS") or 365,
             audit_retention_days=os.getenv("V2_AUDIT_RETENTION_DAYS") or 180,
             satellite_schedule_enabled=os.getenv("V2_SATELLITE_SCHEDULE_ENABLED", "false").lower() == "true",
