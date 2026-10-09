@@ -48,8 +48,8 @@ jobs:
       - run: pip install -r backend/requirements-dev.txt
       - name: Static and formatting checks
         run: |
-          ruff check backend/v2 backend/db backend/repositories backend/migrations backend/test_v2_foundation.py
-          ruff format --check backend/v2 backend/db backend/repositories backend/migrations backend/test_v2_foundation.py
+          ruff check backend/v2 backend/db backend/repositories backend/migrations backend/test_v2_foundation.py backend/test_passkeys.py backend/test_market_prices.py backend/test_disease_guidance.py backend/test_usage_controls.py backend/security.py
+          ruff format --check backend/v2 backend/db backend/repositories backend/migrations backend/test_v2_foundation.py backend/test_passkeys.py backend/test_market_prices.py backend/test_disease_guidance.py backend/test_usage_controls.py
           bandit -r backend/v2 backend/db backend/repositories
       - name: Migration round trip on disposable database
         working-directory: backend
@@ -70,7 +70,7 @@ jobs:
           python scripts/i18n/validate-workspace.py
   frontend-and-browsers:
     runs-on: ubuntu-24.04
-    timeout-minutes: 25
+    timeout-minutes: 35
     services:
       postgres:
         image: postgis/postgis:17-3.5
@@ -120,7 +120,7 @@ jobs:
           cd ../frontend
           npm start > /tmp/v2-web.log 2>&1 &
           python ../scripts/wait_for_v2.py
-      - name: Chromium, Firefox and WebKit E2E, mobile and accessibility
+      - name: Chromium, Android-profile passkeys, Firefox and WebKit E2E, accessibility
         run: npm run test:e2e
         working-directory: frontend
       - name: Public crawl and orphan-page check

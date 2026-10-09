@@ -51,53 +51,59 @@ support transient storage recovery. Do not run `down --volumes` on retained data
 
 ## Production contract
 
-Use HTTPS same-origin API forwarding so Secure SameSite cookies work reliably.
-`frontend/next.config.mjs` forwards same-origin API paths to the existing Vercel
-API in hosted builds. Set `KRISHYAK_API_ORIGIN` to an approved persistent API
-before v2 activation there. The
-frontend build alone needs no provider secret. The API and worker require:
+Hosting is two Vercel projects: `krishyak` (Next.js, frontend) and `krishyak-api`
+(FastAPI, region `sin1` next to the database). The frontend middleware
+(`frontend/src/proxy.js`) forwards `/api/v2/*` and `/api/public/*` same-origin to
+`KRISHYAK_API_ORIGIN`, so session cookies stay first-party. It adds a 2-minute
+HMAC-signed `x-krishyak-client` header with the farmer's address (trusted by
+the API only with the shared `KRISHYAK_PROXY_SECRET`) and, for protected
+previews, the `x-vercel-protection-bypass` header from server configuration.
 
-| Settings | Requirement |
+| Settings (API) | Requirement |
 |---|---|
-| `ENVIRONMENT`, `KRISHYAK_V2_ENABLED` | `production`, explicit `true` after provisioning |
-| `SECRET_KEY`, `V2_AUTH_SECRET` | Separate generated server secrets |
-| `V2_DATABASE_URL` | Postgres psycopg URL with TLS, PostGIS/btree_gist, migrated schema |
-| `CORS_ORIGINS` | Exact HTTPS frontend origins; no wildcard |
-| `V2_REDIS_URL` | Authenticated TLS `rediss://` Redis |
-| `V2_OTP_PROVIDER`, `TWILIO_*` | Configured Verify service; no development identities |
-| `V2_STORAGE_PROVIDER`, `V2_S3_BUCKET`, optional endpoint | Private S3-compatible bucket and least-privilege SDK credential chain |
-| Retention | `V2_IMAGE_RETENTION_DAYS`, `V2_AUDIT_RETENTION_DAYS` approved by operator |
-| Optional satellite | `REMOTE_SENSING_ENABLED`, `CDSE_CLIENT_ID/SECRET`; scheduling separately opt-in |
-| Optional markets/speech | `DATA_GOV_IN_API_KEY`, `SARVAM_API_KEY`; do not activate paid usage without budget approval |
+| `ENVIRONMENT`, `KRISHYAK_V2_ENABLED` | `production` (or `staging`), explicit `true` after provisioning |
+| `SECRET_KEY`, `V2_AUTH_SECRET`, `CRON_SECRET`, `KRISHYAK_PROXY_SECRET` | Separate generated secrets (32+ characters) |
+| `V2_DATABASE_URL` (or Neon's `DATABASE_URL`) | TLS Postgres with PostGIS/btree_gist and the migrated schema; the pooled URL for the API; migrations use `V2_MIGRATION_DATABASE_URL` or `DATABASE_URL_UNPOOLED` (direct) under an advisory lock |
+| `CORS_ORIGINS` | Exact HTTPS frontend origins; each is also a passkey relying party |
+| `V2_REDIS_URL` (or Upstash's `KV_URL` / `REDIS_URL`) | Authenticated TLS `rediss://` Redis (shared quotas, OAuth state, pacing) |
+| `V2_HTTP_MIGRATIONS` | `true` only while applying migrations through `POST /api/v2/internal/migrate` (Bearer `CRON_SECRET`) when credentials are deployment-only sensitive variables; then `false` |
+| Sign-in | `V2_PASSKEY_ENABLED=true` (no SMS needed); optionally `V2_OTP_PROVIDER=twilio` + `TWILIO_*` |
+| Photos | `V2_STORAGE_PROVIDER=vercel_blob` with a **private** Blob store connected to the project (`BLOB_READ_WRITE_TOKEN`), or `s3` with a private bucket |
+| Worker | `V2_WORKER_MODE=request` on Vercel (default there): jobs drain after enqueue and daily via the cron in `backend/vercel.json`; `dedicated` runs `python -m v2.worker` |
+| Retention | `V2_IMAGE_RETENTION_DAYS`, `V2_AUDIT_RETENTION_DAYS` approved by the operator |
+| Providers | `DATA_GOV_IN_API_KEY`, `SARVAM_API_KEY`, `REMOTE_SENSING_ENABLED` + `CDSE_CLIENT_ID/SECRET`; budgets: `REMOTE_SENSING_GLOBAL_PER_DAY/MONTH`, `SARVAM_*_DAILY`, `OPEN_METEO_PUBLIC_PER_DAY` |
 
-Missing deployment prerequisites fail startup or leave v2 explicitly disabled;
-there is no production test login. Blank placeholders are retained for the owner.
-The authenticated 4 October feature-branch preview health check returns live,
-but readiness reports `v2: disabled` and `scope: public planning only`. Existing
-production environment names contain no v2 database, Redis, OTP or private
-storage configuration. Preview build success does not establish farmer readiness.
-Use the existing authorized [Vercel CLI curl](https://vercel.com/docs/cli/curl)
-for protected preview checks without disabling deployment protection. Check
-both liveness and readiness; require `v2: enabled` and the current schema before
-admitting farmers. Do not print authorization headers or save them in source.
-The existing free Render service sleeps and has ephemeral application storage;
-it is not a durable database, object bucket or always-on worker. No upgrade was
-purchased. A production operator must approve hosting/provider terms and costs.
+| Settings (frontend) | Requirement |
+|---|---|
+| `KRISHYAK_API_ORIGIN` | API origin (staging: `https://krishyak-api-staging.vercel.app`) |
+| `KRISHYAK_PROXY_SECRET` | Same value as the API |
+| `KRISHYAK_API_PROTECTION_BYPASS` | Previews only: the API project's automation bypass secret |
 
-Release order: backup; validate secrets/permission policies; migrate; start one
-worker; check `/health/live` and `/health/ready`; route same-origin traffic;
-run an authorized synthetic staging account/rights/consent smoke; verify real
-provider failures and configured provider tests; review monitoring; then admit
-consented farmers. Deployed readiness checks schema, PostGIS, Redis and a worker
-heartbeat within ten minutes. Liveness alone is not readiness.
+Startup refuses a deployed v2 configuration without TLS database/Redis, private
+storage, a real sign-in method and a worker trigger secret. Readiness
+(`/health/ready`) checks the schema head, PostGIS, Redis and either the worker
+heartbeat (dedicated) or that no queued job is stranded for 30 minutes (request
+mode). Liveness alone is not readiness.
 
-Operators can run `python scripts/inspect_v2_operations.py --env <ignored-file>`
-to read schema, database bytes, aggregate job/cleanup states, expired leases and
-worker heartbeat without printing personal records or secrets. Investigate failed
-cleanup before claiming completed byte erasure. Do not reset shared quota stores
-or retry changed jobs to suppress failures.
+## Release order
+
+1. Provision Postgres (Neon free tier, region Singapore) and Redis (Upstash) from
+   the Vercel Marketplace and connect them to `krishyak-api`; enable the
+   `postgis` and `btree_gist` extensions through the migration.
+2. Set the variables above for the target environment (`vercel env add … --sensitive`).
+3. Run `alembic upgrade head` against the direct (non-pooled) URL. When the
+   URL exists only as a sensitive deployment variable, deploy with
+   `V2_HTTP_MIGRATIONS=true`, call `POST /api/v2/internal/migrate` with
+   `Authorization: Bearer $CRON_SECRET`, confirm `schema == head`, then set it
+   back to `false`.
+4. Deploy the API (`python scripts/prepare_vercel_source.py backend`, then
+   `vercel deploy` from the staged folder) and the frontend.
+5. Staging: `vercel alias set <deployment> krishyak-api-staging.vercel.app` and
+   `krishyak-staging.vercel.app`. Passkeys are bound to that stable hostname.
+6. Check `/health/ready`, then run the live smoke (`scripts/smoke_staging.py`).
+7. Promote to production only after the combined build and smoke pass.
 
 Rollback code and routing to the prior known-good release. Prefer forward schema
 repair; inspect retained data before any downgrade. Restore database/objects
 together using [disaster recovery](DISASTER_RECOVERY.md). Never expose a database
-port or turn on mock government/OTP flows to bypass release gates.
+port or enable development identities in a deployment (startup rejects them).

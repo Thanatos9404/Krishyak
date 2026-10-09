@@ -1,30 +1,51 @@
 # Verified boundaries and external release gates
 
-Engineering implemented here does not establish full commercial production or
-field validation. Missing credentials are explicit unavailable states, not mock
-successes. The owner permitted leaving keys blank; no paid service was enabled.
+Updated 9 October 2026. Missing credentials are explicit unavailable states,
+never mock successes. Provider usage is budgeted in shared Redis per caller, per
+day and (for metered services) per month, and fails closed if Redis is down.
 
-| Area | Current boundary |
+## Live-verified integrations
+
+Staging (`krishyak-staging.vercel.app` → `krishyak-api-staging.vercel.app`,
+Vercel previews behind deployment protection) runs with farmer accounts
+enabled on Neon Postgres + PostGIS (Singapore), Upstash Redis and private
+Vercel Blob. `scripts/smoke_staging.py` and `e2e/staging.spec.js` passed on
+9 October 2026: readiness (schema v2_0010, PostGIS, Redis, request worker),
+passkey sign-up in Chromium's virtual platform authenticator, a GPS-located
+field receiving live weather, a real leaf photo classified by the deployed
+LiteRT model and stored privately, a live Copernicus job drained by the
+serverless worker, the market page, and account deletion with verified
+byte erasure of the photo from Blob storage.
+
+| Area | Verification on 9 October 2026 |
 |---|---|
-| Public deployment | Existing public app remains live. Feature-branch frontend/API previews build successfully; authenticated API liveness passes, while readiness explicitly reports v2 disabled and public planning only. Persistent farmer services are not provisioned there. |
-| OTP/private storage | Production adapters implemented; real Verify delivery and bucket policy/storage smoke not run |
-| Satellite | Quality/geometry/worker fixtures pass; real CDSE credentials/access and scientific validation absent |
-| Weather | Free public smoke performed; forecasts are model output, commercial license/provider contract unverified |
-| Government | Consent-gated public farm context and optional approved identity boundary are implemented. Local OGD key is configured privately, but no live quote response is verified. IMD/member approval is missing; Bhuvan is unavailable and SoilGrids REST is paused. No authorized Aadhaar/bank/land/Farmer Registry/AgriStack/Krishi-DSS access. |
-| ML | Active release retained; external PlantDoc accuracy 57.21%; field calibration/domain generalization not established |
-| Advice/economics | Draft heuristics and persistence/Monte Carlo estimates; no pesticide dose or guaranteed outcome |
-| Pilot | Infrastructure/records present; real farmer recruitment, consent, inspections and impact study not performed |
-| Languages | English and all 22 scheduled Indian languages are active. Each Indian pack has 1,767 labels and passes script/key/placeholder/glossary and distinct-crop checks. Eight explicit machine-draft corrections resolve observed ambiguities. Native semantic review is still required. |
-| Speech | Private consent/authentication and live synthetic Sarvam probes pass. STT documents 23 tags; Sarvam TTS supports eleven languages including English. Bhashini has no issued credential/approved application and stays disabled. Physical microphone accuracy, matching voices on real phones and public staging are unverified. |
-| Devices/accessibility | Automated browser/Axe/viewport testing; physical Android/iOS and human accessibility review absent |
-| Offline | Device cache is not encrypted; offline logout revokes server session only on reconnection; photos remain online |
-| Scale | Bounded local read test, not high-volume production/soak/image throughput certification |
-| Operations | Disposable schema backup/restore tested; no production off-site backup, incident contact or SLA provisioned |
-| Sensors | Unsafe legacy personal endpoints disabled in deployment; vendor-authenticated owner-device ingestion unverified |
-| Legal/data | Operator identity/contact, provider licenses, dataset rights and agronomic/legal review require accountable human approval |
+| Copernicus Data Space (satellite) | Real OAuth client; live catalog search, NDVI/NDMI/NDRE statistics and imagery previews through `CopernicusSentinelHubProvider` (`RUN_CDSE_LIVE=1`). A live-only defect (catalog `Accept` header, HTTP 406) was found and fixed with a regression test. Client secret expires 7 January 2027 and must be rotated before then. |
+| Sarvam (speech + translation) | Authenticated, consented `/api/v2/speech/synthesize` (Hindi) then `/api/v2/speech/transcribe` returned the exact sentence. All 22 workspace language packs regenerated (21 via translate API, Sindhi via the document API in Arabic script). |
+| Open-Meteo (weather) | Live 48-hour forecast saved for a field located only by a rounded GPS point and shown as plain conclusions. |
+| Vercel private Blob (photos) | Private store in Mumbai (`bom1`); unauthenticated fetch returns 403, authenticated put/get/delete verified. |
+| data.gov.in (mandi prices) | **Not verified.** `api.data.gov.in`, the base URL in the portal's own OpenAPI spec, refused TCP connections on 80 and 443 from India and from Vercel Singapore throughout the session while `data.gov.in` itself was up. The adapter (current + variety-wise history, stored series, stale fallback) is covered by tests; live verification must be repeated when the host returns. |
 
-The remaining release gates require external resources, credentials, physical
-devices, people or legal/agronomic authority. They cannot be completed by
-fabricating responses or silently purchasing services. Review
-[deployment](DEPLOYMENT.md) and [pilot protocol](PILOT_PLAN.md) before admitting
-real farmers. Do not label this release government-approved or field-validated.
+## External gates (outside engineering control)
+
+| Area | Boundary |
+|---|---|
+| SMS one-time codes | Passkeys need no SMS. SMS sign-in still requires a paid Twilio Verify (or similar) account, and Indian SMS sending needs telecom DLT registration. |
+| Government identity/records | MeriPehchaan login requires approved partner onboarding. No Aadhaar, land record, Farmer Registry, AgriStack, PM-KISAN or Soil Health Card API access exists; IMD point forecasts need IMD approval. Public scheme information only. |
+| Mandi data source | Depends on the data.gov.in API host being available (see above). |
+| ML field accuracy | External PlantDoc accuracy 57.2%; calibration and validation on Indian farm photographs require field data collection with farmers. |
+| Advice review | Disease care steps (`backend/v2/disease_guidance.json`) and weather conclusions are conservative drafts without products or doses; agronomist review is required before claiming expert advice. |
+| Languages | All 23 languages pass automated script/placeholder/glossary checks; native-speaker semantic review is still required. |
+| Field validation | No consented farmer pilot, physical Android/iOS device testing, or human accessibility review has been performed. |
+| Legal/operations | Operator identity, provider licences (commercial Open-Meteo/Copernicus terms), privacy policy legal review, incident contact and SLA need accountable human approval. |
+
+## Known engineering limits
+
+| Area | Limit |
+|---|---|
+| Offline | Device cache is not encrypted; photos need a connection; offline logout revokes the server session on reconnection. |
+| Scheduled work | On Vercel, jobs drain inside requests plus a once-daily cron (Hobby plan limit). Cron runs only on production deployments; staging was exercised by calling the protected trigger. |
+| Hosting | Neon, Upstash and Vercel free tiers: Neon compute scales to zero (first request after idle is slower) and has 0.5 GB storage; Upstash free has request limits; Vercel Hobby is for non-commercial use. A commercial launch needs paid plans approved by the operator. |
+| Production | Staging only. `main` and the production deployment still run the earlier release until PR #1/#2 are merged and promoted. |
+| Passkeys | Bound to one hostname; previews use the stable `krishyak-staging.vercel.app` alias. Browsers without WebAuthn see an explanation. |
+| Bigha | Converted only after the farmer confirms the local size; standard sizes are suggested for West Bengal, Assam, Tripura and Rajasthan. |
+| Scale | Bounded local load tests only; no high-volume soak or image-throughput certification. |

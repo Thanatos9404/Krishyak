@@ -7,16 +7,20 @@ their original paths. All private responses are `Cache-Control: no-store`.
 | Resource | Routes |
 |---|---|
 | Configuration | `GET /status` (configuration only, not live provider verification) |
-| Authentication | `POST /auth/request-otp`, `/auth/verify-otp`, `/auth/refresh`, `/auth/logout`; `GET /auth/session` |
+| Passkey sign-in | `POST /auth/passkey/register/options`, `/auth/passkey/register/verify`, `/auth/passkey/login/options`, `/auth/passkey/login/verify`, `/auth/recovery` |
+| Sign-in devices | `GET /me/passkeys`, `POST /me/passkeys/options`, `/me/passkeys/verify`, `DELETE /me/passkeys/{id}`, `POST /me/recovery-code` (recent sign-in required) |
+| Authentication | `POST /auth/request-otp`, `/auth/verify-otp` (only when an SMS provider is configured), `/auth/refresh`, `/auth/logout`; `GET /auth/session` |
 | Account | `GET/PATCH/DELETE /me`, `GET /me/export` |
 | Consent | `GET/POST /consents` |
 | Farm | `GET/POST /farms`, `PATCH/DELETE /farms/{id}` |
-| Plot | `GET/POST /plots`, `PUT/DELETE /plots/{id}` |
+| Plot | `GET/POST /plots`, `PUT/DELETE /plots/{id}`; optional `approximate_location` (rounded to 0.01°, India only) when no boundary is drawn |
 | Crop cycle | `GET/POST /plots/{id}/crop-cycles`, `PUT/DELETE /crop-cycles/{id}` |
 | Evidence | `POST /plots/{id}/observations`; `GET /plots/{id}/today`, `/timeline` |
 | Soil/weather | `GET/POST /plots/{id}/soil`; `GET /plots/{id}/weather`, `POST /plots/{id}/weather/refresh` |
 | Satellite | `GET /plots/{id}/remote-sensing`, `POST .../refresh`, `POST .../preview` |
-| Crop photo | `POST/GET /disease-scans`, `GET /disease-scans/{id}/image`, `DELETE /disease-scans/{id}` |
+| Crop photo | `POST/GET /disease-scans`, `GET /disease-scans/{id}/image`, `DELETE /disease-scans/{id}`; results include plain-language `guidance` (no products or doses) |
+| Mandi prices | `GET /market/prices?crop=&state=&district=` (public, rate limited): latest modal ₹/quintal per market series, 7- and 28-day change from dated quotes, sources and limits |
+| Operations | `GET /internal/worker` (Vercel Cron, `Authorization: Bearer $CRON_SECRET`; 404 otherwise) |
 | Feedback/review | `POST /feedback`, `GET /review-queue`, `POST /review-queue/{id}`, `GET /review-queue/{id}/image` |
 | Institutions | `/admin/pilots`, `/admin/pilots/{id}/report`, `/admin/model-monitoring` |
 | Enrollment | `/pilot-enrollments`, `/pilot-enrollments/{id}` |
