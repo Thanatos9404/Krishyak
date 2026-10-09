@@ -21,6 +21,7 @@ ENDPOINTS = {
     "soilgrids": "https://rest.isric.org/soilgrids/v2.0/properties/query",
     "bhuvan": "https://bhuvan-vec2.nrsc.gov.in/bhuvan/wms",
     "ogd": "https://api.data.gov.in/resource/9ef84268-d588-465a-a308-a864a43d0070",
+    "ogd_history": "https://api.data.gov.in/resource/35985678-0d79-46b4-9ed6-6f13308a1d24",
 }
 
 
