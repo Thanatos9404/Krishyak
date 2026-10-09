@@ -1,49 +1,178 @@
 import { useProductLocale } from "../../features/product/ProductLocale";
 import { useEffect, useRef, useState } from "react";
-import { Camera, Upload, Leaf, ArrowRight } from "lucide-react";
+import {
+  AlertTriangle,
+  ArrowRight,
+  Camera,
+  CheckCircle2,
+  HelpCircle,
+  Phone,
+  Upload,
+} from "lucide-react";
 import { farmApi } from "../../features/farms/api";
 import { deferredFeature } from "../../features/product/deferredProductFeature";
-import { CropPicker } from "./CropPicker";
+import { ConsentPrompt } from "../../features/farms/ConsentPrompt";
+import { preparePhoto } from "../../features/farms/photo";
 import { cropCatalog, cropLabel, findCrop } from "../../features/product/crops";
 const ScanHistory = deferredFeature(
   () => import("../../features/farms/ScanHistory"),
 );
-const LIMIT =
-  "A photo suggestion is not a diagnosis. Lighting, background and unsupported symptoms can change the result. Verify in the field or with an agronomist before choosing a treatment.";
+
+function ScanResult({ scan, w }) {
+  const { tx, formatDate } = useProductLocale();
+  const result = scan.result;
+  const guidance = result.guidance || { steps: [] };
+  const [answered, setAnswered] = useState(false);
+  const heading =
+    result.status === "detected" && guidance.name
+      ? tx("Looks like {{v0}}", { v0: tx(guidance.name) })
+      : result.status === "healthy"
+        ? tx("No common disease seen in this photo")
+        : tx("We could not tell from this photo");
+  const Icon =
+    result.status === "detected"
+      ? AlertTriangle
+      : result.status === "healthy"
+        ? CheckCircle2
+        : HelpCircle;
+  return (
+    <article
+      className={`scan-result status-${result.status}`}
+      aria-live="polite"
+    >
+      <h2>
+        <Icon size={26} aria-hidden="true" /> {heading}
+      </h2>
+      {guidance.urgent && (
+        <p className="urgent-note" role="alert">
+          {tx(
+            "This disease can spread quickly. Act today and get expert advice.",
+          )}
+        </p>
+      )}
+      {guidance.cause && (
+        <p>
+          {tx("Caused by:")} {tx(guidance.cause)}
+        </p>
+      )}
+      <h3>{tx("What you can do now")}</h3>
+      <ol className="care-steps">
+        {guidance.steps.map((step) => (
+          <li key={step}>{tx(step)}</li>
+        ))}
+      </ol>
+      <a className="button secondary" href="tel:18001801551">
+        <Phone size={18} /> {tx("Call Kisan Call Centre (free)")}
+      </a>
+      <p className="small muted">
+        {tx(
+          "This is a photo suggestion, not a diagnosis. Check the field and confirm with an expert before buying or spraying anything.",
+        )}
+      </p>
+      {!answered ? (
+        <>
+          <h3>{tx("Does this match what you see?")}</h3>
+          <div className="button-row">
+            {[
+              ["yes", "Yes"],
+              ["no", "No"],
+              ["unsure", "Not sure"],
+            ].map(([verdict, label]) => (
+              <button
+                key={verdict}
+                type="button"
+                className="button secondary"
+                disabled={w.busy || w.offline}
+                onClick={() =>
+                  w.act(async () => {
+                    await farmApi("/feedback", {
+                      method: "POST",
+                      body: {
+                        operation_id: crypto.randomUUID(),
+                        image_id: scan.image_id,
+                        verdict,
+                      },
+                    });
+                    setAnswered(true);
+                    w.setNotice("Your feedback was saved.");
+                  })
+                }
+              >
+                {tx(label)}
+              </button>
+            ))}
+          </div>
+        </>
+      ) : (
+        <p className="status-panel">
+          {tx("Thank you. Your answer helps improve photo checks.")}
+        </p>
+      )}
+      <details className="evidence-details">
+        <summary>{tx("Technical details")}</summary>
+        <p>
+          {tx("Model label:")} {result.predicted_class || tx("none")} ·{" "}
+          {tx("Status:")} {result.status}
+        </p>
+        {result.model_score != null && (
+          <p>
+            {tx("Raw model score:")} {Number(result.model_score).toFixed(3)}
+            {tx(". This is not a calibrated probability of disease.")}
+          </p>
+        )}
+        <p>
+          {result.model_id} · {formatDate(result.observed_at, { time: true })}
+        </p>
+        <ul>
+          {result.limitations.map((limit) => (
+            <li key={limit}>{tx(limit)}</li>
+          ))}
+        </ul>
+      </details>
+    </article>
+  );
+}
+
 export function ScanView({ workspace: w }) {
   const { tx } = useProductLocale();
-  const [crop, setCrop] = useState(w.cycles[0]?.crop || "Tomato"),
+  const [model, setModel] = useState(null),
+    [crop, setCrop] = useState(""),
     [photo, setPhoto] = useState(null),
     [preview, setPreview] = useState(null),
     [result, setResult] = useState(null),
-    [model, setModel] = useState(null);
+    [problem, setProblem] = useState("");
   const camera = useRef(null),
-    upload = useRef(null);
-  const cropChosen = useRef(false);
+    upload = useRef(null),
+    chosen = useRef(false);
   useEffect(() => {
-    let cancelled = false;
-    farmApi("/model")
-      .then((value) => {
-        if (!cancelled) setModel(value);
-      })
-      .catch(() => {});
-    return () => {
-      cancelled = true;
-    };
+    const controller = new AbortController();
+    farmApi("/model", { signal: controller.signal })
+      .then(setModel)
+      .catch(() => setModel({ supported_crops: [] }));
+    return () => controller.abort();
   }, []);
+  const supported = cropCatalog.filter((row) =>
+    model?.supported_crops?.includes(row.photo_name),
+  );
+  const cycle =
+    w.cycles.find((item) => item.status === "active") || w.cycles[0];
+  const cycleCrop = findCrop(cycle);
+  const cycleSupported = supported.some((row) => row.id === cycleCrop?.id);
   useEffect(() => {
     setResult(null);
     setPhoto(null);
-    cropChosen.current = false;
+    chosen.current = false;
   }, [w.selected]);
-  const cycleCrop = w.cycles[0]?.crop;
+  const fallback = supported[0]?.id;
   useEffect(() => {
-    if (!cropChosen.current) setCrop(cycleCrop || "Tomato");
-  }, [w.selected, cycleCrop]);
+    // A farmer's explicit choice wins; otherwise follow this field's crop.
+    if (!fallback || chosen.current) return;
+    setCrop(cycleSupported ? cycleCrop.id : fallback);
+  }, [fallback, cycleSupported, cycleCrop?.id, w.selected]);
   useEffect(() => {
     if (!photo) {
       setPreview(null);
-      return;
+      return undefined;
     }
     const url = URL.createObjectURL(photo);
     setPreview(url);
@@ -52,34 +181,54 @@ export function ScanView({ workspace: w }) {
   const choose = (event) => {
     const file = event.target.files?.[0];
     setResult(null);
+    setProblem("");
     if (
       file &&
-      (!/^image\/(jpeg|png|webp)$/.test(file.type) || file.size > 4000000)
+      (!/^image\/(jpeg|png|webp)$/.test(file.type) || file.size > 25000000)
     ) {
-      w.setError("Choose a JPEG, PNG or WebP photograph smaller than 4 MB.");
+      setProblem("Choose a JPEG, PNG or WebP photograph smaller than 25 MB.");
       setPhoto(null);
-    } else {
-      setPhoto(file || null);
-      w.setError("");
-    }
+    } else setPhoto(file || null);
     event.target.value = "";
   };
+  const submit = () =>
+    w.act(async () => {
+      setProblem("");
+      try {
+        if (!photo || !w.selected)
+          throw new Error("Choose a field and a photograph first.");
+        const owner = w.ownerRef.current,
+          field = w.selected;
+        const data = new FormData();
+        data.set("operation_id", crypto.randomUUID());
+        data.set("plot_id", field);
+        data.set("crop", findCrop(crop)?.name || crop);
+        data.set("image", await preparePhoto(photo));
+        const scan = await farmApi("/disease-scans", {
+          method: "POST",
+          body: data,
+          timeoutMs: 60000,
+        });
+        if (w.ownerRef.current === owner && w.selectedRef.current === field) {
+          setResult(scan);
+          await w.refreshEvidence();
+        }
+      } catch (error) {
+        setProblem(error.message);
+        throw error;
+      }
+    });
   return (
     <>
       <header className="product-page-heading">
         <div>
-          <span className="eyebrow">{tx("A CLOSER LOOK AT YOUR CROP")}</span>
-          <h1>{tx("Start with a clear photograph.")}</h1>
+          <h1>{tx("Check a sick plant")}</h1>
           <p>
             {tx(
-              "Capture a leaf or upload a photo. Get a suggestion, then check what you see.",
+              "Take a clear photo of one affected leaf. You will get a likely cause and first steps.",
             )}
           </p>
         </div>
-        <span className="badge neutral">
-          <Leaf size={15} />
-          {tx("Field verification needed")}
-        </span>
       </header>
       {!w.plot && (
         <p className="status-panel">
@@ -87,18 +236,49 @@ export function ScanView({ workspace: w }) {
           {tx("before saving a crop photograph.")}
         </p>
       )}
+      <ConsentPrompt
+        workspace={w}
+        purposes={["agronomic_analysis"]}
+        title="Allow photo checks"
+        reason="Your photo is checked by Krishyak's crop model and saved privately with this field. You can delete it at any time."
+      />
       <div className="scan-layout">
         <section className="product-card camera-card">
+          <label className="v2-label">
+            {tx("Crop")}
+            <select
+              value={crop}
+              onChange={(event) => {
+                chosen.current = true;
+                setCrop(event.target.value);
+                setResult(null);
+              }}
+            >
+              {supported.map((row) => (
+                <option key={row.id} value={row.id}>
+                  {tx(row.label)}
+                </option>
+              ))}
+            </select>
+          </label>
+          {cycleCrop && !cycleSupported && model && (
+            <p className="inline-note">
+              {tx(
+                "Photo check is not yet available for {{v0}}. You can still note what you see in your field record.",
+                { v0: cropLabel(cycleCrop, tx) },
+              )}
+            </p>
+          )}
           <div className={`camera-frame ${preview ? "has-photo" : ""}`}>
             {preview ? (
               <img src={preview} alt={tx("Selected crop photograph")} />
             ) : (
               <>
                 <Camera size={54} strokeWidth={1.3} />
-                <h2>{tx("Show the leaf clearly.")}</h2>
+                <h2>{tx("Show one leaf clearly.")}</h2>
                 <p>
                   {tx(
-                    "Use natural light. Keep the leaf in focus and avoid a busy background.",
+                    "Use daylight. Fill the photo with the leaf and keep it in focus.",
                   )}
                 </p>
               </>
@@ -106,13 +286,15 @@ export function ScanView({ workspace: w }) {
           </div>
           <div className="button-row">
             <button
-              className="button primary"
+              type="button"
+              className="button primary large"
               onClick={() => camera.current.click()}
             >
-              <Camera size={19} />
+              <Camera size={20} />
               {tx("Take a photo")}
             </button>
             <button
+              type="button"
               className="button secondary"
               onClick={() => upload.current.click()}
             >
@@ -139,153 +321,57 @@ export function ScanView({ workspace: w }) {
             accept="image/jpeg,image/png,image/webp"
             onChange={choose}
           />
-          <p className="small muted">
-            {tx(
-              "JPEG, PNG or WebP \xB7 under 4 MB \xB7 saved privately to your field",
-            )}
-          </p>
+          <button
+            type="button"
+            className="button primary large"
+            disabled={
+              w.busy ||
+              w.offline ||
+              !w.selected ||
+              !photo ||
+              !crop ||
+              !w.consents.includes("agronomic_analysis")
+            }
+            onClick={submit}
+          >
+            {tx("Check this photograph")} <ArrowRight size={18} />
+          </button>
+          {problem && (
+            <p role="alert" className="error-panel inline">
+              {tx(problem)}
+            </p>
+          )}
         </section>
         <section className="product-card scan-details">
-          <h2>{tx("A suggestion you can verify.")}</h2>
-          <p>{LIMIT}</p>
-          <form
-            onSubmit={(event) => {
-              event.preventDefault();
-              w.act(async () => {
-                if (!photo || !w.selected)
-                  throw new Error("Choose a field and a photograph first.");
-                const owner = w.ownerRef.current,
-                  field = w.selected;
-                const data = new FormData();
-                data.set("operation_id", crypto.randomUUID());
-                data.set("plot_id", field);
-                data.set("crop", crop);
-                data.set("image", photo);
-                const scan = await farmApi("/disease-scans", {
-                  method: "POST",
-                  body: data,
-                });
-                if (
-                  w.ownerRef.current === owner &&
-                  w.selectedRef.current === field
-                ) {
-                  setResult(scan);
-                  await w.refreshEvidence();
-                }
-              });
-            }}
-          >
-            <CropPicker
-              value={crop}
-              onChange={(row) => {
-                cropChosen.current = true;
-                setCrop(row?.name || "");
-                setResult(null);
-              }}
-            />
-            <p className="status-panel" role="status">
-              {model?.supported_crops.includes(findCrop(crop)?.photo_name)
-                ? tx(
-                    "This crop is in the classifier label set. Field accuracy is not established.",
-                  )
-                : tx(
-                    "Farm records support this crop. Photo classification is unavailable for this crop or its model metadata.",
-                  )}
-            </p>
-            <button
-              className="button primary"
-              disabled={
-                w.busy ||
-                w.offline ||
-                !w.selected ||
-                !photo ||
-                !w.consents.includes("agronomic_analysis")
-              }
-            >
-              {tx("Check this photograph")} <ArrowRight size={18} />
-            </button>
-            {!w.consents.includes("agronomic_analysis") && (
-              <p className="small">
-                {tx("Enable field analysis in")}{" "}
-                <a href="/app/more/settings">{tx("Settings")}</a>{" "}
-                {tx("to use photo analysis.")}
-              </p>
-            )}
-          </form>
-          {result && (
-            <article className="scan-result" aria-live="polite">
-              <span className="eyebrow">{tx("PHOTO SUGGESTION")}</span>
-              <h3>
-                {result.result.predicted_class?.replaceAll("_", " ") ||
-                  tx("No supported classification")}
-              </h3>
-              <p>{String(result.result.status).replaceAll("_", " ")}</p>
-              <p>{LIMIT}</p>
-              <details>
-                <summary>{tx("Model score & limitations")}</summary>
-                {result.result.model_score != null && (
-                  <p>
-                    {tx("Raw model score:")}{" "}
-                    {result.result.model_score.toFixed(3)}
-                    {tx(". This is not a calibrated probability of disease.")}
-                  </p>
-                )}
-              </details>
-              <h3>{tx("Does this match what you see?")}</h3>
-              <div className="button-row">
-                {[
-                  ["yes", "Yes"],
-                  ["no", "No"],
-                  ["unsure", "Not sure"],
-                ].map(([verdict, label]) => (
-                  <button
-                    key={verdict}
-                    className="button secondary"
-                    disabled={w.busy || w.offline}
-                    onClick={() =>
-                      w.act(async () => {
-                        await farmApi("/feedback", {
-                          method: "POST",
-                          body: {
-                            operation_id: crypto.randomUUID(),
-                            image_id: result.image_id,
-                            verdict,
-                          },
-                        });
-                        w.setNotice("Your feedback was saved.");
-                      })
-                    }
-                  >
-                    {label}
-                  </button>
-                ))}
-              </div>
-            </article>
+          {result ? (
+            <ScanResult scan={result} w={w} />
+          ) : (
+            <>
+              <h2>{tx("What you will get")}</h2>
+              <ul className="care-steps">
+                <li>{tx("The likely problem, in plain words")}</li>
+                <li>{tx("First steps you can take today")}</li>
+                <li>{tx("Who to call to confirm before spraying")}</li>
+              </ul>
+              {model && supported.length > 0 && (
+                <p className="small muted">
+                  {tx("Photo check works for:")}{" "}
+                  {supported.map((row) => tx(row.label)).join(", ")}
+                </p>
+              )}
+            </>
           )}
-          {model && (
-            <details className="model-details">
-              <summary>{tx("Supported crops & validation")}</summary>
+          {model?.release && (
+            <details className="evidence-details">
+              <summary>{tx("How accurate is this?")}</summary>
               <p>
-                {model.supported_crops
-                  .map(
-                    (name) =>
-                      cropLabel(
-                        cropCatalog.find((row) => row.photo_name === name),
-                        tx,
-                      ) || name,
-                  )
-                  .join(", ")}
-              </p>
-              <p>
-                {model.release.architecture} · {model.release.classes}{" "}
-                {tx("classes. Internal test")}{" "}
-                {(model.release.metrics.test.accuracy * 100).toFixed(2)}
-                {tx("%; external PlantDoc")}{" "}
-                {(model.release.metrics.external_test.accuracy * 100).toFixed(
-                  2,
-                )}
                 {tx(
-                  "%. These datasets do not establish accuracy on your farm.",
+                  "On a public test set of field photos, the model was right about {{v0}}% of the time. It has not been validated on Indian farms, so treat it as a first opinion.",
+                  {
+                    v0: Math.round(
+                      model.release.metrics.external_test.accuracy * 100,
+                    ),
+                  },
                 )}
               </p>
               <a href="/technology">{tx("Read the model evidence")}</a>

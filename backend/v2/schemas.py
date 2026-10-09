@@ -113,11 +113,24 @@ class FarmUpdate(Input):
     revision: StrictInt = Field(ge=1)
 
 
+class FieldLocation(Input):
+    """Where the farmer stood in the field, rounded to about one kilometre."""
+
+    latitude: Number = Field(ge=6, le=37.5)
+    longitude: Number = Field(ge=68, le=97.5)
+
+    @model_validator(mode="after")
+    def rounded(self):
+        self.latitude, self.longitude = round(float(self.latitude), 2), round(float(self.longitude), 2)
+        return self
+
+
 class PlotInput(Input):
     operation_id: UUID
     farm_id: UUID
     name: str = Field(min_length=1, max_length=100)
     boundary: Polygon | None = None
+    approximate_location: FieldLocation | None = None
     entered_area_hectares: Number | None = Field(default=None, gt=0, le=500)
     boundary_quality: Literal["manual", "approximate", "farmer_drawn"] = "manual"
     irrigation_type: str | None = Field(default=None, max_length=50)

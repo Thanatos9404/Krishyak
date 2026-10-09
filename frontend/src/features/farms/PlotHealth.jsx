@@ -4,6 +4,38 @@ import { deferredFeature } from "../../features/product/deferredProductFeature";
 import { farmApi } from "./api";
 import { readRecord, saveRecord } from "./offline";
 import { cancelReadsOnExit } from "../product/readCancellation";
+
+// Farmer words for each index; the index names stay in technical details.
+const VIEWS = {
+  ndvi: { name: "Crop greenness", rise: "greener", fall: "less green" },
+  ndmi: { name: "Leaf moisture", rise: "moister", fall: "drier" },
+  ndre: { name: "Crop vigour (dense crops)", rise: "stronger", fall: "weaker" },
+};
+
+// Compare the latest clear interval with the previous clear one. A change
+// under 0.03 index points is within normal noise and reported as no change.
+export function satelliteConclusion(values, index) {
+  const clear = values.filter(
+    (row) => row.quality_status === "clear" && typeof row.mean === "number",
+  );
+  if (clear.length < 2) return null;
+  const latest = clear.at(-1),
+    previous = clear.at(-2);
+  const delta = latest.mean - previous.mean;
+  const view = VIEWS[index];
+  const direction = delta >= 0.03 ? "rise" : delta <= -0.03 ? "fall" : "same";
+  return {
+    direction,
+    text:
+      direction === "same"
+        ? "No clear change since the previous clear satellite view."
+        : direction === "rise"
+          ? `Your field looks ${view.rise} than in the previous clear satellite view.`
+          : `Your field looks ${view.fall} than in the previous clear satellite view. Walk the field to check why.`,
+    from: previous.end,
+    to: latest.end,
+  };
+}
 const FieldMap = deferredFeature(() => import("../../components/FieldMap"));
 const FieldTrendChart = deferredFeature(
   () => import("../../components/FieldTrendChart"),
@@ -106,45 +138,72 @@ export default function PlotHealth({
     .sort((a, b) => a.observed_at.localeCompare(b.observed_at));
   const values = observations.map((row) => row.payload.observation);
   const latest = observations.at(-1);
+  const blocked = !plot.boundary
+    ? "Draw your field boundary to use satellite views."
+    : providerStatus !== "ready"
+      ? "Satellite service is not available right now. Your saved views remain below."
+      : !consents.includes("satellite_processing") ||
+          !consents.includes("location_processing")
+        ? "Turn on satellite permission in Settings to request new views."
+        : null;
   return (
     <section className="v2-card">
-      <h2>{tx("Plot Health \xB7 satellite evidence")}</h2>
-      <p>
+      <h2>{tx("Satellite view of this field")}</h2>
+      {(() => {
+        const conclusion = satelliteConclusion(values, index);
+        return conclusion ? (
+          <p className={`satellite-conclusion ${conclusion.direction}`}>
+            <strong>{tx(conclusion.text)}</strong>
+            <small>
+              {formatDate(conclusion.from)} → {formatDate(conclusion.to)}
+            </small>
+          </p>
+        ) : (
+          <p className="inline-note">
+            {values.length
+              ? tx(
+                  "Not enough clear (cloud-free) satellite views yet to tell a change.",
+                )
+              : tx(
+                  "No satellite views are saved for this field yet. This does not mean the field is healthy.",
+                )}
+          </p>
+        );
+      })()}
+      <p className="small muted">
         {tx(
-          "Vegetation and moisture indices provide inspection context. They do not identify disease, soil nutrients, crop yield or a universal health score.",
+          "Satellite views show where to look in your field. They cannot name a disease, a nutrient problem or your yield.",
         )}
       </p>
       {error && <p role="alert">{error}</p>}
-      {providerStatus !== "ready" && (
-        <p>
-          {tx("Satellite access is unavailable:")}{" "}
-          {providerStatus || tx("configuration unknown")}
-          {tx(". Stored evidence and manual observations remain available.")}
+      {blocked && <p className="inline-note">{tx(blocked)}</p>}
+      {job && ["pending", "running", "retry"].includes(job.status) && (
+        <p role="status">
+          {tx("Fetching new satellite views. This can take a minute.")}
         </p>
       )}
-      {job && (
-        <p>
-          {tx("Latest request:")} {job.status}
-          {job.error_code
-            ? tx(" \xB7 {{v0}}", {
-                v0: job.error_code.replaceAll("_", " "),
-              })
-            : ""}
-          {tx(". Failed requests preserve earlier observations.")}
+      {job?.status === "failed" && (
+        <p className="inline-note">
+          {tx(
+            "The last satellite request did not finish. Earlier views are kept; try again later.",
+          )}
         </p>
       )}
       <label className="v2-label">
-        {tx("Field context to view")}
+        {tx("What to look at")}
         <select
           value={index}
           onChange={(event) => setIndex(event.target.value)}
         >
-          <option value="ndvi">{tx("NDVI \xB7 vegetation")}</option>
-          <option value="ndmi">{tx("NDMI \xB7 moisture context")}</option>
-          <option value="ndre">{tx("NDRE \xB7 red-edge vegetation")}</option>
+          {Object.entries(VIEWS).map(([key, view]) => (
+            <option key={key} value={key}>
+              {tx(view.name)}
+            </option>
+          ))}
         </select>
       </label>
       <button
+        className="button secondary"
         disabled={
           busy ||
           providerStatus !== "ready" ||
@@ -172,21 +231,19 @@ export default function PlotHealth({
           })
         }
       >
-        {tx("Request fresh field observations")}
+        {tx("Get latest satellite view")}
       </button>
       {values.length ? (
         <>
           <details>
-            <summary>
-              {tx("View the stored trend and measurement details")}
-            </summary>
+            <summary>{tx("Technical details and trend chart")}</summary>
             <FieldTrendChart
               observations={values}
               index={index}
               description="Stored satellite interval means; cloudy intervals remain missing"
             />
             <p>
-              {tx("Latest interval:")}{" "}
+              {tx("Latest interval:")} {index.toUpperCase()} ·{" "}
               {latest.payload.observation.start.slice(0, 10)} to{" "}
               {latest.payload.observation.end.slice(0, 10)} {tx("\xB7 quality")}{" "}
               {latest.payload.observation.quality_status}{" "}
@@ -215,13 +272,7 @@ export default function PlotHealth({
             </details>
           </details>
         </>
-      ) : (
-        <p>
-          {tx(
-            "No observations for this view and the current field boundary are stored. This is missing evidence, not a healthy-field result.",
-          )}
-        </p>
-      )}
+      ) : null}
       <details>
         <summary>{tx("Optional field map and satellite preview")}</summary>
         <p>

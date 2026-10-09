@@ -1,15 +1,23 @@
 import { useProductLocale } from "../../features/product/ProductLocale";
 import { useEffect, useState } from "react";
-import { Plus, ArrowRight, MapPin, Sprout, Layers } from "lucide-react";
+import {
+  Plus,
+  ArrowRight,
+  MapPin,
+  Sprout,
+  Layers,
+  LocateFixed,
+} from "lucide-react";
 import { farmApi } from "../../features/farms/api";
 import { deferredFeature } from "../../features/product/deferredProductFeature";
 import { BoundaryEditor } from "./BoundaryEditor";
 import { Dialog } from "./Dialog";
-import { AreaInput } from "./AreaInput";
+import { AreaInput, useAreaText, useAreaUnit } from "./AreaInput";
+import { ConsentPrompt } from "../../features/farms/ConsentPrompt";
 import { CropPicker } from "./CropPicker";
 import { cropLabel } from "../../features/product/crops";
 import { FarmContextCard } from "./FarmContextCard";
-import { toHectares, formatArea } from "../../features/product/india";
+import { toHectares } from "../../features/product/india";
 const FieldMap = deferredFeature(() => import("../FieldMap"));
 const PlotHealth = deferredFeature(
   () => import("../../features/farms/PlotHealth"),
@@ -26,8 +34,47 @@ function AddField({ w, onClose }) {
     [farmId, setFarmId] = useState(w.farms[0]?.id || ""),
     [farmName, setFarmName] = useState(""),
     [area, setArea] = useState(""),
-    [areaUnit, setAreaUnit] = useState("acre"),
-    [boundary, setBoundary] = useState(null);
+    [preference, setPreference] = useAreaUnit(),
+    [boundary, setBoundary] = useState(null),
+    [location, setLocation] = useState(null),
+    [locating, setLocating] = useState(""),
+    [problem, setProblem] = useState("");
+  const locate = () => {
+    setProblem("");
+    if (!navigator.geolocation) {
+      setProblem("Location is not available in this browser.");
+      return;
+    }
+    setLocating("Finding your location…");
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setLocating("");
+        const { latitude, longitude } = position.coords;
+        if (
+          latitude < 6 ||
+          latitude > 37.5 ||
+          longitude < 68 ||
+          longitude > 97.5
+        ) {
+          setProblem(
+            "This location is outside India. Stand in your field and try again.",
+          );
+          return;
+        }
+        setLocation({
+          latitude: Math.round(latitude * 100) / 100,
+          longitude: Math.round(longitude * 100) / 100,
+        });
+      },
+      () => {
+        setLocating("");
+        setProblem(
+          "Location permission was denied or timed out. You can save the field without it.",
+        );
+      },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 60000 },
+    );
+  };
   return (
     <Dialog
       title={w.farms.length ? tx("Add a field") : tx("Start your first farm")}
@@ -56,8 +103,11 @@ function AddField({ w, onClose }) {
                 operation_id: crypto.randomUUID(),
                 farm_id: id,
                 name,
-                entered_area_hectares: area ? toHectares(area, areaUnit) : null,
+                entered_area_hectares: area
+                  ? toHectares(area, preference.unit, preference.bigha)
+                  : null,
                 boundary,
+                approximate_location: boundary ? null : location,
                 boundary_quality: boundary ? "approximate" : "manual",
               },
             });
@@ -118,10 +168,59 @@ function AddField({ w, onClose }) {
         <AreaInput
           value={area}
           onChange={setArea}
-          unit={areaUnit}
-          onUnitChange={setAreaUnit}
+          unit={preference.unit}
+          onUnitChange={(unit) => setPreference({ ...preference, unit })}
+          bigha={preference.bigha}
+          onBighaChange={(bigha) => setPreference({ ...preference, bigha })}
+          state={w.farmer?.state}
           required={!boundary}
         />
+        {!boundary && (
+          <div className="field-location">
+            <h3>{tx("Where is this field?")}</h3>
+            <p>
+              {tx(
+                "Stand in the field and save its location to get local weather and nearby mandi prices. It is rounded to about 1 km.",
+              )}
+            </p>
+            <ConsentPrompt
+              workspace={w}
+              purposes={["location_processing"]}
+              title="Use this field's location"
+              reason="Krishyak saves the rounded location with this field to show local weather and prices. You can turn this off in Settings."
+            >
+              {location ? (
+                <p className="status-panel">
+                  <MapPin size={16} /> {tx("Location saved for this field.")}{" "}
+                  <button
+                    type="button"
+                    className="button text"
+                    onClick={() => setLocation(null)}
+                  >
+                    {tx("Remove")}
+                  </button>
+                </p>
+              ) : (
+                <button
+                  type="button"
+                  className="button secondary"
+                  disabled={Boolean(locating)}
+                  onClick={locate}
+                >
+                  <LocateFixed size={18} />
+                  {locating
+                    ? tx(locating)
+                    : tx("I am in this field. Use my location")}
+                </button>
+              )}
+            </ConsentPrompt>
+            {problem && (
+              <p role="alert" className="inline-note">
+                {tx(problem)}
+              </p>
+            )}
+          </div>
+        )}
         {w.error && (
           <p className="error-panel" role="alert">
             {w.error}
@@ -185,6 +284,7 @@ function AddCycle({ w, onClose }) {
 }
 export function FarmView({ workspace: w, plotId }) {
   const { tx, formatDate } = useProductLocale();
+  const areaText = useAreaText();
   const { plots, setSelected } = w;
   const [adding, setAdding] = useState(false),
     [cycle, setCycle] = useState(false),
@@ -219,7 +319,6 @@ export function FarmView({ workspace: w, plotId }) {
           )}
         </p>
       )}
-      {!w.demo && w.farmer && <FarmContextCard workspace={w} />}
       <div className="farm-layout">
         <section className="field-list product-card">
           <div className="section-heading">
@@ -243,12 +342,15 @@ export function FarmView({ workspace: w, plotId }) {
                 <span>
                   <strong>{field.name}</strong>
                   <small>
-                    {formatArea(
+                    {areaText(
                       field.area_hectares || field.entered_area_hectares,
-                      "acre",
                     )}{" "}
-                    {tx("acres \xB7")}{" "}
-                    {field.boundary ? tx("Boundary mapped") : tx("Manual area")}
+                    ·{" "}
+                    {field.boundary
+                      ? tx("Boundary mapped")
+                      : field.approximate_location
+                        ? tx("Location saved")
+                        : tx("Manual area")}
                   </small>
                 </span>
                 <ArrowRight size={18} />
@@ -288,19 +390,8 @@ export function FarmView({ workspace: w, plotId }) {
                 <div>
                   <span>{tx("Field area")}</span>
                   <strong>
-                    {formatArea(
-                      plot.area_hectares || plot.entered_area_hectares,
-                      "acre",
-                    )}{" "}
-                    <small>acres</small>
+                    {areaText(plot.area_hectares || plot.entered_area_hectares)}
                   </strong>
-                  <small>
-                    {formatArea(
-                      plot.area_hectares || plot.entered_area_hectares,
-                      "hectare",
-                    )}{" "}
-                    hectares
-                  </small>
                 </div>
                 <div>
                   <span>{tx("Current crop")}</span>
@@ -422,6 +513,14 @@ export function FarmView({ workspace: w, plotId }) {
             onUpdated={w.refreshEvidence}
           />
         </>
+      )}
+      {!w.demo && w.farmer && (
+        <details className="product-card management-details area-context">
+          <summary>
+            {tx("Soil estimates, weather and schemes for an area")}
+          </summary>
+          <FarmContextCard workspace={w} />
+        </details>
       )}
       <details className="product-card management-details">
         <summary>{tx("Manage farms, field details & crop cycles")}</summary>

@@ -1,6 +1,14 @@
 import { useProductLocale } from "../../features/product/ProductLocale";
 import { useState } from "react";
-import { ArrowRight, Plus, Sun, Sprout, Info } from "lucide-react";
+import {
+  ArrowRight,
+  Camera,
+  Info,
+  Plus,
+  Sprout,
+  Store,
+  Sun,
+} from "lucide-react";
 import { farmApi } from "../../features/farms/api";
 import { deferredFeature } from "../../features/product/deferredProductFeature";
 import { Dialog } from "./Dialog";
@@ -8,6 +16,38 @@ import { Timeline } from "./Timeline";
 import { ActionSheet } from "./ActionSheet";
 import { WeatherStrip } from "./WeatherStrip";
 import { cropLabel } from "../../features/product/crops";
+import { locationFromProfile } from "../../features/product/indiaLocations";
+import { MarketPrices, useMarketPrices } from "./MarketView";
+
+function PriceGlance({ w, cycle }) {
+  const { tx } = useProductLocale();
+  const place = locationFromProfile(w.farmer || {});
+  const result = useMarketPrices({
+    crop: cycle?.crop_id,
+    state: place.state,
+    district: place.district,
+  });
+  if (!cycle) return null;
+  return (
+    <section className="product-card glance" aria-labelledby="price-heading">
+      <h2 id="price-heading">
+        <Store size={22} aria-hidden="true" />{" "}
+        {tx("{{v0}} price near you", { v0: cropLabel(cycle, tx) })}
+      </h2>
+      {place.state ? (
+        <MarketPrices result={result} crop={cycle.crop_id} compact />
+      ) : (
+        <p className="inline-note">
+          {tx("Add your state and district to see nearby mandi prices.")}{" "}
+          <a href="/app/more/settings">{tx("Open settings")}</a>
+        </p>
+      )}
+      <a className="text-link" href="/app/market">
+        {tx("All mandi prices")} <ArrowRight size={16} />
+      </a>
+    </section>
+  );
+}
 const LocalReadout = deferredFeature(
   () => import("../../features/farms/LocalReadout"),
 );
@@ -20,11 +60,12 @@ export function TodayView({ workspace: w }) {
     [recording, setRecording] = useState(false),
     [all, setAll] = useState(false);
   const actions = w.today?.actions || [];
+  const cycle =
+    w.cycles.find((item) => item.status === "active") || w.cycles[0];
   return (
     <>
       <header className="product-page-heading">
         <div>
-          <span className="eyebrow">{tx("A LITTLE CLARITY, EVERY DAY")}</span>
           <h1>{tx("Today on your farm.")}</h1>
           <p>
             {w.plot
@@ -64,6 +105,30 @@ export function TodayView({ workspace: w }) {
         </section>
       ) : (
         <>
+          <div className="today-glance">
+            <WeatherStrip
+              plotId={w.selected}
+              plot={w.plot}
+              owner={w.farmer.id}
+              cache={w.offlineOpt}
+              workspace={w}
+            />
+            <PriceGlance w={w} cycle={cycle} />
+          </div>
+          <nav className="quick-actions" aria-label={tx("Quick actions")}>
+            <button type="button" onClick={() => setRecording(true)}>
+              <Plus size={24} aria-hidden="true" />
+              {tx("Note what I saw")}
+            </button>
+            <a href="/app/health">
+              <Camera size={24} aria-hidden="true" />
+              {tx("Check a sick plant")}
+            </a>
+            <a href="/app/market">
+              <Store size={24} aria-hidden="true" />
+              {tx("Mandi prices")}
+            </a>
+          </nav>
           <div className="context-strip">
             <Sun size={24} />
             <div>
@@ -83,11 +148,6 @@ export function TodayView({ workspace: w }) {
               {tx("View field")} <ArrowRight size={16} />
             </a>
           </div>
-          <WeatherStrip
-            plotId={w.selected}
-            owner={w.farmer.id}
-            cache={w.offlineOpt}
-          />
           {w.savedAt && (
             <p className="status-panel">
               {tx("Saved on this device:")}{" "}
@@ -99,10 +159,10 @@ export function TodayView({ workspace: w }) {
           )}
           <section aria-labelledby="attention-heading">
             <div className="section-heading">
-              <h2 id="attention-heading">{tx("What needs your attention")}</h2>
-              <span className="badge neutral">
-                {w.offline ? tx("Saved view") : tx("Source-aware guidance")}
-              </span>
+              <h2 id="attention-heading">{tx("What to do next")}</h2>
+              {w.offline && (
+                <span className="badge neutral">{tx("Saved view")}</span>
+              )}
             </div>
             {w.evidenceLoading && !w.today ? (
               <div className="product-card" role="status">
@@ -115,16 +175,13 @@ export function TodayView({ workspace: w }) {
                     className="attention-card"
                     key={`${index}:${action.title}`}
                   >
-                    <span className="attention-number">
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
                     <h3>{tx(action.title)}</h3>
                     <p>{tx(action.why)}</p>
                     <button
                       className="text-link"
                       onClick={() => setEvidence(action)}
                     >
-                      {tx("Why this matters")} <ArrowRight size={16} />
+                      {tx("Why?")} <ArrowRight size={16} />
                     </button>
                   </article>
                 ))}

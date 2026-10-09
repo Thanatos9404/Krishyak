@@ -105,3 +105,32 @@ test("closing a form outside the voice component stops the recording", async () 
   await act(async () => form.remove());
   expect(engines[0].abort).toHaveBeenCalled();
 });
+
+test("a configured speech service is preferred over the browser and needs explicit consent", async () => {
+  const api = require("../../features/farms/api");
+  const spy = jest
+    .spyOn(api, "farmApi")
+    .mockResolvedValue({ configured: true, stt_languages: ["en", "hi"] });
+  const startListening = jest.fn();
+  useSarvamRecognition.mockReturnValue({
+    resetTranscript: reset,
+    isSupported: true,
+    status: "idle",
+    transcript: "",
+    startListening,
+  });
+  const form = inputInForm();
+  render(
+    <FormVoiceInput
+      target={form.querySelector("input")}
+      workspace={workspace}
+    />,
+  );
+  const consent = await screen.findByRole("checkbox", {
+    name: "Allow voice processing for form entry",
+  });
+  expect(screen.getByRole("button", { name: "Speak" }).disabled).toBe(true);
+  expect(consent.checked).toBe(false);
+  expect(engines).toHaveLength(0);
+  spy.mockRestore();
+});

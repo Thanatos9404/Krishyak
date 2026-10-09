@@ -81,7 +81,7 @@ test("static farmer entry in every configured language, RTL, fonts, keyboard and
       ["ks", "sd", "ur"].includes(code) ? "rtl" : "ltr",
     );
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(
-      tx("A good day starts with a clearer picture."),
+      tx("Your fields, crops and prices in one place."),
     );
     for (const width of [360, 1440]) {
       await page.setViewportSize({ width, height: 900 });
@@ -91,11 +91,22 @@ test("static farmer entry in every configured language, RTL, fonts, keyboard and
           () => document.documentElement.scrollWidth <= innerWidth + 1,
         ),
       ).toBe(true);
+      // Browsers without WebAuthn get a translated explanation instead.
+      const webauthn = await page.evaluate(() =>
+        Boolean(window.PublicKeyCredential),
+      );
       await expect(
-        page.getByRole("button", {
-          name: tx("Send sign-in code"),
-          exact: true,
-        }),
+        webauthn
+          ? page.getByRole("button", {
+              name: tx("Sign in with fingerprint or screen lock"),
+              exact: true,
+            })
+          : page.getByText(
+              tx(
+                "This browser cannot use fingerprint or screen-lock sign-in. Open Krishyak in Chrome on Android or Safari on iPhone.",
+              ),
+              { exact: true },
+            ),
       ).toBeVisible();
       expect(
         (
@@ -117,7 +128,7 @@ test("static farmer entry in every configured language, RTL, fonts, keyboard and
     }
     await page.reload();
     await expect(page.getByRole("heading", { level: 1 })).toHaveText(
-      tx("A good day starts with a clearer picture."),
+      tx("Your fields, crops and prices in one place."),
     );
   }
   expect(errors).toEqual([]);
@@ -136,6 +147,9 @@ test("every configured language remains active across authenticated farmer route
     "Locale fixtures require the isolated development identity provider",
   ).toBe(true);
   await page.goto("/app/today");
+  await page
+    .getByText("Sign in with a code sent by SMS", { exact: true })
+    .click();
   await page.getByLabel("Mobile number", { exact: true }).fill(
     {
       chromium: "9000000001",
@@ -183,8 +197,8 @@ test("every configured language remains active across authenticated farmer route
     for (const [route, title] of [
       ["/app/today", "Today on your farm."],
       ["/app/farm", "Your farm, field by field."],
-      ["/app/health", "Start with a clear photograph."],
-      ["/app/market", "Prices with a place and a date."],
+      ["/app/health", "Check a sick plant"],
+      ["/app/market", "Mandi prices"],
       ["/app/more", "A little more for your farm."],
       ["/app/more/settings", "Your account. Your decisions."],
     ]) {

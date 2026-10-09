@@ -17,6 +17,15 @@ export function FormVoiceInput({ target, workspace: w }) {
     speechCode: info.speechCode,
     transport: workspaceSpeech,
   });
+  const [server, setServer] = useState(null);
+  useEffect(() => {
+    if (!w.farmer) return undefined;
+    const controller = new AbortController();
+    farmApi("/speech/capabilities", { signal: controller.signal, retry: false })
+      .then(setServer)
+      .catch(() => setServer(null));
+    return () => controller.abort();
+  }, [w.farmer]);
   const [draft, setDraft] = useState(""),
     [error, setError] = useState(""),
     [listening, setListening] = useState(false),
@@ -34,7 +43,15 @@ export function FormVoiceInput({ target, workspace: w }) {
     recognition.current?.abort();
     recognition.current = null;
   }, []);
+  // Sarvam covers every scheduled language; browsers support only a few.
+  // Use it whenever configured, with explicit consent; otherwise fall back
+  // to the browser's own speech engine.
+  const serverSpeech = Boolean(
+    server?.configured &&
+    server.stt_languages?.includes(info.speechCode.split("-")[0]),
+  );
   const browserSpeech =
+    !serverSpeech &&
     typeof window !== "undefined" &&
     (window.SpeechRecognition || window.webkitSpeechRecognition);
   const label =

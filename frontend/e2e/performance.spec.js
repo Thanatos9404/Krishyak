@@ -25,13 +25,13 @@ test("anonymous farm entry on a throttled mobile connection", async ({
   await expect(
     page
       .getByRole("heading", {
-        name: "A good day starts with a clearer picture.",
+        name: "Your fields, crops and prices in one place.",
       })
       .first(),
   ).toBeVisible({ timeout: 30000 });
   await expect(
-    page.getByRole("textbox", { name: "Mobile number", exact: true }),
-  ).toBeEditable();
+    page.getByRole("button", { name: /Sign in with fingerprint/ }),
+  ).toBeEnabled();
   const readyMs = Date.now() - started;
   const assets = await page.evaluate(() =>
     performance.getEntriesByType("resource").map((entry) => ({

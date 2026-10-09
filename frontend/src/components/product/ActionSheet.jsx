@@ -13,6 +13,7 @@ import {
 import { OUTCOMES } from "../../features/product/useWorkspace";
 import { EVENT_NAMES } from "./Timeline";
 import { Dialog } from "./Dialog";
+import { ConsentPrompt } from "../../features/farms/ConsentPrompt";
 const CHOICES = [
   ["farmer_observation", ClipboardCheck, "Something I noticed"],
   ["irrigation", Droplets, "I watered the field"],
@@ -36,7 +37,9 @@ export function ActionSheet({ workspace: w, onClose }) {
     [value, setValue] = useState("");
   return (
     <Dialog
-      title={kind ? EVENT_NAMES[kind] : tx("What would you like to record?")}
+      title={
+        kind ? tx(EVENT_NAMES[kind]) : tx("What would you like to record?")
+      }
       onClose={onClose}
       className="action-sheet"
     >
@@ -123,12 +126,13 @@ export function ActionSheet({ workspace: w, onClose }) {
           >
             {tx("Save field update")}
           </button>
-          {!w.consents.includes("agronomic_analysis") && !w.offline && (
-            <p>
-              {tx("Enable field analysis in")}{" "}
-              <a href="/app/more/settings">{tx("Settings")}</a>{" "}
-              {tx("to save observations.")}
-            </p>
+          {!w.offline && (
+            <ConsentPrompt
+              workspace={w}
+              purposes={["agronomic_analysis"]}
+              title="Allow Krishyak to keep your field notes"
+              reason="Your notes are saved privately with this field and used to suggest next steps. You can turn this off in Settings."
+            />
           )}
         </form>
       )}

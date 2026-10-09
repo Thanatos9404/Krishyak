@@ -69,6 +69,12 @@ test.beforeAll(async ({ browser }, info) => {
     firefox: "+919000000002",
     webkit: "+919000000003",
   }[info.project.name];
+  // Passkeys are the primary sign-in; synthetic SMS identities sit behind it.
+  const sms = page.getByText("Sign in with a code sent by SMS", {
+    exact: true,
+  });
+  if (!(await page.getByLabel("Mobile number", { exact: true }).isVisible()))
+    await sms.click();
   await page
     .getByLabel("Mobile number", { exact: true })
     .fill(`${mobile.slice(0, 3)} ${mobile.slice(3, 8)} ${mobile.slice(8)}`);
@@ -248,16 +254,13 @@ test("revision-aware field edits, completed cycle and reported soil evidence", a
   ).toBeVisible();
 });
 
-test("unsupported crop photo, feedback, private download, deletion and official-benefit limits", async () => {
+test("crop photo check, plain result, feedback, private download, deletion and official-benefit limits", async () => {
   await navigation("Scan").click();
-  await expect(
-    page
-      .getByRole("combobox", { name: "Crop", exact: true })
-      .locator('option[value="wheat"]'),
-  ).toHaveCount(1);
-  await page
-    .getByRole("combobox", { name: "Crop", exact: true })
-    .selectOption("wheat");
+  const cropChoice = page.getByRole("combobox", { name: "Crop", exact: true });
+  // Only crops the photo model supports are offered; wheat is not one of them.
+  await expect(cropChoice.locator('option[value="tomato"]')).toHaveCount(1);
+  await expect(cropChoice.locator('option[value="wheat"]')).toHaveCount(0);
+  await cropChoice.selectOption("tomato");
   await page.getByLabel("Choose crop photo", { exact: true }).setInputFiles({
     name: "synthetic-pixel.png",
     mimeType: "image/png",
@@ -269,12 +272,16 @@ test("unsupported crop photo, feedback, private download, deletion and official-
   await page
     .getByRole("button", { name: "Check this photograph", exact: true })
     .click();
+  // A 1-pixel synthetic image cannot be a confident diagnosis; any outcome
+  // must lead with a plain heading and the free expert helpline.
   await expect(
-    page.getByRole("heading", {
-      name: "No supported classification",
-      exact: true,
+    page.locator(".scan-result").getByRole("heading", {
+      name: /Looks like|No common disease|could not tell/,
     }),
-  ).toBeVisible();
+  ).toBeVisible({ timeout: 30000 });
+  await expect(
+    page.getByRole("link", { name: /Kisan Call Centre/ }),
+  ).toHaveAttribute("href", "tel:18001801551");
   await page.getByRole("button", { name: "Not sure", exact: true }).click();
   await expect(page.getByText("Your feedback was saved.")).toBeVisible();
   const download = page.waitForEvent("download");
@@ -453,6 +460,11 @@ test("consent-aware public context, denied GPS and reviewed voice remain usable 
   await expect(gps).toBeEnabled();
   await page.setViewportSize({ width: 320, height: 740 });
   await page.goto("/app/farm");
+  await page
+    .getByText("Soil estimates, weather and schemes for an area", {
+      exact: true,
+    })
+    .click();
   const card = page.locator(".farm-context-card");
   await card
     .getByRole("combobox", { name: "State or union territory", exact: true })
@@ -496,6 +508,13 @@ test("consent-aware public context, denied GPS and reviewed voice remain usable 
   await expect(
     card.getByRole("button", { name: "Load area context", exact: true }),
   ).toBeEnabled();
+  // This journey covers the browser speech engine; a configured server
+  // speech service (preferred when present) is covered separately.
+  await page.route("**/api/v2/speech/capabilities", (route) =>
+    route.fulfill({
+      json: { configured: false, stt_languages: [], tts_languages: [] },
+    }),
+  );
   await page.evaluate(() => {
     window.SpeechRecognition = class {
       start() {
@@ -584,7 +603,7 @@ test("offline reload, idempotent synchronization and logout clears private recor
   await page.getByRole("button", { name: "Sign out", exact: true }).click();
   await expect(
     page.getByRole("heading", {
-      name: "A good day starts with a clearer picture.",
+      name: "Your fields, crops and prices in one place.",
       exact: true,
     }),
   ).toBeVisible();
@@ -597,7 +616,7 @@ test("offline reload, idempotent synchronization and logout clears private recor
   await page.reload();
   await expect(
     page.getByRole("heading", {
-      name: "A good day starts with a clearer picture.",
+      name: "Your fields, crops and prices in one place.",
       exact: true,
     }),
   ).toBeVisible();

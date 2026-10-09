@@ -132,6 +132,7 @@ function PlotEditor({ plot, busy, offline, act, reload }) {
         : "",
     ),
     [areaUnit, setAreaUnit] = useState("acre"),
+    [bigha, setBigha] = useState(null),
     [areaEdited, setAreaEdited] = useState(false),
     [boundary, setBoundary] = useState(plot.boundary || null),
     [irrigation, setIrrigation] = useState(plot.irrigation_type || "");
@@ -159,7 +160,7 @@ function PlotEditor({ plot, busy, offline, act, reload }) {
                 name,
                 entered_area_hectares: areaEdited
                   ? area
-                    ? toHectares(area, areaUnit)
+                    ? toHectares(area, areaUnit, bigha)
                     : null
                   : plot.entered_area_hectares,
                 boundary: geometry,
@@ -189,6 +190,8 @@ function PlotEditor({ plot, busy, offline, act, reload }) {
           }}
           unit={areaUnit}
           onUnitChange={setAreaUnit}
+          bigha={bigha}
+          onBighaChange={setBigha}
           required={!boundary}
         />
         <BoundaryEditor value={boundary} onChange={setBoundary} />
