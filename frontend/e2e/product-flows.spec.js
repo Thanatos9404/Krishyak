@@ -573,6 +573,9 @@ test("offline reload, idempotent synchronization and logout clears private recor
   await expect(
     page.getByRole("button", { name: "Record an update", exact: true }),
   ).toBeVisible();
+  // Let Today finish loading and storing its offline snapshot before the
+  // outage; disconnecting mid-save would test nothing about restoration.
+  await page.waitForLoadState("networkidle");
   await disconnected(true);
   await page.reload();
   await expect(
