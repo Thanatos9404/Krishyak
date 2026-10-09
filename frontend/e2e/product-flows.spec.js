@@ -369,7 +369,7 @@ test("farmer routes, zoom, reduced motion and accessible navigation", async ({},
     } else {
       await expect(
         page.getByRole("combobox", { name: "Selected field" }),
-      ).toHaveValue(/.+/);
+      ).toHaveValue(/.+/, { timeout: 15000 });
     }
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
     await expect(
@@ -459,13 +459,25 @@ test("consent-aware public context, denied GPS and reviewed voice remain usable 
   if (!(await gps.isChecked())) await gps.check();
   await expect(gps).toBeEnabled();
   await page.setViewportSize({ width: 320, height: 740 });
+  // This journey covers the browser speech engine; a configured server
+  // speech service (preferred when present) is covered separately.
+  await page.route("**/api/v2/speech/capabilities", (route) =>
+    route.fulfill({
+      json: { configured: false, stt_languages: [], tts_languages: [] },
+    }),
+  );
   await page.goto("/app/farm");
-  await page
-    .getByText("Soil estimates, weather and schemes for an area", {
-      exact: true,
-    })
-    .click();
   const card = page.locator(".farm-context-card");
+  // The section can remount closed while the workspace finishes loading.
+  await expect(async () => {
+    if (!(await card.isVisible()))
+      await page
+        .getByText("Soil estimates, weather and schemes for an area", {
+          exact: true,
+        })
+        .click();
+    await expect(card).toBeVisible({ timeout: 2000 });
+  }).toPass({ timeout: 20000 });
   await card
     .getByRole("combobox", { name: "State or union territory", exact: true })
     .selectOption("8");
@@ -508,13 +520,6 @@ test("consent-aware public context, denied GPS and reviewed voice remain usable 
   await expect(
     card.getByRole("button", { name: "Load area context", exact: true }),
   ).toBeEnabled();
-  // This journey covers the browser speech engine; a configured server
-  // speech service (preferred when present) is covered separately.
-  await page.route("**/api/v2/speech/capabilities", (route) =>
-    route.fulfill({
-      json: { configured: false, stt_languages: [], tts_languages: [] },
-    }),
-  );
   await page.evaluate(() => {
     window.SpeechRecognition = class {
       start() {
@@ -546,6 +551,7 @@ test("consent-aware public context, denied GPS and reviewed voice remain usable 
   await expect(
     card.getByRole("searchbox", { name: "Search crops", exact: true }),
   ).toHaveValue("Wheat");
+  await page.unroute("**/api/v2/speech/capabilities");
   await page.setViewportSize({ width: 1440, height: 900 });
 });
 

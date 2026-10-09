@@ -93,7 +93,7 @@ test("static farmer entry in every configured language, RTL, fonts, keyboard and
       ).toBe(true);
       // Browsers without WebAuthn get a translated explanation instead.
       const webauthn = await page.evaluate(() =>
-        Boolean(window.PublicKeyCredential),
+        Boolean(window.PublicKeyCredential && navigator.credentials?.create),
       );
       await expect(
         webauthn

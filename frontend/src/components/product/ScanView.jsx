@@ -254,6 +254,7 @@ export function ScanView({ workspace: w }) {
                 setResult(null);
               }}
             >
+              {!model && <option value="">{tx("Loading crops…")}</option>}
               {supported.map((row) => (
                 <option key={row.id} value={row.id}>
                   {tx(row.label)}

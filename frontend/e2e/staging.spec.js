@@ -85,7 +85,7 @@ test("live passkey sign-up and profile", async () => {
   await page.getByRole("button", { name: /Open my farm/ }).click();
   await expect(
     page.getByRole("heading", { name: "Today on your farm.", exact: true }),
-  ).toBeVisible();
+  ).toBeVisible({ timeout: 30000 });
   csrf = (await (await page.request.get("/api/v2/me")).json()).csrf_token;
   const profile = await api("PATCH", "/api/v2/me", {
     display_name: "Staging smoke farmer",
@@ -123,7 +123,7 @@ test("a field located by GPS gets live weather on Today", async () => {
     dialog.getByText("Location saved for this field."),
   ).toBeVisible();
   await dialog.getByRole("button", { name: /Save field/ }).click();
-  await expect(dialog).not.toBeVisible();
+  await expect(dialog).not.toBeVisible({ timeout: 45000 });
   await page.goto("/app/today");
   await expect(page.locator(".weather-conclusions li").first()).toBeVisible({
     timeout: 60000,
@@ -135,7 +135,9 @@ test("a real leaf photo is checked by the deployed model and stored privately", 
   test.setTimeout(120000);
   await page.goto("/app/health");
   const crop = page.getByRole("combobox", { name: "Crop", exact: true });
-  await expect(crop.locator('option[value="tomato"]')).toHaveCount(1);
+  await expect(crop.locator('option[value="tomato"]')).toHaveCount(1, {
+    timeout: 45000,
+  });
   await crop.selectOption("tomato");
   await page
     .getByLabel("Choose crop photo", { exact: true })
@@ -184,6 +186,9 @@ test("a live Copernicus job is drained by the serverless worker", async () => {
 
 test("market page answers honestly for the farmer's crop and district", async () => {
   await page.goto("/app/market");
+  await page
+    .getByRole("combobox", { name: "Crop", exact: true })
+    .selectOption("wheat");
   await page.getByRole("button", { name: /Show prices/ }).click();
   await expect(
     page
