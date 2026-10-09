@@ -33,6 +33,15 @@ for directory in (ROOT / "backend/v2", ROOT / "backend/remote_sensing"):
         for node in nodes:
             if isinstance(node, ast.Constant) and isinstance(node.value, str) and " " in node.value and not node.value.startswith(("https:", "SELECT ", "INSERT ", "UPDATE ", "DELETE ")):
                 records.append({"source": node.value, "file": str(file.relative_to(ROOT)).replace("\\", "/"), "line": node.lineno})
+# Farmer-facing disease names, causes and care steps shown after a photo check.
+guidance_file = ROOT / "backend/v2/disease_guidance.json"
+guidance = json.loads(guidance_file.read_text(encoding="utf-8"))
+guidance_path = str(guidance_file.relative_to(ROOT)).replace("\\", "/")
+for text in guidance["common_steps"]:
+    records.append({"source": text, "file": guidance_path, "line": 1})
+for entry in guidance["classes"].values():
+    for text in [entry["name"], entry["cause"], *entry["steps"]]:
+        records.append({"source": text, "file": guidance_path, "line": 1})
 output = ROOT / "docs/release/SERVER_STRING_INVENTORY.json"
 output.write_text(json.dumps(records, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 print(f"Extracted {len(records)} static server message references")

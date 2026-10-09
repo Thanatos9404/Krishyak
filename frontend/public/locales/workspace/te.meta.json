@@ -1,11 +1,11 @@
 {
   "provider": "Sarvam + Codex",
   "model": "sarvam-translate:v1",
-  "generated_at": "2026-10-04T18:16:16.064781+00:00",
-  "source_sha256": "19cd61e440de48721da3977ea52add413e447df5ca5e370c1824b86d38b69fe2",
-  "pack_sha256": "97433a7f512f3b330bba3f52fefddfeedd5071f87f042f0774f39ab5714e1206",
+  "generated_at": "2026-10-09T09:07:30.432157+00:00",
+  "source_sha256": "08d9a4828a3efb18bf482d2ff33dca35abfdd2e7dd706aee3978bf26ba66facc",
+  "pack_sha256": "fbb43cade6c6ee74e3c7190f3a2ab9ada506c2936f01c87e90995f6788c8aca6",
   "glossary_sha256": "1cb7a8df2b9cfaa66adae2b4cdd96a6462644012dfbbe009628aab32ca4acbd1",
-  "strings": 1767,
+  "strings": 1978,
   "review_status": "machine_translated_needs_native_review",
   "additions": {
     "provider": "Codex",

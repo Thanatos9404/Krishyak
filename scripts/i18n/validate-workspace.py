@@ -20,6 +20,9 @@ CRITICAL = {
     "Save account details", "Choose your language", "Read today’s advice aloud",
     "Your account. Your decisions.", "Start with a clear photograph.",
     "Prices with a place and a date.", "No voice is available for this language. Written advice remains available.",
+    "Your fields, crops and prices in one place.", "Sign in with fingerprint or screen lock",
+    "New here? Create my account", "Create account", "Write down your recovery code",
+    "Check a sick plant", "Mandi prices", "What to do next", "Weather",
 }
 BLOCKS = {
     "as": [(0x980, 0x9FF)], "bn": [(0x980, 0x9FF)],

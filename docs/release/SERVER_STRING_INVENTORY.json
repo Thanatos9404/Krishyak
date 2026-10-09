@@ -2,7 +2,7 @@
   {
     "source": "Core storage or usage controls unavailable",
     "file": "backend/v2/application.py",
-    "line": 165
+    "line": 191
   },
   {
     "source": "Untrusted request origin",
@@ -40,14 +40,14 @@
     "line": 134
   },
   {
-    "source": "Map an approximate field boundary to request local weather",
+    "source": "Add your field's location to see local weather",
     "file": "backend/v2/context.py",
-    "line": 192
+    "line": 193
   },
   {
     "source": "Field changed during weather retrieval; retry",
     "file": "backend/v2/context.py",
-    "line": 223
+    "line": 226
   },
   {
     "source": "Operation ID already used with other soil evidence",
@@ -72,32 +72,32 @@
   {
     "source": "Operation ID already used for other evidence",
     "file": "backend/v2/context.py",
-    "line": 198
+    "line": 199
   },
   {
     "source": "Operation ID already used for other evidence",
     "file": "backend/v2/context.py",
-    "line": 229
+    "line": 232
   },
   {
     "source": "Model conditions are not a field weather-station measurement",
     "file": "backend/v2/context.py",
-    "line": 246
+    "line": 249
   },
   {
     "source": "Forecast rain is not observed rainfall",
     "file": "backend/v2/context.py",
-    "line": 247
+    "line": 250
   },
   {
     "source": "Provider forecasts and weather models have uncertainty",
     "file": "backend/v2/context.py",
-    "line": 248
+    "line": 251
   },
   {
     "source": "Commercial use requires a separately approved provider/license",
     "file": "backend/v2/context.py",
-    "line": 249
+    "line": 252
   },
   {
     "source": "No universal farm health score",
@@ -352,12 +352,12 @@
   {
     "source": "Cached evidence has expired; refresh before acting",
     "file": "backend/v2/farm_context/transport.py",
-    "line": 161
+    "line": 162
   },
   {
     "source": "This source is unavailable. Other sections remain usable.",
     "file": "backend/v2/farm_context/transport.py",
-    "line": 175
+    "line": 176
   },
   {
     "source": "This is public program information, not eligibility approval",
@@ -452,217 +452,302 @@
   {
     "source": "Optional approved government login",
     "file": "backend/v2/government_auth.py",
-    "line": 250
+    "line": 251
   },
   {
     "source": "Government login is not configured. Use phone sign-in.",
     "file": "backend/v2/government_auth.py",
-    "line": 252
+    "line": 253
   },
   {
     "source": "Government login is not configured. Use phone sign-in.",
     "file": "backend/v2/government_auth.py",
-    "line": 109
+    "line": 110
   },
   {
     "source": "Government login state storage unavailable",
     "file": "backend/v2/government_auth.py",
-    "line": 128
+    "line": 129
   },
   {
     "source": "Government login verification failed",
     "file": "backend/v2/government_auth.py",
-    "line": 150
+    "line": 151
   },
   {
     "source": "Government account link requires the original signed-in account",
     "file": "backend/v2/government_auth.py",
-    "line": 299
+    "line": 300
   },
   {
     "source": "Government account link requires the original signed-in account",
     "file": "backend/v2/government_auth.py",
-    "line": 311
+    "line": 312
   },
   {
     "source": "Government identity is already linked to another account",
     "file": "backend/v2/government_auth.py",
-    "line": 314
+    "line": 315
   },
   {
     "source": "This account already has a different government identity link",
     "file": "backend/v2/government_auth.py",
-    "line": 321
+    "line": 322
   },
   {
     "source": "Sign in by phone and link your government account first",
     "file": "backend/v2/government_auth.py",
-    "line": 327
+    "line": 328
   },
   {
     "source": "Account unavailable",
     "file": "backend/v2/government_auth.py",
-    "line": 330
+    "line": 331
   },
   {
     "source": "Government identity link changed. Sign in by phone and review the link.",
     "file": "backend/v2/government_auth.py",
-    "line": 336
+    "line": 337
   },
   {
     "source": "Government login state storage unavailable",
     "file": "backend/v2/government_auth.py",
-    "line": 126
+    "line": 127
   },
   {
     "source": "Government login expired or verification failed",
     "file": "backend/v2/government_auth.py",
-    "line": 159
+    "line": 160
   },
   {
     "source": "Government login could not be verified. Use phone sign-in.",
     "file": "backend/v2/government_auth.py",
-    "line": 221
+    "line": 222
   },
   {
     "source": "External performance differs from internal evaluation",
     "file": "backend/v2/images.py",
-    "line": 64
+    "line": 97
   },
   {
     "source": "Scores are uncalibrated",
     "file": "backend/v2/images.py",
-    "line": 65
+    "line": 98
   },
   {
     "source": "Severity and field health are not measured",
     "file": "backend/v2/images.py",
-    "line": 66
+    "line": 99
   },
   {
     "source": "Model score is not calibrated disease probability",
     "file": "backend/v2/images.py",
-    "line": 146
+    "line": 181
   },
   {
     "source": "Healthy-class prediction does not rule out disease",
     "file": "backend/v2/images.py",
-    "line": 147
+    "line": 182
   },
   {
     "source": "Classification does not measure field severity",
     "file": "backend/v2/images.py",
-    "line": 148
+    "line": 183
   },
   {
     "source": "Chemical treatment and dosing require locally applicable expert/label verification",
     "file": "backend/v2/images.py",
-    "line": 149
+    "line": 184
   },
   {
     "source": "Image not found",
     "file": "backend/v2/images.py",
-    "line": 74
+    "line": 107
   },
   {
     "source": "Agronomist role required",
     "file": "backend/v2/images.py",
-    "line": 272
+    "line": 307
   },
   {
     "source": "Sign in again before expert review",
     "file": "backend/v2/images.py",
-    "line": 274
+    "line": 309
   },
   {
     "source": "Consented image not found",
     "file": "backend/v2/images.py",
-    "line": 318
+    "line": 353
   },
   {
     "source": "Correction must match the active classifier label set",
     "file": "backend/v2/images.py",
-    "line": 321
+    "line": 356
   },
   {
     "source": "Consented image not found",
     "file": "backend/v2/images.py",
-    "line": 368
+    "line": 403
   },
   {
     "source": "Photo processing is busy; retry shortly",
     "file": "backend/v2/images.py",
-    "line": 31
+    "line": 64
   },
   {
     "source": "Classifier metadata unavailable",
     "file": "backend/v2/images.py",
-    "line": 50
+    "line": 83
   },
   {
     "source": "Use a valid single JPEG, PNG or WebP image within size and dimension limits",
     "file": "backend/v2/images.py",
-    "line": 96
+    "line": 129
   },
   {
     "source": "Operation ID already used for another photograph",
     "file": "backend/v2/images.py",
-    "line": 105
+    "line": 138
   },
   {
     "source": "Photo storage unavailable; retry later",
     "file": "backend/v2/images.py",
-    "line": 161
+    "line": 196
   },
   {
     "source": "Operation ID already used for another photograph",
     "file": "backend/v2/images.py",
-    "line": 172
+    "line": 207
   },
   {
     "source": "Photo unavailable; retry later",
     "file": "backend/v2/images.py",
-    "line": 238
+    "line": 273
   },
   {
     "source": "Operation ID already used for other feedback",
     "file": "backend/v2/images.py",
-    "line": 259
+    "line": 294
   },
   {
     "source": "Operation ID already used for another review",
     "file": "backend/v2/images.py",
-    "line": 332
+    "line": 367
   },
   {
     "source": "Photo unavailable; retry later",
     "file": "backend/v2/images.py",
-    "line": 372
+    "line": 407
   },
   {
     "source": "Request limit reached; retry later",
     "file": "backend/v2/limits.py",
-    "line": 52
+    "line": 55
   },
   {
     "source": "Usage controls unavailable",
     "file": "backend/v2/limits.py",
-    "line": 43
+    "line": 46
   },
   {
     "source": "Usage controls unavailable; retry later",
     "file": "backend/v2/limits.py",
-    "line": 40
+    "line": 43
   },
   {
     "source": "Usage controls busy",
     "file": "backend/v2/limits.py",
-    "line": 48
+    "line": 51
+  },
+  {
+    "source": "Reported wholesale mandi prices; your actual offer depends on quality, quantity and buyer.",
+    "file": "backend/v2/market.py",
+    "line": 304
+  },
+  {
+    "source": "A trend compares quotes from the same market, variety and grade only.",
+    "file": "backend/v2/market.py",
+    "line": 305
+  },
+  {
+    "source": "Market prices are not available in this deployment",
+    "file": "backend/v2/market.py",
+    "line": 252
+  },
+  {
+    "source": "Choose a crop that is traded in mandis",
+    "file": "backend/v2/market.py",
+    "line": 257
   },
   {
     "source": "Notification not found",
     "file": "backend/v2/notifications.py",
     "line": 40
+  },
+  {
+    "source": "Passkey sign-in is unavailable",
+    "file": "backend/v2/passkeys.py",
+    "line": 88
+  },
+  {
+    "source": "Recovery code is not valid",
+    "file": "backend/v2/passkeys.py",
+    "line": 106
+  },
+  {
+    "source": "Sign-in request expired; try again",
+    "file": "backend/v2/passkeys.py",
+    "line": 141
+  },
+  {
+    "source": "Confirm it is you: sign in again to change sign-in methods",
+    "file": "backend/v2/passkeys.py",
+    "line": 149
+  },
+  {
+    "source": "This passkey is already registered",
+    "file": "backend/v2/passkeys.py",
+    "line": 195
+  },
+  {
+    "source": "This passkey is not registered with Krishyak",
+    "file": "backend/v2/passkeys.py",
+    "line": 299
+  },
+  {
+    "source": "Account unavailable",
+    "file": "backend/v2/passkeys.py",
+    "line": 316
+  },
+  {
+    "source": "Recovery code is not valid",
+    "file": "backend/v2/passkeys.py",
+    "line": 336
+  },
+  {
+    "source": "Remove an old device before adding another",
+    "file": "backend/v2/passkeys.py",
+    "line": 362
+  },
+  {
+    "source": "Device not found",
+    "file": "backend/v2/passkeys.py",
+    "line": 386
+  },
+  {
+    "source": "Keep at least one device so you can still sign in",
+    "file": "backend/v2/passkeys.py",
+    "line": 390
+  },
+  {
+    "source": "This passkey could not be verified; try again",
+    "file": "backend/v2/passkeys.py",
+    "line": 189
+  },
+  {
+    "source": "This passkey could not be verified; try again",
+    "file": "backend/v2/passkeys.py",
+    "line": 312
   },
   {
     "source": "Record counts are not measured agronomic impact",
@@ -772,152 +857,252 @@
   {
     "source": "Farm accounts are not yet available",
     "file": "backend/v2/router.py",
-    "line": 40
+    "line": 41
   },
   {
     "source": "Consent required for ",
     "file": "backend/v2/router.py",
-    "line": 64
+    "line": 65
   },
   {
     "source": "Verification expired or invalid; request a new code",
     "file": "backend/v2/router.py",
-    "line": 143
+    "line": 151
   },
   {
     "source": "Verification expired or invalid; request a new code",
     "file": "backend/v2/router.py",
-    "line": 157
+    "line": 165
   },
   {
     "source": "Incorrect or expired verification code",
     "file": "backend/v2/router.py",
-    "line": 168
+    "line": 176
   },
   {
     "source": "Account unavailable",
     "file": "backend/v2/router.py",
-    "line": 177
+    "line": 185
   },
   {
     "source": "Use account deletion to end account processing",
     "file": "backend/v2/router.py",
-    "line": 250
+    "line": 258
   },
   {
     "source": "Maximum 100 farms per account reached",
     "file": "backend/v2/router.py",
-    "line": 317
+    "line": 325
   },
   {
     "source": "Farm changed on another device; refresh before saving",
     "file": "backend/v2/router.py",
-    "line": 330
+    "line": 338
   },
   {
     "source": "Field changed on another device; refresh before saving",
     "file": "backend/v2/router.py",
-    "line": 410
+    "line": 424
   },
   {
     "source": "Crop cycle not found",
     "file": "backend/v2/router.py",
-    "line": 489
+    "line": 503
   },
   {
     "source": "Crop cycle changed; refresh before saving",
     "file": "backend/v2/router.py",
-    "line": 491
+    "line": 505
   },
   {
     "source": "Crop cycle overlaps another active or planned cycle",
     "file": "backend/v2/router.py",
-    "line": 501
+    "line": 515
   },
   {
     "source": "Crop cycle not found",
     "file": "backend/v2/router.py",
-    "line": 515
+    "line": 529
   },
   {
     "source": "Operation ID already used for another farm",
     "file": "backend/v2/router.py",
-    "line": 314
+    "line": 322
   },
   {
     "source": "Operation ID already used for another crop cycle",
     "file": "backend/v2/router.py",
-    "line": 439
+    "line": 453
   },
   {
     "source": "Crop cycle overlaps an existing active or planned cycle",
     "file": "backend/v2/router.py",
-    "line": 451
+    "line": 465
   },
   {
     "source": "Operation ID already used with different evidence",
     "file": "backend/v2/router.py",
-    "line": 533
+    "line": 547
   },
   {
     "source": "Not independently verified",
     "file": "backend/v2/router.py",
-    "line": 544
+    "line": 558
   },
   {
     "source": "Farm storage unavailable; retry later",
     "file": "backend/v2/router.py",
-    "line": 47
+    "line": 48
   },
   {
     "source": "Field geometry exceeds supported limits",
     "file": "backend/v2/router.py",
-    "line": 364
+    "line": 378
   },
   {
     "source": "Operation ID already used for another field",
     "file": "backend/v2/router.py",
-    "line": 391
+    "line": 405
   },
   {
     "source": "Map a field boundary before requesting imagery",
     "file": "backend/v2/satellite.py",
-    "line": 63
+    "line": 64
   },
   {
     "source": "Draw an approximate field boundary before satellite analysis",
     "file": "backend/v2/satellite.py",
-    "line": 98
+    "line": 100
   },
   {
     "source": "Satellite observations are unavailable. You can still record field observations.",
     "file": "backend/v2/satellite.py",
-    "line": 108
+    "line": 110
   },
   {
     "source": "Field extent exceeds supported satellite processing limits",
     "file": "backend/v2/satellite.py",
-    "line": 81
+    "line": 82
   },
   {
     "source": "Operation ID already used for another satellite request",
     "file": "backend/v2/satellite.py",
-    "line": 103
+    "line": 105
   },
   {
-    "source": "Select a supported pilot language",
+    "source": "Select a supported language",
     "file": "backend/v2/speech.py",
-    "line": 30
+    "line": 53
+  },
+  {
+    "source": "Private dictation requires a bounded WAV recording",
+    "file": "backend/v2/speech.py",
+    "line": 56
+  },
+  {
+    "source": "Account changed during speech processing",
+    "file": "backend/v2/speech.py",
+    "line": 94
+  },
+  {
+    "source": "Invalid speech audio",
+    "file": "backend/v2/tts.py",
+    "line": 67
+  },
+  {
+    "source": "Speech service unavailable",
+    "file": "backend/v2/tts.py",
+    "line": 38
+  },
+  {
+    "source": "Speech service unavailable",
+    "file": "backend/v2/tts.py",
+    "line": 62
+  },
+  {
+    "source": "Invalid speech audio",
+    "file": "backend/v2/tts.py",
+    "line": 83
+  },
+  {
+    "source": "Invalid speech configuration",
+    "file": "backend/v2/tts.py",
+    "line": 121
+  },
+  {
+    "source": "Speech unavailable for the selected language",
+    "file": "backend/v2/tts.py",
+    "line": 218
+  },
+  {
+    "source": "Speech unavailable for the selected language",
+    "file": "backend/v2/tts.py",
+    "line": 252
+  },
+  {
+    "source": "Speech unavailable for the selected language",
+    "file": "backend/v2/tts.py",
+    "line": 259
+  },
+  {
+    "source": "Speech service unavailable; retry later",
+    "file": "backend/v2/tts.py",
+    "line": 270
+  },
+  {
+    "source": "Speech service busy; retry later",
+    "file": "backend/v2/tts.py",
+    "line": 272
+  },
+  {
+    "source": "Speech service unavailable; retry later",
+    "file": "backend/v2/tts.py",
+    "line": 189
+  },
+  {
+    "source": "Invalid speech audio",
+    "file": "backend/v2/tts.py",
+    "line": 233
+  },
+  {
+    "source": "Speech service unavailable",
+    "file": "backend/v2/tts.py",
+    "line": 296
+  },
+  {
+    "source": "Speech usage limit reached; retry later",
+    "file": "backend/v2/tts.py",
+    "line": 47
+  },
+  {
+    "source": "Speech service unavailable",
+    "file": "backend/v2/tts.py",
+    "line": 49
+  },
+  {
+    "source": "Invalid speech response",
+    "file": "backend/v2/tts.py",
+    "line": 51
+  },
+  {
+    "source": "Speech response too large",
+    "file": "backend/v2/tts.py",
+    "line": 56
   },
   {
     "source": "Satellite processing completed",
     "file": "backend/v2/worker.py",
-    "line": 239
+    "line": 242
   },
   {
     "source": "Review the latest field evidence and its quality before taking action.",
     "file": "backend/v2/worker.py",
-    "line": 240
+    "line": 243
+  },
+  {
+    "source": "Not found",
+    "file": "backend/v2/worker_http.py",
+    "line": 54
   },
   {
     "source": "Gridded model reanalysis, not a measurement at the farm.",
@@ -933,5 +1118,560 @@
     "source": "No irrigation, disease, crop species or soil nutrient inference.",
     "file": "backend/remote_sensing/climate.py",
     "line": 96
+  },
+  {
+    "source": "Check several plants across the field before deciding how widespread it is.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Ask your local agriculture officer, Krishi Vigyan Kendra or the Kisan Call Centre (1800-180-1551) before any spraying.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Apple scab",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "fungus",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Collect and destroy fallen infected leaves.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Prune to let air and sunlight into the tree.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Apple black rot",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "fungus",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Cut out dead branches and cankers.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Remove dried, shrivelled fruit from the tree and ground.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Apple rust",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "fungus",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Remove nearby juniper or cedar hosts where practical.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Collect and destroy badly affected leaves.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Powdery mildew (cherry)",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "fungus",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Prune crowded shoots to improve air flow.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Remove heavily coated leaves.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Grey leaf spot (maize)",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "fungus",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Plough in or remove old maize residue after harvest.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Rotate with a non-cereal crop next season.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Common rust (maize)",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "fungus",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Note how many plants show rust pustules.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Choose a rust-tolerant variety next season.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Leaf blight (maize)",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "fungus",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Remove or plough in infected residue after harvest.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Rotate crops and use a tolerant variety next season.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Black rot (grape)",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "fungus",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Remove mummified berries and infected leaves.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Keep the canopy open for air flow.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Esca / black measles (grape)",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "fungus",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Mark affected vines and prune out dead wood in dry weather.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Clean pruning tools between vines.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Leaf spot (grape)",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "fungus",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Remove spotted leaves and fallen debris.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Avoid wetting leaves when irrigating.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Citrus greening",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "bacteria spread by psyllid insects",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "There is no cure for infected trees; get it confirmed by an expert.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Watch for small psyllid insects on new shoots and report them.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Bacterial spot (peach)",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "bacteria",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Prune to improve air flow.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Avoid overhead irrigation.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Bacterial spot (capsicum)",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "bacteria",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Remove badly spotted leaves.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Avoid working among plants when they are wet.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Use healthy, certified seed or seedlings next season.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Early blight (potato)",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "fungus",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Remove lower leaves with target-like brown spots.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Keep the crop well fed and avoid water stress.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Late blight (potato)",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "fungus-like organism; spreads fast in cool, wet weather",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Act quickly: it can spread across a field in days in cool, humid weather.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Remove and destroy infected plants; do not leave them in the field.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Contact your agriculture officer or the Kisan Call Centre today.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Powdery mildew (gourds)",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "fungus",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Remove heavily coated leaves.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Give plants more space for air flow.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Leaf scorch (strawberry)",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "fungus",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Remove infected leaves.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Avoid overhead irrigation.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Bacterial spot (tomato)",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "bacteria",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Remove badly spotted leaves.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Avoid splashing water on leaves.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Use healthy seedlings next season.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Early blight (tomato)",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "fungus",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Remove lower leaves with brown ring-like spots.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Mulch the soil so splashes do not reach the leaves.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Rotate away from tomato, potato and chilli next season.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Late blight (tomato)",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "fungus-like organism; spreads fast in cool, wet weather",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Act quickly: it can spread across a field in days in cool, humid weather.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Remove and destroy infected plants.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Contact your agriculture officer or the Kisan Call Centre today.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Leaf mould (tomato)",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "fungus",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Improve air flow by pruning and wider spacing.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Reduce humidity in protected cultivation.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Septoria leaf spot (tomato)",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "fungus",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Remove spotted lower leaves.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Avoid wetting leaves when irrigating.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Spider mites (tomato)",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "tiny mites",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Look under leaves for tiny moving dots and fine webbing.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Remove badly infested leaves; mites increase in hot, dry weather.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Target spot (tomato)",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "fungus",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Remove infected lower leaves.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Improve air flow between plants.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Leaf curl virus (tomato)",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "virus spread by whiteflies",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "There is no cure for infected plants; pull out and destroy badly affected plants early.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Check for whiteflies under leaves; use yellow sticky traps to monitor them.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Mosaic virus (tomato)",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "virus",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Pull out and destroy infected plants.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Wash hands and tools after handling infected plants; avoid tobacco use near plants.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
   }
 ]

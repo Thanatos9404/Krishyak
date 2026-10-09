@@ -69,7 +69,20 @@ async def generate(report):
     glossary_text = (ROOT / "scripts/i18n/glossary.json").read_text(encoding="utf-8")
     source = json.loads(source_text)
     labels.GLOSSARY = json.loads(glossary_text)["preserve"]
-    protected = [labels.protect(text) for text in source.values()]
+    output = ROOT / "frontend/public/locales/workspace"
+    # Keys are the English source text, so an existing Arabic-script label for
+    # the same key is still a translation of the same text. Only new labels are
+    # submitted; the glossary must be unchanged for reuse to be valid.
+    previous, previous_meta = {}, {}
+    if (output / "sd.json").exists() and (output / "sd.meta.json").exists():
+        previous_meta = json.loads((output / "sd.meta.json").read_text(encoding="utf-8"))
+        if previous_meta.get("glossary_sha256") == labels.digest(glossary_text):
+            previous = json.loads((output / "sd.json").read_text(encoding="utf-8"))
+    pending = [key for key in source if key not in previous]
+    report.update(reused_labels=len(source) - len(pending), submitted_labels=len(pending))
+    if not pending:
+        raise ValueError("No new Sindhi labels to translate")
+    protected = [labels.protect(source[key]) for key in pending]
     characters = sum(len(text) for text, _mapping in protected)
     estimate = max(1, math.ceil(characters * 5 / 1000))
     if characters > MAX_CHARACTERS or estimate > MAX_CREDITS:
@@ -173,18 +186,21 @@ async def generate(report):
             raise ValueError("Invalid translated document")
         parser = Paragraphs()
         parser.feed(response.content.decode("utf-8"))
-        expected = {f"row-{index}" for index in range(len(source))}
+        expected = {f"row-{index}" for index in range(len(pending))}
         if set(parser.rows) != expected or parser.current is not None:
             raise ValueError("Translated document key set changed")
-        pack = {
-            key: labels.restore(parser.rows[f"row-{index}"], original, protected[index][1])
-            for index, (key, original) in enumerate(source.items())
+        fresh = {
+            key: labels.restore(parser.rows[f"row-{index}"], source[key], protected[index][1])
+            for index, key in enumerate(pending)
         }
-        letters = [char for value in pack.values() for char in value if char.isalpha()]
-        fraction = sum(0x600 <= ord(char) <= 0x6FF for char in letters) / max(1, len(letters))
-        if fraction < 0.5:
+        pack = {key: fresh[key] if key in fresh else previous[key] for key in source}
+        def arabic_fraction(values):
+            letters = [char for value in values for char in value if char.isalpha()]
+            return sum(0x600 <= ord(char) <= 0x6FF for char in letters) / max(1, len(letters))
+
+        fraction = arabic_fraction(pack.values())
+        if fraction < 0.5 or arabic_fraction(fresh.values()) < 0.5:
             raise ValueError("Sindhi Arabic script coverage failed")
-        output = ROOT / "frontend/public/locales/workspace"
         labels.atomic_json(output / "sd.json", pack)
         labels.atomic_json(
             output / "sd.meta.json",
@@ -202,6 +218,8 @@ async def generate(report):
             },
         )
         report.update(status="published", strings=len(pack), arabic_script_fraction=round(fraction, 4))
+        # A completed job must not block the next incremental publication.
+        STATE.unlink(missing_ok=True)
 
 
 async def main():
