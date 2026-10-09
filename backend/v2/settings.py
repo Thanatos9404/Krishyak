@@ -21,10 +21,12 @@ class Settings(BaseModel):
     twilio_account: SecretStr = SecretStr("")
     twilio_token: SecretStr = SecretStr("")
     twilio_service: str = ""
-    storage_provider: Literal["local", "s3"] = "local"
+    passkey_enabled: bool = True
+    storage_provider: Literal["local", "s3", "vercel_blob"] = "local"
     storage_root: Path = Path(__file__).resolve().parents[1] / "data" / "v2-objects"
     s3_bucket: str = ""
     s3_endpoint: str = ""
+    blob_token: SecretStr = SecretStr("")
     redis_url: SecretStr = SecretStr("")
     session_seconds: int = Field(default=1800, ge=300, le=3600)
     refresh_seconds: int = Field(default=604800, ge=3600, le=2592000)
@@ -33,6 +35,10 @@ class Settings(BaseModel):
     satellite_schedule_enabled: bool = False
     satellite_schedule_plots_per_day: int = Field(default=10, ge=1, le=50)
     worker_stale_seconds: int = Field(default=600, ge=600, le=3600)
+    # "dedicated" runs `python -m v2.worker`; "request" drains the durable queue
+    # inside API invocations plus an authenticated scheduled trigger (serverless).
+    worker_mode: Literal["dedicated", "request"] = "dedicated"
+    cron_secret: SecretStr = SecretStr("")
 
     @property
     def deployed(self) -> bool:
@@ -59,6 +65,12 @@ class Settings(BaseModel):
             raise ValueError("Browser origins must be exact origins without paths or credentials")
         if self.otp_provider == "development" and (self.deployed or not self.dev_mobiles):
             raise ValueError("Development OTP requires fixed test identities in development/test")
+        if self.worker_mode == "request" and len(self.cron_secret.get_secret_value()) < 32:
+            raise ValueError("Request worker mode requires a CRON_SECRET of at least 32 characters")
+        if self.storage_provider == "vercel_blob" and not self.blob_token.get_secret_value().startswith(
+            "vercel_blob_rw_"
+        ):
+            raise ValueError("Vercel Blob storage requires a read-write store token")
         if self.otp_provider == "twilio" and not all(
             (self.twilio_account.get_secret_value(), self.twilio_token.get_secret_value(), self.twilio_service)
         ):
@@ -70,13 +82,15 @@ class Settings(BaseModel):
                 "verify-full",
             }:
                 raise ValueError("Deployed PostgreSQL requires TLS")
+            if self.otp_provider != "twilio" and not self.passkey_enabled:
+                raise ValueError("Deployed V2 requires passkey sign-in or production OTP")
+            if self.otp_provider == "development":
+                raise ValueError("Development OTP is prohibited in deployments")
             if (
-                self.otp_provider != "twilio"
-                or self.storage_provider != "s3"
-                or not self.s3_bucket
+                not ((self.storage_provider == "s3" and self.s3_bucket) or self.storage_provider == "vercel_blob")
                 or not self.redis_url.get_secret_value()
             ):
-                raise ValueError("Deployed V2 requires production OTP, private S3 storage and Redis")
+                raise ValueError("Deployed V2 requires private object storage and Redis")
             if any(not x.startswith("https://") for x in self.origins):
                 raise ValueError("Deployed browser origins must use HTTPS")
             if self.s3_endpoint and not self.s3_endpoint.startswith("https://"):
@@ -104,10 +118,14 @@ class Settings(BaseModel):
             storage_root=os.getenv("V2_STORAGE_ROOT") or str(cls.model_fields["storage_root"].default),
             s3_bucket=os.getenv("V2_S3_BUCKET", ""),
             s3_endpoint=os.getenv("V2_S3_ENDPOINT", ""),
+            blob_token=os.getenv("BLOB_READ_WRITE_TOKEN", ""),
+            passkey_enabled=os.getenv("V2_PASSKEY_ENABLED", "true").lower() == "true",
             redis_url=os.getenv("V2_REDIS_URL", ""),
             image_retention_days=os.getenv("V2_IMAGE_RETENTION_DAYS") or 365,
             audit_retention_days=os.getenv("V2_AUDIT_RETENTION_DAYS") or 180,
             satellite_schedule_enabled=os.getenv("V2_SATELLITE_SCHEDULE_ENABLED", "false").lower() == "true",
             satellite_schedule_plots_per_day=os.getenv("V2_SATELLITE_SCHEDULE_PLOTS_PER_DAY") or 10,
             worker_stale_seconds=os.getenv("V2_WORKER_STALE_SECONDS") or 600,
+            worker_mode=os.getenv("V2_WORKER_MODE") or ("request" if os.getenv("VERCEL") == "1" else "dedicated"),
+            cron_secret=os.getenv("CRON_SECRET", ""),
         )

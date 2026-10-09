@@ -40,9 +40,13 @@ export default function AccountDetails({
     <>
       <h3>{tx("My account details")}</h3>
       <p>
-        {tx(
-          "Your mobile number is used for sign-in. You can use a preferred name; location details below are optional.",
-        )}
+        {farmer.mobile
+          ? tx(
+              "Your verified mobile number is used for sign-in. You can use a preferred name; location details below are optional.",
+            )
+          : tx(
+              "You sign in with your phone's fingerprint or screen lock. You can use a preferred name; your state and district help show local mandi prices.",
+            )}
       </p>
       <form
         onSubmit={(event) => {

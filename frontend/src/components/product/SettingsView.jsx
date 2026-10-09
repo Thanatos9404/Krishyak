@@ -8,6 +8,9 @@ import { GovernmentLogin } from "./GovernmentLogin";
 const AccountDetails = deferredFeature(
   () => import("../../features/farms/AccountDetails"),
 );
+const SignInDevices = deferredFeature(
+  () => import("../../features/farms/SignInDevices"),
+);
 const PendingPanel = deferredFeature(
   () => import("../../features/farms/PendingPanel"),
 );
@@ -189,6 +192,7 @@ export function SettingsView({ workspace: w }) {
           />
         </details>
       </section>
+      <SignInDevices workspace={w} />
       <section className="product-card">
         <AccountDetails
           farmer={w.farmer}

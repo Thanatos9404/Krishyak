@@ -18,12 +18,9 @@ export function GovernmentLogin({ workspace: w, link = false }) {
       .catch(() => {});
     return () => controller.abort();
   }, []);
-  if (!status?.available)
-    return (
-      <p className="small">
-        {tx("Government login is not configured. Use phone sign-in.")}
-      </p>
-    );
+  // MeriPehchaan needs an approved partner registration. Until it is
+  // configured, say nothing rather than advertise a sign-in that cannot work.
+  if (!status?.available) return null;
   const start = () =>
     w.act(async () => {
       setError("");
@@ -45,7 +42,7 @@ export function GovernmentLogin({ workspace: w, link = false }) {
         window.location.assign(url.toString());
       } catch {
         setError(
-          tx("Government login could not be verified. Use phone sign-in."),
+          tx("Government login could not be started. Use your usual sign-in."),
         );
       }
     });
@@ -53,7 +50,9 @@ export function GovernmentLogin({ workspace: w, link = false }) {
     <div className="government-login">
       <p>
         {tx(
-          "MeriPehchaan login is optional. First sign in by phone and link your government account. No government documents are requested.",
+          link
+            ? "Link your MeriPehchaan account to this Krishyak account. No government documents are requested."
+            : "Already linked MeriPehchaan to your Krishyak account? You can use it to sign in. No government documents are requested.",
         )}
       </p>
       <button
