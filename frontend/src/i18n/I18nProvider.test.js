@@ -102,3 +102,46 @@ describe('runtime locale coverage', () => {
     expect(missing).toEqual([]);
   });
 });
+
+describe('legacy provider inside the workspace', () => {
+  const { act, render, screen, waitFor } = require('@testing-library/react');
+  const { I18nProvider, useTranslation } = require('./I18nProvider');
+  const React = require('react');
+
+  const Probe = () => {
+    const { t, language } = useTranslation();
+    return React.createElement('pre', { 'data-testid': 'probe', 'data-language': language },
+      VISIBLE_TRANSLATION_KEYS.map((key) => t(key) || '').join('\n'));
+  };
+
+  test('Sindhi never shows the Devanagari machine pack in its right-to-left Perso-Arabic interface', async () => {
+    expect(SARVAM_LOCALE_LOADERS.sd).toBeUndefined();
+    render(React.createElement(I18nProvider, { preferredLanguage: 'sd' }, React.createElement(Probe)));
+    await waitFor(() => expect(screen.getByTestId('probe').dataset.language).toBe('sd'));
+    const text = screen.getByTestId('probe').textContent;
+    expect(text).toMatch(/[؀-ۿ]/);
+    expect(text).not.toMatch(/[ऀ-ॿ]/);
+  });
+
+  test('a nested provider leaves html lang, dir and the saved preference to the workspace', async () => {
+    document.documentElement.lang = 'en-IN';
+    document.documentElement.dir = 'ltr';
+    localStorage.removeItem('krishyak_language');
+    render(React.createElement(I18nProvider, { preferredLanguage: 'ur' }, React.createElement(Probe)));
+    await waitFor(() => expect(screen.getByTestId('probe').dataset.language).toBe('ur'));
+    await act(async () => {});
+    expect(document.documentElement.dir).toBe('ltr');
+    expect(document.documentElement.lang).toBe('en-IN');
+    expect(localStorage.getItem('krishyak_language')).toBeNull();
+  });
+
+  test('a standalone provider still owns html lang and dir', async () => {
+    document.documentElement.dir = 'ltr';
+    localStorage.setItem('krishyak_language', 'ur');
+    render(React.createElement(I18nProvider, null, React.createElement(Probe)));
+    await waitFor(() => expect(document.documentElement.dir).toBe('rtl'));
+    expect(document.documentElement.lang).toBe('ur-IN');
+    localStorage.removeItem('krishyak_language');
+    document.documentElement.dir = 'ltr';
+  });
+});

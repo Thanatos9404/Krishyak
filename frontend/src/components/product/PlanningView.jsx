@@ -155,7 +155,6 @@ function PlanningContent({ workspace: w }) {
             <Dashboard
               simulationData={simulation.data?.simulation}
               formData={simulation.formData}
-              crops={crops}
             />
           )}{" "}
           {view === "compare" && (

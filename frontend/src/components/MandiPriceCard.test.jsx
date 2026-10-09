@@ -55,3 +55,26 @@ test("a stale result cannot replace the latest crop filter result", async () => 
   await act(async () => finish({ success: true, prices: [] }));
   expect(screen.getByText("mandi.fetchError")).toBeTruthy();
 });
+
+test("a single day's min-max spread is never shown as a price trend", async () => {
+  fetchMandiPrices.mockResolvedValue({
+    success: true,
+    fetched_at: "2026-10-01T06:00:00Z",
+    prices: [
+      {
+        commodity: "Tomato",
+        market: "Azadpur",
+        district: "Delhi",
+        state: "Delhi",
+        min_price: 1000,
+        max_price: 3000,
+        modal_price: 2000,
+        arrival_date: "01/10/2026",
+      },
+    ],
+  });
+  render(<MandiPriceCard commodity="Tomato" />);
+  const modalPrice = await screen.findByText("2000");
+  // The old card drew an up arrow beside the modal price for any spread > 10%.
+  expect(modalPrice.parentElement.querySelector("svg")).toBeNull();
+});

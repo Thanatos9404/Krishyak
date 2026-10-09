@@ -1,5 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { getSpeechCapabilities, speechError, transcribeAudio } from '../api/speechApi';
+
+// Recording hook for an authenticated, consent-gated speech transport
+// (features/product/workspaceSpeech). The former unauthenticated
+// /api/public/speech client was removed; without a transport the hook reports
+// that recording is unsupported and never contacts a provider.
+const speechError = (error, fallback, limitMessage) =>
+  (error?.status ?? error?.response?.status) === 429 ? (limitMessage || fallback) : fallback;
 
 export const STATUS = { IDLE: 'idle', LISTENING: 'listening', PROCESSING: 'processing', ERROR: 'error', NO_SUPPORT: 'no_support' };
 const canRecord = () => typeof navigator !== 'undefined' && !!navigator.mediaDevices?.getUserMedia && typeof MediaRecorder !== 'undefined';
@@ -8,7 +14,7 @@ export default function useSarvamRecognition({ speechCode = 'en-IN', errorMessag
   const [status, setStatus] = useState(STATUS.IDLE);
   const [transcript, setTranscript] = useState('');
   const [error, setError] = useState(null);
-  const [isSupported, setSupported] = useState(canRecord);
+  const [isSupported, setSupported] = useState(() => Boolean(transport) && canRecord());
   const [activeSpeechCode, setActiveSpeechCode] = useState(speechCode);
   const recording = useRef(null);
   const stream = useRef(null);
@@ -35,8 +41,8 @@ export default function useSarvamRecognition({ speechCode = 'en-IN', errorMessag
     cancel();
     setTranscript('');
     setStatus(STATUS.IDLE);
-    if (!canRecord()) { setSupported(false); return () => { alive = false; cancel(); }; }
-    (transport?.capabilities || getSpeechCapabilities)().then((caps) => {
+    if (!transport || !canRecord()) { setSupported(false); return () => { alive = false; cancel(); }; }
+    transport.capabilities().then((caps) => {
       if (alive) setSupported(caps.configured && caps.stt_languages.includes(speechCode.split('-')[0]));
     }).catch(() => { if (alive) setSupported(false); });
     return () => { alive = false; cancel(); };
@@ -87,7 +93,7 @@ export default function useSarvamRecognition({ speechCode = 'en-IN', errorMessag
         setStatus(STATUS.PROCESSING);
         const controller = new AbortController(); request.current = controller;
         try {
-          const result = await (transport?.transcribe || transcribeAudio)(new Blob(chunks, { type: mime }), code, controller.signal);
+          const result = await transport.transcribe(new Blob(chunks, { type: mime }), code, controller.signal);
           if (sequence.current !== id) return;
           if (!result.transcript?.trim()) throw new Error('No speech detected.');
           setTranscript(result.transcript);

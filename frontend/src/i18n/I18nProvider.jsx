@@ -479,6 +479,10 @@ export const I18nProvider = ({ children, preferredLanguage }) => {
   const [isLoading, setIsLoading] = useState(true);
   const cacheRef = useRef({ en: initialEnglishRef.current });
   const requestRef = useRef(0);
+  // Nested inside the workspace (preferredLanguage supplied), ProductLocale owns
+  // <html lang/dir> and the saved preference; only a standalone provider writes them.
+  const ownsDocumentRef = useRef(preferredLanguage === undefined);
+  ownsDocumentRef.current = preferredLanguage === undefined;
 
   const loadLanguage = useCallback(async (code) => {
     const safeCode = SUPPORTED_LANGUAGES[code] ? code : DEFAULT_LANGUAGE;
@@ -513,8 +517,10 @@ export const I18nProvider = ({ children, preferredLanguage }) => {
       if (requestId !== requestRef.current) return false;
       setMessages(nextMessages);
       setCurrentLanguage(langCode);
-      saveLanguagePreference(langCode);
-      applyDocumentLanguage(langCode);
+      if (ownsDocumentRef.current) {
+        saveLanguagePreference(langCode);
+        applyDocumentLanguage(langCode);
+      }
       return true;
     } catch (error) {
       console.error(`[i18n] Could not load ${langCode}`, error);

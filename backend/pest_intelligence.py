@@ -1,20 +1,18 @@
 """
 Pest & Disease Intelligence Module
 Provides:
-1. Pest data collection from multiple sources (government APIs, farmer reports)
-2. Pest pattern analysis and correlation with weather/geography
-3. Outbreak prediction based on historical data and current conditions
+1. A curated pest reference table by crop (PEST_DATABASE)
+2. Seasonal risk from each pest's documented peak months
+3. An uncalibrated weather/season suitability index for caller-supplied observations
+
+No government, regional or farmer-report outbreak feed is integrated.
 """
 
-import os
-import json
 import math
-import hashlib
+from dataclasses import asdict, dataclass
 from datetime import datetime, timedelta
-from dataclasses import dataclass, field, asdict
-from typing import List, Dict, Any, Optional
 from enum import Enum
-from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 # ============================================================================
 # DATA MODELS
@@ -25,60 +23,6 @@ class PestSeverity(str, Enum):
     MEDIUM = "medium"
     HIGH = "high"
     CRITICAL = "critical"
-
-class AlertSource(str, Enum):
-    GOVERNMENT = "government"
-    FARMER = "farmer"
-    PREDICTION = "prediction"
-    HISTORICAL = "historical"
-
-@dataclass
-class PestAlert:
-    """Active pest alert"""
-    id: str
-    pest_name: str
-    scientific_name: str
-    crop: str
-    severity: PestSeverity
-    region: str
-    district: str
-    source: AlertSource
-    description: str
-    recommendations: List[str]
-    timestamp: datetime
-    expires: Optional[datetime] = None
-    
-    def to_dict(self) -> dict:
-        return {
-            **asdict(self),
-            "severity": self.severity.value,
-            "source": self.source.value,
-            "timestamp": self.timestamp.isoformat(),
-            "expires": self.expires.isoformat() if self.expires else None
-        }
-
-@dataclass
-class FarmerReport:
-    """Farmer-submitted pest sighting"""
-    id: str
-    farmer_id: str  # Anonymous ID
-    pest_type: str
-    crop: str
-    severity: PestSeverity
-    location: Dict[str, float]  # lat, lng
-    district: str
-    state: str
-    description: str
-    photo_url: Optional[str] = None
-    timestamp: datetime = field(default_factory=datetime.now)
-    verified: bool = False
-    
-    def to_dict(self) -> dict:
-        return {
-            **asdict(self),
-            "severity": self.severity.value,
-            "timestamp": self.timestamp.isoformat()
-        }
 
 @dataclass
 class OutbreakPrediction:
@@ -260,41 +204,6 @@ PEST_DATABASE = {
     }
 }
 
-# State-wise pest hotspots (mock data simulating government data)
-STATE_PEST_HOTSPOTS = {
-    "Punjab": ["wheat_aphid", "rice_stem_borer", "cotton_whitefly"],
-    "Haryana": ["wheat_termite", "rice_bph", "cotton_bollworm"],
-    "Uttar Pradesh": ["sugarcane_shoot_borer", "rice_leaf_folder", "wheat_aphid"],
-    "Maharashtra": ["cotton_pink_bollworm", "sugarcane_woolly_aphid", "soybean_girdle_beetle"],
-    "Gujarat": ["cotton_bollworm", "groundnut_leaf_miner", "castor_semilooper"],
-    "Andhra Pradesh": ["rice_bph", "cotton_whitefly", "chilli_thrips"],
-    "Tamil Nadu": ["rice_stem_borer", "groundnut_red_hairy_caterpillar", "sugarcane_top_borer"],
-    "Karnataka": ["rice_gall_midge", "cotton_bollworm", "ragi_aphid"],
-    "West Bengal": ["rice_bph", "jute_semilooper", "potato_tuber_moth"],
-    "Madhya Pradesh": ["soybean_girdle_beetle", "wheat_aphid", "cotton_bollworm"]
-}
-
-
-# ============================================================================
-# PEST DATA COLLECTOR
-# ============================================================================
-
-class PestDataCollector:
-    """Collect pest data from multiple sources"""
-    
-    def __init__(self):
-        self.govt_api_url = os.getenv("GOVT_PEST_API_URL", "")
-        self.icar_api_key = os.getenv("ICAR_API_KEY", "")
-    
-    def get_government_alerts(self, state: str, district: str = None) -> List[PestAlert]:
-        """No verified government feed is integrated. An empty list means unavailable."""
-        return []
-
-    def get_historical_outbreaks(self, crop: str, state: str, years: int = 3) -> List[Dict]:
-        """Do not manufacture historical outbreaks from seasonal rules."""
-        return []
-
-
 # ============================================================================
 # PEST ANALYZER
 # ============================================================================
@@ -312,7 +221,7 @@ class PestAnalyzer:
         if crop_lower not in PEST_DATABASE:
             return 0.3  # Default moderate risk
         
-        for pest_id, pest_info in PEST_DATABASE[crop_lower].items():
+        for pest_info in PEST_DATABASE[crop_lower].values():
             if pest_name.lower() in pest_info["common_name"].lower():
                 conditions = pest_info.get("favorable_conditions", {})
                 
@@ -355,7 +264,7 @@ class PestAnalyzer:
         active_pests = []
         max_risk = "low"
         
-        for pest_id, pest_info in PEST_DATABASE[crop_lower].items():
+        for pest_info in PEST_DATABASE[crop_lower].values():
             if current_month in pest_info.get("peak_months", []):
                 active_pests.append({
                     "name": pest_info["common_name"],
@@ -376,23 +285,6 @@ class PestAnalyzer:
             "active_pests": active_pests
         }
     
-    def get_risk_by_location(self, lat: float, lng: float, crop: str) -> Dict[str, Any]:
-        """
-        Get pest risk based on geographic location.
-        Uses approximate state detection from coordinates.
-        """
-        return {
-            "state": None, "crop": crop, "available": False,
-            "location_risk": None, "regional_threats": [],
-            "coordinates": {"lat": lat, "lng": lng},
-            "reason": "Verified regional outbreak observations are not integrated."
-        }
-
-    def _detect_state(self, lat: float, lng: float) -> Optional[str]:
-        """No state assertion without an administrative boundary/geocoding source."""
-        return None
-
-
 # ============================================================================
 # OUTBREAK PREDICTOR
 # ============================================================================
@@ -401,7 +293,6 @@ class OutbreakPredictor:
     """Predict pest outbreak probability based on multiple factors"""
     
     def __init__(self):
-        self.collector = PestDataCollector()
         self.analyzer = PestAnalyzer()
     
     def predict_outbreak(self, crop: str, weather: Dict[str, float], 
@@ -426,7 +317,7 @@ class OutbreakPredictor:
         
         current_month = datetime.now().month
         
-        for pest_id, pest_info in PEST_DATABASE[crop_lower].items():
+        for pest_info in PEST_DATABASE[crop_lower].values():
             # Factor 1: Seasonal risk
             seasonal_risk = 0.3
             if current_month in pest_info.get("peak_months", []):
@@ -496,19 +387,8 @@ class PestIntelligenceService:
     """Main service class combining all pest intelligence functionality"""
     
     def __init__(self):
-        self.collector = PestDataCollector()
         self.analyzer = PestAnalyzer()
         self.predictor = OutbreakPredictor()
-    
-    def get_alerts(self, state: str, district: str = None, crop: str = None) -> List[Dict]:
-        """Get active pest alerts for a region"""
-        alerts = self.collector.get_government_alerts(state, district)
-        
-        # Filter by crop if specified
-        if crop:
-            alerts = [a for a in alerts if a.crop.lower() == crop.lower()]
-        
-        return [a.to_dict() for a in alerts]
     
     def get_predictions(self, crop: str, weather: Dict, lat: float, lng: float) -> List[Dict]:
         """Get outbreak predictions"""
@@ -519,9 +399,6 @@ class PestIntelligenceService:
         """Get current seasonal pest risk"""
         return self.analyzer.get_seasonal_risk(crop)
     
-    def get_history(self, crop: str, state: str, years: int = 3) -> List[Dict]:
-        """Get historical outbreak data"""
-        return self.collector.get_historical_outbreaks(crop, state, years)
 
 
 # Singleton instance

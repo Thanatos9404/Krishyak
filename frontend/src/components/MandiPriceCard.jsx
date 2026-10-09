@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useTranslation } from "../i18n";
 import {
-  TrendingUp,
-  TrendingDown,
+  Store,
   MapPin,
   RefreshCw,
   AlertCircle,
@@ -75,18 +74,6 @@ const MandiPriceCard = ({
 
   const displayPrices = expanded ? prices : prices.slice(0, maxItems);
 
-  const getPriceChangeIcon = (minPrice, maxPrice) => {
-    const range = maxPrice - minPrice;
-    const percentageRange = (range / minPrice) * 100;
-
-    if (percentageRange > 10) {
-      return <TrendingUp className="w-4 h-4 text-green-500" />;
-    } else if (percentageRange < 3) {
-      return <TrendingDown className="w-4 h-4 text-red-500" />;
-    }
-    return null;
-  };
-
   if (loading) {
     return (
       <div className={`bg-white rounded-xl shadow-lg p-6 ${className}`}>
@@ -137,7 +124,7 @@ const MandiPriceCard = ({
       <div className="bg-gradient-to-r from-green-600 to-green-700 p-4">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-semibold text-white flex items-center">
-            <TrendingUp className="w-5 h-5 mr-2" />
+            <Store className="w-5 h-5 mr-2" aria-hidden="true" />
             {t("mandi.title")}
           </h3>
           <button
@@ -185,7 +172,8 @@ const MandiPriceCard = ({
                     <span className="font-semibold text-green-700">
                       {formatIndianPrice(item.modal_price)}
                     </span>
-                    {getPriceChangeIcon(item.min_price, item.max_price)}
+                    {/* No trend indicator: a single day's min-max spread is not
+                        a price movement. A dated, history-based trend belongs here. */}
                   </div>
                   <div className="text-xs text-gray-500">
                     {formatIndianPrice(item.min_price)} -{" "}

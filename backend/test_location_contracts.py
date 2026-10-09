@@ -17,8 +17,10 @@ class LocationContracts(unittest.IsolatedAsyncioTestCase):
         by_name.clear()
         self.assertTrue(await gov.fetch_districts('Punjab'))
 
-    def test_shared_catalog_and_national_state_coverage(self):
-        source = Path(__file__).resolve().parents[1] / 'frontend/src/data/location_suggestions.json'
+    def test_catalog_and_national_state_coverage(self):
+        # The frontend copy of this catalogue was removed with the unreachable
+        # registration form; the backend file is now the only source.
+        source = Path(__file__).resolve().parent / 'data/location_suggestions.json'
         self.assertEqual(gov.LOCATION_SUGGESTIONS, json.loads(source.read_text(encoding='utf-8')))
         self.assertEqual({s['name'] for s in gov.get_all_states()}, {s['name'] for s in gov.LOCATION_SUGGESTIONS['states']})
         self.assertEqual(len(gov.get_all_states()), 36)

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Mic, X, Check, RefreshCw, AlertCircle, Type, MicOff, Square } from 'lucide-react';
 import useVoiceRecognition, { parseVoiceCommand, STATUS } from '../hooks/useVoiceRecognition';
 import { useTranslation } from '../i18n';
+import { useProductLocale } from '../features/product/ProductLocale';
 import { trapDialogFocus } from '../utils/dialogFocus';
 
 const CROP_TRANSLATION_KEYS = {
@@ -31,7 +32,10 @@ const SOIL_TRANSLATION_KEYS = {
  * - Works offline via text input
  */
 const VoiceInputModal = ({ isOpen, onClose, onApply }) => {
-  const { t, languageInfo, speechCode, speechCodes } = useTranslation();
+  const { t, languageInfo, speechCode } = useTranslation();
+  // The privacy notice comes from the workspace pack, which already describes
+  // browser speech processing in every workspace language.
+  const { tx } = useProductLocale();
   const [parsedData, setParsedData] = useState({});
   const [showResults, setShowResults] = useState(false);
   const [inputMode, setInputMode] = useState('voice'); // 'voice' or 'text'
@@ -65,7 +69,6 @@ const VoiceInputModal = ({ isOpen, onClose, onApply }) => {
   ].filter(Boolean), [localizedTerms]);
 
   const errorMessages = useMemo(() => ({
-    limitReached: t('speech.limitReached'),
     microphoneDenied: t('voiceErrors.microphoneDenied') || t('voice.notSupported'),
     noMicrophone: t('voiceErrors.noMicrophone') || t('voice.notSupported'),
     network: t('voiceErrors.network') || t('voice.notSupported'),
@@ -78,7 +81,7 @@ const VoiceInputModal = ({ isOpen, onClose, onApply }) => {
   const {
     isListening, transcript, error, isSupported, status, startListening,
     stopListening, resetTranscript, setManualTranscript, confidence, activeSpeechCode,
-  } = useVoiceRecognition({ speechCode, speechCodes, phraseHints, errorMessages });
+  } = useVoiceRecognition({ speechCode, phraseHints, errorMessages });
 
   useEffect(() => {
     if (!isOpen) resetTranscript();
@@ -263,7 +266,7 @@ const VoiceInputModal = ({ isOpen, onClose, onApply }) => {
                 <>
                   {/* Mic Button */}
                   <div className="flex flex-col items-center py-6">
-                    <p className="mb-4 max-w-sm text-center text-xs text-gray-600">{t('speech.privacyNotice')}</p>
+                    <p className="mb-4 max-w-sm text-center text-xs text-gray-600">{tx("Your browser's speech service processes this recording. Krishyak does not save the audio.")}</p>
                     {isListening ? (
                       <button
                         onClick={handleStop}

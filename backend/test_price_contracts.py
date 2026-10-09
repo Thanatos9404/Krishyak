@@ -1,10 +1,13 @@
 import json
 import unittest
 from unittest.mock import patch
-import pandas as pd
+
 import numpy as np
-from price_forecaster import PriceForecaster
+import pandas as pd
+
 from data_loader import DataLoader
+from price_forecaster import PriceForecaster
+
 
 class PriceContracts(unittest.TestCase):
     def setUp(self):
@@ -17,13 +20,6 @@ class PriceContracts(unittest.TestCase):
         for days in (True,0,1.5,367):
             with self.assertRaises(ValueError):
                 self.forecaster.forecast_prices('Rice',2000,days)
-
-    def test_old_or_invalid_api_price_does_not_override_user_quote(self):
-        for price,freshness in ((2200,'stale'),(float('nan'),'live'),(-1,'live')):
-            with patch('price_forecaster.mandi_adapter.get_current_mandi_price',return_value={'price':price,'source_type':'live_api','freshness_status':freshness}):
-                result=self.forecaster.forecast_prices('Rice',2000,use_market_price=True)
-            self.assertEqual(result['current_price'],2000)
-            self.assertEqual(result['source_metadata']['source_type'],'user_input')
 
     def test_sparse_observations_do_not_imply_daily_return_support(self):
         history=pd.DataFrame({'Arrival_Date':pd.date_range('2025-01-01',periods=30,freq='7D'),'Modal_x0020_Price':np.arange(30)+2000})

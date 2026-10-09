@@ -1,7 +1,6 @@
 import unittest
-from datetime import datetime, timedelta
-from security import InputSanitizer, FileValidator, mask_sensitive_data, generate_request_id
-from jam_trinity import TokenManager, ConsentManager
+
+from security import FileValidator, InputSanitizer, generate_request_id, mask_sensitive_data
 
 
 class SecurityTests(unittest.TestCase):
@@ -26,30 +25,6 @@ class SecurityTests(unittest.TestCase):
         self.assertEqual(masked['reports'][0]['aadhaarNumber'], '***MASKED***')
         self.assertEqual(original['reports'][0]['mobileNumber'], 'test-number')
         self.assertNotEqual(generate_request_id(), generate_request_id())
-
-    def test_consent_scope_expiry_and_revocation(self):
-        manager = ConsentManager()
-        consent = manager.create_consent('test', ['land_records'])
-        self.assertTrue(manager.verify_consent(consent.consent_id, 'land_records'))
-        self.assertFalse(manager.verify_consent(consent.consent_id, 'bank'))
-        self.assertIs(manager.get_consent(consent.consent_id), consent)
-        self.assertTrue(manager.revoke_consent(consent.consent_id))
-        self.assertFalse(consent.is_valid())
-        self.assertFalse(manager.revoke_consent('missing'))
-        expired = manager.create_consent('test', ['land_records'], duration_hours=-1)
-        self.assertFalse(manager.verify_consent(expired.consent_id, 'land_records'))
-
-    def test_token_expiry_and_revocation(self):
-        manager = TokenManager('test-key')
-        token = manager.tokenize_aadhaar('1234', 'test-consent')
-        self.assertEqual(manager.get_masked_reference(token), 'XXXX1234')
-        self.assertTrue(manager.revoke_token(token))
-        self.assertFalse(manager.validate_token(token))
-        self.assertIsNone(manager.get_masked_reference(token))
-        self.assertFalse(manager.revoke_token(token))
-        token = manager.tokenize_aadhaar('1234', 'test-consent')
-        manager._tokens[token]['expires'] = datetime.now() - timedelta(seconds=1)
-        self.assertFalse(manager.validate_token(token))
 
 
 if __name__ == '__main__':

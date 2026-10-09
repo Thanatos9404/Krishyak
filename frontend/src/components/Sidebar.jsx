@@ -3,7 +3,6 @@ import { Info, Mic, Sprout } from 'lucide-react';
 import AccordionSection from './AccordionSection';
 import WeatherCard from './WeatherCard';
 import VoiceInputModal from './VoiceInputModal';
-import SoilDataCard from './SoilDataCard';
 import { useTranslation } from '../i18n';
 const Sidebar = ({
   formData,
@@ -24,7 +23,6 @@ const Sidebar = ({
   // Accordion state - Basic Information is expanded by default
   const [expandedSections, setExpandedSections] = useState({
     basic: true,
-    soil: false,
     weather: false,
     fertilizer: false,
     irrigation: false,
@@ -144,17 +142,6 @@ const Sidebar = ({
               </label>
               <input type="number" value={formData.area_hectares} onChange={e => handleChange('area_hectares', parseFloat(e.target.value))} min="0.1" step="0.1" className="input-farm" id={`${inputId}-scenario-2`} />
             </div>
-          </AccordionSection>
-
-          {/* Soil Sensor Data Section */}
-          <AccordionSection title={t('soilSensor.title') || 'Soil Sensor Data'} icon={null} isExpanded={expandedSections.soil} sectionId="soil" onToggle={() => toggleSection('soil')}>
-            <SoilDataCard deviceId="default" onDataUpdate={data => {
-            // Update fertilizer recommendations based on soil data
-            if (data && data.nitrogen !== undefined) {
-              // Could auto-adjust fertilizer mix based on soil NPK
-              console.log('Soil data updated:', data);
-            }
-          }} />
           </AccordionSection>
 
           {/* Weather Conditions Section */}
