@@ -23,6 +23,7 @@ from db.models import (
     Observation,
     Plot,
     Session,
+    WebAuthnChallenge,
     WorkerHeartbeat,
     utcnow,
 )
@@ -290,6 +291,7 @@ def cleanup_once(factory, settings):
                 deletion.status = "retry" if deletion.attempts < 10 else "failed"
                 deletion.available_at = utcnow() + timedelta(seconds=min(3600, 30 * 2**deletion.attempts))
         db.execute(delete(AuthChallenge).where(AuthChallenge.expires_at < utcnow() - timedelta(days=1)))
+        db.execute(delete(WebAuthnChallenge).where(WebAuthnChallenge.expires_at < utcnow() - timedelta(hours=1)))
         db.execute(delete(Session).where(Session.refresh_expires_at < utcnow()))
 
 

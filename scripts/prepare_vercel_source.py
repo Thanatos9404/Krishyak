@@ -1,5 +1,5 @@
 """Prepare a clean, linked Vercel monorepo upload without changing project roots.
-Only tracked component files are copied; secrets, caches and authoring assets are
+Only tracked or new non-ignored component files are copied; secrets, caches and authoring assets are
 excluded. Run after committing source. Existing local project linkage is required.
 """
 import argparse
@@ -19,10 +19,11 @@ def prepare(component):
     stage=Path(tempfile.mkdtemp(prefix=f'vercel-{component}-',dir=staging))
     ignore=source/'.vercelignore'
     patterns=[line.strip().rstrip('/') for line in ignore.read_text().splitlines() if line.strip() and not line.lstrip().startswith('#')] if ignore.exists() else []
-    files=subprocess.check_output(['git','ls-files',component],cwd=root,text=True).splitlines()
+    files=subprocess.check_output(['git','ls-files','--cached','--others','--exclude-standard',component],cwd=root,text=True).splitlines()
     size=0
     for name in files:
         relative=name.removeprefix(component+'/')
+        if not (root/name).is_file(): continue
         if any(fnmatch.fnmatch(relative,p) or relative.startswith(p+'/') for p in patterns): continue
         if any(part in {'.env','.vercel','node_modules','venv','__pycache__','build'} for part in Path(relative).parts) or Path(relative).name.startswith('.env'): continue
         target=stage/name; target.parent.mkdir(parents=True,exist_ok=True)

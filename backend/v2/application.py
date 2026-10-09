@@ -9,7 +9,7 @@ from fastapi.responses import JSONResponse
 from sqlalchemy import text
 
 from db.session import make_database
-from security import normalize_request_id
+from security import client_ip, normalize_request_id
 
 from .context import router as context_router
 from .farm_context.router import router as farm_context_router
@@ -19,7 +19,9 @@ from .government_auth import MeriPehchaanAdapter
 from .government_auth import router as government_auth_router
 from .images import router as images_router
 from .limits import Quotas
+from .market import router as market_router
 from .notifications import router as notifications_router
+from .passkeys import router as passkeys_router
 from .pilots import router as pilots_router
 from .rights import router as rights_router
 from .router import router
@@ -27,6 +29,7 @@ from .satellite import router as satellite_router
 from .settings import Settings
 from .speech import router as speech_router
 from .tts import ReadAloud
+from .worker_http import router as worker_router
 
 
 def install_v2(app, settings=None):
@@ -44,8 +47,16 @@ def install_v2(app, settings=None):
         app.state.v2_farm_context = FarmContextService(app.state.v2_quotas)
         app.state.v2_planning_slots = asyncio.Semaphore(2)
         app.state.v2_read_aloud = ReadAloud()
+        from remote_sensing.router import get_service
+
+        from .usage import satellite_budget
+
+        get_service().budget = satellite_budget(app.state.v2_quotas)
     app.state.v2_government_auth = MeriPehchaanAdapter(settings, getattr(app.state, "v2_quotas", None))
     app.include_router(router)
+    app.include_router(passkeys_router)
+    app.include_router(worker_router)
+    app.include_router(market_router)
     app.include_router(satellite_router)
     app.include_router(images_router)
     app.include_router(rights_router)
@@ -105,7 +116,7 @@ def install_v2(app, settings=None):
         if request.url.path.startswith("/api/v2"):
             if settings.enabled:
                 try:
-                    identity = request.client.host if request.client else "unknown"
+                    identity = client_ip(request)
                     request.app.state.v2_quotas.check("api_gateway", identity, 500, 60)
                 except HTTPException as error:
                     return failure(
@@ -154,7 +165,7 @@ def install_v2(app, settings=None):
                 if version != schema_head:
                     raise ValueError("Migration required")
                 connection.execute(text("SELECT PostGIS_Version()"))
-                if settings.deployed:
+                if settings.deployed and settings.worker_mode == "dedicated":
                     recent = connection.execute(
                         text(
                             "SELECT seen_at > now() - :seconds * interval '1 second' FROM v2_worker_heartbeat WHERE name='evidence-worker'"
@@ -163,8 +174,19 @@ def install_v2(app, settings=None):
                     ).scalar()
                     if not recent:
                         raise ValueError("Worker unavailable")
+                elif settings.deployed:
+                    # Request mode has no resident worker. Readiness instead fails
+                    # when durable work is stranded beyond its retry window.
+                    stranded = connection.execute(
+                        text(
+                            "SELECT count(*) FROM v2_jobs WHERE status IN ('pending', 'retry') "
+                            "AND available_at < now() - interval '30 minutes'"
+                        )
+                    ).scalar()
+                    if stranded:
+                        raise ValueError("Queued work is not draining")
             if app.state.v2_quotas.redis is not None:
                 app.state.v2_quotas.redis.ping()
         except Exception:
             raise HTTPException(503, "Core storage or usage controls unavailable") from None
-        return {"status": "ready", "schema": version, "v2": "enabled"}
+        return {"status": "ready", "schema": version, "v2": "enabled", "worker": settings.worker_mode}

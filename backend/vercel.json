@@ -1,16 +1,24 @@
 {
   "version": 2,
   "fluid": true,
+  "regions": ["sin1"],
   "builds": [
     {
       "src": "main.py",
-      "use": "@vercel/python"
+      "use": "@vercel/python",
+      "config": { "maxDuration": 60 }
     }
   ],
   "routes": [
     {
       "src": "/(.*)",
       "dest": "main.py"
+    }
+  ],
+  "crons": [
+    {
+      "path": "/api/v2/internal/worker",
+      "schedule": "30 0 * * *"
     }
   ]
 }

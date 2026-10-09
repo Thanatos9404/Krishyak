@@ -140,8 +140,78 @@ class S3Storage(ObjectStorage):
         self.client.delete_object(Bucket=self.bucket, Key=key)
 
 
+class VercelBlobStorage(ObjectStorage):
+    """Private Vercel Blob store over its REST protocol (API version 11).
+
+    Objects are written with private access, so their URLs return 403 without the
+    store token; reads happen only server-side after owner authorization.
+    """
+
+    api = "https://vercel.com/api/blob"
+
+    def __init__(self, settings):
+        self.token = settings.blob_token.get_secret_value()
+        parts = self.token.split("_")
+        if len(parts) < 5 or not parts[3]:
+            raise ValueError("Invalid Vercel Blob store token")
+        self.store = parts[3].lower()
+        self.timeout = httpx.Timeout(15, connect=5)
+
+    def _headers(self, extra=None):
+        return {"authorization": f"Bearer {self.token}", "x-api-version": "11", **(extra or {})}
+
+    def _url(self, key):
+        if not key or key.startswith("/") or ".." in key.split("/"):
+            raise ValueError("Invalid object key")
+        return f"https://{self.store}.private.blob.vercel-storage.com/{key}"
+
+    def put(self, key, data):
+        self._url(key)
+        headers = self._headers(
+            {
+                "x-vercel-blob-access": "private",
+                "x-content-type": "image/jpeg",
+                "x-add-random-suffix": "0",
+                # UUID keys never overwrite another owner's object.
+                "x-allow-overwrite": "0",
+            }
+        )
+        with httpx.Client(timeout=self.timeout, follow_redirects=False) as client:
+            response = client.put(self.api + "/", params={"pathname": key}, headers=headers, content=data)
+        response.raise_for_status()
+
+    def get(self, key):
+        with httpx.Client(timeout=self.timeout, follow_redirects=True) as client:
+            with client.stream("GET", self._url(key), params={"cache": "0"}, headers=self._headers()) as response:
+                if response.status_code == 404:
+                    raise FileNotFoundError(key)
+                response.raise_for_status()
+                chunks, size = [], 0
+                for chunk in response.iter_bytes():
+                    size += len(chunk)
+                    if size > 8 * 1024 * 1024:
+                        raise ValueError("Stored object exceeds limit")
+                    chunks.append(chunk)
+        return b"".join(chunks)
+
+    def delete(self, key):
+        with httpx.Client(timeout=self.timeout, follow_redirects=False) as client:
+            response = client.post(
+                self.api + "/delete",
+                headers=self._headers({"content-type": "application/json"}),
+                json={"urls": [self._url(key)]},
+            )
+        # Deleting an already-absent object is idempotent for retention cleanup.
+        if response.status_code != 404:
+            response.raise_for_status()
+
+
 def object_storage(settings):
-    return S3Storage(settings) if settings.storage_provider == "s3" else LocalStorage(settings.storage_root)
+    if settings.storage_provider == "s3":
+        return S3Storage(settings)
+    if settings.storage_provider == "vercel_blob":
+        return VercelBlobStorage(settings)
+    return LocalStorage(settings.storage_root)
 
 
 def sanitize_image(content: bytes, mime: str):
