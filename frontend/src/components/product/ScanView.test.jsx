@@ -31,18 +31,21 @@ const crop = () => screen.getByRole("combobox", { name: "Crop" });
 
 test("only crops the photo model supports can be chosen", async () => {
   render(<ScanView workspace={initial} />);
-  await waitFor(() => expect(crop().options.length).toBe(3));
-  expect([...crop().options].map((o) => o.value).sort()).toEqual([
-    "maize",
-    "potato",
-    "tomato",
-  ]);
+  await waitFor(() => expect(crop().options.length).toBe(4));
+  expect(
+    [...crop().options]
+      .map((o) => o.value)
+      .filter(Boolean)
+      .sort(),
+  ).toEqual(["maize", "potato", "tomato"]);
+  // Without a supported field crop the farmer is asked, not given a guess.
+  expect(crop()).toHaveValue("");
   expect(screen.getByText(/right about 57% of the time/)).toBeInTheDocument();
 });
 
 test("late crop-cycle evidence preserves the crop explicitly chosen by the farmer", async () => {
   const { rerender } = render(<ScanView workspace={initial} />);
-  await waitFor(() => expect(crop().options.length).toBe(3));
+  await waitFor(() => expect(crop().options.length).toBe(4));
   fireEvent.change(crop(), { target: { value: "potato" } });
   rerender(
     <ScanView
@@ -57,7 +60,7 @@ test("late crop-cycle evidence preserves the crop explicitly chosen by the farme
 
 test("a new field uses its own crop cycle rather than the previous field choice", async () => {
   const { rerender } = render(<ScanView workspace={initial} />);
-  await waitFor(() => expect(crop().options.length).toBe(3));
+  await waitFor(() => expect(crop().options.length).toBe(4));
   fireEvent.change(crop(), { target: { value: "tomato" } });
   rerender(
     <ScanView
@@ -112,7 +115,8 @@ test("results lead with a plain name, urgent warning and care steps", async () =
     refreshEvidence: jest.fn(),
   };
   render(<ScanView workspace={w} />);
-  await waitFor(() => expect(crop().options.length).toBe(3));
+  await waitFor(() => expect(crop().options.length).toBe(4));
+  fireEvent.change(crop(), { target: { value: "potato" } });
   const file = new File(["x"], "leaf.jpg", { type: "image/jpeg" });
   global.URL.createObjectURL = jest.fn(() => "blob:preview");
   global.URL.revokeObjectURL = jest.fn();
@@ -132,4 +136,20 @@ test("results lead with a plain name, urgent warning and care steps", async () =
   expect(
     screen.getByRole("link", { name: /Kisan Call Centre/ }),
   ).toHaveAttribute("href", "tel:18001801551");
+});
+
+test("a photo chosen while the field is still loading is kept", async () => {
+  global.URL.createObjectURL = jest.fn(() => "blob:preview");
+  global.URL.revokeObjectURL = jest.fn();
+  const { rerender } = render(
+    <ScanView workspace={{ ...initial, selected: null, plot: null }} />,
+  );
+  await waitFor(() => expect(crop().options.length).toBe(4));
+  fireEvent.change(crop(), { target: { value: "tomato" } });
+  fireEvent.change(screen.getByLabelText("Choose crop photo"), {
+    target: { files: [new File(["x"], "leaf.jpg", { type: "image/jpeg" })] },
+  });
+  rerender(<ScanView workspace={{ ...initial, selected: "field-a" }} />);
+  expect(crop()).toHaveValue("tomato");
+  expect(screen.getByAltText("Selected crop photograph")).toBeInTheDocument();
 });

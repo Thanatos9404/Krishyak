@@ -158,17 +158,24 @@ export function ScanView({ workspace: w }) {
     w.cycles.find((item) => item.status === "active") || w.cycles[0];
   const cycleCrop = findCrop(cycle);
   const cycleSupported = supported.some((row) => row.id === cycleCrop?.id);
+  const previousField = useRef(w.selected);
   useEffect(() => {
-    setResult(null);
-    setPhoto(null);
-    chosen.current = false;
+    // Only switching between two fields clears the draft; the first field
+    // selection while the workspace loads must not discard a chosen photo.
+    if (previousField.current && previousField.current !== w.selected) {
+      setResult(null);
+      setPhoto(null);
+      chosen.current = false;
+    }
+    previousField.current = w.selected;
   }, [w.selected]);
-  const fallback = supported[0]?.id;
+  const loaded = supported.length > 0;
   useEffect(() => {
     // A farmer's explicit choice wins; otherwise follow this field's crop.
-    if (!fallback || chosen.current) return;
-    setCrop(cycleSupported ? cycleCrop.id : fallback);
-  }, [fallback, cycleSupported, cycleCrop?.id, w.selected]);
+    // Without a supported field crop, ask instead of guessing one.
+    if (!loaded || chosen.current) return;
+    setCrop(cycleSupported ? cycleCrop.id : "");
+  }, [loaded, cycleSupported, cycleCrop?.id, w.selected]);
   useEffect(() => {
     if (!photo) {
       setPreview(null);
@@ -254,7 +261,9 @@ export function ScanView({ workspace: w }) {
                 setResult(null);
               }}
             >
-              {!model && <option value="">{tx("Loading crops…")}</option>}
+              <option value="" disabled>
+                {model ? tx("Choose your crop") : tx("Loading crops…")}
+              </option>
               {supported.map((row) => (
                 <option key={row.id} value={row.id}>
                   {tx(row.label)}

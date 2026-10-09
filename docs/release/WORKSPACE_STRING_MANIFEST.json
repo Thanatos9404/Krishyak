@@ -1,6 +1,6 @@
 {
   "extractor": "Babel AST; literals, JSX text, positional template placeholders",
-  "source_strings": 1978,
+  "source_strings": 1980,
   "strings": [
     {
       "source": ". Interval composites may contain several acquisitions; exact contributing dates are not independently verified.",
@@ -785,7 +785,7 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 235,
+          "line": 242,
           "kind": "literal"
         }
       ]
@@ -1197,7 +1197,7 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 242,
+          "line": 249,
           "kind": "literal"
         }
       ]
@@ -2404,7 +2404,7 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 236,
+          "line": 243,
           "kind": "literal"
         }
       ]
@@ -3365,7 +3365,7 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 225,
+          "line": 232,
           "kind": "literal"
         },
         {
@@ -3447,7 +3447,7 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 337,
+          "line": 347,
           "kind": "literal"
         }
       ]
@@ -3722,7 +3722,7 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 199,
+          "line": 206,
           "kind": "literal"
         }
       ]
@@ -3755,7 +3755,7 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 189,
+          "line": 196,
           "kind": "literal"
         }
       ]
@@ -3832,7 +3832,7 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 320,
+          "line": 330,
           "kind": "literal"
         }
       ]
@@ -3866,6 +3866,17 @@
         {
           "file": "src/components/product/SettingsView.jsx",
           "line": 71,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Choose your crop",
+      "sha256": "d4ad260ee7b87f2b3ab5c1424d9b0c8a12a438ff983290b965f39f476edaa0bd",
+      "references": [
+        {
+          "file": "src/components/product/ScanView.jsx",
+          "line": 265,
           "kind": "literal"
         }
       ]
@@ -4485,7 +4496,7 @@
         },
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 248,
+          "line": 255,
           "kind": "literal"
         }
       ]
@@ -6287,7 +6298,7 @@
         },
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 235,
+          "line": 242,
           "kind": "literal"
         }
       ]
@@ -6754,7 +6765,7 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 353,
+          "line": 363,
           "kind": "literal"
         }
       ]
@@ -7802,7 +7813,7 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 366,
+          "line": 376,
           "kind": "literal"
         }
       ]
@@ -10434,6 +10445,17 @@
         {
           "file": "src/features/farms/PlotHealth.jsx",
           "line": 340,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Loading crops…",
+      "sha256": "fb910f244fa1299c6907d607511536e4f8ae380dcd40bd76d41b160d0577c8cd",
+      "references": [
+        {
+          "file": "src/components/product/ScanView.jsx",
+          "line": 265,
           "kind": "literal"
         }
       ]
@@ -13229,7 +13251,7 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 369,
+          "line": 379,
           "kind": "literal"
         }
       ]
@@ -14217,7 +14239,7 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 267,
+          "line": 277,
           "kind": "literal"
         }
       ]
@@ -14228,7 +14250,7 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 358,
+          "line": 368,
           "kind": "literal"
         }
       ]
@@ -15418,7 +15440,7 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 377,
+          "line": 387,
           "kind": "literal"
         }
       ]
@@ -17018,7 +17040,7 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 274,
+          "line": 284,
           "kind": "literal"
         }
       ]
@@ -17408,7 +17430,7 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 278,
+          "line": 288,
           "kind": "literal"
         }
       ]
@@ -18931,7 +18953,7 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 228,
+          "line": 235,
           "kind": "literal"
         }
       ]
@@ -18942,7 +18964,7 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 294,
+          "line": 304,
           "kind": "literal"
         }
       ]
@@ -18953,7 +18975,7 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 310,
+          "line": 320,
           "kind": "literal"
         }
       ]
@@ -19249,7 +19271,7 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 352,
+          "line": 362,
           "kind": "literal"
         }
       ]
@@ -20529,7 +20551,7 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 302,
+          "line": 312,
           "kind": "literal"
         }
       ]
@@ -20639,7 +20661,7 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 281,
+          "line": 291,
           "kind": "literal"
         }
       ]
@@ -21708,7 +21730,7 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 350,
+          "line": 360,
           "kind": "literal"
         }
       ]
@@ -21757,7 +21779,7 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 354,
+          "line": 364,
           "kind": "literal"
         }
       ]
