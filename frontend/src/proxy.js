@@ -1,6 +1,63 @@
 import { NextResponse } from "next/server";
 
-export function proxy(request) {
+const hosted = process.env.VERCEL === "1";
+const encoder = new TextEncoder();
+
+async function sign(secret, value) {
+  const key = await crypto.subtle.importKey(
+    "raw",
+    encoder.encode(secret),
+    { name: "HMAC", hash: "SHA-256" },
+    false,
+    ["sign"],
+  );
+  const digest = await crypto.subtle.sign("HMAC", key, encoder.encode(value));
+  return [...new Uint8Array(digest)]
+    .map((byte) => byte.toString(16).padStart(2, "0"))
+    .join("");
+}
+
+// Same-origin API forwarding. Cookies stay first-party, the API learns the
+// farmer's real address through a short-lived signed header (so per-person
+// limits are not shared by everyone behind this proxy), and protected preview
+// APIs receive the deployment-protection bypass only from server config.
+async function forward(request) {
+  const origin =
+    process.env.KRISHYAK_API_ORIGIN ||
+    (hosted ? "https://krishyak-api.vercel.app" : "http://127.0.0.1:8000");
+  const path = request.nextUrl.pathname;
+  const target = new URL(
+    path.startsWith("/api/public/") ? path.slice("/api/public".length) : path,
+    origin,
+  );
+  target.search = request.nextUrl.search;
+  const headers = new Headers(request.headers);
+  headers.delete("x-krishyak-client");
+  headers.delete("x-vercel-protection-bypass");
+  const secret = process.env.KRISHYAK_PROXY_SECRET;
+  if (secret) {
+    const address = (
+      request.headers.get("x-real-ip") ||
+      request.headers.get("x-forwarded-for")?.split(",")[0] ||
+      ""
+    ).trim();
+    if (address) {
+      const value = `${address}|${Math.floor(Date.now() / 1000)}`;
+      headers.set("x-krishyak-client", `${value}|${await sign(secret, value)}`);
+    }
+  }
+  if (process.env.KRISHYAK_API_PROTECTION_BYPASS)
+    headers.set(
+      "x-vercel-protection-bypass",
+      process.env.KRISHYAK_API_PROTECTION_BYPASS,
+    );
+  return NextResponse.rewrite(target, { request: { headers } });
+}
+
+export async function proxy(request) {
+  const route = request.nextUrl.pathname;
+  if (route.startsWith("/api/v2/") || route.startsWith("/api/public/"))
+    return forward(request);
   const nonce = btoa(crypto.randomUUID());
   const development = process.env.NODE_ENV === "development";
   const csp = [
@@ -47,6 +104,8 @@ export function proxy(request) {
 
 export const config = {
   matcher: [
+    "/api/v2/:path*",
+    "/api/public/:path*",
     "/((?!api/|_next/|images/|fonts/|map/|licenses/|.*\\.(?:png|svg|webp|ico|js|json|txt|xml)$).*)",
   ],
 };

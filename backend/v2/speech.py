@@ -3,6 +3,7 @@
 from fastapi import APIRouter, Depends, File, Form, HTTPException, Request, UploadFile
 
 from sarvam_service import LANGUAGES, api_key, capabilities, transcribe_audio
+from security import client_ip
 
 from .router import current_farmer, database, require_consent
 from .tts import ReadRequest, bounded_post
@@ -55,7 +56,7 @@ async def form_dictation(
         raise HTTPException(415, "Private dictation requires a bounded WAV recording")
     quotas = request.app.state.v2_quotas
     quotas.check("form_speech", str(farmer.id), 12, 3600)
-    quotas.check("form_speech_ip", request.client.host if request.client else "unknown", 6, 60)
+    quotas.check("form_speech_ip", client_ip(request), 6, 60)
     quotas.check("form_speech_global", "all", 100, 86400)
     from speech_limits import positive_env
 
@@ -82,7 +83,7 @@ async def private_read_aloud(
     quotas = request.app.state.v2_quotas
     owner = farmer.id
     quotas.check("tts_user", str(owner), 12, 3600)
-    quotas.check("tts_ip", request.client.host if request.client else "unknown", 6, 60)
+    quotas.check("tts_ip", client_ip(request), 6, 60)
     quotas.check("tts_global", "all", 100, 86400)
     db.commit()
     result = await request.app.state.v2_read_aloud.synthesize(payload, request, owner)

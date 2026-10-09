@@ -6,11 +6,13 @@ from fastapi import APIRouter, Request, Response
 from fastapi.responses import JSONResponse
 from pydantic import ValidationError
 
-from .geometry import area_details
-from .providers.base import ProviderError
-from .schemas import FieldRequest, Polygon, PreviewRequest, LocationRequest
+from security import client_ip
+
 from .climate import ClimateService
+from .geometry import area_details
 from .place import PlaceService
+from .providers.base import ProviderError
+from .schemas import FieldRequest, LocationRequest, Polygon, PreviewRequest
 from .service import RemoteSensingService
 
 router = APIRouter(prefix="/remote-sensing", tags=["Field Intelligence"])
@@ -87,7 +89,7 @@ async def climate(request: Request):
     from starlette.concurrency import run_in_threadpool
     try:
         point = await parse(request, LocationRequest)
-        result = await run_in_threadpool(get_climate_service().get, point, request.client.host if request.client else 'unknown')
+        result = await run_in_threadpool(get_climate_service().get, point, client_ip(request))
         return {'success':True,'data':result}
     except ProviderError as exc:
         return failure(exc)
@@ -98,18 +100,40 @@ async def place(request: Request):
     from starlette.concurrency import run_in_threadpool
     try:
         point=await parse(request,LocationRequest)
-        data=await run_in_threadpool(get_place_service().get,point,request.client.host if request.client else 'unknown')
+        data=await run_in_threadpool(get_place_service().get,point,client_ip(request))
         return {'success':True,'data':data}
     except ProviderError as exc:
         return failure(exc)
+
+
+def account_identity(request):
+    factory = getattr(request.app.state, "v2_database", None)
+    if factory is None:
+        raise ProviderError("account_required", "Sign in to your Krishyak account for satellite analysis", 401)
+    from fastapi import HTTPException
+
+    from v2.auth import authenticate
+
+    with factory() as db:
+        try:
+            farmer, _ = authenticate(db, request)
+        except HTTPException as error:
+            raise ProviderError("account_required", "Sign in to your Krishyak account for satellite analysis",
+                                error.status_code) from None
+    return f"owner:{farmer.id}"
 
 
 async def execute(request, operation, schema=FieldRequest):
     # Network work runs in FastAPI's thread pool, never blocks the event loop.
     from starlette.concurrency import run_in_threadpool
     try:
+        ip = client_ip(request)
+        settings = getattr(request.app.state, "v2_settings", None)
+        if settings is not None and settings.deployed:
+            # Satellite requests spend a metered credential. In deployments
+            # they need a signed-in account and are budgeted per account.
+            ip = await run_in_threadpool(account_identity, request)
         payload = await parse(request, schema)
-        ip = request.client.host if request.client else "unknown"
         result, hit = await run_in_threadpool(get_service().execute, operation, payload, ip)
         if operation == "preview":
             return Response(result, media_type="image/png", headers={"Cache-Control": "private, no-store",

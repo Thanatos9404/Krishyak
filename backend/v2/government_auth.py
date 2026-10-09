@@ -21,6 +21,7 @@ from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 
 from db.models import Farmer, GovernmentIdentity
+from security import client_ip
 
 from .auth import authenticate, check_origin, issue_session, token_hash
 from .router import current_farmer, database, require_consent
@@ -258,7 +259,7 @@ def start(body: Start, request: Request, response: Response, db=Depends(database
     check_origin(request)
     adapter = request.app.state.v2_government_auth
     adapter.require_ready()
-    request.app.state.v2_quotas.check("government_login", request.client.host if request.client else "unknown", 6, 600)
+    request.app.state.v2_quotas.check("government_login", client_ip(request), 6, 600)
     farmer = None
     if body.mode == "link":
         farmer, _ = authenticate(db, request)

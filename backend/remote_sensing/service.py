@@ -1,6 +1,6 @@
-import logging
 import io
 import json
+import logging
 import math
 import time
 from datetime import datetime, timezone
@@ -9,6 +9,7 @@ from threading import Lock, Semaphore
 from PIL import Image, PngImagePlugin
 
 from rate_limiter import RateLimiter
+
 from .cache import TTLCache, cache_key
 from .config import Settings
 from .geometry import area_details, bbox, geometry_hash
@@ -30,6 +31,8 @@ class RemoteSensingService:
         self.global_limiter = RateLimiter(30, self.settings.global_per_day, max_clients=1)
         self.slots = Semaphore(2)
         self.key_locks = [Lock() for _ in range(32)]
+        # Set by the account service when shared usage controls are available.
+        self.budget = None
 
     def status(self):
         configured = self.settings.provider == "cdse" and self.provider.healthcheck()
@@ -68,9 +71,13 @@ class RemoteSensingService:
                     cached = self.image_provenance(cached, hit=True)
                 self._log(operation, start, True, 200)
                 return cached, True
-            for limiter, identity in ((self.limiter, client_ip), (self.global_limiter, "global")):
-                if not limiter.is_allowed(identity)[0]:
-                    raise ProviderError("local_quota", "Satellite request limit reached; retry later", 429, 60)
+            if self.budget is not None:
+                # Deployed: shared (Redis) per-caller, daily and monthly provider budgets.
+                self.budget(operation, client_ip)
+            else:
+                for limiter, identity in ((self.limiter, client_ip), (self.global_limiter, "global")):
+                    if not limiter.is_allowed(identity)[0]:
+                        raise ProviderError("local_quota", "Satellite request limit reached; retry later", 429, 60)
             if not self.slots.acquire(blocking=False):
                 raise ProviderError("busy", "Satellite processing is busy; retry later", 429, 5)
             try:

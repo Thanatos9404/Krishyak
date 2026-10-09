@@ -1,7 +1,3 @@
-const hosted = process.env.VERCEL === "1";
-const apiOrigin =
-  process.env.KRISHYAK_API_ORIGIN ||
-  (hosted ? "https://krishyak-api.vercel.app" : "http://127.0.0.1:8000");
 const securityHeaders = [
   { key: "X-Content-Type-Options", value: "nosniff" },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
@@ -21,12 +17,8 @@ export default {
   allowedDevOrigins: ["localhost", "127.0.0.1"],
   // Only public, explicitly named values may enter the old preserved widgets.
   env: { REACT_APP_API_URL: "/api/public", VITE_MAP_STYLE_URL: "" },
-  async rewrites() {
-    return [
-      { source: "/api/v2/:path*", destination: `${apiOrigin}/api/v2/:path*` },
-      { source: "/api/public/:path*", destination: `${apiOrigin}/:path*` },
-    ];
-  },
+  // API forwarding lives in src/proxy.js (signed client address and
+  // deployment-protection bypass need request headers that rewrites cannot set).
   async redirects() {
     return [
       ["/farm", "/app/today"],

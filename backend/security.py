@@ -2,14 +2,12 @@
 Security utilities and configuration for Krishyak backend
 Provides secure configuration loading, input validation, and security helpers
 """
-import os
+import logging
 import math
+import os
 import re
 import secrets
-import logging
-from functools import wraps
-from typing import Optional, List, Any
-from pathlib import Path
+from typing import List, Optional
 
 from dotenv import load_dotenv
 
@@ -43,8 +41,6 @@ class SecurityConfig:
         self.rate_limit_per_day = int(os.getenv("RATE_LIMIT_PER_DAY", "1000"))
         
         # API Keys
-        self.plantid_api_key = os.getenv("PLANTID_API_KEY", "")
-        self.openweather_api_key = os.getenv("OPENWEATHER_API_KEY", "")
         
         # Logging
         self.log_level = os.getenv("LOG_LEVEL", "INFO")
@@ -172,7 +168,7 @@ class InputSanitizer:
         value_upper = value.upper()
         for pattern in cls.SQL_INJECTION_PATTERNS:
             if re.search(pattern, value_upper, re.IGNORECASE):
-                logger.warning(f"Potential SQL injection detected in input")
+                logger.warning("Potential SQL injection detected in input")
                 return True
         return False
     
@@ -181,7 +177,7 @@ class InputSanitizer:
         """Check if string contains potential XSS patterns"""
         for pattern in cls.XSS_PATTERNS:
             if re.search(pattern, value, re.IGNORECASE):
-                logger.warning(f"Potential XSS detected in input")
+                logger.warning("Potential XSS detected in input")
                 return True
         return False
     
@@ -247,3 +243,49 @@ def mask_sensitive_data(data: dict, sensitive_keys: List[str] = None) -> dict:
             masked[key] = value
     
     return masked
+
+
+def proxied_client(request) -> Optional[str]:
+    import hashlib
+    import hmac
+    import time
+
+    secret = os.getenv("KRISHYAK_PROXY_SECRET", "")
+    value = request.headers.get("x-krishyak-client", "")
+    if len(secret) < 32 or not value or len(value) > 200:
+        return None
+    try:
+        address, stamp, signature = value.rsplit("|", 2)
+        fresh = abs(time.time() - int(stamp)) <= 120
+    except ValueError:
+        return None
+    expected = hmac.new(secret.encode(), f"{address}|{stamp}".encode(), hashlib.sha256).hexdigest()
+    if not fresh or not address or not hmac.compare_digest(expected, signature):
+        return None
+    return address[:64]
+
+
+def client_ip(request) -> str:
+    """Caller address for quotas and abuse controls.
+
+    Only headers written by the hosting platform are trusted. On Vercel the edge
+    overwrites ``x-vercel-forwarded-for``/``x-real-ip`` with the connecting client,
+    so a browser cannot choose its own quota bucket. Behind one self-managed
+    proxy (``TRUST_PROXY_HEADERS=true``) the right-most forwarded entry is the
+    address that proxy observed; earlier entries are caller supplied.
+    Krishyak's own same-origin proxy forwards the farmer's address in a
+    short-lived HMAC-signed header, trusted only with KRISHYAK_PROXY_SECRET.
+    """
+    signed = proxied_client(request)
+    if signed:
+        return signed
+    if os.getenv("VERCEL") == "1":
+        for header in ("x-vercel-forwarded-for", "x-real-ip"):
+            value = request.headers.get(header, "").split(",")[0].strip()
+            if value:
+                return value[:64]
+    elif os.getenv("TRUST_PROXY_HEADERS", "false").lower() == "true":
+        value = request.headers.get("x-forwarded-for", "").split(",")[-1].strip()
+        if value:
+            return value[:64]
+    return request.client.host if request.client else "unknown"
