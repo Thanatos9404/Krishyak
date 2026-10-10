@@ -1,0 +1,200 @@
+{
+  "source": "Local Government Directory, Ministry of Panchayati Raj, Government of India",
+  "retrieved_at": "2026-10-04T07:11:40.948356+00:00",
+  "catalogue_url": "https://data.gov.in/catalog/local-government-directory-lgd",
+  "code_namespace": "LGD; not Census 2011 or postal codes",
+  "state_source_url": "https://lgdirectory.gov.in/webservices/lgdws/stateList",
+  "states": 36,
+  "districts": 784,
+  "catalog_sha256": "3880f149b81f1c3bb403316c246ef433a91f0aa6280e8b97a57e646017b8406a",
+  "source_snapshot_sha256": "63379da2ebea6094c639df47049e393f773d9968afff9c9255d92f0672439882",
+  "source_snapshot_file": "lgd_2026-10-04.json",
+  "receipts": [
+    {
+      "url": "https://lgdirectory.gov.in/webservices/lgdws/districtList?stateCode=1",
+      "sha256": "df3e75ef2b2a9cd4b62be07f930912821177b12033e4059decc4eedc961ae611",
+      "rows": 20
+    },
+    {
+      "url": "https://lgdirectory.gov.in/webservices/lgdws/districtList?stateCode=2",
+      "sha256": "b895928bfed57d7f9648ac3f064a6d28ca73dbb28bfa3f334f5f0ced567d7ced",
+      "rows": 12
+    },
+    {
+      "url": "https://lgdirectory.gov.in/webservices/lgdws/districtList?stateCode=3",
+      "sha256": "f90e2ec79d35c91d40ce9a04ec11a06ce654a41633031ce47acae2141e355166",
+      "rows": 23
+    },
+    {
+      "url": "https://lgdirectory.gov.in/webservices/lgdws/districtList?stateCode=4",
+      "sha256": "2419a9fcf69ab7589429a019807ae05a571c29c3589dcf730f2aa8693e206e37",
+      "rows": 1
+    },
+    {
+      "url": "https://lgdirectory.gov.in/webservices/lgdws/districtList?stateCode=5",
+      "sha256": "9e23f0831928cf286559b32a325cbf11468e6735641dfdaa0d669e262c69f055",
+      "rows": 13
+    },
+    {
+      "url": "https://lgdirectory.gov.in/webservices/lgdws/districtList?stateCode=6",
+      "sha256": "5a9ef25c410f6bf6eb4e3719970b7f76d03581eacb4faa5520805e1ef11fa097",
+      "rows": 23
+    },
+    {
+      "url": "https://lgdirectory.gov.in/webservices/lgdws/districtList?stateCode=7",
+      "sha256": "e92e0c218de179e652d4d48add34466c80f1450f3586b6ce6c51c4172d068870",
+      "rows": 13
+    },
+    {
+      "url": "https://lgdirectory.gov.in/webservices/lgdws/districtList?stateCode=8",
+      "sha256": "518c4083d4d71c0776b7c1bf5df3d3fada33d93942fbe0df53ca7c020d60d1fe",
+      "rows": 41
+    },
+    {
+      "url": "https://lgdirectory.gov.in/webservices/lgdws/districtList?stateCode=9",
+      "sha256": "24baae9a3e03140ba111df105981ba86da121912c40e1bfff7c9fb1b8706e179",
+      "rows": 75
+    },
+    {
+      "url": "https://lgdirectory.gov.in/webservices/lgdws/districtList?stateCode=10",
+      "sha256": "49d6666cf559b6f6280e052ea0177d61630120ea5ccf137924a0b5611f9b269d",
+      "rows": 38
+    },
+    {
+      "url": "https://lgdirectory.gov.in/webservices/lgdws/districtList?stateCode=11",
+      "sha256": "38e4d54fe7aeb052ebd168e3f8a5c9089270f2f457ca0d301305cc85febdb7af",
+      "rows": 6
+    },
+    {
+      "url": "https://lgdirectory.gov.in/webservices/lgdws/districtList?stateCode=12",
+      "sha256": "b9e869c4f74b2db0b03021c381bedbb6ad99d79726d7f1cedaa05ebf155dc137",
+      "rows": 27
+    },
+    {
+      "url": "https://lgdirectory.gov.in/webservices/lgdws/districtList?stateCode=13",
+      "sha256": "31bc95386103d8b6c0843d27c2de5bc4c243f2fba5cf1aac91510b8b34b54950",
+      "rows": 17
+    },
+    {
+      "url": "https://lgdirectory.gov.in/webservices/lgdws/districtList?stateCode=14",
+      "sha256": "cb2a7b53d3038a7772cc7047bd9cd0d56448878a19c9d9b8e0692a379c28a026",
+      "rows": 16
+    },
+    {
+      "url": "https://lgdirectory.gov.in/webservices/lgdws/districtList?stateCode=15",
+      "sha256": "56b4c7994413057b71d1ffcdeea34141b685ef967557ee2b22095e60ae973a3f",
+      "rows": 11
+    },
+    {
+      "url": "https://lgdirectory.gov.in/webservices/lgdws/districtList?stateCode=16",
+      "sha256": "1f6de8a8fe99045506f07e5cf806ea260dde6b85f4eb8b8559cb67b7a4bb9866",
+      "rows": 8
+    },
+    {
+      "url": "https://lgdirectory.gov.in/webservices/lgdws/districtList?stateCode=17",
+      "sha256": "a0517fa8685c25603c478377c8dcf008e03ecd3001f022e50a35a814634780c6",
+      "rows": 12
+    },
+    {
+      "url": "https://lgdirectory.gov.in/webservices/lgdws/districtList?stateCode=18",
+      "sha256": "ccb2a631ef35ba17c05393001c4f297ce7ee7e53dbd9a52af3ebafebc8166116",
+      "rows": 35
+    },
+    {
+      "url": "https://lgdirectory.gov.in/webservices/lgdws/districtList?stateCode=19",
+      "sha256": "f927d8c3ef7311a17005885951e198816064de2aac9dfb5cdf35147b7acaaed5",
+      "rows": 23
+    },
+    {
+      "url": "https://lgdirectory.gov.in/webservices/lgdws/districtList?stateCode=20",
+      "sha256": "454b2cfb835bdde3e49bd0e63727a34fa676ca81993ec1ce0216181854a74ce6",
+      "rows": 24
+    },
+    {
+      "url": "https://lgdirectory.gov.in/webservices/lgdws/districtList?stateCode=21",
+      "sha256": "835ab6d31a20649bc9b39b9e56ae1817af4f403f28383bfac7b5dd5a45f44f9b",
+      "rows": 30
+    },
+    {
+      "url": "https://lgdirectory.gov.in/webservices/lgdws/districtList?stateCode=22",
+      "sha256": "1aa153daa3cf1ac2d1151c8e2505e95bd4a24d1df93619f515b9ad716307bede",
+      "rows": 33
+    },
+    {
+      "url": "https://lgdirectory.gov.in/webservices/lgdws/districtList?stateCode=23",
+      "sha256": "abe22537e0a5a63f6ff1a81b0396d420b5b074bdc8f9d97438b9da063f63e559",
+      "rows": 55
+    },
+    {
+      "url": "https://lgdirectory.gov.in/webservices/lgdws/districtList?stateCode=24",
+      "sha256": "8d04b1fbf6d0c44950595c8856466cfb0311ef8e75ee3d3f698d61a7db74d7be",
+      "rows": 34
+    },
+    {
+      "url": "https://lgdirectory.gov.in/webservices/lgdws/districtList?stateCode=27",
+      "sha256": "7481dd561b49da189710dd88e1a43f402f65ad1ec23c42edf4d92fd28ddda23f",
+      "rows": 36
+    },
+    {
+      "url": "https://lgdirectory.gov.in/webservices/lgdws/districtList?stateCode=28",
+      "sha256": "18239c7614edc0d927169efdb5f0fd6cac58ec355fc677028d25d9b266862c19",
+      "rows": 28
+    },
+    {
+      "url": "https://lgdirectory.gov.in/webservices/lgdws/districtList?stateCode=29",
+      "sha256": "c418b9cdb388ba3a7c09878413e6c661bcf522d536bb7427ba3de32a8fd92d5e",
+      "rows": 31
+    },
+    {
+      "url": "https://lgdirectory.gov.in/webservices/lgdws/districtList?stateCode=30",
+      "sha256": "ac5b40a4617ffb95c70e5159528a66a50628ff4d10781aafe4c98fb40b2a8934",
+      "rows": 3
+    },
+    {
+      "url": "https://lgdirectory.gov.in/webservices/lgdws/districtList?stateCode=31",
+      "sha256": "793031932bcc8628d45867cc3bde4c268e1eca19de7e06220f605aec122782c1",
+      "rows": 1
+    },
+    {
+      "url": "https://lgdirectory.gov.in/webservices/lgdws/districtList?stateCode=32",
+      "sha256": "ba281a7e728d96ab774a4d7df47afc9731998b9f4cedce1d09d5b3c37878203b",
+      "rows": 14
+    },
+    {
+      "url": "https://lgdirectory.gov.in/webservices/lgdws/districtList?stateCode=33",
+      "sha256": "bd62fb6f7db4aceb5ee00a0a54c2fd02f181f756ad4dc9eab82a3775ae1ab817",
+      "rows": 38
+    },
+    {
+      "url": "https://lgdirectory.gov.in/webservices/lgdws/districtList?stateCode=34",
+      "sha256": "b08cff87a74e3cd634e7977c76ebde1a26380f14523b8bd4a30f3ed0c5d97c83",
+      "rows": 2
+    },
+    {
+      "url": "https://lgdirectory.gov.in/webservices/lgdws/districtList?stateCode=35",
+      "sha256": "a5e4a191493905b0c35a37353b52228c3c787d8e2697d7c520a3492e02386fc9",
+      "rows": 3
+    },
+    {
+      "url": "https://lgdirectory.gov.in/webservices/lgdws/districtList?stateCode=36",
+      "sha256": "b001d03ac55a626105c3bf49efadd09be2578c45dd6138b6c01ea0af8c3a5b50",
+      "rows": 33
+    },
+    {
+      "url": "https://lgdirectory.gov.in/webservices/lgdws/districtList?stateCode=37",
+      "sha256": "e3dbeeb800336e1d0be094807214fc6b5cbb1dd87f6c5079a8e014742f1fe9cd",
+      "rows": 2
+    },
+    {
+      "url": "https://lgdirectory.gov.in/webservices/lgdws/districtList?stateCode=38",
+      "sha256": "e6ac8f0228d7d6d6514b407dc1a7f380fa8ad4c6995d44448597059df5f24fd9",
+      "rows": 3
+    }
+  ],
+  "limitations": [
+    "A dated provider snapshot; administrative changes require review and refresh.",
+    "Official local names may be missing or identical to English.",
+    "No village, tehsil or PIN-code mapping is inferred.",
+    "Codes do not verify residence, land ownership or scheme eligibility."
+  ]
+}

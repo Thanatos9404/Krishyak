@@ -1,5 +1,7 @@
 """Durable Postgres job worker. Run separately from API request workers."""
 
+import argparse
+import json
 import logging
 import time
 from datetime import datetime, timedelta
@@ -21,6 +23,7 @@ from db.models import (
     Observation,
     Plot,
     Session,
+    WebAuthnChallenge,
     WorkerHeartbeat,
     utcnow,
 )
@@ -190,6 +193,10 @@ def run_once(factory, settings, service=None):
             ):
                 job.status = "cancelled"
                 return True
+            if not result.get("observations"):
+                # A multi-week window always has intervals (clear or not). An
+                # empty answer is a provider anomaly: retry, never report done.
+                raise ProviderError("no_observations", "Satellite provider returned no intervals", 503)
             import hashlib
             import json
 
@@ -288,10 +295,43 @@ def cleanup_once(factory, settings):
                 deletion.status = "retry" if deletion.attempts < 10 else "failed"
                 deletion.available_at = utcnow() + timedelta(seconds=min(3600, 30 * 2**deletion.attempts))
         db.execute(delete(AuthChallenge).where(AuthChallenge.expires_at < utcnow() - timedelta(days=1)))
+        db.execute(delete(WebAuthnChallenge).where(WebAuthnChallenge.expires_at < utcnow() - timedelta(hours=1)))
         db.execute(delete(Session).where(Session.refresh_expires_at < utcnow()))
 
 
-def main():
+def heartbeat(factory):
+    with factory.begin() as db:
+        db.execute(
+            insert(WorkerHeartbeat)
+            .values(name="evidence-worker", seen_at=utcnow())
+            .on_conflict_do_update(index_elements=[WorkerHeartbeat.name], set_={"seen_at": utcnow()})
+        )
+
+
+def run_batch(factory, settings, service, *, max_jobs=3, seconds=180):
+    """Bounded managed-runner execution; the durable queue stays in Postgres."""
+    if not 1 <= max_jobs <= 10 or not 30 <= seconds <= 240:
+        raise ValueError("Invalid worker batch limits")
+    heartbeat(factory)
+    schedule_once(factory, settings, service)
+    deadline = time.monotonic() + seconds
+    completed = 0
+    while completed < max_jobs and time.monotonic() < deadline:
+        worked = run_once(factory, settings, service)
+        cleanup_once(factory, settings)
+        if not worked:
+            break
+        completed += 1
+    heartbeat(factory)
+    return completed
+
+
+def main(argv=None):
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--batch", action="store_true", help="Finish a bounded managed-runner task and exit")
+    parser.add_argument("--max-jobs", type=int, choices=range(1, 11), default=3)
+    parser.add_argument("--seconds", type=int, choices=range(30, 241), default=180)
+    arguments = parser.parse_args(argv)
     settings = Settings.from_env()
     if not settings.enabled:
         raise ValueError("V2 worker requires an enabled deployment")
@@ -299,14 +339,19 @@ def main():
     service = RemoteSensingService()
     scheduled_at = 0.0
     try:
+        if arguments.batch:
+            try:
+                completed = run_batch(
+                    factory, settings, service, max_jobs=arguments.max_jobs, seconds=arguments.seconds
+                )
+                print(json.dumps({"worker_batch": "completed", "jobs_processed": completed}))
+            except Exception as error:
+                logger.warning("Worker batch unavailable type=%s", type(error).__name__)
+                raise SystemExit(1) from None
+            return
         while True:
             try:
-                with factory.begin() as db:
-                    db.execute(
-                        insert(WorkerHeartbeat)
-                        .values(name="evidence-worker", seen_at=utcnow())
-                        .on_conflict_do_update(index_elements=[WorkerHeartbeat.name], set_={"seen_at": utcnow()})
-                    )
+                heartbeat(factory)
                 if time.monotonic() - scheduled_at >= 60:
                     schedule_once(factory, settings, service)
                     scheduled_at = time.monotonic()

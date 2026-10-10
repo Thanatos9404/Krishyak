@@ -22,7 +22,8 @@ class SimulationEngine:
     def run_whatif_simulation(
         self,
         base_params: Dict,
-        num_simulations: int = 500
+        num_simulations: int = 500,
+        *, farm_context=None, market_quote_index=None, expected_quote_id=None
     ) -> Dict:
         """
         Run multiple simulations with parameter variations
@@ -30,7 +31,18 @@ class SimulationEngine:
         """
         if isinstance(num_simulations, bool) or not isinstance(num_simulations, int) or not 1 <= num_simulations <= 2000:
             raise ValueError("num_simulations must be between 1 and 2000")
+        public_evidence = None
+        if farm_context is not None:
+            from v2.farm_context.engines import scenario_inputs
+            base_params, public_evidence = scenario_inputs(base_params, farm_context, market_quote_index,expected_quote_id)
         context = self._prepare_context(base_params['crop'])
+        if public_evidence and public_evidence['market']['selected_quote']:
+            from v2.farm_context.engines import reviewed_market_history
+            quote = public_evidence['market']['selected_quote']
+            context['history'], context['price_stats'], history_source = reviewed_market_history(farm_context, quote)
+            context['reviewed_market_quote'] = quote
+            context['market_history_source'] = history_source
+            public_evidence['market']['history'] = deepcopy(history_source)
         # Request-local observations are shared by all samples, never across users.
         current_plan = self._simulate_scenario(base_params, scenario_type="current", context=context)
         
@@ -46,6 +58,9 @@ class SimulationEngine:
         
         # Run Monte Carlo micro-simulations for uncertainty analysis
         micro_simulations = self._run_micro_simulations(base_params, num_simulations, context=context)
+        if public_evidence is not None:
+            for scenario in (current_plan, optimal_plan, worst_plan):
+                scenario['risk']['contextual_evidence'] = deepcopy(public_evidence)
         
         return {
             "current_plan": current_plan,
@@ -94,6 +109,19 @@ class SimulationEngine:
             crop, current_price, forecast_days=max(60, sale_day + 1),
             history=context['history'] if context is not None else None
         )
+        if context is not None and 'market_history_source' in context:
+            quote = context['reviewed_market_quote']
+            adjusted = current_price != quote['modal_price']
+            price_forecast['history_metadata'] = deepcopy(context['market_history_source'])
+            price_forecast['source_metadata'].update({
+                'source_type': 'scenario_assumption' if adjusted else 'reviewed_public_quote',
+                'source_label': context['market_history_source']['provider'],
+                'freshness_status': 'reviewed_dated_quote',
+                'record_date': quote['observed_date'],
+                'selected_quote_id': quote['quote_id'],
+                'reference_price': quote['modal_price'],
+                'is_scenario_adjustment': adjusted,
+            })
         expected_price = price_forecast["forecast_prices"][sale_day]
         # Calculate costs
         seed_qty = params.get("seed_quantity_kg")

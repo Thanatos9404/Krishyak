@@ -44,6 +44,8 @@ build/
 dist/
 *.egg
 frontend/build/
+frontend/.next/
+frontend/public/map/
 
 # Logs
 *.log

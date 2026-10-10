@@ -1,6 +1,8 @@
+import { useProductLocale } from "../product/ProductLocale";
 import React, { useEffect, useState } from "react";
 import { farmApi } from "./api";
-
+import { IndiaLocationPicker } from "../../components/product/IndiaLocationPicker";
+import { locationFromProfile } from "../product/indiaLocations";
 export default function AccountDetails({
   farmer,
   language,
@@ -11,12 +13,15 @@ export default function AccountDetails({
   offline,
   onUpdated,
 }) {
+  const { tx, formatDate } = useProductLocale();
   const [profile, setProfile] = useState({
     display_name: farmer.display_name,
-    state: farmer.state || "",
-    district: farmer.district || "",
+    ...locationFromProfile(farmer),
     village: farmer.village || "",
+    subdistrict: farmer.subdistrict || "",
+    pin_code: farmer.pin_code || "",
   });
+  const [locationChanged, setLocationChanged] = useState(false);
   const [enrollments, setEnrollments] = useState([]),
     [cohort, setCohort] = useState(""),
     [selected, setSelected] = useState([]);
@@ -33,10 +38,15 @@ export default function AccountDetails({
   }, []);
   return (
     <>
-      <h3>My account details</h3>
+      <h3>{tx("My account details")}</h3>
       <p>
-        Your mobile number is used for sign-in. You can use a preferred name;
-        location details below are optional.
+        {farmer.mobile
+          ? tx(
+              "Your verified mobile number is used for sign-in. You can use a preferred name; location details below are optional.",
+            )
+          : tx(
+              "You sign in with your phone's fingerprint or screen lock. You can use a preferred name; your state and district help show local mandi prices.",
+            )}
       </p>
       <form
         onSubmit={(event) => {
@@ -44,20 +54,60 @@ export default function AccountDetails({
           act(async () => {
             const result = await farmApi("/me", {
               method: "PATCH",
-              body: { ...profile, preferred_language: language },
+              body: {
+                display_name: profile.display_name,
+                village: profile.village,
+                subdistrict: profile.subdistrict,
+                pin_code: profile.pin_code || null,
+                ...(locationChanged
+                  ? {
+                      state_code: profile.state_code,
+                      district_code: profile.district_code,
+                      state: profile.state,
+                      district: profile.district,
+                    }
+                  : {}),
+                preferred_language: language,
+              },
             });
             onUpdated(result.farmer);
+            setLocationChanged(false);
           });
         }}
       >
-        {["display_name", "state", "district", "village"].map((key) => (
+        <label className="v2-label">
+          {tx("Preferred name")}
+          <input
+            required
+            maxLength={100}
+            value={profile.display_name}
+            onChange={(event) =>
+              setProfile((previous) => ({
+                ...previous,
+                display_name: event.target.value,
+              }))
+            }
+          />
+        </label>
+        <IndiaLocationPicker
+          value={profile}
+          disabled={busy || offline}
+          onChange={(location) => {
+            setProfile((previous) => ({ ...previous, ...location }));
+            setLocationChanged(true);
+          }}
+        />
+        {[
+          ["subdistrict", "Tehsil or subdistrict (optional)"],
+          ["village", "Village (optional)"],
+          ["pin_code", "PIN code (optional)"],
+        ].map(([key, label]) => (
           <label className="v2-label" key={key}>
-            {key === "display_name"
-              ? "Preferred name"
-              : key[0].toUpperCase() + key.slice(1)}
+            {tx(label)}
             <input
-              required={key === "display_name"}
-              maxLength={100}
+              maxLength={key === "pin_code" ? 6 : 100}
+              inputMode={key === "pin_code" ? "numeric" : undefined}
+              pattern={key === "pin_code" ? "[1-9][0-9]{5}" : undefined}
               value={profile[key]}
               onChange={(event) =>
                 setProfile((previous) => ({
@@ -68,13 +118,13 @@ export default function AccountDetails({
             />
           </label>
         ))}
-        <button disabled={busy || offline}>Save account details</button>
+        <button disabled={busy || offline}>{tx("Save account details")}</button>
       </form>
-      <h3>Optional pilot enrollment</h3>
+      <h3>{tx("Optional pilot enrollment")}</h3>
       <p>
-        A pilot organiser provides an enrollment code. Only the fields you
-        select are included in permitted aggregate reports. Yield and income
-        impact remain unmeasured until evidence is collected and evaluated.
+        {tx(
+          "A pilot organiser provides an enrollment code. Only the fields you select are included in permitted aggregate reports. Yield and income impact remain unmeasured until evidence is collected and evaluated.",
+        )}
       </p>
       <form
         onSubmit={(event) => {
@@ -82,7 +132,9 @@ export default function AccountDetails({
           act(async () => {
             await farmApi(`/pilot-enrollments/${cohort}`, {
               method: "POST",
-              body: { plot_ids: selected },
+              body: {
+                plot_ids: selected,
+              },
             });
             setEnrollments((await farmApi("/pilot-enrollments")).items);
             setCohort("");
@@ -90,7 +142,7 @@ export default function AccountDetails({
         }}
       >
         <label className="v2-label">
-          Pilot enrollment code
+          {tx("Pilot enrollment code")}
           <input
             required
             pattern="[a-fA-F0-9-]{36}"
@@ -100,7 +152,7 @@ export default function AccountDetails({
           />
         </label>
         <fieldset>
-          <legend>Fields to enroll</legend>
+          <legend>{tx("Fields to enroll")}</legend>
           {plots.map((plot) => (
             <label className="v2-check" key={plot.id}>
               <input
@@ -126,18 +178,18 @@ export default function AccountDetails({
             !selected.length
           }
         >
-          Join consented pilot
+          {tx("Join consented pilot")}
         </button>
         {!consents.includes("pilot_research") && (
-          <p>Enable optional pilot research consent to enroll.</p>
+          <p>{tx("Enable optional pilot research consent to enroll.")}</p>
         )}
       </form>
       {enrollments
         .filter((item) => !item.withdrawn_at)
         .map((item) => (
           <p key={item.id}>
-            Enrolled {new Date(item.created_at).toLocaleDateString()} ·{" "}
-            {item.plot_ids.length} field(s){" "}
+            {tx("Enrolled")} {formatDate(item.created_at)} ·{" "}
+            {item.plot_ids.length} {tx("field(s)")}{" "}
             <button
               disabled={busy || offline}
               onClick={() =>
@@ -149,7 +201,7 @@ export default function AccountDetails({
                 })
               }
             >
-              Withdraw this enrollment
+              {tx("Withdraw this enrollment")}
             </button>
           </p>
         ))}

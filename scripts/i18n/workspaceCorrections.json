@@ -1,0 +1,32 @@
+{
+  "provenance": {
+    "provider": "Codex",
+    "method": "model_draft_authored_in_code",
+    "kind": "crop_label_correction",
+    "recorded_at": "2026-10-04T18:14:55.829268+00:00",
+    "review_status": "machine_translated_needs_native_review",
+    "reason": "Different crop identities must have distinct labels. Native-script English loanwords are used where a precise common-name approval is unavailable. These drafts do not establish native semantic approval."
+  },
+  "languages": {
+    "ur": {
+      "Cabbage": "بند گوبھی",
+      "Cauliflower": "پھول گوبھی"
+    },
+    "ks": {
+      "Cabbage": "بند گوبی",
+      "Cauliflower": "پھول گوبی"
+    },
+    "as": {
+      "Capsicum": "কেপচিকাম"
+    },
+    "te": {
+      "Squash": "స్క్వాష్"
+    },
+    "doi": {
+      "Squash": "स्क्वैश"
+    },
+    "brx": {
+      "Tomato": "टमाटो"
+    }
+  }
+}

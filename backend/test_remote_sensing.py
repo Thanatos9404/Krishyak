@@ -124,6 +124,17 @@ class TransportTests(unittest.TestCase):
         self.assertEqual(len(tokens), 2)
         self.assertEqual(len(requests), 2)
 
+    def test_catalog_requests_geojson_like_the_live_service(self):
+        # Live CDSE answers 406 Not Acceptable to Accept: application/json.
+        seen = []
+        def handle(req):
+            if str(req.url) == TOKEN_URL: return self.token_response()
+            seen.append(req.headers["accept"])
+            if req.headers["accept"] != "application/geo+json": return httpx.Response(406)
+            return httpx.Response(200, json={"type": "FeatureCollection", "features": []})
+        self.assertEqual(self.adapter(handle).search_acquisitions(request())["acquisitions"], [])
+        self.assertEqual(seen, ["application/geo+json"])
+
     def test_authentication_and_access_errors_are_redacted(self):
         for status in (401, 403):
             with self.subTest(status=status):

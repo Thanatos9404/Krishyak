@@ -1,14 +1,16 @@
 # Krishyak technical guide
 
-Updated 3 October 2026. Use the [v2 architecture](docs/v2/ARCHITECTURE.md),
+Updated 9 October 2026. Use the [v2 architecture](docs/v2/ARCHITECTURE.md),
 [API](docs/v2/API.md) and [delivery report](docs/v2/DELIVERY_REPORT.md) for the
 implemented release. Historical evaluations remain historical; old model paths
 and hackathon descriptions are not authoritative for current deployment.
 
 ## Application and evidence
 
-React18/Vite hosts the private farmer workspace; `/planning` preserves the
-existing scenario tools. FastAPI has versioned private routers under `backend/v2`,
+Next.js 16 (App Router, React 19) hosts the public site and the private farmer
+workspace (`/app/*`); `/app/more/planning` preserves the scenario tools. The
+Next.js middleware (`src/proxy.js`) forwards same-origin API calls with a signed
+client address. FastAPI has versioned private routers under `backend/v2`,
 SQLAlchemy/PostGIS models under `backend/db`, ownership repositories, migrations
 and a separate durable worker. There is no added generative agronomy service or
 unnecessary microservice split.
@@ -23,7 +25,8 @@ optional; manual fields remain usable without satellite access.
 | Crop photograph | Active EfficientNetV2B0 classifier / compact LiteRT runtime | External generalization and calibrated probability not established |
 | Today | Conservative deterministic composition | Draft rules, not a trained farm-health model |
 | Satellite | Sentinel-2 masked band ratios and robust interval comparison | Cannot establish disease, NPK, yield or water-stress cause |
-| Weather | External coarse model conditions / 48-hour forecast | Not a field sensor measurement |
+| Weather | Open-Meteo model conditions / 48-hour forecast for the field's rounded location | Not a field sensor measurement |
+| Mandi prices | AGMARKNET current and variety-wise history (data.gov.in), stored per market series | Trend only within one market/variety/grade; reported wholesale prices, not offers |
 | Soil | Unit-bounded farmer lab/card/sensor/manual entry | Independent measurement verification absent |
 | Planning economics/yield/risk | Reference baselines, formulas and assumptions | Not guaranteed or independently regionally calibrated |
 | Price forecast/Monte Carlo | Persistence baseline and uncertainty scenarios | No validated optimal sale date |
@@ -42,23 +45,28 @@ See [model governance](docs/v2/MODEL_GOVERNANCE.md) before making accuracy claim
 
 ## Persistence and security
 
-Postgres/PostGIS stores 17 v2 tables with geodesic area/centroid, ownership,
+Postgres/PostGIS stores 23 v2 tables with geodesic area/centroid, ownership,
 partial active-consent uniqueness, revision/idempotency indexes and cycle-overlap
-constraints. Four Alembic revisions define the schema; extension metadata is
+constraints. Ten Alembic revisions (v2_0001–v2_0010) define the schema; extension metadata is
 excluded from destructive drift generation. Owner-domain rows cascade on deletion;
 object cleanup survives independently.
 
-Mobile OTP adapters supply expiring bounded challenges. Opaque access/refresh
+Farmers sign in with a passkey (phone fingerprint or screen lock, WebAuthn) and a
+single-use recovery code; SMS OTP is an optional adapter. Opaque access/refresh
 credentials are hashed server-side; mutations require exact Origin plus CSRF.
 Research/expert/institutional access needs current purpose consent, roles and
-fresh OTP authentication. Private JPEG objects strip metadata and are never
-served publicly. Deployed legacy registration/sensor/pest/identity personal-data
-routes return 410.
+recent authentication. Private JPEG objects strip metadata, are stored in a
+private object store (Vercel Blob, S3-compatible or local) and are never served
+publicly. The former unauthenticated registration, sensor, pest-report and
+identity-verification routes were removed.
 
-Redis quotas fail closed in deployment. Worker claims use leases, bounded retries,
+Redis quotas fail closed in deployment and budget every provider credential
+(Copernicus, Sarvam, data.gov.in, Open-Meteo) per caller, per day and, for
+metered services, per month across all serverless instances. Worker claims use leases, bounded retries,
 deduplication and boundary/permission rechecks. Cleanup and worker heartbeat are
 durable. Logs use safe request IDs and mask private resource identifiers.
-Production requires TLS storage/Redis/database and a real OTP provider.
+Production requires TLS database/Redis, private object storage and a real sign-in
+method (passkeys or a configured SMS provider).
 
 ## Offline and operations
 

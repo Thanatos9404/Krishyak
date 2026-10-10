@@ -1,9 +1,12 @@
 import unittest
-from unittest.mock import patch
 from datetime import datetime
+from unittest.mock import patch
+
 from fastapi.testclient import TestClient
+
 from main import app
-from pest_intelligence import OutbreakPredictor, PestAnalyzer, PEST_DATABASE
+from pest_intelligence import PEST_DATABASE, OutbreakPredictor, PestAnalyzer
+
 
 class PestCalculationContracts(unittest.TestCase):
     def test_no_mock_regional_claims_or_coordinate_based_score_changes(self):
@@ -17,7 +20,6 @@ class PestCalculationContracts(unittest.TestCase):
             self.assertFalse(item.to_dict()['regional_data_available'])
             self.assertFalse(any('regional' in factor.lower() for factor in item.factors))
             self.assertTrue(0 <= item.probability <= 1)
-        self.assertFalse(PestAnalyzer().get_risk_by_location(29, 75, 'rice')['available'])
 
     def test_missing_or_nonfinite_weather_rejected(self):
         predictor = OutbreakPredictor()

@@ -1,0 +1,560 @@
+[
+  {
+    "id": "wheat",
+    "label": "Wheat",
+    "name": "Wheat",
+    "aliases": ["Wheat"],
+    "planning_names": ["Wheat"],
+    "photo_name": "wheat",
+    "market_commodity": "Wheat"
+  },
+  {
+    "id": "rice",
+    "label": "Rice",
+    "name": "Rice",
+    "aliases": ["Rice"],
+    "planning_names": ["Rice"],
+    "photo_name": "rice",
+    "market_commodity": "Rice"
+  },
+  {
+    "id": "mustard",
+    "label": "Mustard",
+    "name": "Mustard",
+    "aliases": ["Mustard"],
+    "planning_names": ["Mustard"],
+    "photo_name": "mustard",
+    "market_commodity": "Mustard"
+  },
+  {
+    "id": "chickpea",
+    "label": "Chickpea (Gram)",
+    "name": "Gram",
+    "aliases": ["Gram", "Chickpea"],
+    "planning_names": ["Gram", "Chickpea"],
+    "photo_name": "chickpea",
+    "market_commodity": "Gram"
+  },
+  {
+    "id": "cotton",
+    "label": "Cotton",
+    "name": "Cotton",
+    "aliases": ["Cotton"],
+    "planning_names": ["Cotton"],
+    "photo_name": "cotton",
+    "market_commodity": "Cotton"
+  },
+  {
+    "id": "maize",
+    "label": "Maize",
+    "name": "Maize",
+    "aliases": ["Maize"],
+    "planning_names": ["Maize"],
+    "photo_name": "maize",
+    "market_commodity": "Maize"
+  },
+  {
+    "id": "sugarcane",
+    "label": "Sugarcane",
+    "name": "Sugarcane",
+    "aliases": ["Sugarcane"],
+    "planning_names": ["Sugarcane"],
+    "photo_name": "sugarcane",
+    "market_commodity": "Sugarcane"
+  },
+  {
+    "id": "soybean",
+    "label": "Soybean",
+    "name": "Soybean",
+    "aliases": ["Soybean"],
+    "planning_names": ["Soybean"],
+    "photo_name": "soybean",
+    "market_commodity": "Soybean"
+  },
+  {
+    "id": "groundnut",
+    "label": "Groundnut",
+    "name": "Groundnut",
+    "aliases": ["Groundnut"],
+    "planning_names": ["Groundnut"],
+    "photo_name": "groundnut",
+    "market_commodity": "Groundnut"
+  },
+  {
+    "id": "tomato",
+    "label": "Tomato",
+    "name": "Tomato",
+    "aliases": ["Tomato"],
+    "planning_names": ["Tomato"],
+    "photo_name": "tomato",
+    "market_commodity": "Tomato"
+  },
+  {
+    "id": "potato",
+    "label": "Potato",
+    "name": "Potato",
+    "aliases": ["Potato"],
+    "planning_names": ["Potato"],
+    "photo_name": "potato",
+    "market_commodity": "Potato"
+  },
+  {
+    "id": "onion",
+    "label": "Onion",
+    "name": "Onion",
+    "aliases": ["Onion"],
+    "planning_names": ["Onion"],
+    "photo_name": "onion",
+    "market_commodity": "Onion"
+  },
+  {
+    "id": "chilli",
+    "label": "Chilli",
+    "name": "Chilli",
+    "aliases": ["Chilli"],
+    "planning_names": ["Chilli"],
+    "photo_name": "chilli",
+    "market_commodity": "Chilli"
+  },
+  {
+    "id": "bajra",
+    "label": "Pearl millet (Bajra)",
+    "name": "Bajra",
+    "aliases": ["Bajra"],
+    "planning_names": ["Bajra"],
+    "photo_name": "bajra",
+    "market_commodity": "Bajra"
+  },
+  {
+    "id": "jowar",
+    "label": "Sorghum (Jowar)",
+    "name": "Jowar",
+    "aliases": ["Jowar"],
+    "planning_names": ["Jowar"],
+    "photo_name": "jowar",
+    "market_commodity": "Jowar"
+  },
+  {
+    "id": "ragi",
+    "label": "Finger millet (Ragi)",
+    "name": "Ragi",
+    "aliases": ["Ragi"],
+    "planning_names": ["Ragi"],
+    "photo_name": "ragi",
+    "market_commodity": "Ragi"
+  },
+  {
+    "id": "apple",
+    "label": "Apple",
+    "name": "Apple",
+    "aliases": ["Apple"],
+    "planning_names": ["Apple"],
+    "photo_name": "apple",
+    "market_commodity": "Apple"
+  },
+  {
+    "id": "banana",
+    "label": "Banana",
+    "name": "Banana",
+    "aliases": ["Banana"],
+    "planning_names": ["Banana"],
+    "photo_name": "banana",
+    "market_commodity": "Banana"
+  },
+  {
+    "id": "barley",
+    "label": "Barley",
+    "name": "Barley",
+    "aliases": ["Barley"],
+    "planning_names": ["Barley"],
+    "photo_name": "barley",
+    "market_commodity": "Barley"
+  },
+  {
+    "id": "black_pepper",
+    "label": "Black Pepper",
+    "name": "Black Pepper",
+    "aliases": ["Black Pepper"],
+    "planning_names": ["Black Pepper"],
+    "photo_name": "black_pepper",
+    "market_commodity": "Black Pepper"
+  },
+  {
+    "id": "blueberry",
+    "label": "Blueberry",
+    "name": "Blueberry",
+    "aliases": ["Blueberry"],
+    "planning_names": [],
+    "photo_name": "blueberry",
+    "market_commodity": "Blueberry"
+  },
+  {
+    "id": "brinjal",
+    "label": "Brinjal",
+    "name": "Brinjal",
+    "aliases": ["Brinjal"],
+    "planning_names": ["Brinjal"],
+    "photo_name": "brinjal",
+    "market_commodity": "Brinjal"
+  },
+  {
+    "id": "cabbage",
+    "label": "Cabbage",
+    "name": "Cabbage",
+    "aliases": ["Cabbage"],
+    "planning_names": ["Cabbage"],
+    "photo_name": "cabbage",
+    "market_commodity": "Cabbage"
+  },
+  {
+    "id": "capsicum",
+    "label": "Capsicum",
+    "name": "Capsicum",
+    "aliases": ["Capsicum"],
+    "planning_names": ["Capsicum"],
+    "photo_name": "pepper",
+    "market_commodity": "Capsicum"
+  },
+  {
+    "id": "cardamom",
+    "label": "Cardamom",
+    "name": "Cardamom",
+    "aliases": ["Cardamom"],
+    "planning_names": ["Cardamom"],
+    "photo_name": "cardamom",
+    "market_commodity": "Cardamom"
+  },
+  {
+    "id": "carrot",
+    "label": "Carrot",
+    "name": "Carrot",
+    "aliases": ["Carrot"],
+    "planning_names": ["Carrot"],
+    "photo_name": "carrot",
+    "market_commodity": "Carrot"
+  },
+  {
+    "id": "cauliflower",
+    "label": "Cauliflower",
+    "name": "Cauliflower",
+    "aliases": ["Cauliflower"],
+    "planning_names": ["Cauliflower"],
+    "photo_name": "cauliflower",
+    "market_commodity": "Cauliflower"
+  },
+  {
+    "id": "cherry",
+    "label": "Cherry",
+    "name": "Cherry",
+    "aliases": ["Cherry"],
+    "planning_names": [],
+    "photo_name": "cherry",
+    "market_commodity": "Cherry"
+  },
+  {
+    "id": "coconut",
+    "label": "Coconut",
+    "name": "Coconut",
+    "aliases": ["Coconut"],
+    "planning_names": ["Coconut"],
+    "photo_name": "coconut",
+    "market_commodity": "Coconut"
+  },
+  {
+    "id": "coriander",
+    "label": "Coriander",
+    "name": "Coriander",
+    "aliases": ["Coriander"],
+    "planning_names": ["Coriander"],
+    "photo_name": "coriander",
+    "market_commodity": "Coriander"
+  },
+  {
+    "id": "cucumber",
+    "label": "Cucumber",
+    "name": "Cucumber",
+    "aliases": ["Cucumber"],
+    "planning_names": ["Cucumber"],
+    "photo_name": "cucumber",
+    "market_commodity": "Cucumber"
+  },
+  {
+    "id": "cumin",
+    "label": "Cumin",
+    "name": "Cumin",
+    "aliases": ["Cumin"],
+    "planning_names": ["Cumin"],
+    "photo_name": "cumin",
+    "market_commodity": "Cumin"
+  },
+  {
+    "id": "fenugreek",
+    "label": "Fenugreek",
+    "name": "Fenugreek",
+    "aliases": ["Fenugreek"],
+    "planning_names": ["Fenugreek"],
+    "photo_name": "fenugreek",
+    "market_commodity": "Fenugreek"
+  },
+  {
+    "id": "garlic",
+    "label": "Garlic",
+    "name": "Garlic",
+    "aliases": ["Garlic"],
+    "planning_names": ["Garlic"],
+    "photo_name": "garlic",
+    "market_commodity": "Garlic"
+  },
+  {
+    "id": "ginger",
+    "label": "Ginger",
+    "name": "Ginger",
+    "aliases": ["Ginger"],
+    "planning_names": ["Ginger"],
+    "photo_name": "ginger",
+    "market_commodity": "Ginger"
+  },
+  {
+    "id": "grapes",
+    "label": "Grapes",
+    "name": "Grapes",
+    "aliases": ["Grapes"],
+    "planning_names": ["Grapes"],
+    "photo_name": "grape",
+    "market_commodity": "Grapes"
+  },
+  {
+    "id": "green_peas",
+    "label": "Green Peas",
+    "name": "Green Peas",
+    "aliases": ["Green Peas"],
+    "planning_names": ["Green Peas"],
+    "photo_name": "green_peas",
+    "market_commodity": "Green Peas"
+  },
+  {
+    "id": "guava",
+    "label": "Guava",
+    "name": "Guava",
+    "aliases": ["Guava"],
+    "planning_names": ["Guava"],
+    "photo_name": "guava",
+    "market_commodity": "Guava"
+  },
+  {
+    "id": "jute",
+    "label": "Jute",
+    "name": "Jute",
+    "aliases": ["Jute"],
+    "planning_names": ["Jute"],
+    "photo_name": "jute",
+    "market_commodity": "Jute"
+  },
+  {
+    "id": "lemon",
+    "label": "Lemon",
+    "name": "Lemon",
+    "aliases": ["Lemon"],
+    "planning_names": ["Lemon"],
+    "photo_name": "lemon",
+    "market_commodity": "Lemon"
+  },
+  {
+    "id": "lentil",
+    "label": "Lentil",
+    "name": "Lentil",
+    "aliases": ["Lentil"],
+    "planning_names": ["Lentil"],
+    "photo_name": "lentil",
+    "market_commodity": "Lentil"
+  },
+  {
+    "id": "litchi",
+    "label": "Litchi",
+    "name": "Litchi",
+    "aliases": ["Litchi"],
+    "planning_names": ["Litchi"],
+    "photo_name": "litchi",
+    "market_commodity": "Litchi"
+  },
+  {
+    "id": "mango",
+    "label": "Mango",
+    "name": "Mango",
+    "aliases": ["Mango"],
+    "planning_names": ["Mango"],
+    "photo_name": "mango",
+    "market_commodity": "Mango"
+  },
+  {
+    "id": "moong",
+    "label": "Moong",
+    "name": "Moong",
+    "aliases": ["Moong"],
+    "planning_names": ["Moong"],
+    "photo_name": "moong",
+    "market_commodity": "Moong"
+  },
+  {
+    "id": "okra",
+    "label": "Okra",
+    "name": "Okra",
+    "aliases": ["Okra"],
+    "planning_names": ["Okra"],
+    "photo_name": "okra",
+    "market_commodity": "Okra"
+  },
+  {
+    "id": "orange",
+    "label": "Orange",
+    "name": "Orange",
+    "aliases": ["Orange"],
+    "planning_names": ["Orange"],
+    "photo_name": "orange",
+    "market_commodity": "Orange"
+  },
+  {
+    "id": "papaya",
+    "label": "Papaya",
+    "name": "Papaya",
+    "aliases": ["Papaya"],
+    "planning_names": ["Papaya"],
+    "photo_name": "papaya",
+    "market_commodity": "Papaya"
+  },
+  {
+    "id": "peach",
+    "label": "Peach",
+    "name": "Peach",
+    "aliases": ["Peach"],
+    "planning_names": [],
+    "photo_name": "peach",
+    "market_commodity": "Peach"
+  },
+  {
+    "id": "pigeon_pea",
+    "label": "Pigeon pea (Tur / Arhar)",
+    "name": "Tur",
+    "aliases": ["Tur", "Arhar"],
+    "planning_names": ["Tur", "Arhar"],
+    "photo_name": "pigeon_pea",
+    "market_commodity": "Tur"
+  },
+  {
+    "id": "pomegranate",
+    "label": "Pomegranate",
+    "name": "Pomegranate",
+    "aliases": ["Pomegranate"],
+    "planning_names": ["Pomegranate"],
+    "photo_name": "pomegranate",
+    "market_commodity": "Pomegranate"
+  },
+  {
+    "id": "pumpkin",
+    "label": "Pumpkin",
+    "name": "Pumpkin",
+    "aliases": ["Pumpkin"],
+    "planning_names": ["Pumpkin"],
+    "photo_name": "pumpkin",
+    "market_commodity": "Pumpkin"
+  },
+  {
+    "id": "radish",
+    "label": "Radish",
+    "name": "Radish",
+    "aliases": ["Radish"],
+    "planning_names": ["Radish"],
+    "photo_name": "radish",
+    "market_commodity": "Radish"
+  },
+  {
+    "id": "raspberry",
+    "label": "Raspberry",
+    "name": "Raspberry",
+    "aliases": ["Raspberry"],
+    "planning_names": [],
+    "photo_name": "raspberry",
+    "market_commodity": "Raspberry"
+  },
+  {
+    "id": "sesame",
+    "label": "Sesame",
+    "name": "Sesame",
+    "aliases": ["Sesame"],
+    "planning_names": ["Sesame"],
+    "photo_name": "sesame",
+    "market_commodity": "Sesame"
+  },
+  {
+    "id": "spinach",
+    "label": "Spinach",
+    "name": "Spinach",
+    "aliases": ["Spinach"],
+    "planning_names": ["Spinach"],
+    "photo_name": "spinach",
+    "market_commodity": "Spinach"
+  },
+  {
+    "id": "squash",
+    "label": "Squash",
+    "name": "Squash",
+    "aliases": ["Squash"],
+    "planning_names": [],
+    "photo_name": "squash",
+    "market_commodity": "Squash"
+  },
+  {
+    "id": "strawberry",
+    "label": "Strawberry",
+    "name": "Strawberry",
+    "aliases": ["Strawberry"],
+    "planning_names": [],
+    "photo_name": "strawberry",
+    "market_commodity": "Strawberry"
+  },
+  {
+    "id": "sunflower",
+    "label": "Sunflower",
+    "name": "Sunflower",
+    "aliases": ["Sunflower"],
+    "planning_names": ["Sunflower"],
+    "photo_name": "sunflower",
+    "market_commodity": "Sunflower"
+  },
+  {
+    "id": "tobacco",
+    "label": "Tobacco",
+    "name": "Tobacco",
+    "aliases": ["Tobacco"],
+    "planning_names": ["Tobacco"],
+    "photo_name": "tobacco",
+    "market_commodity": "Tobacco"
+  },
+  {
+    "id": "turmeric",
+    "label": "Turmeric",
+    "name": "Turmeric",
+    "aliases": ["Turmeric"],
+    "planning_names": ["Turmeric"],
+    "photo_name": "turmeric",
+    "market_commodity": "Turmeric"
+  },
+  {
+    "id": "urad",
+    "label": "Urad",
+    "name": "Urad",
+    "aliases": ["Urad"],
+    "planning_names": ["Urad"],
+    "photo_name": "urad",
+    "market_commodity": "Urad"
+  },
+  {
+    "id": "watermelon",
+    "label": "Watermelon",
+    "name": "Watermelon",
+    "aliases": ["Watermelon"],
+    "planning_names": ["Watermelon"],
+    "photo_name": "watermelon",
+    "market_commodity": "Watermelon"
+  }
+]

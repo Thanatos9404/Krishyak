@@ -7,6 +7,15 @@ from PIL import Image
 
 
 class CompactRuntimeSmoke(unittest.TestCase):
+    def test_application_and_identity_runtime_can_import(self):
+        from jwt.algorithms import RSAAlgorithm
+        from main import app
+
+        self.assertTrue(callable(RSAAlgorithm))
+        paths = app.openapi()["paths"]
+        self.assertIn("/api/v2/farm-context", paths)
+        self.assertIn("/api/v2/government/auth/callback", paths)
+
     def test_compact_release_can_execute(self):
         import platform
 

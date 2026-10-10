@@ -188,8 +188,9 @@ def refresh_weather(
     plot = owned_plot(db, farmer.id, plot_id, lock=True)
     require_consent(db, farmer, "location_processing")
     require_consent(db, farmer, "agronomic_analysis")
-    if plot.centroid is None:
-        raise HTTPException(422, "Map an approximate field boundary to request local weather")
+    point = plot.centroid if plot.centroid is not None else plot.approximate_location
+    if point is None:
+        raise HTTPException(422, "Add your field's location to see local weather")
     existing = db.scalar(
         select(Observation).where(Observation.plot_id == plot_id, Observation.operation_id == body.operation_id)
     )
@@ -210,7 +211,9 @@ def refresh_weather(
     if cached and cached.provenance.get("boundary_revision") == plot.revision:
         return serialize(cached, exclude=("payload_hash",))
     request.app.state.v2_quotas.check("weather", str(farmer.id), 6, 3600)
-    centroid, revision = to_shape(plot.centroid), plot.revision
+    # Open-Meteo's free tier allows 10,000 calls a day, shared with public use.
+    request.app.state.v2_quotas.check("open_meteo_accounts", "global", 4000, 86400)
+    centroid, revision = to_shape(point), plot.revision
     # Approximate grid location, not the polygon or an identity, leaves the API.
     lat, lon = round(centroid.y, 2), round(centroid.x, 2)
     db.commit()

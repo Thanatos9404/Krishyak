@@ -11,6 +11,7 @@ from sqlalchemy import (
     ForeignKey,
     Index,
     Integer,
+    LargeBinary,
     Numeric,
     String,
     Text,
@@ -38,15 +39,30 @@ class Record:
 
 class Farmer(Record, Base):
     __tablename__ = "v2_farmers"
-    mobile: Mapped[str] = mapped_column(String(16), unique=True)
+    # Verified sign-in number (OTP). Passkey accounts may only have an
+    # unverified contact number, which is never an identity or uniqueness key.
+    mobile: Mapped[str | None] = mapped_column(String(16), unique=True)
+    contact_mobile: Mapped[str | None] = mapped_column(String(16))
     display_name: Mapped[str] = mapped_column(String(100), default="Farmer")
     preferred_language: Mapped[str] = mapped_column(String(10), default="en")
     state: Mapped[str | None] = mapped_column(String(100))
     district: Mapped[str | None] = mapped_column(String(100))
     village: Mapped[str | None] = mapped_column(String(100))
+    state_code: Mapped[int | None] = mapped_column(Integer)
+    district_code: Mapped[int | None] = mapped_column(Integer)
+    subdistrict: Mapped[str | None] = mapped_column(String(100))
+    pin_code: Mapped[str | None] = mapped_column(String(6))
     timezone: Mapped[str] = mapped_column(String(50), default="Asia/Kolkata")
     status: Mapped[str] = mapped_column(String(20), default="active")
     role: Mapped[str] = mapped_column(String(30), default="farmer")
+
+
+class GovernmentIdentity(Record, Base):
+    __tablename__ = "v2_government_identities"
+    __table_args__ = (UniqueConstraint("issuer", "subject_hash"), UniqueConstraint("farmer_id", "issuer"))
+    farmer_id: Mapped[UUID] = mapped_column(ForeignKey("v2_farmers.id", ondelete="CASCADE"), index=True)
+    issuer: Mapped[str] = mapped_column(String(200))
+    subject_hash: Mapped[str] = mapped_column(String(64))
 
 
 class AuthChallenge(Record, Base):
@@ -56,6 +72,35 @@ class AuthChallenge(Record, Base):
     provider_reference: Mapped[str | None] = mapped_column(String(100))
     expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     attempts: Mapped[int] = mapped_column(Integer, default=0)
+    consumed: Mapped[bool] = mapped_column(Boolean, default=False)
+
+
+class Passkey(Record, Base):
+    __tablename__ = "v2_passkeys"
+    farmer_id: Mapped[UUID] = mapped_column(ForeignKey("v2_farmers.id", ondelete="CASCADE"), index=True)
+    credential_id: Mapped[str] = mapped_column(String(1400), unique=True)
+    public_key: Mapped[bytes] = mapped_column(LargeBinary)
+    sign_count: Mapped[int] = mapped_column(Integer, default=0)
+    transports: Mapped[list] = mapped_column(JSONB, default=list)
+    device_label: Mapped[str] = mapped_column(String(100), default="This phone")
+    backed_up: Mapped[bool] = mapped_column(Boolean, default=False)
+    last_used_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class RecoveryCode(Record, Base):
+    __tablename__ = "v2_recovery_codes"
+    farmer_id: Mapped[UUID] = mapped_column(ForeignKey("v2_farmers.id", ondelete="CASCADE"), unique=True)
+    code_hash: Mapped[str] = mapped_column(String(64), unique=True)
+
+
+class WebAuthnChallenge(Record, Base):
+    __tablename__ = "v2_webauthn_challenges"
+    purpose: Mapped[str] = mapped_column(String(20))
+    challenge: Mapped[str] = mapped_column(String(200), unique=True)
+    origin: Mapped[str] = mapped_column(String(300))
+    farmer_id: Mapped[UUID | None] = mapped_column(ForeignKey("v2_farmers.id", ondelete="CASCADE"), index=True)
+    payload: Mapped[dict] = mapped_column(JSONB, default=dict)
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     consumed: Mapped[bool] = mapped_column(Boolean, default=False)
 
 
@@ -106,6 +151,9 @@ class Plot(Record, Base):
     name: Mapped[str] = mapped_column(String(100))
     boundary: Mapped[object | None] = mapped_column(Geometry("POLYGON", srid=4326))
     centroid: Mapped[object | None] = mapped_column(Geometry("POINT", srid=4326))
+    # Rounded (~1 km) farmer-confirmed field location for weather and markets
+    # when no boundary is drawn. Never used for satellite field statistics.
+    approximate_location: Mapped[object | None] = mapped_column(Geometry("POINT", srid=4326, spatial_index=False))
     area_hectares: Mapped[float | None] = mapped_column(Numeric(14, 6))
     entered_area_hectares: Mapped[float | None] = mapped_column(Numeric(14, 6))
     boundary_quality: Mapped[str] = mapped_column(String(20), default="manual")
@@ -120,6 +168,7 @@ class CropCycle(Record, Base):
     __table_args__ = (UniqueConstraint("plot_id", "operation_id"),)
     plot_id: Mapped[UUID] = mapped_column(ForeignKey("v2_plots.id", ondelete="CASCADE"), index=True)
     crop: Mapped[str] = mapped_column(String(100))
+    crop_id: Mapped[str | None] = mapped_column(String(50))
     variety: Mapped[str | None] = mapped_column(String(100))
     sowing_date: Mapped[date] = mapped_column(Date)
     expected_harvest: Mapped[date] = mapped_column(Date)
@@ -236,6 +285,37 @@ class Notification(Record, Base):
     kind: Mapped[str] = mapped_column(String(40))
     payload: Mapped[dict] = mapped_column(JSONB)
     acknowledged_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+
+
+class MarketPrice(Record, Base):
+    """Public AGMARKNET wholesale quotes, kept to compute dated price trends."""
+
+    __tablename__ = "v2_market_prices"
+    __table_args__ = (
+        UniqueConstraint("arrival_date", "state", "district", "market", "commodity", "variety", "grade"),
+        Index("ix_v2_market_prices_lookup", "commodity", "state", "district", "arrival_date"),
+    )
+    arrival_date: Mapped[date] = mapped_column(Date)
+    state: Mapped[str] = mapped_column(String(150))
+    district: Mapped[str] = mapped_column(String(150))
+    market: Mapped[str] = mapped_column(String(150))
+    commodity: Mapped[str] = mapped_column(String(100))
+    variety: Mapped[str] = mapped_column(String(100))
+    grade: Mapped[str] = mapped_column(String(50))
+    min_price: Mapped[float | None] = mapped_column(Numeric(12, 2))
+    max_price: Mapped[float | None] = mapped_column(Numeric(12, 2))
+    modal_price: Mapped[float] = mapped_column(Numeric(12, 2))
+    source_resource: Mapped[str] = mapped_column(String(64))
+    retrieved_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=utcnow)
+
+
+class MarketFetch(Base):
+    """When a public market scope was last requested from the provider."""
+
+    __tablename__ = "v2_market_fetches"
+    scope: Mapped[str] = mapped_column(String(64), primary_key=True)
+    fetched_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    status: Mapped[str] = mapped_column(String(20))
 
 
 class WorkerHeartbeat(Base):

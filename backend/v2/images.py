@@ -20,6 +20,39 @@ from .providers import object_storage, sanitize_image
 from .router import current_farmer, database, require_consent, serialize
 from .schemas import FeedbackInput, ReviewInput
 
+GUIDANCE = json.loads((Path(__file__).with_name("disease_guidance.json")).read_text(encoding="utf-8"))
+
+
+def farmer_guidance(label, status):
+    """Plain-language name and first non-chemical steps. Never a product or dose."""
+    common = GUIDANCE["common_steps"]
+    if status == "detected" and label in GUIDANCE["classes"]:
+        entry = GUIDANCE["classes"][label]
+        return {
+            "name": entry["name"],
+            "cause": entry["cause"],
+            "urgent": bool(entry.get("urgent")),
+            "steps": [*entry["steps"], *common],
+            "review_status": GUIDANCE["_meta"]["review_status"],
+        }
+    if status == "healthy":
+        return {
+            "name": None,
+            "steps": [
+                "No common disease pattern was found in this photo. Keep checking other plants, especially the undersides of leaves."
+            ],
+            "review_status": GUIDANCE["_meta"]["review_status"],
+        }
+    return {
+        "name": None,
+        "steps": [
+            "Take another photo of one affected leaf in daylight, filling the frame.",
+            *common,
+        ],
+        "review_status": GUIDANCE["_meta"]["review_status"],
+    }
+
+
 router = APIRouter(prefix="/api/v2", tags=["Private crop health"])
 scan_slot = BoundedSemaphore(1)
 
@@ -105,12 +138,20 @@ def scan(
             raise HTTPException(409, "Operation ID already used for another photograph")
         return {"image_id": existing.id, "result": existing.result}
     request.app.state.v2_quotas.check("images", str(farmer.id), 10, 3600)
+    request.app.state.v2_quotas.check("images_global", "global", 2000, 86400)
     metadata, labels = model_release()
     from model_inference import class_crop, predict_from_image
 
-    crop_alias = {"corn": "maize", "grapes": "grape", "citrus": "orange"}.get(crop.casefold(), crop.casefold())
+    from .crops import BY_ID, BY_NAME
+
+    record_crop = BY_ID.get(crop) or BY_NAME.get(crop)
+    crop_alias = (
+        record_crop["photo_name"]
+        if record_crop
+        else {"corn": "maize", "grapes": "grape", "citrus": "orange"}.get(crop.casefold(), crop.casefold())
+    )
     supported = set(filter(None, map(class_crop, labels)))
-    raw = predict_from_image(clean, crop_type=crop) if crop_alias in supported else {"status": "unsupported"}
+    raw = predict_from_image(clean, crop_type=crop_alias) if crop_alias in supported else {"status": "unsupported"}
     status = (
         "unsupported"
         if crop_alias not in supported
@@ -132,8 +173,10 @@ def scan(
         "model_score": raw.get("confidence", (raw.get("disease") or {}).get("confidence")),
         "alternatives": alternatives,
         "crop": crop,
+        "crop_id": record_crop["id"] if record_crop else None,
         "observed_at": utcnow().isoformat(),
         "recommended_next_step": "Inspect symptoms and seek local expert confirmation before treatment.",
+        "guidance": farmer_guidance(predicted if predicted in labels and status == "detected" else None, status),
         "limitations": [
             "Model score is not calibrated disease probability",
             "Healthy-class prediction does not rule out disease",

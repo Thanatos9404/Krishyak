@@ -7,15 +7,16 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response
 from geoalchemy2.shape import from_shape, to_shape
-from shapely.geometry import mapping, shape
+from shapely.geometry import Point, mapping, shape
 from sqlalchemy import func, select, text, update
 from sqlalchemy.exc import SQLAlchemyError
 
 from db.models import AuthChallenge, Consent, CropCycle, Farm, Farmer, Observation, Plot, utcnow
 from remote_sensing.geometry import area_details
 from repositories.ownership import owned_farm, owned_plot
+from security import client_ip
 
-from .auth import authenticate, check_origin, clear_session, issue_session
+from .auth import ACCESS_COOKIE, REFRESH_COOKIE, authenticate, check_origin, clear_session, issue_session
 from .providers import otp_provider
 from .schemas import (
     ConsentInput,
@@ -72,7 +73,10 @@ def serialize(record, *, exclude=()):
         if name in exclude:
             continue
         value = getattr(record, name)
-        if name in {"boundary", "centroid"}:
+        if name == "approximate_location":
+            point = to_shape(value) if value is not None else None
+            value = {"latitude": point.y, "longitude": point.x} if point is not None else None
+        elif name in {"boundary", "centroid"}:
             value = mapping(to_shape(value)) if value is not None else None
         result[name] = value
     return result
@@ -92,6 +96,10 @@ def status(request: Request):
         "environment": settings.environment,
         "development_identity": settings.enabled and settings.otp_provider == "development",
         "otp_available": settings.enabled and settings.otp_provider != "disabled",
+        "passkey_available": settings.enabled and settings.passkey_enabled,
+        # This untrusted hint only avoids anonymous bootstrap requests. A true
+        # value still requires the existing authenticated session checks.
+        "session_cookie_present": bool(request.cookies.get(ACCESS_COOKIE) or request.cookies.get(REFRESH_COOKIE)),
         "policy_version": "2026-10-03",
         "satellite_configuration": get_service().status()["status"],
         "satellite_live_access_verified": False,
@@ -103,7 +111,7 @@ def request_otp(body: RequestOTP, request: Request, db=Depends(database, scope="
     check_origin(request)
     settings = request.app.state.v2_settings
     quotas = request.app.state.v2_quotas
-    ip = request.client.host if request.client else "unknown"
+    ip = client_ip(request)
     quotas.check("otp_ip", ip, 6, 600)
     quotas.check("otp_mobile", body.mobile, 3, 600)
     quotas.check("otp_global", "global", 300, 86400)
@@ -137,7 +145,7 @@ def request_otp(body: RequestOTP, request: Request, db=Depends(database, scope="
 @router.post("/auth/verify-otp")
 def verify_otp(body: VerifyOTP, request: Request, response: Response, db=Depends(database, scope="function")):
     check_origin(request)
-    request.app.state.v2_quotas.check("otp_check", request.client.host if request.client else "unknown", 20, 600)
+    request.app.state.v2_quotas.check("otp_check", client_ip(request), 20, 600)
     mobile = db.scalar(select(AuthChallenge.mobile).where(AuthChallenge.id == body.challenge_id))
     if mobile is None:
         raise HTTPException(400, "Verification expired or invalid; request a new code")
@@ -231,7 +239,7 @@ def session_context(request: Request, db=Depends(database, scope="function")):
 
 @router.patch("/me")
 def update_me(body: ProfileInput, farmer=Depends(current_farmer)):
-    for name, value in body.model_dump().items():
+    for name, value in body.model_dump(exclude_unset=True).items():
         setattr(farmer, name, value)
     return {"farmer": profile(farmer)}
 
@@ -354,7 +362,13 @@ def plots(
 
 def plot_values(body, db, farmer):
     owned_farm(db, farmer.id, body.farm_id)
-    values = body.model_dump(exclude={"revision", "boundary"})
+    values = body.model_dump(exclude={"revision", "boundary", "approximate_location"})
+    location = body.approximate_location
+    if location is not None and body.boundary is None:
+        require_consent(db, farmer, "location_processing")
+        values["approximate_location"] = from_shape(Point(location.longitude, location.latitude), srid=4326)
+    else:
+        values["approximate_location"] = None
     if body.boundary is not None:
         require_consent(db, farmer, "location_processing")
         geometry = body.boundary.model_dump()

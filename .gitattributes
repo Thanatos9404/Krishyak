@@ -1,2 +1,11 @@
 # The active release hashes these exact label-map bytes. Do not normalize EOLs.
 backend/models/active/class_indices.json -text
+
+# Static translation provenance and cache versions must agree across platforms.
+frontend/public/locales/workspace/*.json text eol=lf
+frontend/src/features/product/locales/*.json text eol=lf
+scripts/i18n/glossary.json text eol=lf
+backend/v2/india_locations*.json text eol=lf
+backend/migrations/data/v2_0006_locations.json text eol=lf
+frontend/src/features/product/indiaLocations.json text eol=lf
+data/reference/india/*.json text eol=lf

@@ -1,7 +1,8 @@
+import { useProductLocale } from "../product/ProductLocale";
 import React, { useEffect, useState } from "react";
 import { farmApi } from "./api";
-
 export default function NoticeList({ owner, act, busy, offline }) {
+  const { tx, formatDate } = useProductLocale();
   const [records, setRecords] = useState([]);
   useEffect(() => {
     let cancelled = false;
@@ -23,15 +24,16 @@ export default function NoticeList({ owner, act, busy, offline }) {
   if (!records.length) return null;
   return (
     <section className="v2-card">
-      <h2>Field updates</h2>
+      <h2>{tx("Field updates")}</h2>
       {records.map((record) => (
         <article className="v2-event" key={record.id}>
           <h3>{record.payload.title}</h3>
           <p>{record.payload.message}</p>
-          <time>{new Date(record.created_at).toLocaleString()}</time>
+          <time>{formatDate(record.created_at, { time: true })}</time>
           {record.acknowledged_at ? (
             <p>
-              Acknowledged {new Date(record.acknowledged_at).toLocaleString()}
+              {tx("Acknowledged")}{" "}
+              {formatDate(record.acknowledged_at, { time: true })}
             </p>
           ) : (
             <button
@@ -40,7 +42,9 @@ export default function NoticeList({ owner, act, busy, offline }) {
                 act(async () => {
                   const updated = await farmApi(
                     `/notifications/${record.id}/acknowledge`,
-                    { method: "POST" },
+                    {
+                      method: "POST",
+                    },
                   );
                   setRecords((previous) =>
                     previous.map((value) =>
@@ -50,7 +54,7 @@ export default function NoticeList({ owner, act, busy, offline }) {
                 })
               }
             >
-              Acknowledge update
+              {tx("Acknowledge update")}
             </button>
           )}
         </article>

@@ -19,7 +19,8 @@ class PlaceService:
         self.lock=Lock();self.clock=clock;self.next_call=0
 
     def get(self, point, identity):
-        if os.getenv('REMOTE_SENSING_PLACE_LOOKUP_ENABLED','false').lower()!='true':
+        if (os.getenv('REMOTE_SENSING_PLACE_LOOKUP_ENABLED','false').lower()!='true'
+                or os.getenv('FARM_CONTEXT_NOMINATIM_ENABLED','false').lower()=='true'):
             raise ProviderError('disabled','Place lookup is disabled',503)
         lat,lon=round(point.latitude,2),round(point.longitude,2)
         key=hashlib.sha256(f'nominatim-v1:{lat}:{lon}'.encode()).hexdigest()

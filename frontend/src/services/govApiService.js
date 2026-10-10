@@ -66,7 +66,7 @@ export async function fetchMSPForCrop(crop) {
  * @param {number} [filters.limit=50] - Maximum results
  * @returns {Promise<Object>} Mandi prices data
  */
-export async function fetchMandiPrices({ commodity, state, district, limit = 50 } = {}) {
+export async function fetchMandiPrices({ commodity, state, district, limit = 50 } = {}, { signal } = {}) {
   try {
     const params = new URLSearchParams();
     if (commodity) params.append('commodity', commodity);
@@ -76,6 +76,7 @@ export async function fetchMandiPrices({ commodity, state, district, limit = 50 
 
     const response = await fetch(`${API_BASE_URL}/api/mandi/prices?${params.toString()}`, {
       method: 'GET',
+      signal,
       headers: {
         'Content-Type': 'application/json',
       },
@@ -88,6 +89,7 @@ export async function fetchMandiPrices({ commodity, state, district, limit = 50 
     const data = await response.json();
     return data;
   } catch (error) {
+    if (signal?.aborted) return { success: false, cancelled: true };
     console.error('Error fetching mandi prices:', error);
     return {
       success: false,

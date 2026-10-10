@@ -7,20 +7,25 @@ their original paths. All private responses are `Cache-Control: no-store`.
 | Resource | Routes |
 |---|---|
 | Configuration | `GET /status` (configuration only, not live provider verification) |
-| Authentication | `POST /auth/request-otp`, `/auth/verify-otp`, `/auth/refresh`, `/auth/logout`; `GET /auth/session` |
+| Passkey sign-in | `POST /auth/passkey/register/options`, `/auth/passkey/register/verify`, `/auth/passkey/login/options`, `/auth/passkey/login/verify`, `/auth/recovery` |
+| Sign-in devices | `GET /me/passkeys`, `POST /me/passkeys/options`, `/me/passkeys/verify`, `DELETE /me/passkeys/{id}`, `POST /me/recovery-code` (recent sign-in required) |
+| Authentication | `POST /auth/request-otp`, `/auth/verify-otp` (only when an SMS provider is configured), `/auth/refresh`, `/auth/logout`; `GET /auth/session` |
 | Account | `GET/PATCH/DELETE /me`, `GET /me/export` |
 | Consent | `GET/POST /consents` |
 | Farm | `GET/POST /farms`, `PATCH/DELETE /farms/{id}` |
-| Plot | `GET/POST /plots`, `PUT/DELETE /plots/{id}` |
+| Plot | `GET/POST /plots`, `PUT/DELETE /plots/{id}`; optional `approximate_location` (rounded to 0.01°, India only) when no boundary is drawn |
 | Crop cycle | `GET/POST /plots/{id}/crop-cycles`, `PUT/DELETE /crop-cycles/{id}` |
 | Evidence | `POST /plots/{id}/observations`; `GET /plots/{id}/today`, `/timeline` |
 | Soil/weather | `GET/POST /plots/{id}/soil`; `GET /plots/{id}/weather`, `POST /plots/{id}/weather/refresh` |
 | Satellite | `GET /plots/{id}/remote-sensing`, `POST .../refresh`, `POST .../preview` |
-| Crop photo | `POST/GET /disease-scans`, `GET /disease-scans/{id}/image`, `DELETE /disease-scans/{id}` |
+| Crop photo | `POST/GET /disease-scans`, `GET /disease-scans/{id}/image`, `DELETE /disease-scans/{id}`; results include plain-language `guidance` (no products or doses) |
+| Mandi prices | `GET /market/prices?crop=&state=&district=` (public, rate limited): latest modal ₹/quintal per market series, 7- and 28-day change from dated quotes, sources and limits |
+| Operations | `GET /internal/worker` (Vercel Cron, `Authorization: Bearer $CRON_SECRET`; 404 otherwise) |
 | Feedback/review | `POST /feedback`, `GET /review-queue`, `POST /review-queue/{id}`, `GET /review-queue/{id}/image` |
 | Institutions | `/admin/pilots`, `/admin/pilots/{id}/report`, `/admin/model-monitoring` |
 | Enrollment | `/pilot-enrollments`, `/pilot-enrollments/{id}` |
 | Notices/catalog | `/notifications`, `/notifications/{id}/acknowledge`, `/benefits/catalog` |
+| Private speech | `GET /speech/capabilities`, `POST /speech/transcribe`, `POST /speech/synthesize` |
 
 Mutations require the exact allowed `Origin`, cookies and `X-CSRF-Token` from
 verification/bootstrap. Tokens stay in cookies/memory, never browser storage.
@@ -36,8 +41,20 @@ conflict. Unauthorized resource IDs return 404. Main-app errors contain
 `error.code/message/retryable/request_id`; 401/403/404/409/422/429/503 are meaningful
 states. Rate limits supply `Retry-After`. Never retry a changed mutation silently.
 
-Non-photo mutation bodies are bounded at 64 KiB. Photo API payloads are bounded
+Mutation bodies other than photo/dictation uploads are bounded at 64 KiB. Photo API payloads are bounded
 at 9 MiB including multipart framing; decoded input is ≤8 MiB, ≤20 MP and ≤8192
 pixels per dimension. The frontend uses a stricter 4 MB input limit for the
 current serverless gateway. Account export streams metadata; private photo
 bytes use the authenticated download endpoint.
+
+Private dictation accepts WAV multipart uploads only, with a 9 MiB body limit
+including framing and a validated recording of at most 30 seconds. Browser
+recordings are converted into mono PCM WAV before submission. Synthesis accepts
+1 to 2,500 text characters and a selected supported language. Both require
+authentication, CSRF and speech-processing consent, use distributed user/IP/global
+budgets and recheck consent after provider work. Capability metadata distinguishes
+actual configured TTS languages from documented STT support and discloses the
+120-second transient TTS cache. Unavailable speech remains unavailable; there is
+no unrelated-language or automatic paid-provider retry. Hosted legacy `/speech/`
+routes return 410. A `/status` session-cookie hint is untrusted and grants no
+account access.

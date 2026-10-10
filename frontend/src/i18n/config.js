@@ -1,7 +1,9 @@
 /**
- * All 22 languages in the Eighth Schedule, plus Indian English.
+ * All 22 scheduled Indian languages, plus Indian English.
  * Locale packs are loaded only after selection to keep the first mobile load small.
  */
+
+import pilot from './pilotLanguages.json';
 
 function language(code, name, nativeName, speechCode, script, region, options = {}) {
   return {
@@ -19,7 +21,7 @@ function language(code, name, nativeName, speechCode, script, region, options = 
   };
 }
 
-export const SUPPORTED_LANGUAGES = {
+const LANGUAGE_REGISTRY = {
   en: language('en', 'English', 'English', 'en-IN', 'Latin', 'All India', { isDefault: true, scheduled: false }),
   as: language('as', 'Assamese', 'অসমীয়া', 'as-IN', 'Bengali–Assamese', 'Assam'),
   bn: language('bn', 'Bengali', 'বাংলা', 'bn-IN', 'Bengali–Assamese', 'West Bengal, Tripura'),
@@ -45,6 +47,7 @@ export const SUPPORTED_LANGUAGES = {
   ur: language('ur', 'Urdu', 'اردو', 'ur-IN', 'Perso-Arabic', 'All India', { direction: 'rtl' }),
 };
 
+export const SUPPORTED_LANGUAGES = Object.fromEntries(pilot.codes.map((code) => [code, LANGUAGE_REGISTRY[code]]));
 export const DEFAULT_LANGUAGE = 'en';
 export const getLanguage = (code) => SUPPORTED_LANGUAGES[code] || SUPPORTED_LANGUAGES[DEFAULT_LANGUAGE];
 export const getLanguageCodes = () => Object.keys(SUPPORTED_LANGUAGES);

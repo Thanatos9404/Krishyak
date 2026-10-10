@@ -159,7 +159,8 @@ class CopernicusSentinelHubProvider(RemoteSensingProvider):
                 "filter-lang": "cql2-json"}
         features, truncated = [], False
         for page in range(3):
-            value = self._json(self._post("/catalog/v1/search", body))
+            # STAC search responds with GeoJSON; a plain JSON Accept header is refused (406).
+            value = self._json(self._post("/catalog/v1/search", body, accept="application/geo+json"))
             rows = value.get("features")
             if not isinstance(rows, list) or len(rows) > 100:
                 raise self.malformed()

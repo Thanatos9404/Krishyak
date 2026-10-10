@@ -1,7 +1,7 @@
 name: Field Intelligence quality gates
 on:
   push:
-    branches: [main, feat/krishyak-v2-field-intelligence]
+    branches: [main, feat/krishyak-v2-field-intelligence, feat/krishyak-v2-product-experience-seo]
   pull_request:
   workflow_dispatch:
 permissions:
@@ -11,7 +11,8 @@ concurrency:
   cancel-in-progress: true
 jobs:
   backend:
-    runs-on: ubuntu-latest
+    # Keep the tested OS family stable when GitHub moves ubuntu-latest.
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     services:
       postgres:
@@ -42,11 +43,13 @@ jobs:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with: {python-version: '3.12', cache: pip, cache-dependency-path: 'backend/requirements*.txt'}
+      - name: Verify flat runtime adapter pins
+        run: python scripts/sync_runtime_requirements.py --check
       - run: pip install -r backend/requirements-dev.txt
       - name: Static and formatting checks
         run: |
-          ruff check backend/v2 backend/db backend/repositories backend/migrations backend/test_v2_foundation.py
-          ruff format --check backend/v2 backend/db backend/repositories backend/migrations backend/test_v2_foundation.py
+          ruff check backend/v2 backend/db backend/repositories backend/migrations backend/test_v2_foundation.py backend/test_passkeys.py backend/test_market_prices.py backend/test_disease_guidance.py backend/test_usage_controls.py backend/security.py
+          ruff format --check backend/v2 backend/db backend/repositories backend/migrations backend/test_v2_foundation.py backend/test_passkeys.py backend/test_market_prices.py backend/test_disease_guidance.py backend/test_usage_controls.py
           bandit -r backend/v2 backend/db backend/repositories
       - name: Migration round trip on disposable database
         working-directory: backend
@@ -61,10 +64,13 @@ jobs:
       - name: Runtime dependency security
         run: pip-audit -r backend/requirements.txt
       - name: Release documentation links
-        run: python scripts/check_v2_docs.py
+        run: |
+          python scripts/check_v2_docs.py
+          python scripts/check_product_release.py
+          python scripts/i18n/validate-workspace.py
   frontend-and-browsers:
-    runs-on: ubuntu-latest
-    timeout-minutes: 25
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
     services:
       postgres:
         image: postgis/postgis:17-3.5
@@ -93,6 +99,8 @@ jobs:
         with: {node-version: '24', cache: npm, cache-dependency-path: frontend/package-lock.json}
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with: {python-version: '3.12', cache: pip, cache-dependency-path: 'backend/requirements*.txt'}
+      - name: Verify flat runtime adapter pins
+        run: python scripts/sync_runtime_requirements.py --check
       - run: pip install -r backend/requirements.txt
       - run: npm ci
         working-directory: frontend
@@ -110,19 +118,41 @@ jobs:
           python -m alembic upgrade head
           python -m uvicorn main:app --host 127.0.0.1 --port 8000 --no-access-log > /tmp/v2-api.log 2>&1 &
           cd ../frontend
-          npm run preview -- --host 127.0.0.1 --port 3000 > /tmp/v2-web.log 2>&1 &
+          npm start > /tmp/v2-web.log 2>&1 &
           python ../scripts/wait_for_v2.py
-      - name: Chromium, Firefox and WebKit E2E, mobile and accessibility
+      - name: Chromium, Android-profile passkeys, Firefox and WebKit E2E, accessibility
         run: npm run test:e2e
         working-directory: frontend
-      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+      - name: Public crawl and orphan-page check
+        run: python scripts/audit_product_site.py
+      - name: API and frontend failure diagnostics
         if: failure()
-        with: {name: synthetic-browser-failures, path: output/playwright, retention-days: 7}
+        run: |
+          for log in /tmp/v2-api.log /tmp/v2-web.log; do
+            if [ -f "$log" ]; then
+              echo "::group::$log"
+              tail -n 100 "$log"
+              echo "::endgroup::"
+            fi
+          done
+      - uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        if: always()
+        with:
+          name: synthetic-browser-evidence
+          path: |
+            output/playwright
+            output/product/screenshots
+            output/mobile-performance.json
+            /tmp/v2-api.log
+            /tmp/v2-web.log
+          retention-days: 7
   container:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+      - name: Verify flat runtime adapter pins
+        run: python3 scripts/sync_runtime_requirements.py --check
       - run: docker build --tag krishyak-v2:ci backend
       - name: Compact classifier runtime without network
         run: docker run --rm --network none --entrypoint python krishyak-v2:ci /app/test_container_runtime.py

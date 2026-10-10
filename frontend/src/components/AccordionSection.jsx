@@ -9,10 +9,13 @@ const AccordionSection = ({
   sectionId,
   children
 }) => {
+  const panelId = React.useId();
   return (
     <div data-farm-section={sectionId} className="border-b border-gray-200 last:border-b-0">
       {/* Accordion Header */}
       <button
+        aria-expanded={isExpanded}
+        aria-controls={panelId}
         onClick={onToggle}
         className="w-full flex items-center justify-between px-4 py-3 bg-white hover:bg-farm-green-50 transition-colors duration-150 rounded-lg"
       >
@@ -28,6 +31,8 @@ const AccordionSection = ({
 
       {/* Accordion Content */}
       <div
+        id={panelId}
+        hidden={!isExpanded}
         className={`overflow-hidden transition-all duration-300 ease-in-out ${isExpanded ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'
           }`}
       >

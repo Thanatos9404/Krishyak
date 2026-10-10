@@ -13,6 +13,7 @@ from db.models import (
     CropCycle,
     Farm,
     Feedback,
+    GovernmentIdentity,
     ImageAsset,
     Notification,
     ObjectDeletion,
@@ -47,6 +48,11 @@ def export(request: Request, farmer=Depends(current_farmer)):
         ("images", select(ImageAsset).where(ImageAsset.farmer_id == owner), ("object_key",)),
         ("feedback", select(Feedback).where(Feedback.farmer_id == owner), ()),
         ("consents", select(Consent).where(Consent.farmer_id == owner), ()),
+        (
+            "government_identity_links",
+            select(GovernmentIdentity).where(GovernmentIdentity.farmer_id == owner),
+            ("subject_hash",),
+        ),
         ("pilot_enrollments", select(PilotEnrollment).where(PilotEnrollment.farmer_id == owner), ()),
         ("notifications", select(Notification).where(Notification.farmer_id == owner), ()),
     ]

@@ -1,0 +1,407 @@
+{
+  "scope": "Fresh Chromium profiles; production build; Lighthouse default simulated mobile and desktop throttling; local or explicitly supplied origin.",
+  "origin": "http://localhost:3000",
+  "runs": [
+    {
+      "route": "/",
+      "formFactor": "mobile",
+      "iteration": 1,
+      "lighthouseVersion": "13.5.0",
+      "fetchedAt": "2026-10-03T14:28:58.572Z",
+      "categories": {
+        "performance": 0.94,
+        "accessibility": 1,
+        "best-practices": 1,
+        "seo": 1
+      },
+      "metrics": {
+        "first-contentful-paint": 754,
+        "largest-contentful-paint": 3154,
+        "cumulative-layout-shift": 0,
+        "total-blocking-time": 41,
+        "speed-index": 877.3303160014151,
+        "total-byte-weight": 585261
+      },
+      "warnings": []
+    },
+    {
+      "route": "/",
+      "formFactor": "mobile",
+      "iteration": 2,
+      "lighthouseVersion": "13.5.0",
+      "fetchedAt": "2026-10-03T14:29:06.687Z",
+      "categories": {
+        "performance": 0.94,
+        "accessibility": 1,
+        "best-practices": 1,
+        "seo": 1
+      },
+      "metrics": {
+        "first-contentful-paint": 750.8969999999999,
+        "largest-contentful-paint": 3150.897,
+        "cumulative-layout-shift": 0,
+        "total-blocking-time": 44,
+        "speed-index": 843.6878240186452,
+        "total-byte-weight": 585258
+      },
+      "warnings": []
+    },
+    {
+      "route": "/",
+      "formFactor": "mobile",
+      "iteration": 3,
+      "lighthouseVersion": "13.5.0",
+      "fetchedAt": "2026-10-03T14:29:14.778Z",
+      "categories": {
+        "performance": 0.94,
+        "accessibility": 1,
+        "best-practices": 1,
+        "seo": 1
+      },
+      "metrics": {
+        "first-contentful-paint": 750.1600000000001,
+        "largest-contentful-paint": 3153.2,
+        "cumulative-layout-shift": 0,
+        "total-blocking-time": 53,
+        "speed-index": 866.6720319858493,
+        "total-byte-weight": 585261
+      },
+      "warnings": []
+    },
+    {
+      "route": "/for-farmers",
+      "formFactor": "mobile",
+      "iteration": 1,
+      "lighthouseVersion": "13.5.0",
+      "fetchedAt": "2026-10-03T14:29:22.888Z",
+      "categories": {
+        "performance": 0.96,
+        "accessibility": 1,
+        "best-practices": 1,
+        "seo": 1
+      },
+      "metrics": {
+        "first-contentful-paint": 751.8009999999999,
+        "largest-contentful-paint": 2701.8010000000004,
+        "cumulative-layout-shift": 0,
+        "total-blocking-time": 62,
+        "speed-index": 751.8009999999999,
+        "total-byte-weight": 292483
+      },
+      "warnings": []
+    },
+    {
+      "route": "/for-farmers",
+      "formFactor": "mobile",
+      "iteration": 2,
+      "lighthouseVersion": "13.5.0",
+      "fetchedAt": "2026-10-03T14:29:30.343Z",
+      "categories": {
+        "performance": 0.96,
+        "accessibility": 1,
+        "best-practices": 1,
+        "seo": 1
+      },
+      "metrics": {
+        "first-contentful-paint": 752.2560000000001,
+        "largest-contentful-paint": 2702.256,
+        "cumulative-layout-shift": 0,
+        "total-blocking-time": 70,
+        "speed-index": 752.2560000000001,
+        "total-byte-weight": 292487
+      },
+      "warnings": []
+    },
+    {
+      "route": "/for-farmers",
+      "formFactor": "mobile",
+      "iteration": 3,
+      "lighthouseVersion": "13.5.0",
+      "fetchedAt": "2026-10-03T14:29:38.030Z",
+      "categories": {
+        "performance": 0.96,
+        "accessibility": 1,
+        "best-practices": 1,
+        "seo": 1
+      },
+      "metrics": {
+        "first-contentful-paint": 751.6500000000001,
+        "largest-contentful-paint": 2701.6500000000005,
+        "cumulative-layout-shift": 0,
+        "total-blocking-time": 71,
+        "speed-index": 751.6500000000001,
+        "total-byte-weight": 292487
+      },
+      "warnings": []
+    },
+    {
+      "route": "/app/today",
+      "formFactor": "mobile",
+      "iteration": 1,
+      "lighthouseVersion": "13.5.0",
+      "fetchedAt": "2026-10-03T14:29:45.515Z",
+      "categories": {
+        "performance": 0.92,
+        "accessibility": 1,
+        "best-practices": 0.96,
+        "seo": 0.58
+      },
+      "metrics": {
+        "first-contentful-paint": 1052.477,
+        "largest-contentful-paint": 3230.1924999999997,
+        "cumulative-layout-shift": 0.05194290736111992,
+        "total-blocking-time": 69,
+        "speed-index": 1052.477,
+        "total-byte-weight": 489177
+      },
+      "warnings": []
+    },
+    {
+      "route": "/app/today",
+      "formFactor": "mobile",
+      "iteration": 2,
+      "lighthouseVersion": "13.5.0",
+      "fetchedAt": "2026-10-03T14:29:53.095Z",
+      "categories": {
+        "performance": 0.9,
+        "accessibility": 1,
+        "best-practices": 0.96,
+        "seo": 0.58
+      },
+      "metrics": {
+        "first-contentful-paint": 1050.922,
+        "largest-contentful-paint": 3226.3050000000003,
+        "cumulative-layout-shift": 0.09439971706325562,
+        "total-blocking-time": 72,
+        "speed-index": 1050.922,
+        "total-byte-weight": 489172
+      },
+      "warnings": []
+    },
+    {
+      "route": "/app/today",
+      "formFactor": "mobile",
+      "iteration": 3,
+      "lighthouseVersion": "13.5.0",
+      "fetchedAt": "2026-10-03T14:30:00.805Z",
+      "categories": {
+        "performance": 0.93,
+        "accessibility": 1,
+        "best-practices": 0.96,
+        "seo": 0.58
+      },
+      "metrics": {
+        "first-contentful-paint": 1051.667,
+        "largest-contentful-paint": 3224.1675000000005,
+        "cumulative-layout-shift": 0.05194290736111992,
+        "total-blocking-time": 63,
+        "speed-index": 1051.667,
+        "total-byte-weight": 489176
+      },
+      "warnings": []
+    },
+    {
+      "route": "/",
+      "formFactor": "desktop",
+      "iteration": 1,
+      "lighthouseVersion": "13.5.0",
+      "fetchedAt": "2026-10-03T14:30:08.444Z",
+      "categories": {
+        "performance": 0.99,
+        "accessibility": 1,
+        "best-practices": 1,
+        "seo": 1
+      },
+      "metrics": {
+        "first-contentful-paint": 202.752,
+        "largest-contentful-paint": 922.7520000000002,
+        "cumulative-layout-shift": 0,
+        "total-blocking-time": 0,
+        "speed-index": 360.8689950006991,
+        "total-byte-weight": 877845
+      },
+      "warnings": []
+    },
+    {
+      "route": "/",
+      "formFactor": "desktop",
+      "iteration": 2,
+      "lighthouseVersion": "13.5.0",
+      "fetchedAt": "2026-10-03T14:30:16.555Z",
+      "categories": {
+        "performance": 0.99,
+        "accessibility": 1,
+        "best-practices": 1,
+        "seo": 1
+      },
+      "metrics": {
+        "first-contentful-paint": 260,
+        "largest-contentful-paint": 1000,
+        "cumulative-layout-shift": 0,
+        "total-blocking-time": 0,
+        "speed-index": 396.11053133872645,
+        "total-byte-weight": 877846
+      },
+      "warnings": []
+    },
+    {
+      "route": "/",
+      "formFactor": "desktop",
+      "iteration": 3,
+      "lighthouseVersion": "13.5.0",
+      "fetchedAt": "2026-10-03T14:30:24.860Z",
+      "categories": {
+        "performance": 0.99,
+        "accessibility": 1,
+        "best-practices": 1,
+        "seo": 1
+      },
+      "metrics": {
+        "first-contentful-paint": 203.45600000000002,
+        "largest-contentful-paint": 923.456,
+        "cumulative-layout-shift": 0,
+        "total-blocking-time": 0,
+        "speed-index": 357.71064133191305,
+        "total-byte-weight": 877846
+      },
+      "warnings": []
+    },
+    {
+      "route": "/for-farmers",
+      "formFactor": "desktop",
+      "iteration": 1,
+      "lighthouseVersion": "13.5.0",
+      "fetchedAt": "2026-10-03T14:30:32.831Z",
+      "categories": {
+        "performance": 1,
+        "accessibility": 1,
+        "best-practices": 1,
+        "seo": 1
+      },
+      "metrics": {
+        "first-contentful-paint": 201.95800000000003,
+        "largest-contentful-paint": 561.9579999999999,
+        "cumulative-layout-shift": 0,
+        "total-blocking-time": 0,
+        "speed-index": 221.03185416899723,
+        "total-byte-weight": 292484
+      },
+      "warnings": []
+    },
+    {
+      "route": "/for-farmers",
+      "formFactor": "desktop",
+      "iteration": 2,
+      "lighthouseVersion": "13.5.0",
+      "fetchedAt": "2026-10-03T14:30:40.275Z",
+      "categories": {
+        "performance": 1,
+        "accessibility": 1,
+        "best-practices": 1,
+        "seo": 1
+      },
+      "metrics": {
+        "first-contentful-paint": 260,
+        "largest-contentful-paint": 639,
+        "cumulative-layout-shift": 0,
+        "total-blocking-time": 0,
+        "speed-index": 260,
+        "total-byte-weight": 292484
+      },
+      "warnings": []
+    },
+    {
+      "route": "/for-farmers",
+      "formFactor": "desktop",
+      "iteration": 3,
+      "lighthouseVersion": "13.5.0",
+      "fetchedAt": "2026-10-03T14:30:48.029Z",
+      "categories": {
+        "performance": 1,
+        "accessibility": 1,
+        "best-practices": 1,
+        "seo": 1
+      },
+      "metrics": {
+        "first-contentful-paint": 200.288,
+        "largest-contentful-paint": 560.288,
+        "cumulative-layout-shift": 0,
+        "total-blocking-time": 0,
+        "speed-index": 253.08162333198982,
+        "total-byte-weight": 292481
+      },
+      "warnings": []
+    },
+    {
+      "route": "/app/today",
+      "formFactor": "desktop",
+      "iteration": 1,
+      "lighthouseVersion": "13.5.0",
+      "fetchedAt": "2026-10-03T14:30:55.464Z",
+      "categories": {
+        "performance": 1,
+        "accessibility": 1,
+        "best-practices": 0.96,
+        "seo": 0.58
+      },
+      "metrics": {
+        "first-contentful-paint": 281.935,
+        "largest-contentful-paint": 703.8374999999999,
+        "cumulative-layout-shift": 0.007110560162216545,
+        "total-blocking-time": 0,
+        "speed-index": 310.7182844156275,
+        "total-byte-weight": 489173
+      },
+      "warnings": []
+    },
+    {
+      "route": "/app/today",
+      "formFactor": "desktop",
+      "iteration": 2,
+      "lighthouseVersion": "13.5.0",
+      "fetchedAt": "2026-10-03T14:31:02.921Z",
+      "categories": {
+        "performance": 1,
+        "accessibility": 1,
+        "best-practices": 0.96,
+        "seo": 0.58
+      },
+      "metrics": {
+        "first-contentful-paint": 283.272,
+        "largest-contentful-paint": 705.1799999999998,
+        "cumulative-layout-shift": 0.007110560162216545,
+        "total-blocking-time": 0,
+        "speed-index": 320.9168592473768,
+        "total-byte-weight": 489180
+      },
+      "warnings": []
+    },
+    {
+      "route": "/app/today",
+      "formFactor": "desktop",
+      "iteration": 3,
+      "lighthouseVersion": "13.5.0",
+      "fetchedAt": "2026-10-03T14:31:10.984Z",
+      "categories": {
+        "performance": 0.99,
+        "accessibility": 1,
+        "best-practices": 0.96,
+        "seo": 0.58
+      },
+      "metrics": {
+        "first-contentful-paint": 340,
+        "largest-contentful-paint": 856,
+        "cumulative-layout-shift": 0.007110560162216545,
+        "total-blocking-time": 0,
+        "speed-index": 342.38436966183286,
+        "total-byte-weight": 489174
+      },
+      "warnings": []
+    }
+  ],
+  "limitations": [
+    "Lab emulation is not physical farmer-device testing.",
+    "No field INP, CrUX or Search Console evidence is claimed.",
+    "Private entry measurements cover the anonymous shell; signed-in API latency needs deployment data."
+  ]
+}

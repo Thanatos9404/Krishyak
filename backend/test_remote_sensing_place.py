@@ -8,7 +8,7 @@ from remote_sensing.providers.base import ProviderError
 
 class PlaceTests(unittest.TestCase):
     def setUp(self):
-        self.enabled=patch.dict(os.environ,{'REMOTE_SENSING_PLACE_LOOKUP_ENABLED':'true'});self.enabled.start()
+        self.enabled=patch.dict(os.environ,{'REMOTE_SENSING_PLACE_LOOKUP_ENABLED':'true','FARM_CONTEXT_NOMINATIM_ENABLED':'false'});self.enabled.start()
     def tearDown(self):
         self.enabled.stop()
     def service(self, handler, clock=lambda:10):
@@ -40,3 +40,11 @@ class PlaceTests(unittest.TestCase):
             service=self.service(lambda req:httpx.Response(status,json=data))
             with self.assertRaises(ProviderError) as ctx: service.get(LocationRequest(latitude=26,longitude=73),'test')
             self.assertNotIn('private',str(ctx.exception))
+
+    def test_new_context_lookup_disables_duplicate_public_geocoder(self):
+        calls=[]
+        service=self.service(lambda req:calls.append(req) or httpx.Response(200,json={'address':{}}))
+        with patch.dict(os.environ,{'FARM_CONTEXT_NOMINATIM_ENABLED':'true'}), self.assertRaises(ProviderError) as ctx:
+            service.get(LocationRequest(latitude=26,longitude=73),'test')
+        self.assertEqual(ctx.exception.code,'disabled')
+        self.assertEqual(calls,[])

@@ -16,7 +16,6 @@ from data_loader import DataLoader
 from price_forecaster import PriceForecaster
 from fertilizer_analyzer import FertilizerAnalyzer
 from hybrid_inference import PredictionRouter
-from pest_intelligence import PestDataCollector
 import config
 import main
 
@@ -137,11 +136,6 @@ class CalculationTests(unittest.TestCase):
             self.assertGreaterEqual(result['yield']['yield_per_hectare'], 0, crop)
             self.assertTrue(0 <= result['risk']['overall_risk_score'] <= 100, crop)
 
-    def test_no_generated_government_outbreaks(self):
-        collector = PestDataCollector()
-        self.assertEqual(collector.get_government_alerts('Punjab'), [])
-        self.assertEqual(collector.get_historical_outbreaks('rice', 'Punjab'), [])
-
 
 class ApiTests(unittest.TestCase):
     @classmethod
@@ -173,13 +167,18 @@ class ApiTests(unittest.TestCase):
     def test_disease_catalog_strings(self):
         self.assertEqual(self.client.get('/diseases').status_code, 200)
 
-    def test_identity_not_falsely_verified(self):
-        from jam_trinity import JAMTrinityService
-        service = JAMTrinityService('test-key')
-        with patch.dict('os.environ', {'ENABLE_DEMO_IDENTITY': 'false'}):
-            result = service.verify_aadhaar('1234', 'any-consent')
-        self.assertFalse(result.verified)
-        self.assertTrue(result.error)
+    def test_legacy_personal_data_and_public_speech_routes_are_not_served(self):
+        paths = {getattr(route, 'path', None) for route in main.app.routes}
+        removed = ('/register-farmer', '/consent/request', '/consent/grant/{consent_id}',
+                   '/consent/revoke/{consent_id}', '/verify/aadhaar', '/verify/land', '/verify/jan-dhan',
+                   '/verify/pm-kisan-status', '/farmer/profile', '/land/supported-states', '/sensors',
+                   '/sensors/{device_id}/data', '/sensors/manual', '/sensors/{device_id}/history',
+                   '/sensors/status', '/pest/report', '/pest/history', '/pest/statistics', '/pest/alerts',
+                   '/speech/capabilities', '/speech/transcribe', '/speech/synthesize')
+        self.assertEqual(sorted(paths.intersection(removed)), [])
+        self.assertIn('/pest/prediction', paths)
+        # Deployed settings answer 410 from the v2 boundary; otherwise no route exists.
+        self.assertIn(self.client.post('/register-farmer', json={}).status_code, {404, 410})
 
     def test_zero_soil_endpoint(self):
         result = self.client.post('/fertilizer/recommendation', json={'crop': 'Rice', 'soil_n': 0})

@@ -1,12 +1,14 @@
 """Bounded public contracts. No caller-selected owner or role fields."""
 
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 from typing import Literal
 from uuid import UUID, uuid4
 
 from pydantic import BaseModel, ConfigDict, Field, StrictFloat, StrictInt, field_validator, model_validator
 
 from remote_sensing.schemas import Polygon
+
+from .india import normalize_mobile
 
 Number = StrictFloat | StrictInt
 Purpose = Literal[
@@ -17,6 +19,8 @@ Purpose = Literal[
     "model_improvement",
     "pilot_research",
     "government_integration",
+    "government_identity",
+    "speech_processing",
 ]
 
 
@@ -26,6 +30,11 @@ class Input(BaseModel):
 
 class RequestOTP(Input):
     mobile: str = Field(pattern=r"^\+91[6-9][0-9]{9}$")
+
+    @field_validator("mobile", mode="before")
+    @classmethod
+    def indian_mobile(cls, value):
+        return normalize_mobile(value)
 
 
 class VerifyOTP(Input):
@@ -40,6 +49,25 @@ class ProfileInput(Input):
     state: str | None = Field(default=None, max_length=100)
     district: str | None = Field(default=None, max_length=100)
     village: str | None = Field(default=None, max_length=100)
+    state_code: StrictInt | None = Field(default=None, gt=0, le=9999)
+    district_code: StrictInt | None = Field(default=None, gt=0, le=999999)
+    subdistrict: str | None = Field(default=None, max_length=100)
+    pin_code: str | None = Field(default=None, pattern=r"^[1-9][0-9]{5}$")
+
+    @field_validator("pin_code", mode="before")
+    @classmethod
+    def optional_pin(cls, value):
+        return value.strip() or None if isinstance(value, str) else value
+
+    @model_validator(mode="after")
+    def canonical_location(self):
+        from .locations import resolve_location
+
+        if not self.model_fields_set.intersection({"state", "district", "state_code", "district_code"}):
+            return self
+        for name, value in resolve_location(self.state_code, self.district_code, self.state, self.district).items():
+            setattr(self, name, value)
+        return self
 
     @field_validator("preferred_language")
     @classmethod
@@ -48,26 +76,26 @@ class ProfileInput(Input):
             "en",
             "hi",
             "bn",
-            "as",
-            "brx",
-            "doi",
             "gu",
             "kn",
-            "ks",
-            "kok",
-            "mai",
             "ml",
-            "mni",
             "mr",
-            "ne",
-            "or",
             "pa",
-            "sa",
-            "sat",
-            "sd",
             "ta",
             "te",
             "ur",
+            "as",
+            "brx",
+            "doi",
+            "ks",
+            "kok",
+            "mai",
+            "mni",
+            "ne",
+            "or",
+            "sa",
+            "sat",
+            "sd",
         }:
             raise ValueError("Unsupported language")
         return value
@@ -85,11 +113,24 @@ class FarmUpdate(Input):
     revision: StrictInt = Field(ge=1)
 
 
+class FieldLocation(Input):
+    """Where the farmer stood in the field, rounded to about one kilometre."""
+
+    latitude: Number = Field(ge=6, le=37.5)
+    longitude: Number = Field(ge=68, le=97.5)
+
+    @model_validator(mode="after")
+    def rounded(self):
+        self.latitude, self.longitude = round(float(self.latitude), 2), round(float(self.longitude), 2)
+        return self
+
+
 class PlotInput(Input):
     operation_id: UUID
     farm_id: UUID
     name: str = Field(min_length=1, max_length=100)
     boundary: Polygon | None = None
+    approximate_location: FieldLocation | None = None
     entered_area_hectares: Number | None = Field(default=None, gt=0, le=500)
     boundary_quality: Literal["manual", "approximate", "farmer_drawn"] = "manual"
     irrigation_type: str | None = Field(default=None, max_length=50)
@@ -111,7 +152,8 @@ class PlotUpdate(PlotInput):
 
 class CycleInput(Input):
     operation_id: UUID = Field(default_factory=uuid4)
-    crop: str = Field(min_length=1, max_length=100)
+    crop: str | None = Field(default=None, min_length=1, max_length=100)
+    crop_id: str | None = Field(default=None, min_length=1, max_length=50)
     variety: str | None = Field(default=None, max_length=100)
     sowing_date: date
     expected_harvest: date
@@ -121,10 +163,9 @@ class CycleInput(Input):
 
     @model_validator(mode="after")
     def dates_and_crop(self):
-        import config
+        from .crops import resolve_crop
 
-        if self.crop not in config.CROPS:
-            raise ValueError("Unsupported planning crop")
+        self.crop_id, self.crop = resolve_crop(self.crop_id, self.crop)
         if not 1 <= (self.expected_harvest - self.sowing_date).days <= 1095:
             raise ValueError("Crop dates must be ordered and within three years")
         if self.status == "active" and self.sowing_date > datetime.now(timezone.utc).date():
@@ -158,7 +199,9 @@ class ObservationInput(Input):
     @field_validator("observed_at")
     @classmethod
     def aware_past(cls, value):
-        if value.tzinfo is None or value > datetime.now(timezone.utc):
+        # Farmer devices and API hosts may differ by a few seconds. Preserve
+        # reported UTC time, but reject materially future observations.
+        if value.tzinfo is None or value > datetime.now(timezone.utc) + timedelta(seconds=30):
             raise ValueError("Observation time must be timezone-aware and not future")
         return value.astimezone(timezone.utc)
 

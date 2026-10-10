@@ -1,0 +1,523 @@
+{
+  "retrieved_on": "2026-10-03",
+  "photos": [
+    {
+      "name": "fields",
+      "photo_id": 16970062,
+      "author": "Jeswin Thomas",
+      "page": "https://www.pexels.com/photo/areal-view-of-a-field-with-green-and-dirt-16970062/",
+      "license": "https://www.pexels.com/license/",
+      "country": "India",
+      "location_evidence": "Photographer's location and description on the linked Pexels source page",
+      "alt": "Aerial view of green and harvested fields in Ottapalam, Kerala, India",
+      "original_sha256": "3b6f5a3d494b601e1e302ee276f856c6beb036c16cc38c558b747f175acd6995",
+      "sizes": [
+        {
+          "src": "/images/fields-400-417f452370ca.webp",
+          "width": 400,
+          "height": 160,
+          "bytes": 8332,
+          "sha256": "417f452370ca38a0d9338c4590eed74221df7bc818b59a8653251ab3bc79ada8"
+        },
+        {
+          "src": "/images/fields-800-20afe2b0e5e7.webp",
+          "width": 800,
+          "height": 320,
+          "bytes": 33690,
+          "sha256": "20afe2b0e5e758db3af742a9f3289b491ee67a92e0b3642ce5441b28a522cf44"
+        },
+        {
+          "src": "/images/fields-1440-cfbb926e0450.webp",
+          "width": 1440,
+          "height": 576,
+          "bytes": 109960,
+          "sha256": "cfbb926e04509167b10c546b72fbe83657299121b59f82b919130e17946e2248"
+        }
+      ]
+    },
+    {
+      "name": "farmers",
+      "photo_id": 20344348,
+      "author": "EqualStock IN",
+      "page": "https://www.pexels.com/photo/farmers-in-india-20344348/",
+      "license": "https://www.pexels.com/license/",
+      "country": "India",
+      "location_evidence": "Photographer's location and description on the linked Pexels source page",
+      "alt": "Two women working in a green agricultural field in India",
+      "original_sha256": "c53745c46f9d8df333e1b87ef632952cc6119b04540fa73fcaacf86a94d93a54",
+      "sizes": [
+        {
+          "src": "/images/farmers-400-8082b9dd337d.webp",
+          "width": 400,
+          "height": 267,
+          "bytes": 29434,
+          "sha256": "8082b9dd337d0c9b699ca0d9f13e7f3ad27f38da910220babea2b50aa8f03c4d"
+        },
+        {
+          "src": "/images/farmers-800-4300d4eda7a7.webp",
+          "width": 800,
+          "height": 533,
+          "bytes": 99578,
+          "sha256": "4300d4eda7a7c27ccb26d1c96260465fb8de238907ae670ab829f0fd3353552c"
+        },
+        {
+          "src": "/images/farmers-1440-2b852d08b944.webp",
+          "width": 1440,
+          "height": 960,
+          "bytes": 236964,
+          "sha256": "2b852d08b944e6dffab361c9d04551e636ffb0d7dc1b38f3fd444db827073a16"
+        }
+      ]
+    },
+    {
+      "name": "tomatoes",
+      "photo_id": 17215421,
+      "author": "ganesh mohanty",
+      "page": "https://www.pexels.com/photo/unripe-green-tomatoes-on-a-vine-17215421/",
+      "license": "https://www.pexels.com/license/",
+      "country": "India",
+      "location_evidence": "Photographer's location and description on the linked Pexels source page",
+      "alt": "Unripe tomatoes growing on a vine in Odisha, India",
+      "original_sha256": "14c82d92947e308e18275758733a42cb0c80d97897ad854e324a0fda6e44ecc5",
+      "sizes": [
+        {
+          "src": "/images/tomatoes-400-73424ad32867.webp",
+          "width": 400,
+          "height": 267,
+          "bytes": 14510,
+          "sha256": "73424ad32867cb4af28ecd717698806a7fe52ab8ab5fb373d02331b6f3f216f3"
+        },
+        {
+          "src": "/images/tomatoes-800-1cd1ae3135fd.webp",
+          "width": 800,
+          "height": 533,
+          "bytes": 48846,
+          "sha256": "1cd1ae3135fda75aaed30b20ab5d36028a941dcc427be703a87e1581677f088a"
+        },
+        {
+          "src": "/images/tomatoes-1440-cd7c342fb450.webp",
+          "width": 1440,
+          "height": 960,
+          "bytes": 122994,
+          "sha256": "cd7c342fb4507b4da3605dafea7523451adceb7fac8dcab22c2e161105f650dd"
+        }
+      ]
+    },
+    {
+      "name": "market",
+      "photo_id": 23884776,
+      "author": "Robert Stokoe",
+      "page": "https://www.pexels.com/photo/vegetable-market-in-india-23884776/",
+      "license": "https://www.pexels.com/license/",
+      "country": "India",
+      "location_evidence": "Photographer's location and description on the linked Pexels source page",
+      "alt": "Produce displayed at a street market in India",
+      "original_sha256": "917481d5a312929b0cffb1991d27e13dd444e4819acc1767133a9d8e7a280d35",
+      "sizes": [
+        {
+          "src": "/images/market-400-7fe714821736.webp",
+          "width": 400,
+          "height": 305,
+          "bytes": 28090,
+          "sha256": "7fe71482173650d9803448fb5ce9623b2d1114fac4c1caf57d3ea8aad80b9742"
+        },
+        {
+          "src": "/images/market-800-132b01a72f10.webp",
+          "width": 800,
+          "height": 611,
+          "bytes": 96262,
+          "sha256": "132b01a72f10a4c1859445a6ee7624de8b00b54be844fb8793390f617c5e7ded"
+        },
+        {
+          "src": "/images/market-1440-bdb9aef7e64b.webp",
+          "width": 1440,
+          "height": 1099,
+          "bytes": 251598,
+          "sha256": "bdb9aef7e64ba8d0a74cc7df62db2e63a0eb0b687f804bb3033de3f4011b7636"
+        }
+      ]
+    },
+    {
+      "name": "terraces",
+      "photo_id": 33638020,
+      "author": "Aman Gairola",
+      "page": "https://www.pexels.com/photo/lush-green-terraced-fields-in-uttarakhand-33638020/",
+      "license": "https://www.pexels.com/license/",
+      "country": "India",
+      "location_evidence": "Photographer's location and description on the linked Pexels source page",
+      "alt": "Green terraced fields and a village in Uttarakhand, India",
+      "original_sha256": "2107b8883bffcc4647bc305b2aa89df6da21881830bc57e0589cee1225816d4a",
+      "sizes": [
+        {
+          "src": "/images/terraces-400-f7adb202655a.webp",
+          "width": 400,
+          "height": 267,
+          "bytes": 30036,
+          "sha256": "f7adb202655a02143a5e773b50a5e94fc820bbf6a12e28952082d2b68efb87cd"
+        },
+        {
+          "src": "/images/terraces-800-7f2fed8ebcda.webp",
+          "width": 800,
+          "height": 533,
+          "bytes": 115646,
+          "sha256": "7f2fed8ebcdadd8845dfdca9744cf563a9318df0a6b2f994a3eaa277995badda"
+        },
+        {
+          "src": "/images/terraces-1440-d6f2dc4d3f9e.webp",
+          "width": 1440,
+          "height": 960,
+          "bytes": 349854,
+          "sha256": "d6f2dc4d3f9ee14326b2f973014763fbb1d57b2e448f48fb7b601d56fe7595db"
+        }
+      ]
+    },
+    {
+      "name": "community",
+      "photo_id": 19911960,
+      "author": "Beyond India by Shubham Thakur",
+      "page": "https://www.pexels.com/photo/people-working-on-field-19911960/",
+      "license": "https://www.pexels.com/license/",
+      "country": "India",
+      "location_evidence": "Photographer's location and description on the linked Pexels source page",
+      "alt": "Farmers working together in a field in Mungeli, India",
+      "original_sha256": "f507dffa71ffb03cd0501f96a5ce3f68632664b94680d99cc50d0a9ffd97f5b2",
+      "sizes": [
+        {
+          "src": "/images/community-400-c3d1a2680712.webp",
+          "width": 400,
+          "height": 267,
+          "bytes": 20872,
+          "sha256": "c3d1a2680712105fd52d60477642d2d7cb6e6e7618984b304f3bcd250cd39ba5"
+        },
+        {
+          "src": "/images/community-800-7b735c79acc9.webp",
+          "width": 800,
+          "height": 533,
+          "bytes": 78598,
+          "sha256": "7b735c79acc9ea287a1032180fcf4d57c743314db7e6d94f01f780bf1235e336"
+        },
+        {
+          "src": "/images/community-1440-715e25462b2a.webp",
+          "width": 1440,
+          "height": 960,
+          "bytes": 219924,
+          "sha256": "715e25462b2ac084d2457d752daafe5041522e098cc0f126aae84e9897a8e4f5"
+        }
+      ]
+    },
+    {
+      "name": "fieldwork",
+      "photo_id": 18065034,
+      "author": "Pranjal Mulane",
+      "page": "https://www.pexels.com/photo/farmer-working-in-field-18065034/",
+      "license": "https://www.pexels.com/license/",
+      "country": "India",
+      "location_evidence": "Photographer's location and description on the linked Pexels source page",
+      "alt": "A woman working among crops in Nashik, India",
+      "original_sha256": "da711638079ed4a66f8d36f52b793b6de8f590b1194dd0fe96456d7fe413bf6b",
+      "sizes": [
+        {
+          "src": "/images/fieldwork-400-489e824ad77f.webp",
+          "width": 400,
+          "height": 711,
+          "bytes": 51646,
+          "sha256": "489e824ad77fbeacda7ab5ab1cd75fb3f040e4b2fbc928702387ccab1dc5958b"
+        },
+        {
+          "src": "/images/fieldwork-800-7c814da3a5d6.webp",
+          "width": 800,
+          "height": 1422,
+          "bytes": 232912,
+          "sha256": "7c814da3a5d6c16b4d6e7b9dd2f352581222173d156cb16bcb00f8aafcdbcf7d"
+        },
+        {
+          "src": "/images/fieldwork-1440-c54bff580bc3.webp",
+          "width": 1125,
+          "height": 2000,
+          "bytes": 453826,
+          "sha256": "c54bff580bc30b354b270b31e7b8dbb67ed88385c8d1d889080bffd25f531b8f"
+        }
+      ]
+    }
+  ],
+  "fonts": [
+    {
+      "family": "Geologica",
+      "source": "https://fonts.gstatic.com/s/geologica/v5/oY1l8evIr7j9P3TN9YwNAdyjzUyDKkKdAGOJh1UlCDUIhAIdhCZOn1fLsig7jfvCCPHZckUWHllEP2A.woff2",
+      "path": "/fonts/geologica-c43a9bb5bf.woff2",
+      "bytes": 11488
+    },
+    {
+      "family": "Geologica",
+      "source": "https://fonts.gstatic.com/s/geologica/v5/oY1l8evIr7j9P3TN9YwNAdyjzUyDKkKdAGOJh1UlCDUIhAIdhCZOn1fLsig7jfvCCPHZckUWF1lEP2A.woff2",
+      "path": "/fonts/geologica-33c7fa5486.woff2",
+      "bytes": 16428
+    },
+    {
+      "family": "Geologica",
+      "source": "https://fonts.gstatic.com/s/geologica/v5/oY1l8evIr7j9P3TN9YwNAdyjzUyDKkKdAGOJh1UlCDUIhAIdhCZOn1fLsig7jfvCCPHZckUWEFlEP2A.woff2",
+      "path": "/fonts/geologica-931bcb1e66.woff2",
+      "bytes": 10928
+    },
+    {
+      "family": "Geologica",
+      "source": "https://fonts.gstatic.com/s/geologica/v5/oY1l8evIr7j9P3TN9YwNAdyjzUyDKkKdAGOJh1UlCDUIhAIdhCZOn1fLsig7jfvCCPHZckUWHFlEP2A.woff2",
+      "path": "/fonts/geologica-4b066a3105.woff2",
+      "bytes": 8328
+    },
+    {
+      "family": "Geologica",
+      "source": "https://fonts.gstatic.com/s/geologica/v5/oY1l8evIr7j9P3TN9YwNAdyjzUyDKkKdAGOJh1UlCDUIhAIdhCZOn1fLsig7jfvCCPHZckUWHVlEP2A.woff2",
+      "path": "/fonts/geologica-49f0406dc8.woff2",
+      "bytes": 22404
+    },
+    {
+      "family": "Geologica",
+      "source": "https://fonts.gstatic.com/s/geologica/v5/oY1l8evIr7j9P3TN9YwNAdyjzUyDKkKdAGOJh1UlCDUIhAIdhCZOn1fLsig7jfvCCPHZckUWE1lE.woff2",
+      "path": "/fonts/geologica-25d318ff54.woff2",
+      "bytes": 24944
+    },
+    {
+      "family": "Noto Sans Devanagari",
+      "source": "https://fonts.gstatic.com/s/notosansdevanagari/v30/TuG7UUFzXI5FBtUq5a8bjKYTZjtRU6Sgv3NaV_SNmI0b8QQCQmHN5TV_9qo.woff2",
+      "path": "/fonts/noto-sans-devanagari-f098aafd23.woff2",
+      "bytes": 121192
+    },
+    {
+      "family": "Noto Sans Devanagari",
+      "source": "https://fonts.gstatic.com/s/notosansdevanagari/v30/TuG7UUFzXI5FBtUq5a8bjKYTZjtRU6Sgv3NaV_SNmI0b8QQCQmHN6jV_9qo.woff2",
+      "path": "/fonts/noto-sans-devanagari-2394654bfa.woff2",
+      "bytes": 13852
+    },
+    {
+      "family": "Noto Sans Devanagari",
+      "source": "https://fonts.gstatic.com/s/notosansdevanagari/v30/TuG7UUFzXI5FBtUq5a8bjKYTZjtRU6Sgv3NaV_SNmI0b8QQCQmHN5DV_.woff2",
+      "path": "/fonts/noto-sans-devanagari-a85877fcbc.woff2",
+      "bytes": 25384
+    },
+    {
+      "family": "Noto Sans Bengali",
+      "source": "https://fonts.gstatic.com/s/notosansbengali/v33/Cn-fJsCGWQxOjaGwMQ6fIiMywrNJIky6nvd8BjzVMvJx2mc4I3mYvNY.woff2",
+      "path": "/fonts/noto-sans-bengali-be2483b497.woff2",
+      "bytes": 107720
+    },
+    {
+      "family": "Noto Sans Bengali",
+      "source": "https://fonts.gstatic.com/s/notosansbengali/v33/Cn-fJsCGWQxOjaGwMQ6fIiMywrNJIky6nvd8BjzVMvJx2mc4P3mYvNY.woff2",
+      "path": "/fonts/noto-sans-bengali-b065275a73.woff2",
+      "bytes": 13616
+    },
+    {
+      "family": "Noto Sans Bengali",
+      "source": "https://fonts.gstatic.com/s/notosansbengali/v33/Cn-fJsCGWQxOjaGwMQ6fIiMywrNJIky6nvd8BjzVMvJx2mc4MXmY.woff2",
+      "path": "/fonts/noto-sans-bengali-c45f41546b.woff2",
+      "bytes": 25604
+    },
+    {
+      "family": "Noto Sans Tamil",
+      "source": "https://fonts.gstatic.com/s/notosanstamil/v31/ieVp2YdFI3GCY6SyQy1KfStzYKZgzN1z4LKDbeZce-048cFpwEFI.woff2",
+      "path": "/fonts/noto-sans-tamil-b94bf0dcaa.woff2",
+      "bytes": 50468
+    },
+    {
+      "family": "Noto Sans Tamil",
+      "source": "https://fonts.gstatic.com/s/notosanstamil/v31/ieVp2YdFI3GCY6SyQy1KfStzYKZgzN1z4LKDbeZce-048dlpwEFI.woff2",
+      "path": "/fonts/noto-sans-tamil-ed72e500b0.woff2",
+      "bytes": 17272
+    },
+    {
+      "family": "Noto Sans Tamil",
+      "source": "https://fonts.gstatic.com/s/notosanstamil/v31/ieVp2YdFI3GCY6SyQy1KfStzYKZgzN1z4LKDbeZce-048ddpwA.woff2",
+      "path": "/fonts/noto-sans-tamil-f9dec47643.woff2",
+      "bytes": 31928
+    },
+    {
+      "family": "Noto Sans Telugu",
+      "source": "https://fonts.gstatic.com/s/notosanstelugu/v30/0FlCVOGZlE2Rrtr-HmgkMWJNjJ5_RyT8o8c7fHkeg-esVARN5IjvvA.woff2",
+      "path": "/fonts/noto-sans-telugu-a0fc426c86.woff2",
+      "bytes": 123972
+    },
+    {
+      "family": "Noto Sans Telugu",
+      "source": "https://fonts.gstatic.com/s/notosanstelugu/v30/0FlCVOGZlE2Rrtr-HmgkMWJNjJ5_RyT8o8c7fHkeg-esVARf5IjvvA.woff2",
+      "path": "/fonts/noto-sans-telugu-00fe7ab9f3.woff2",
+      "bytes": 17048
+    },
+    {
+      "family": "Noto Sans Telugu",
+      "source": "https://fonts.gstatic.com/s/notosanstelugu/v30/0FlCVOGZlE2Rrtr-HmgkMWJNjJ5_RyT8o8c7fHkeg-esVARR5Ig.woff2",
+      "path": "/fonts/noto-sans-telugu-629ec603d9.woff2",
+      "bytes": 31852
+    },
+    {
+      "family": "Noto Sans Gujarati",
+      "source": "https://fonts.gstatic.com/s/notosansgujarati/v27/wlpZgx_HC1ti5ViekvcxnhMlCVo3f5pv17ivlzsUB14gg1TMbXaYEL-C.woff2",
+      "path": "/fonts/noto-sans-gujarati-b506a0826b.woff2",
+      "bytes": 112268
+    },
+    {
+      "family": "Noto Sans Gujarati",
+      "source": "https://fonts.gstatic.com/s/notosansgujarati/v27/wlpZgx_HC1ti5ViekvcxnhMlCVo3f5pv17ivlzsUB14gg1TMbRGYEL-C.woff2",
+      "path": "/fonts/noto-sans-gujarati-7ebdd6257c.woff2",
+      "bytes": 22384
+    },
+    {
+      "family": "Noto Sans Gujarati",
+      "source": "https://fonts.gstatic.com/s/notosansgujarati/v27/wlpZgx_HC1ti5ViekvcxnhMlCVo3f5pv17ivlzsUB14gg1TMbQOYEL-C.woff2",
+      "path": "/fonts/noto-sans-gujarati-c18d740ecd.woff2",
+      "bytes": 14500
+    },
+    {
+      "family": "Noto Sans Gujarati",
+      "source": "https://fonts.gstatic.com/s/notosansgujarati/v27/wlpZgx_HC1ti5ViekvcxnhMlCVo3f5pv17ivlzsUB14gg1TMbWOYEL-C.woff2",
+      "path": "/fonts/noto-sans-gujarati-ca9a1a85f2.woff2",
+      "bytes": 17104
+    },
+    {
+      "family": "Noto Sans Gujarati",
+      "source": "https://fonts.gstatic.com/s/notosansgujarati/v27/wlpZgx_HC1ti5ViekvcxnhMlCVo3f5pv17ivlzsUB14gg1TMbW2YEA.woff2",
+      "path": "/fonts/noto-sans-gujarati-687c03f495.woff2",
+      "bytes": 31348
+    },
+    {
+      "family": "Noto Sans Gurmukhi",
+      "source": "https://fonts.gstatic.com/s/notosansgurmukhi/v29/w8gyH3EvQP81sInb43inmyN9zZ7hb7ATbSWo4q8dJ74a3cVrSnsXn2CP.woff2",
+      "path": "/fonts/noto-sans-gurmukhi-5c55589104.woff2",
+      "bytes": 33824
+    },
+    {
+      "family": "Noto Sans Gurmukhi",
+      "source": "https://fonts.gstatic.com/s/notosansgurmukhi/v29/w8gyH3EvQP81sInb43inmyN9zZ7hb7ATbSWo4q8dJ74a3cVrSlYXn2CP.woff2",
+      "path": "/fonts/noto-sans-gurmukhi-b581301bf5.woff2",
+      "bytes": 17456
+    },
+    {
+      "family": "Noto Sans Gurmukhi",
+      "source": "https://fonts.gstatic.com/s/notosansgurmukhi/v29/w8gyH3EvQP81sInb43inmyN9zZ7hb7ATbSWo4q8dJ74a3cVrSlgXnw.woff2",
+      "path": "/fonts/noto-sans-gurmukhi-56a5d6bdfc.woff2",
+      "bytes": 31304
+    },
+    {
+      "family": "Noto Sans Kannada",
+      "source": "https://fonts.gstatic.com/s/notosanskannada/v32/8vIh7xs32H97qzQKnzfeXycxXZyUmySvZWItmf1fe6TVmgoD4F-Yo3w.woff2",
+      "path": "/fonts/noto-sans-kannada-af9b4c5afd.woff2",
+      "bytes": 90796
+    },
+    {
+      "family": "Noto Sans Kannada",
+      "source": "https://fonts.gstatic.com/s/notosanskannada/v32/8vIh7xs32H97qzQKnzfeXycxXZyUmySvZWItmf1fe6TVmgoD9F-Yo3w.woff2",
+      "path": "/fonts/noto-sans-kannada-e30564d90e.woff2",
+      "bytes": 13992
+    },
+    {
+      "family": "Noto Sans Kannada",
+      "source": "https://fonts.gstatic.com/s/notosanskannada/v32/8vIh7xs32H97qzQKnzfeXycxXZyUmySvZWItmf1fe6TVmgoD-l-Y.woff2",
+      "path": "/fonts/noto-sans-kannada-647dc88745.woff2",
+      "bytes": 27576
+    },
+    {
+      "family": "Noto Sans Malayalam",
+      "source": "https://fonts.gstatic.com/s/notosansmalayalam/v29/sJov3K5XjsSdcnzn071rL37lpAOsUThnDZIfPdbeSNzVakglNOWE6zDy5A.woff2",
+      "path": "/fonts/noto-sans-malayalam-89ab5566c7.woff2",
+      "bytes": 89468
+    },
+    {
+      "family": "Noto Sans Malayalam",
+      "source": "https://fonts.gstatic.com/s/notosansmalayalam/v29/sJov3K5XjsSdcnzn071rL37lpAOsUThnDZIfPdbeSNzVakglNOWS6zDy5A.woff2",
+      "path": "/fonts/noto-sans-malayalam-84eb6f1890.woff2",
+      "bytes": 17348
+    },
+    {
+      "family": "Noto Sans Malayalam",
+      "source": "https://fonts.gstatic.com/s/notosansmalayalam/v29/sJov3K5XjsSdcnzn071rL37lpAOsUThnDZIfPdbeSNzVakglNOWc6zA.woff2",
+      "path": "/fonts/noto-sans-malayalam-fa23e17d17.woff2",
+      "bytes": 31592
+    },
+    {
+      "family": "Noto Sans Arabic",
+      "source": "https://fonts.gstatic.com/s/notosansarabic/v33/nwpCtLGrOAZMl5nJ_wfgRg3DrWFZWsnVBJ_sS6tlqHHFlj4wv4r4xA.woff2",
+      "path": "/fonts/noto-sans-arabic-21e1b73171.woff2",
+      "bytes": 165960
+    },
+    {
+      "family": "Noto Sans Arabic",
+      "source": "https://fonts.gstatic.com/s/notosansarabic/v33/nwpCtLGrOAZMl5nJ_wfgRg3DrWFZWsnVBJ_sS6tlqHHFlj5Jv4r4xA.woff2",
+      "path": "/fonts/noto-sans-arabic-6691e6c62c.woff2",
+      "bytes": 22716
+    },
+    {
+      "family": "Noto Sans Arabic",
+      "source": "https://fonts.gstatic.com/s/notosansarabic/v33/nwpCtLGrOAZMl5nJ_wfgRg3DrWFZWsnVBJ_sS6tlqHHFlj5bv4r4xA.woff2",
+      "path": "/fonts/noto-sans-arabic-8aa33bb85d.woff2",
+      "bytes": 14584
+    },
+    {
+      "family": "Noto Sans Arabic",
+      "source": "https://fonts.gstatic.com/s/notosansarabic/v33/nwpCtLGrOAZMl5nJ_wfgRg3DrWFZWsnVBJ_sS6tlqHHFlj47v4r4xA.woff2",
+      "path": "/fonts/noto-sans-arabic-cb9e41427e.woff2",
+      "bytes": 16816
+    },
+    {
+      "family": "Noto Sans Arabic",
+      "source": "https://fonts.gstatic.com/s/notosansarabic/v33/nwpCtLGrOAZMl5nJ_wfgRg3DrWFZWsnVBJ_sS6tlqHHFlj41v4o.woff2",
+      "path": "/fonts/noto-sans-arabic-45e8443c10.woff2",
+      "bytes": 31416
+    },
+    {
+      "family": "Noto Sans Oriya",
+      "source": "https://fonts.gstatic.com/s/notosansoriya/v35/AYCcpXfzfccDCstK_hrjDyADv5e9748vhj3CJBLHIARtqiu71Owo.woff2",
+      "path": "/fonts/noto-sans-oriya-2117ea7acd.woff2",
+      "bytes": 98872
+    },
+    {
+      "family": "Noto Sans Oriya",
+      "source": "https://fonts.gstatic.com/s/notosansoriya/v35/AYCcpXfzfccDCstK_hrjDyADv5e9748vhj3CJBLHIARtqjy71Owo.woff2",
+      "path": "/fonts/noto-sans-oriya-b11fe420a4.woff2",
+      "bytes": 13552
+    },
+    {
+      "family": "Noto Sans Oriya",
+      "source": "https://fonts.gstatic.com/s/notosansoriya/v35/AYCcpXfzfccDCstK_hrjDyADv5e9748vhj3CJBLHIARtqjK71A.woff2",
+      "path": "/fonts/noto-sans-oriya-74e5ef5818.woff2",
+      "bytes": 25112
+    },
+    {
+      "family": "Noto Sans Ol Chiki",
+      "source": "https://fonts.gstatic.com/s/notosansolchiki/v31/N0bI2TJNOPt-eHmFZCdQbrL32r-4CvhZQByBf48.woff2",
+      "path": "/fonts/noto-sans-ol-chiki-fbb37c6da9.woff2",
+      "bytes": 15240
+    },
+    {
+      "family": "Noto Sans Ol Chiki",
+      "source": "https://fonts.gstatic.com/s/notosansolchiki/v31/N0bI2TJNOPt-eHmFZCdQbrL32r-4CvhZDRyBf48.woff2",
+      "path": "/fonts/noto-sans-ol-chiki-3b3d45855a.woff2",
+      "bytes": 14916
+    },
+    {
+      "family": "Noto Sans Ol Chiki",
+      "source": "https://fonts.gstatic.com/s/notosansolchiki/v31/N0bI2TJNOPt-eHmFZCdQbrL32r-4CvhZAxyB.woff2",
+      "path": "/fonts/noto-sans-ol-chiki-984dbb23a8.woff2",
+      "bytes": 25624
+    },
+    {
+      "family": "Noto Sans Meetei Mayek",
+      "source": "https://fonts.gstatic.com/s/notosansmeeteimayek/v20/HTx9L3QyKieByqY9eZPFweO0be7M21uSphSdrOojb4JN.woff2",
+      "path": "/fonts/noto-sans-meetei-mayek-69cb5fb6ec.woff2",
+      "bytes": 21636
+    },
+    {
+      "family": "Noto Sans Meetei Mayek",
+      "source": "https://fonts.gstatic.com/s/notosansmeeteimayek/v20/HTx9L3QyKieByqY9eZPFweO0be7M21uSphSdrKAjb4JN.woff2",
+      "path": "/fonts/noto-sans-meetei-mayek-7a4cb88e05.woff2",
+      "bytes": 14288
+    },
+    {
+      "family": "Noto Sans Meetei Mayek",
+      "source": "https://fonts.gstatic.com/s/notosansmeeteimayek/v20/HTx9L3QyKieByqY9eZPFweO0be7M21uSphSdrK4jbw.woff2",
+      "path": "/fonts/noto-sans-meetei-mayek-2206cd2ef5.woff2",
+      "bytes": 24728
+    }
+  ],
+  "font_license": "https://github.com/google/fonts/blob/main/ofl/geologica/OFL.txt",
+  "usage": "Illustrative photography; depicted people do not endorse or use Krishyak. No stock photo is a farmer account or founder portrait."
+}

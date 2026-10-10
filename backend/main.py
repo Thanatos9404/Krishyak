@@ -5,25 +5,19 @@ Version: 1.1.0 (Government-Ready with Security Hardening)
 """
 import time
 import logging
-import os
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException, File, UploadFile, Form, Request, Response, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from starlette.concurrency import run_in_threadpool
 from fastapi.exceptions import RequestValidationError
-from pydantic import BaseModel, Field, validator, model_validator
-from typing import Dict, List, Optional, Literal
+from pydantic import BaseModel, Field, validator
+from typing import Dict, Optional, Literal
 import uvicorn
-
-# Vercel functions expose a read-only deployment filesystem; runtime caches and
-# demo registration exports must use the writable temporary filesystem.
-if os.getenv("VERCEL"):
-    os.environ.setdefault("PEST_DATA_DIR", "/tmp/krishyak/pest_data")
-    os.environ.setdefault("SOIL_CACHE_DIR", "/tmp/krishyak/soil_cache")
-    os.environ.setdefault("SARVAM_QUOTA_DB", "/tmp/krishyak/speech_quotas.sqlite3")
 
 # Security and logging imports
 from security import security_config, InputSanitizer, FileValidator, generate_request_id, normalize_request_id
+from security import client_ip as resolve_client_ip
 from logging_config import setup_logging, request_logger
 
 # Engine imports
@@ -34,17 +28,12 @@ from cost_calculator import CostCalculator
 from risk_engine import RiskEngine
 from data_loader import DataLoader
 import config
-from disease_detector import detect_disease_mock, CROP_DISEASES
-from jam_trinity import get_jam_service, JAMTrinityService
-from land_records import get_land_service, LandRecordsService
+from disease_detector import CROP_DISEASES
 
 # Initialize logging
 logger = setup_logging()
 
-from datetime import datetime
 from rate_limiter import RateLimiter
-from sarvam_service import router as speech_router
-from speech_limits import SpeechBodyLimit
 from remote_sensing.router import router as remote_sensing_router
 
 rate_limiter = RateLimiter(security_config.rate_limit_per_minute, security_config.rate_limit_per_day)
@@ -67,11 +56,9 @@ app = FastAPI(
     docs_url="/docs" if security_config.is_development else None,
     redoc_url="/redoc" if security_config.is_development else None,
 )
-app.include_router(speech_router)
 app.include_router(remote_sensing_router)
 from v2.application import install_v2
 install_v2(app)
-app.add_middleware(SpeechBodyLimit)
 
 # CORS middleware with secure configuration. Keep the stable production alias
 # explicit so a stale deployment environment cannot silently remove it.
@@ -89,13 +76,25 @@ async def request_middleware(request: Request, call_next):
     request.state.request_id = request_id
     
     # Get client IP
-    client_ip = request.client.host if request.client else "unknown"
-    forwarded_for = request.headers.get("X-Forwarded-For")
-    if forwarded_for and os.getenv('TRUST_PROXY_HEADERS', 'false').lower() == 'true':
-        client_ip = forwarded_for.split(",")[0].strip()
+    client_ip = resolve_client_ip(request)
     
     # Rate limiting
-    allowed, reason = (True, '') if request.url.path.startswith('/api/v2') else rate_limiter.is_allowed(client_ip)
+    # Stateless liveness probes must not consume the application request budget.
+    # Readiness and business endpoints retain their existing limits.
+    liveness_probe = request.method == 'GET' and request.url.path == '/health/live'
+    allowed, reason = (True, '') if liveness_probe or request.url.path.startswith('/api/v2') else rate_limiter.is_allowed(client_ip)
+    quotas = getattr(request.app.state, 'v2_quotas', None)
+    if allowed and quotas is not None and not liveness_probe and not request.url.path.startswith('/api/v2'):
+        # Shared across serverless instances; the in-memory limiter alone is
+        # per process. Fails closed if the shared store is unavailable.
+        from v2.usage import public_budget
+        try:
+            await run_in_threadpool(public_budget, quotas, request.url.path, client_ip)
+        except HTTPException as error:
+            allowed, reason = False, error.detail
+            if error.status_code != 429:
+                return JSONResponse(status_code=503, content={"success": False, "error": reason, "request_id": request_id},
+                                    headers={"X-Request-ID": request_id})
     if not allowed:
         logger.warning(f"Rate limit exceeded for {client_ip}")
         return JSONResponse(
@@ -254,149 +253,14 @@ class SimulationRequest(BaseModel):
     farming_input: FarmingInput
     num_simulations: int = Field(500, ge=100, le=2000, description="Number of micro-simulations")
 
+app.state.planning_input_model = FarmingInput
+app.state.planning_engine = simulation_engine
+
 class PriceForecastRequest(BaseModel):
     model_config = {"allow_inf_nan": False}
     commodity: str
     current_price: float = Field(..., gt=0, le=10000000)
     forecast_days: int = Field(60, ge=1, le=180)
-
-# ============ FARMER REGISTRATION ============
-import csv
-import asyncio
-from registration_store import append_registration
-from pathlib import Path
-
-# Directory to store farmer data (inside backend folder for easy access)
-FARMER_DATA_DIR = Path("/tmp/krishyak/farmers") if os.getenv("VERCEL") else Path(__file__).parent / "data"
-FARMER_CSV_FILE = FARMER_DATA_DIR / "registered_farmers.csv"
-
-# Ensure the data directory exists
-FARMER_DATA_DIR.mkdir(parents=True, exist_ok=True)
-
-class FarmerRegistrationInput(BaseModel):
-    """Pydantic model for farmer registration data"""
-    model_config = {"str_strip_whitespace": True}
-    fullName: str = Field(..., min_length=2, max_length=100, description="Full name of farmer")
-    fatherName: str = Field(..., min_length=2, max_length=100, description="Father's or husband's name")
-    mobileNumber: str = Field(..., min_length=10, max_length=10, pattern=r"^\d{10}$", description="10-digit mobile number")
-    dateOfBirth: Optional[str] = Field(None, description="Date of birth")
-    aadhaarNumber: Optional[str] = Field(None, description="Aadhaar number (optional)")
-    state: str = Field(..., min_length=2, description="State name")
-    district: str = Field(..., min_length=2, description="District name")
-    tehsil: str = Field(..., min_length=2, description="Tehsil/Block name")
-    village: str = Field(..., min_length=2, description="Village name")
-    pinCode: str = Field(..., min_length=6, max_length=6, pattern=r"^\d{6}$", description="6-digit PIN code")
-    khasraNumber: str = Field(..., description="Khasra/Survey number")
-    totalLandArea: str = Field(..., description="Total land area")
-    landUnit: Literal['hectares', 'acres'] = Field("hectares", description="Unit of land area")
-    irrigatedLand: Optional[str] = Field(None, description="Irrigated land area")
-    rainfedLand: Optional[str] = Field(None, description="Rain-fed land area")
-    ownershipType: str = Field(..., description="Land ownership type")
-    primaryCrop: str = Field(..., description="Primary crop")
-    secondaryCrops: Optional[List[str]] = Field(default_factory=list, description="Secondary crops")
-    farmingType: str = Field(..., description="Type of farming")
-    experience: Optional[str] = Field(None, description="Farming experience")
-    consentData: bool = Field(..., description="Consent to share data")
-    consentTerms: bool = Field(..., description="Agree to terms")
-    registeredAt: Optional[str] = Field(None, description="Registration timestamp")
-
-    @validator('totalLandArea')
-    def validate_land_area(cls, value):
-        import math
-        amount = float(value)
-        if not math.isfinite(amount) or not 0 < amount <= 1000000:
-            raise ValueError('Land area must be finite and in the supported range')
-        return str(amount)
-
-    @validator('irrigatedLand', 'rainfedLand')
-    def validate_optional_area(cls, value):
-        import math
-        if value is None or value.strip() == '':
-            return None
-        amount = float(value)
-        if not math.isfinite(amount) or not 0 <= amount <= 1000000:
-            raise ValueError('Land area must be finite and non-negative')
-        return str(amount)
-
-    @model_validator(mode='after')
-    def validate_area_partition(self):
-        from decimal import Decimal
-        total = Decimal(self.totalLandArea)
-        portions = [Decimal(value) for value in (self.irrigatedLand, self.rainfedLand) if value is not None]
-        if sum(portions) > total + Decimal('0.000000001'):
-            raise ValueError('Irrigated and rain-fed areas cannot exceed total land area in the selected unit')
-        return self
-
-    @validator('consentData', 'consentTerms')
-    def require_consent(cls, value):
-        if value is not True:
-            raise ValueError('Consent must be granted before registration')
-        return value
-
-# CSV column headers for farmer data
-FARMER_CSV_HEADERS = [
-    "registeredAt", "fullName", "fatherName", "mobileNumber", "dateOfBirth", "aadhaarNumber",
-    "state", "district", "tehsil", "village", "pinCode",
-    "khasraNumber", "totalLandArea", "landUnit", "irrigatedLand", "rainfedLand", "ownershipType",
-    "primaryCrop", "secondaryCrops", "farmingType", "experience", "consentData", "consentTerms"
-]
-
-@app.post("/register-farmer")
-async def register_farmer(farmer_data: FarmerRegistrationInput):
-    """
-    Register a new farmer and save to CSV file.
-    This endpoint saves all farmer details to a CSV file for easy access.
-    """
-    try:
-        # The server records receipt time; client timestamps are not authoritative.
-        farmer_data.registeredAt = datetime.now().isoformat()
-        
-        # Prepare row data
-        row_data = {
-            "registeredAt": farmer_data.registeredAt,
-            "fullName": farmer_data.fullName,
-            "fatherName": farmer_data.fatherName,
-            "mobileNumber": farmer_data.mobileNumber,
-            "dateOfBirth": farmer_data.dateOfBirth or "",
-            "aadhaarNumber": "",  # Do not persist government identifiers in plaintext CSV.
-            "state": farmer_data.state,
-            "district": farmer_data.district,
-            "tehsil": farmer_data.tehsil,
-            "village": farmer_data.village,
-            "pinCode": farmer_data.pinCode,
-            "khasraNumber": farmer_data.khasraNumber,
-            "totalLandArea": farmer_data.totalLandArea,
-            "landUnit": farmer_data.landUnit,
-            "irrigatedLand": farmer_data.irrigatedLand or "",
-            "rainfedLand": farmer_data.rainfedLand or "",
-            "ownershipType": farmer_data.ownershipType,
-            "primaryCrop": farmer_data.primaryCrop,
-            "secondaryCrops": ",".join(farmer_data.secondaryCrops) if farmer_data.secondaryCrops else "",
-            "farmingType": farmer_data.farmingType,
-            "experience": farmer_data.experience or "",
-            "consentData": str(farmer_data.consentData),
-            "consentTerms": str(farmer_data.consentTerms)
-        }
-        
-        row_data = {key: ("'" + value if isinstance(value, str) and value.lstrip().startswith(('=', '+', '-', '@')) else value)
-                    for key, value in row_data.items()}
-        await asyncio.to_thread(append_registration, FARMER_CSV_FILE, FARMER_CSV_HEADERS, row_data)
-        
-        logger.info("New farmer registration saved")
-        
-        return {
-            "success": True,
-            "message": "Farmer registered successfully",
-            "data": {
-                "fullName": farmer_data.fullName,
-                "mobileNumber": farmer_data.mobileNumber,
-                "registeredAt": farmer_data.registeredAt
-            }
-        }
-    
-    except Exception as e:
-        logger.error("Registration storage failed (%s)", type(e).__name__)
-        raise HTTPException(status_code=503, detail="Registration could not be saved. Please try again.")
 
 # API Endpoints
 
@@ -661,203 +525,6 @@ async def get_diseases_by_crop(crop: str):
 
 
 # ==============================================================================
-# SOIL SENSOR ENDPOINTS (Phase 2: IoT Integration)
-# ==============================================================================
-
-from sensor_adapter import (
-    sensor_manager, SoilData, SensorVendor, 
-    ConnectionStatus, SensorInfo
-)
-from soil_data_cache import soil_cache
-from datetime import datetime
-
-class ManualSoilInput(BaseModel):
-    """Pydantic model for manual soil data input"""
-    device_id: str = Field(..., description="Device/plot identifier")
-    nitrogen: float = Field(..., ge=0, le=500, description="Nitrogen in kg/ha")
-    phosphorus: float = Field(..., ge=0, le=200, description="Phosphorus in kg/ha")
-    potassium: float = Field(..., ge=0, le=500, description="Potassium in kg/ha")
-    ph: float = Field(..., ge=0, le=14, description="Soil pH (0-14)")
-    moisture: float = Field(..., ge=0, le=100, description="Moisture percentage")
-    temperature: float = Field(default=25.0, ge=-10, le=60, description="Soil temperature °C")
-    organic_carbon: Optional[float] = Field(None, ge=0, le=20, description="Organic carbon %")
-
-
-@app.get("/sensors")
-async def list_sensors():
-    """
-    List all connected soil sensors
-    Returns devices from all configured vendors + manual inputs
-    """
-    try:
-        devices = await sensor_manager.get_all_device_status()
-        cached_devices = soil_cache.list_cached_devices()
-        
-        return {
-            "success": True,
-            "sensors": [d.to_dict() for d in devices],
-            "cached_devices": cached_devices,
-            "cache_stats": soil_cache.get_cache_stats()
-        }
-    except Exception as e:
-        logger.error(f"Error listing sensors: {type(e).__name__}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-@app.get("/sensors/{device_id}/data")
-async def get_sensor_data(device_id: str, use_cache: bool = True):
-    """
-    Get latest soil data for a device
-    
-    Args:
-        device_id: Sensor device identifier
-        use_cache: If True, return cached data when sensor unavailable
-    
-    Returns:
-        Latest soil reading with NPK, pH, moisture, temperature
-    """
-    try:
-        # Try to get fresh data from sensor
-        data = await sensor_manager.get_soil_data(device_id)
-        
-        if data:
-            # Cache the fresh data
-            soil_cache.save(device_id, data)
-            latest = soil_cache.get_latest(device_id)
-            if use_cache and latest and latest.timestamp.timestamp() > data.timestamp.timestamp():
-                data = latest
-            return {
-                "success": True,
-                "data": data.to_dict(),
-                "source": data.source,
-                "is_stale": (datetime.now(data.timestamp.tzinfo) - data.timestamp).total_seconds() > soil_cache.stale_threshold_hours * 3600
-            }
-        
-        # Fallback to cache
-        if use_cache:
-            cached = soil_cache.get_latest(device_id)
-            if cached:
-                return {
-                    "success": True,
-                    "data": cached.to_dict(),
-                    "source": "cached",
-                    "is_stale": soil_cache.is_stale(device_id),
-                    "last_updated": soil_cache.get_last_update_time(device_id).isoformat() if soil_cache.get_last_update_time(device_id) else None
-                }
-        
-        # No data available
-        return {
-            "success": False,
-            "error": "No soil data available for this device",
-            "device_id": device_id
-        }
-        
-    except Exception as e:
-        logger.error(f"Error getting sensor data: {type(e).__name__}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-@app.post("/sensors/manual")
-async def submit_manual_soil_data(input_data: ManualSoilInput):
-    """
-    Submit manually measured soil data
-    
-    Use this endpoint when IoT sensors are unavailable.
-    Data will be stored and used in simulations.
-    """
-    try:
-        # Create SoilData from input
-        soil_data = SoilData(
-            device_id=input_data.device_id,
-            timestamp=datetime.now(),
-            nitrogen=input_data.nitrogen,
-            phosphorus=input_data.phosphorus,
-            potassium=input_data.potassium,
-            ph=input_data.ph,
-            moisture=input_data.moisture,
-            temperature=input_data.temperature,
-            organic_carbon=input_data.organic_carbon,
-            source="manual",
-            vendor=SensorVendor.MANUAL.value
-        )
-        
-        # Validate data
-        if not soil_data.is_valid():
-            raise HTTPException(
-                status_code=400,
-                detail="Soil data values are out of valid range"
-            )
-        
-        # Save to sensor manager and cache
-        soil_cache.save(input_data.device_id, soil_data)
-        sensor_manager.set_manual_data(input_data.device_id, soil_data)
-        
-        logger.info(f"Manual soil data saved for device: {input_data.device_id}")
-        
-        return {
-            "success": True,
-            "message": "Soil data saved successfully",
-            "data": soil_data.to_dict()
-        }
-        
-    except HTTPException:
-        raise
-    except Exception as e:
-        logger.error(f"Error saving manual soil data: {type(e).__name__}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-@app.get("/sensors/{device_id}/history")
-async def get_sensor_history(device_id: str, days: int = Query(7, ge=1, le=30)):
-    """
-    Get historical soil data for a device
-    
-    Args:
-        device_id: Sensor device identifier
-        days: Number of days of history (default: 7, max: 30)
-    """
-    
-    try:
-        history = soil_cache.get_history(device_id, days)
-        
-        return {
-            "success": True,
-            "device_id": device_id,
-            "days": days,
-            "readings": [h.to_dict() for h in history],
-            "count": len(history)
-        }
-        
-    except Exception as e:
-        logger.error(f"Error getting sensor history: {type(e).__name__}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-@app.get("/sensors/status")
-async def get_sensors_status():
-    """
-    Get connection status of all configured sensors
-    """
-    try:
-        devices = await sensor_manager.get_all_device_status()
-        
-        connected = sum(1 for d in devices if d.status == ConnectionStatus.CONNECTED)
-        disconnected = sum(1 for d in devices if d.status == ConnectionStatus.DISCONNECTED)
-        
-        return {
-            "success": True,
-            "total_devices": len(devices),
-            "connected": connected,
-            "disconnected": disconnected,
-            "devices": [d.to_dict() for d in devices]
-        }
-        
-    except Exception as e:
-        logger.error(f"Error getting sensor status: {type(e).__name__}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-# ==============================================================================
 # WEATHER ALERT ENDPOINTS (Phase 3: Weather & Rain Alert System)
 # ==============================================================================
 
@@ -989,26 +656,6 @@ async def get_rain_forecast(location: LocationRequest):
 # ==============================================================================
 
 from pest_intelligence import pest_service
-from pest_data_store import pest_store, FarmerPestReport
-
-class PestReportInput(BaseModel):
-    """Input model for farmer pest reports"""
-    pest_type: str = Field(..., min_length=2, max_length=100, description="Type of pest observed")
-    pest_name: str = Field(..., min_length=2, max_length=100, description="Common name of pest")
-    crop: str = Field(..., min_length=2, max_length=50, description="Affected crop")
-    severity: str = Field(..., pattern="^(low|medium|high)$", description="Severity level")
-    description: str = Field("", max_length=500, description="Description of the sighting")
-    lat: float = Field(..., ge=-90, le=90, description="Latitude")
-    lon: float = Field(..., ge=-180, le=180, description="Longitude")
-    district: str = Field(..., min_length=2, max_length=100, description="District name")
-    state: str = Field(..., min_length=2, max_length=100, description="State name")
-    photo_url: Optional[str] = Field(None, description="Optional photo URL")
-
-class PestAlertRequest(BaseModel):
-    """Request model for pest alerts"""
-    state: str = Field(..., min_length=2, max_length=100, description="State name")
-    district: Optional[str] = Field(None, description="District name (optional)")
-    crop: Optional[str] = Field(None, description="Crop type filter (optional)")
 
 class PestPredictionRequest(BaseModel):
     """Request model for pest outbreak predictions"""
@@ -1019,122 +666,6 @@ class PestPredictionRequest(BaseModel):
     temperature: float = Field(..., ge=-10, le=60, description="Current temperature in Celsius")
     humidity: float = Field(..., ge=0, le=100, description="Current humidity percentage")
     rainfall: float = Field(..., ge=0, le=10000, description="Recent rainfall in mm")
-
-
-@app.post("/pest/report")
-async def submit_pest_report(report: PestReportInput):
-    """
-    Submit a farmer pest sighting report.
-    Reports are stored for trend analysis and alerts.
-    """
-    try:
-        import hashlib
-        from datetime import datetime
-        
-        # Generate anonymous farmer ID from IP (for hackathon)
-        farmer_id = hashlib.md5(f"farmer_{datetime.now().timestamp()}".encode()).hexdigest()[:8]
-        
-        # Create report object
-        pest_report = FarmerPestReport(
-            id="",  # Will be generated
-            farmer_id=farmer_id,
-            pest_type=report.pest_type,
-            pest_name=report.pest_name,
-            crop=report.crop,
-            severity=report.severity,
-            description=report.description,
-            location={"lat": report.lat, "lng": report.lon},
-            district=report.district,
-            state=report.state,
-            photo_url=report.photo_url
-        )
-        
-        # Save report
-        report_id = pest_store.save_farmer_report(pest_report)
-        
-        logger.info(f"Pest report submitted: {report_id} - {report.pest_name} in {report.state}")
-        
-        return {
-            "success": True,
-            "report_id": report_id,
-            "message": "Pest report submitted successfully. Thank you for contributing!"
-        }
-        
-    except Exception as e:
-        logger.error(f"Error submitting pest report: {type(e).__name__}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-@app.post("/pest/alerts")
-async def get_pest_alerts(request: PestAlertRequest):
-    """
-    Get active pest alerts for a region.
-    Combines government data and farmer reports.
-    """
-    try:
-        # Get alerts from pest service
-        alerts = pest_service.get_alerts(
-            state=request.state,
-            district=request.district,
-            crop=request.crop
-        )
-        
-        # Get recent farmer reports for the region
-        farmer_reports = pest_store.get_reports_by_region(
-            state=request.state,
-            district=request.district,
-            days=14
-        )
-        
-        # Get seasonal risk
-        seasonal_risk = None
-        if request.crop:
-            seasonal_risk = pest_service.get_seasonal_risk(request.crop)
-        
-        return {
-            "success": True,
-            "state": request.state,
-            "district": request.district,
-            "total_alerts": len(alerts),
-            "alerts": alerts,
-            "government_feed_status": "not_integrated",
-            "farmer_reports": [r.to_dict() for r in farmer_reports[:10]],
-            "seasonal_risk": seasonal_risk
-        }
-        
-    except Exception as e:
-        logger.error(f"Error fetching pest alerts: {type(e).__name__}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-@app.get("/pest/history")
-async def get_pest_history(
-    crop: str,
-    state: str,
-    years: int = 3
-):
-    """
-    Get historical pest outbreak data for trend analysis.
-    """
-    try:
-        history = pest_service.get_history(crop=crop, state=state, years=years)
-        
-        # Get statistics from farmer reports
-        stats = pest_store.get_report_statistics(days=365)
-        
-        return {
-            "success": True,
-            "crop": crop,
-            "state": state,
-            "years": years,
-            "outbreaks": history,
-            "historical_feed_status": "not_integrated",
-            "report_statistics": stats
-        }
-        
-    except Exception as e:
-        logger.error(f"Error fetching pest history: {type(e).__name__}")
-        raise HTTPException(status_code=500, detail=str(e))
 
 
 @app.post("/pest/prediction")
@@ -1171,25 +702,6 @@ async def get_pest_prediction(request: PestPredictionRequest):
         
     except Exception as e:
         logger.error(f"Error generating pest prediction: {type(e).__name__}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-@app.get("/pest/statistics")
-async def get_pest_statistics(days: int = 30):
-    """
-    Get aggregated pest report statistics.
-    Useful for dashboards and trend monitoring.
-    """
-    try:
-        stats = pest_store.get_report_statistics(days=days)
-        
-        return {
-            "success": True,
-            "statistics": stats
-        }
-        
-    except Exception as e:
-        logger.error(f"Error fetching pest statistics: {type(e).__name__}")
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -1287,291 +799,6 @@ async def get_organic_alternatives(crop: str):
         
     except Exception as e:
         logger.error(f"Error fetching organic alternatives: {type(e).__name__}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-# ============================================================================
-# JAM TRINITY VERIFICATION ENDPOINTS
-# ============================================================================
-
-class ConsentRequest(BaseModel):
-    """Request to create a consent record"""
-    purpose: str = Field(..., description="Purpose of data access")
-    scopes: List[str] = Field(..., description="Scopes to grant access to")
-
-
-class AadhaarVerifyRequest(BaseModel):
-    """Request to verify Aadhaar"""
-    aadhaar_last4: str = Field(..., min_length=4, max_length=4, pattern="^[0-9]{4}$")
-    consent_id: str = Field(..., description="Consent ID from consent request")
-    name: Optional[str] = Field(None, description="Name to verify against Aadhaar")
-
-
-class TokenRequest(BaseModel):
-    """Request using Aadhaar token"""
-    aadhaar_token: str = Field(..., description="Token from Aadhaar verification")
-    consent_id: str = Field(..., description="Consent ID")
-
-
-@app.post("/consent/request")
-async def request_consent(request: ConsentRequest):
-    """
-    Request user consent for data access.
-    Returns a consent_id that must be confirmed by user before verification.
-    """
-    try:
-        jam_service = get_jam_service(security_config.secret_key)
-        result = jam_service.request_consent(
-            purpose=request.purpose,
-            scopes=request.scopes
-        )
-        
-        return {
-            "success": True,
-            "data": result
-        }
-        
-    except Exception as e:
-        logger.error(f"Consent request error: {type(e).__name__}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-@app.post("/consent/grant/{consent_id}")
-async def grant_consent(consent_id: str):
-    """
-    User grants consent (in real app, this would be after showing consent UI).
-    For demo, this immediately activates the consent.
-    """
-    try:
-        jam_service = get_jam_service(security_config.secret_key)
-        consent = jam_service.consent_manager.get_consent(consent_id)
-        
-        if not consent:
-            raise HTTPException(status_code=404, detail="Consent not found")
-        
-        return {
-            "success": True,
-            "consent_id": consent_id,
-            "status": "granted",
-            "expires_at": consent.expires_at.isoformat()
-        }
-        
-    except HTTPException:
-        raise
-    except Exception as e:
-        logger.error(f"Consent grant error: {type(e).__name__}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-@app.post("/consent/revoke/{consent_id}")
-async def revoke_consent(consent_id: str):
-    """
-    User revokes previously granted consent.
-    """
-    try:
-        jam_service = get_jam_service(security_config.secret_key)
-        success = jam_service.consent_manager.revoke_consent(consent_id)
-        
-        if not success:
-            raise HTTPException(status_code=404, detail="Consent not found")
-        
-        return {
-            "success": True,
-            "consent_id": consent_id,
-            "status": "revoked"
-        }
-        
-    except HTTPException:
-        raise
-    except Exception as e:
-        logger.error(f"Consent revoke error: {type(e).__name__}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-@app.post("/verify/aadhaar")
-async def verify_aadhaar(request: AadhaarVerifyRequest):
-    """
-    Verify Aadhaar and get tokenized reference.
-    Does NOT store full Aadhaar number - only uses last 4 digits for demo.
-    """
-    try:
-        jam_service = get_jam_service(security_config.secret_key)
-        
-        result = jam_service.verify_aadhaar(
-            aadhaar_last4=request.aadhaar_last4,
-            consent_id=request.consent_id,
-            name_to_verify=request.name
-        )
-        
-        if result.error:
-            return {
-                "success": False,
-                "error": result.error
-            }
-        
-        return {
-            "success": True,
-            "data": {
-                "verified": result.verified,
-                "token": result.token,
-                "name_verified": result.name_verified,
-                "demographic_match": result.demographic_match,
-                "consent_id": result.consent_id
-            }
-        }
-        
-    except Exception as e:
-        logger.error(f"Aadhaar verification error: {type(e).__name__}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-@app.post("/verify/land")
-async def verify_land_records(request: TokenRequest):
-    """
-    Get verified land records using Aadhaar token.
-    Returns land holding details without exposing sensitive data.
-    """
-    try:
-        jam_service = get_jam_service(security_config.secret_key)
-        
-        result = jam_service.get_land_records(
-            aadhaar_token=request.aadhaar_token,
-            consent_id=request.consent_id
-        )
-        
-        if result.error:
-            return {
-                "success": False,
-                "error": result.error
-            }
-        
-        return {
-            "success": True,
-            "data": {
-                "verified": result.verified,
-                "state": result.state,
-                "district": result.district,
-                "total_area_hectares": result.total_area_hectares,
-                "irrigated_percentage": result.irrigated_percentage,
-                "farmer_category": result.farmer_category,
-                "survey_numbers": result.survey_numbers,
-                "ownership_verified": result.ownership_verified
-            }
-        }
-        
-    except Exception as e:
-        logger.error(f"Land verification error: {type(e).__name__}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-@app.post("/verify/jan-dhan")
-async def verify_jan_dhan(request: TokenRequest):
-    """
-    Verify Jan Dhan bank account linkage.
-    Returns masked account details and DBT status.
-    """
-    try:
-        jam_service = get_jam_service(security_config.secret_key)
-        
-        result = jam_service.verify_jan_dhan(
-            aadhaar_token=request.aadhaar_token,
-            consent_id=request.consent_id
-        )
-        
-        if result.error:
-            return {
-                "success": False,
-                "error": result.error
-            }
-        
-        return {
-            "success": True,
-            "data": {
-                "linked": result.linked,
-                "bank_name": result.bank_name,
-                "account_masked": result.account_masked,
-                "dbt_enabled": result.dbt_enabled,
-                "pm_kisan_beneficiary": result.pm_kisan_beneficiary,
-                "last_dbt_date": result.last_dbt_date
-            }
-        }
-        
-    except Exception as e:
-        logger.error(f"Jan Dhan verification error: {type(e).__name__}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-@app.post("/verify/pm-kisan-status")
-async def get_pm_kisan_status(request: TokenRequest):
-    """
-    Get PM-KISAN enrollment and payment status.
-    """
-    try:
-        jam_service = get_jam_service(security_config.secret_key)
-        
-        result = jam_service.get_pm_kisan_status(
-            aadhaar_token=request.aadhaar_token,
-            consent_id=request.consent_id
-        )
-        
-        return {
-            "success": True,
-            "data": {
-                "enrolled": result.enrolled,
-                "beneficiary_id": result.beneficiary_id,
-                "installments_received": result.installments_received,
-                "last_installment_date": result.last_installment_date,
-                "last_installment_amount": result.last_installment_amount,
-                "next_installment_expected": result.next_installment_expected,
-                "bank_verified": result.bank_verified
-            }
-        }
-        
-    except Exception as e:
-        logger.error(f"PM-KISAN status error: {type(e).__name__}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-@app.post("/farmer/profile")
-async def get_farmer_profile(request: TokenRequest):
-    """
-    Get unified farmer profile with all verifications.
-    Combines land records, bank details, and scheme eligibility.
-    """
-    try:
-        jam_service = get_jam_service(security_config.secret_key)
-        
-        profile = jam_service.get_unified_farmer_profile(
-            aadhaar_token=request.aadhaar_token,
-            consent_id=request.consent_id
-        )
-        
-        return {
-            "success": True,
-            "data": profile
-        }
-        
-    except Exception as e:
-        logger.error(f"Farmer profile error: {type(e).__name__}")
-        raise HTTPException(status_code=500, detail=str(e))
-
-
-@app.get("/land/supported-states")
-async def get_supported_states():
-    """
-    Get list of states with land records integration.
-    """
-    try:
-        land_service = get_land_service()
-        states = land_service.get_supported_states()
-        
-        return {
-            "success": True,
-            "data": states
-        }
-        
-    except Exception as e:
-        logger.error(f"Supported states error: {type(e).__name__}")
         raise HTTPException(status_code=500, detail=str(e))
 
 

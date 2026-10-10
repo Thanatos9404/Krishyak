@@ -4,7 +4,7 @@ from datetime import date, datetime, timedelta, timezone
 from typing import Literal
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, Query, Request
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query, Request
 from fastapi.responses import Response
 from geoalchemy2.shape import to_shape
 from pydantic import Field, model_validator
@@ -19,6 +19,7 @@ from repositories.ownership import owned_plot
 from .evidence import compose_today
 from .router import current_farmer, database, require_consent, serialize
 from .schemas import Input
+from .worker_http import schedule_drain
 
 router = APIRouter(prefix="/api/v2", tags=["Plot evidence"])
 
@@ -88,6 +89,7 @@ def refresh(
     plot_id: UUID,
     body: SatelliteRefresh,
     request: Request,
+    tasks: BackgroundTasks,
     farmer=Depends(current_farmer),
     db=Depends(database, scope="function"),
 ):
@@ -110,12 +112,15 @@ def refresh(
     job = Job(plot_id=plot_id, operation_id=body.operation_id, kind="satellite", payload=payload)
     db.add(job)
     db.flush()
+    schedule_drain(request, tasks)
     return serialize(job)
 
 
 @router.get("/plots/{plot_id}/remote-sensing")
 def observations(
     plot_id: UUID,
+    request: Request,
+    tasks: BackgroundTasks,
     offset: int = Query(0, ge=0, le=100000),
     limit: int = Query(36, ge=1, le=100),
     farmer=Depends(current_farmer),
@@ -130,6 +135,9 @@ def observations(
         .limit(limit)
     ).all()
     job = db.scalar(select(Job).where(Job.plot_id == plot_id).order_by(Job.created_at.desc()).limit(1))
+    if job is not None and job.status in {"pending", "retry"}:
+        # A retry that became due while nobody was polling is resumed here.
+        schedule_drain(request, tasks)
     return {
         "items": [serialize(x, exclude=("payload_hash",)) for x in records],
         "boundary_revision": plot.revision,

@@ -6,7 +6,6 @@ jest.mock('./AccordionSection',()=>({children})=><div>{children}</div>);
 jest.mock('./WeatherCard',()=>({onWeatherUpdate})=><button onClick={()=>onWeatherUpdate({
   expected_rainfall:null,rainfall_delay:null,soil_type:null,soil_source:'unavailable',
 })}>Detect test location</button>);
-jest.mock('./SoilDataCard',()=>()=>null);
 jest.mock('./VoiceInputModal',()=>()=>null);
 
 test('location-only data never overwrites the farmer rainfall, delay or soil',()=>{

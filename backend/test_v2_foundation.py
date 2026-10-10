@@ -3,9 +3,10 @@
 import asyncio
 import copy
 import io
+import json
 import os
 import unittest
-from datetime import timedelta
+from datetime import timedelta, timezone
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest.mock import AsyncMock, Mock, patch
@@ -15,7 +16,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.testclient import TestClient
 from PIL import Image
 from pydantic import ValidationError
-from sqlalchemy import delete, select
+from sqlalchemy import delete, select, text
 
 from db.models import (
     AuthChallenge,
@@ -27,10 +28,11 @@ from db.models import (
     ObjectDeletion,
     Observation,
     Session,
+    WorkerHeartbeat,
     utcnow,
 )
 from v2.application import install_v2
-from v2.schemas import ObservationInput, PlotInput
+from v2.schemas import ObservationInput, PlotInput, ProfileInput
 from v2.settings import Settings
 
 ORIGIN = "http://localhost:3000"
@@ -41,6 +43,18 @@ POLYGON = {
 
 
 class ConfigAndSchemaTests(unittest.TestCase):
+    def test_profile_language_acceptance_matches_the_active_workspace_scope(self):
+        pilot = json.loads(
+            (Path(__file__).resolve().parents[1] / "frontend/src/i18n/pilotLanguages.json").read_text(encoding="utf-8")
+        )
+        for code in pilot["codes"]:
+            with self.subTest(language=code):
+                profile = ProfileInput(display_name="Synthetic farmer", preferred_language=code)
+                self.assertEqual(profile.preferred_language, code)
+        for code in [*pilot["deferred"], "invalid", "fr"]:
+            with self.subTest(deferred=code), self.assertRaises(ValidationError):
+                ProfileInput(display_name="Synthetic farmer", preferred_language=code)
+
     def test_hosted_runtime_cannot_reenable_legacy_pii_or_development_identity(self):
         with patch.dict(os.environ, {"VERCEL": "1", "ENVIRONMENT": "development", "KRISHYAK_V2_ENABLED": "false"}):
             settings = Settings.from_env()
@@ -184,6 +198,27 @@ class ConfigAndSchemaTests(unittest.TestCase):
             with self.assertRaises(ValidationError):
                 ObservationInput(operation_id=uuid4(), kind="farmer_observation", observed_at=when, note="Synthetic")
 
+    def test_reported_observation_time_allows_only_bounded_device_skew(self):
+        now = utcnow()
+        with patch("v2.schemas.datetime") as clock:
+            clock.now.return_value = now
+            for seconds in [-3600, 0, 1, 30]:
+                value = now + timedelta(seconds=seconds)
+                record = ObservationInput(
+                    operation_id=uuid4(), kind="farmer_observation", observed_at=value, note="Synthetic"
+                )
+                self.assertEqual(record.observed_at, value)
+                self.assertEqual(record.observed_at.tzinfo, timezone.utc)
+            for value in [
+                now + timedelta(seconds=30, microseconds=1),
+                now + timedelta(days=1),
+                now.replace(tzinfo=None),
+            ]:
+                with self.subTest(value=value), self.assertRaises(ValidationError):
+                    ObservationInput(
+                        operation_id=uuid4(), kind="farmer_observation", observed_at=value, note="Synthetic"
+                    )
+
 
 @unittest.skipUnless(os.getenv("V2_TEST_DATABASE_URL"), "Dedicated disposable PostGIS test URL required")
 class FoundationIntegrationTests(unittest.TestCase):
@@ -217,10 +252,97 @@ class FoundationIntegrationTests(unittest.TestCase):
         self.a.headers["Origin"] = ORIGIN
         self.b.headers["Origin"] = ORIGIN
 
+    def test_readiness_accepts_the_migration_head_and_refuses_previous_schema(self):
+        self.assertEqual(self.a.get("/health/ready").status_code, 200)
+
+        with self.factory.begin() as db:
+            release_head = db.execute(text("SELECT version_num FROM alembic_version")).scalar_one()
+            db.execute(text("UPDATE alembic_version SET version_num = 'v2_0004'"))
+        try:
+            self.assertEqual(self.a.get("/health/ready").status_code, 503)
+        finally:
+            with self.factory.begin() as db:
+                db.execute(text("UPDATE alembic_version SET version_num = :head"), {"head": release_head})
+        self.assertEqual(self.a.get("/health/ready").status_code, 200)
+
+    def test_status_cookie_hint_never_grants_account_access(self):
+        response = self.a.get("/api/v2/status")
+        self.assertFalse(response.json()["session_cookie_present"])
+        self.assertEqual(response.headers["cache-control"], "no-store")
+        self.a.cookies.set("krishyak_session", "untrusted-cookie", path="/api/v2")
+        self.assertTrue(self.a.get("/api/v2/status").json()["session_cookie_present"])
+        self.assertEqual(self.a.get("/api/v2/me").status_code, 401)
+
+    def test_bounded_worker_batch_persists_heartbeat_and_stops_when_idle(self):
+        from v2.worker import run_batch
+
+        self.assertEqual(run_batch(self.factory, self.settings, Mock()), 0)
+        with self.factory() as db:
+            record = db.get(WorkerHeartbeat, "evidence-worker")
+            self.assertIsNotNone(record)
+            self.assertLess((utcnow() - record.seen_at).total_seconds(), 10)
+        with (
+            patch("v2.worker.run_once", return_value=True) as work,
+            patch("v2.worker.cleanup_once"),
+        ):
+            self.assertEqual(run_batch(self.factory, self.settings, Mock(), max_jobs=2), 2)
+            self.assertEqual(work.call_count, 2)
+        for limit in (0, 11):
+            with self.assertRaises(ValueError):
+                run_batch(self.factory, self.settings, Mock(), max_jobs=limit)
+
     def tearDown(self):
         self.a.close()
         self.b.close()
         self.images.cleanup()
+
+    def test_profile_location_codes_are_canonical_owner_scoped_and_exported(self):
+        self.sign_in(self.a)
+        self.sign_in(self.b, "+919000000002")
+        body = {
+            "display_name": "Location test farmer",
+            "preferred_language": "hi",
+            "state": "Rajsthan",
+            "district": " jaipur ",
+            "subdistrict": "Farmer-reported tehsil",
+            "village": "Farmer-reported village",
+            "pin_code": "302001",
+        }
+        response = self.a.patch("/api/v2/me", json=body)
+        self.assertEqual(response.status_code, 200, response.text)
+        farmer = response.json()["farmer"]
+        self.assertEqual((farmer["state_code"], farmer["district_code"]), (8, 102))
+        self.assertEqual((farmer["state"], farmer["district"]), ("Rajasthan", "Jaipur"))
+        other = self.b.get("/api/v2/me").json()["farmer"]
+        self.assertIsNone(other["state_code"])
+        self.assertIsNone(other["district_code"])
+        rejected = self.a.patch("/api/v2/me", json={**body, "state_code": 27})
+        self.assertEqual(rejected.status_code, 422)
+        self.assertEqual(self.a.get("/api/v2/me").json()["farmer"]["state_code"], 8)
+        exported = self.a.get("/api/v2/me/export")
+        self.assertEqual(exported.status_code, 200)
+        self.assertEqual(exported.json()["profile"]["district_code"], 102)
+        renamed = self.a.patch("/api/v2/me", json={"display_name": "New preferred name"})
+        self.assertEqual(renamed.status_code, 200, renamed.text)
+        preserved = renamed.json()["farmer"]
+        self.assertEqual((preserved["state_code"], preserved["district_code"]), (8, 102))
+        self.assertEqual(preserved["preferred_language"], "hi")
+        self.assertEqual(preserved["pin_code"], "302001")
+        with self.factory.begin() as db:
+            db.execute(
+                text(
+                    "UPDATE v2_farmers SET state = 'Historical state', district = 'Old district', "
+                    "state_code = NULL, district_code = NULL WHERE id = :id"
+                ),
+                {"id": farmer["id"]},
+            )
+        legacy = self.a.patch("/api/v2/me", json={"display_name": "Name only"})
+        self.assertEqual(legacy.status_code, 200, legacy.text)
+        self.assertEqual(legacy.json()["farmer"]["state"], "Historical state")
+        cleared = self.a.patch("/api/v2/me", json={"display_name": "Name only", "state": "", "district": ""})
+        self.assertEqual(cleared.status_code, 200, cleared.text)
+        self.assertIsNone(cleared.json()["farmer"]["state"])
+        self.assertIsNone(cleared.json()["farmer"]["district_code"])
 
     def sign_in(self, client, mobile="+919000000001"):
         challenge = client.post("/api/v2/auth/request-otp", json={"mobile": mobile})
@@ -294,6 +416,245 @@ class FoundationIntegrationTests(unittest.TestCase):
             json={"purpose": "location_processing", "granted": False, "policy_version": "2026-10-03"},
         )
         self.assertEqual(self.a.post(path, json={"operation_id": str(uuid4())}).status_code, 403)
+
+    def test_private_context_requires_consent_csrf_and_rechecks_withdrawal(self):
+        self.assertEqual(self.a.post("/api/v2/farm-context", json={"state_code": 8}).status_code, 401)
+        self.sign_in(self.a)
+        service = self.app.state.v2_farm_context
+        from v2.farm_context.settings import ProviderSettings
+
+        old = service.settings
+        service.settings = ProviderSettings(bhuvan_enabled=False)
+        try:
+            self.assertEqual(self.a.post("/api/v2/farm-context", json={"state_code": 8}).status_code, 403)
+            self.consent(self.a, "government_integration")
+            result = self.a.post(
+                "/api/v2/farm-context", json={"state_code": 8, "district_code": 102, "crop_id": "wheat"}
+            )
+            self.assertEqual(result.status_code, 200, result.text)
+            self.assertEqual(result.json()["location"]["data"]["district_lgd_code"], 102)
+            self.assertEqual(result.headers["Cache-Control"], "no-store")
+            self.assertEqual(
+                self.a.post("/api/v2/farm-context", json={"latitude": 26.9, "longitude": 75.8}).status_code, 403
+            )
+            self.consent(self.a, "location_processing")
+
+            async def withdraw(body):
+                with self.factory.begin() as transaction:
+                    consent = transaction.scalar(
+                        select(Consent).where(
+                            Consent.purpose == "government_integration", Consent.withdrawn_at.is_(None)
+                        )
+                    )
+                    consent.withdrawn_at = utcnow()
+                return result.json()
+
+            with patch.object(service, "build", side_effect=withdraw):
+                self.assertEqual(self.a.post("/api/v2/farm-context", json={"state_code": 8}).status_code, 403)
+            self.a.headers.pop("X-CSRF-Token")
+            self.assertEqual(self.a.post("/api/v2/farm-context", json={"state_code": 8}).status_code, 403)
+        finally:
+            service.settings = old
+
+    def test_private_speech_does_not_contact_provider_without_permission(self):
+        self.sign_in(self.a)
+        caps = self.a.get("/api/v2/speech/capabilities")
+        self.assertEqual(caps.status_code, 200, caps.text)
+        from sarvam_service import LANGUAGES
+
+        self.assertEqual(set(caps.json()["stt_languages"]), set(LANGUAGES))
+        with patch(
+            "v2.speech.transcribe", AsyncMock(return_value={"transcript": "किसान", "language_code": "hi-IN"})
+        ) as provider:
+
+            def request(language="hi-IN"):
+                return self.a.post(
+                    "/api/v2/speech/transcribe",
+                    files={"file": ("fixture.wav", b"fixture", "audio/wav")},
+                    data={"language": language},
+                )
+
+            self.assertEqual(request().status_code, 403)
+            provider.assert_not_awaited()
+            self.consent(self.a, "speech_processing")
+            self.assertEqual(request("unknown-IN").status_code, 422)
+            provider.assert_not_awaited()
+            success = request()
+            self.assertEqual(success.status_code, 200, success.text)
+            self.assertEqual(success.json()["transcript"], "किसान")
+            self.assertEqual(provider.await_count, 1)
+
+            async def withdraw(*args):
+                with self.factory.begin() as transaction:
+                    consent = transaction.scalar(
+                        select(Consent).where(Consent.purpose == "speech_processing", Consent.withdrawn_at.is_(None))
+                    )
+                    consent.withdrawn_at = utcnow()
+                return {"transcript": "private draft"}
+
+            provider.side_effect = withdraw
+            self.assertEqual(request().status_code, 403)
+
+    def test_private_read_aloud_requires_consent_and_rechecks_withdrawal(self):
+        self.sign_in(self.a)
+        payload = {"text": "खेत देखें", "language": "hi"}
+        service = self.app.state.v2_read_aloud
+        with patch.object(service, "synthesize", AsyncMock(return_value={"audios": ["fixture-only"]})) as provider:
+            self.assertEqual(self.a.post("/api/v2/speech/synthesize", json=payload).status_code, 403)
+            provider.assert_not_awaited()
+            self.consent(self.a, "speech_processing")
+            response = self.a.post("/api/v2/speech/synthesize", json=payload)
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.headers["Cache-Control"], "no-store")
+
+            async def withdraw(*args):
+                with self.factory.begin() as transaction:
+                    consent = transaction.scalar(
+                        select(Consent).where(Consent.purpose == "speech_processing", Consent.withdrawn_at.is_(None))
+                    )
+                    consent.withdrawn_at = utcnow()
+                return {"audios": ["private audio"]}
+
+            provider.side_effect = withdraw
+            response = self.a.post("/api/v2/speech/synthesize", json=payload)
+            self.assertEqual(response.status_code, 403)
+            self.assertNotIn("private audio", response.text)
+            self.a.headers.pop("X-CSRF-Token")
+            self.assertEqual(self.a.post("/api/v2/speech/synthesize", json=payload).status_code, 403)
+
+    def test_context_planning_uses_existing_engine_and_rechecks_analysis_permission(self):
+        from main import FarmingInput
+        from simulation_engine import SimulationEngine
+        from test_system_integrity import PARAMS
+        from v2.farm_context.settings import ProviderSettings
+
+        self.sign_in(self.a)
+        service = self.app.state.v2_farm_context
+        old = service.settings
+        service.settings = ProviderSettings(bhuvan_enabled=False)
+        self.app.state.planning_input_model = FarmingInput
+        engine = SimulationEngine()
+        self.app.state.planning_engine = engine
+        body = {"context": {"state_code": 8, "crop_id": "rice"}, "farming_input": PARAMS, "num_simulations": 100}
+        try:
+            self.assertEqual(self.a.post("/api/v2/farm-context/planning", json=body).status_code, 403)
+            for purpose in ("government_integration", "agronomic_analysis"):
+                self.consent(self.a, purpose)
+            result = self.a.post("/api/v2/farm-context/planning", json=body)
+            self.assertEqual(result.status_code, 200, result.text)
+            self.assertIn("contextual_evidence", result.json()["data"]["simulation"]["risk"])
+            self.assertEqual(result.headers["Cache-Control"], "no-store")
+            body["context"]["crop_id"] = "wheat"
+            self.assertEqual(self.a.post("/api/v2/farm-context/planning", json=body).status_code, 422)
+            body["context"]["crop_id"] = "rice"
+            original = engine.run_whatif_simulation
+
+            def withdraw(*args, **kwargs):
+                result = original(*args, **kwargs)
+                with self.factory.begin() as transaction:
+                    record = transaction.scalar(
+                        select(Consent).where(Consent.purpose == "agronomic_analysis", Consent.withdrawn_at.is_(None))
+                    )
+                    record.withdrawn_at = utcnow()
+                return result
+
+            with patch.object(engine, "run_whatif_simulation", side_effect=withdraw):
+                self.assertEqual(self.a.post("/api/v2/farm-context/planning", json=body).status_code, 403)
+        finally:
+            service.settings = old
+            del self.app.state.planning_input_model
+            del self.app.state.planning_engine
+
+    def test_government_link_callback_is_owner_bound_replay_safe_and_revocable(self):
+        quota_clock = patch("v2.limits.time.time", return_value=1791100000)
+        quota_clock.start()
+        self.addCleanup(quota_clock.stop)
+        from urllib.parse import parse_qs, urlsplit
+
+        from test_government_auth import GovernmentAuthContracts
+        from v2.government_auth import CALLBACK, COOKIE, Configuration, MeriPehchaanAdapter
+        from v2.limits import Quotas
+
+        GovernmentAuthContracts.setUpClass()
+        secure_origin = "https://localhost:3000"
+        self.settings.origins.append(secure_origin)
+        self.a.close()
+        self.b.close()
+        self.a = TestClient(self.app, base_url=secure_origin, follow_redirects=False)
+        self.b = TestClient(self.app, base_url=secure_origin, follow_redirects=False)
+        self.a.headers["Origin"] = secure_origin
+        self.b.headers["Origin"] = secure_origin
+        self.sign_in(self.a)
+        self.sign_in(self.b, "+919000000002")
+        storage = {}
+        redis = Mock()
+        redis.set.side_effect = lambda key, value, **kwargs: storage.setdefault(key, value) == value
+        redis.getdel.side_effect = lambda key: storage.pop(key, None)
+        quota = Quotas(self.settings)
+        quota.redis = redis
+        adapter = MeriPehchaanAdapter(
+            self.settings,
+            quota,
+            Configuration(
+                enabled=True,
+                approved=True,
+                client_id="synthetic",
+                client_secret="synthetic",
+                redirect_uri=secure_origin + CALLBACK,
+                issuer="https://fixture.example.test",
+                public_key_pem=GovernmentAuthContracts.public,
+            ),
+        )
+        adapter.exchange = AsyncMock(return_value="1" * 64)
+        old = self.app.state.v2_government_auth
+        self.app.state.v2_government_auth = adapter
+
+        def begin(client, mode="link"):
+            result = client.post("/api/v2/government/auth/start", json={"mode": mode})
+            self.assertEqual(result.status_code, 200, result.text)
+            return parse_qs(urlsplit(result.json()["authorization_url"]).query)["state"][0]
+
+        try:
+            self.assertEqual(self.a.post("/api/v2/government/auth/start", json={"mode": "link"}).status_code, 403)
+            self.consent(self.a, "government_identity")
+            self.consent(self.b, "government_identity")
+            state = begin(self.a)
+            self.b.cookies.set(COOKIE, self.a.cookies.get(COOKIE), path="/api/v2/government/auth")
+            mismatch = self.b.get(CALLBACK, params={"state": state, "code": "synthetic"})
+            self.assertEqual(mismatch.status_code, 403, mismatch.text)
+            adapter.exchange.assert_not_awaited()
+            self.assertEqual(self.a.get(CALLBACK, params={"state": state, "code": "synthetic"}).status_code, 400)
+            state = begin(self.a)
+            cancelled = self.a.get(CALLBACK, params={"state": state, "error": "access_denied"})
+            self.assertEqual(cancelled.status_code, 303)
+            self.assertTrue(cancelled.headers["location"].endswith("government=cancelled"))
+            adapter.exchange.assert_not_awaited()
+            state = begin(self.a)
+            previous = self.a.cookies.get("krishyak_session")
+            success = self.a.get(CALLBACK, params={"state": state, "code": "synthetic"})
+            self.assertEqual(success.status_code, 303, success.text)
+            self.assertNotEqual(self.a.cookies.get("krishyak_session"), previous)
+            me = self.a.get("/api/v2/me").json()
+            self.a.headers["X-CSRF-Token"] = me["csrf_token"]
+            export = self.a.get("/api/v2/me/export").json()
+            self.assertNotIn("1" * 64, json.dumps(export))
+            self.b.cookies.delete(COOKIE, path="/api/v2/government/auth")
+            state = begin(self.b)
+            self.assertEqual(self.b.get(CALLBACK, params={"state": state, "code": "synthetic"}).status_code, 409)
+            self.assertEqual(self.a.post("/api/v2/auth/logout").status_code, 200)
+            state = begin(self.a, "login")
+            self.assertEqual(self.a.get(CALLBACK, params={"state": state, "code": "synthetic"}).status_code, 303)
+            self.a.headers["X-CSRF-Token"] = self.a.get("/api/v2/me").json()["csrf_token"]
+            self.assertEqual(self.a.delete("/api/v2/government/auth/link").status_code, 200)
+            self.assertEqual(self.a.post("/api/v2/auth/logout").status_code, 200)
+            self.assertEqual(self.a.post("/api/v2/government/auth/start", json={"mode": "login"}).status_code, 429)
+            # Start a separate quota window to verify login after unlinking.
+            self.app.state.v2_quotas.local.clear()
+            state = begin(self.a, "login")
+            self.assertEqual(self.a.get(CALLBACK, params={"state": state, "code": "synthetic"}).status_code, 403)
+        finally:
+            self.app.state.v2_government_auth = old
+            self.settings.origins.remove(secure_origin)
 
     def test_otp_replay_wrong_attempt_expired_and_session_rotation(self):
         payload, _ = self.sign_in(self.a)
@@ -375,6 +736,32 @@ class FoundationIntegrationTests(unittest.TestCase):
         first = self.a.put(f"/api/v2/plots/{plot['id']}", json=payload)
         self.assertEqual(first.status_code, 200, first.text)
         self.assertEqual(self.a.put(f"/api/v2/plots/{plot['id']}", json=payload).status_code, 409)
+
+    def test_canonical_crop_identity_persists_and_preserves_replay_and_owner_checks(self):
+        self.sign_in(self.a)
+        self.sign_in(self.b, "+919000000002")
+        _, plot, _ = self.farm_plot(self.a)
+        path = f"/api/v2/plots/{plot['id']}/crop-cycles"
+        body = {
+            "operation_id": str(uuid4()),
+            "crop_id": "tomato",
+            "sowing_date": "2026-09-01",
+            "expected_harvest": "2026-12-01",
+        }
+        first = self.a.post(path, json=body)
+        self.assertEqual(first.status_code, 201, first.text)
+        saved = first.json()
+        self.assertEqual((saved["crop_id"], saved["crop"]), ("tomato", "Tomato"))
+        self.assertEqual(self.a.post(path, json=body).json()["id"], saved["id"])
+        self.assertEqual(self.a.get(path).json()["items"][0]["crop_id"], "tomato")
+        self.assertEqual(self.b.get(path).status_code, 404)
+        changed = {**body, "crop_id": "wheat"}
+        self.assertEqual(self.a.post(path, json=changed).status_code, 409)
+        update = {**body, "crop_id": "blueberry", "revision": 1}
+        response = self.a.put(f"/api/v2/crop-cycles/{saved['id']}", json=update)
+        self.assertEqual(response.status_code, 200, response.text)
+        self.assertEqual(response.json()["crop"], "Blueberry")
+        self.assertEqual(self.a.put(f"/api/v2/crop-cycles/{saved['id']}", json=update).status_code, 409)
 
     def test_idempotency_requires_identical_evidence_and_active_consent(self):
         self.sign_in(self.a)

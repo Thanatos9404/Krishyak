@@ -1,22 +1,29 @@
+# Optional container host for the API. The maintained deployment is Vercel
+# (see docs/v2/DEPLOYMENT.md). This blueprint builds the same tested image as CI
+# (backend/Dockerfile: Python 3.12, non-root, LiteRT classifier). Farmer accounts
+# stay disabled until KRISHYAK_V2_ENABLED and the database, Redis, storage and
+# sign-in settings in backend/.env.example are provided; startup refuses an
+# incomplete deployed configuration instead of running without protections.
 services:
   - type: web
-    name: krishisaarthi-backend
-    runtime: python
-    env: python
-    region: oregon
+    name: krishyak-api
+    runtime: docker
+    region: singapore
     plan: free
     branch: main
     rootDir: backend
-    buildCommand: pip install --upgrade pip && pip install -r requirements.txt
-    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health/live
     envVars:
-      - key: EXTERNAL_API_KEY
-        sync: false
-      - key: PYTHON_VERSION
-        value: 3.11.9
-      - key: CORS_ORIGINS
-        value: http://localhost:3000,http://127.0.0.1:3000,https://krishyak.vercel.app,https://krishisaarthi.vercel.app
       - key: ENVIRONMENT
         value: production
       - key: SECRET_KEY
         generateValue: true
+      - key: CORS_ORIGINS
+        value: https://krishyak.vercel.app
+      - key: KRISHYAK_V2_ENABLED
+        value: "false"
+      - key: DATA_GOV_IN_API_KEY
+        sync: false
+      - key: SARVAM_API_KEY
+        sync: false
