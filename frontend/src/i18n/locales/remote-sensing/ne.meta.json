@@ -1,0 +1,8 @@
+{
+  "provider": "Sarvam",
+  "model": "sarvam-translate:v1",
+  "source_sha256": "8dfc29ca38c213480fc3fb3baa41271b8a47362e3a22642862c082cf33bd42ab",
+  "pack_sha256": "3b4568acbc27b6ea9a2c77facc24c96c6b8830e96ac78ce4c8888db4682bee91",
+  "strings": 116,
+  "review_status": "machine_translated_needs_native_review"
+}

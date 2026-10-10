@@ -1,0 +1,5 @@
+{
+  "version": "india-workspace-1",
+  "preserve": ["Krishyak", "NDVI", "NDMI", "EVI", "Sentinel-2", "SoilGrids", "PM-KISAN", "PMFBY", "e-NAM", "AgriStack", "PostGIS", "Open-Meteo", "Sarvam", "Bhashini", "GeoJSON", "MSP", "OTP", "SMS", "PIN", "INR", "pH", "EC", "₹", "kg", "mm", "°C"],
+  "guidance": "Preserve product/provider/acronym/unit identity. Translate farmer labels and unit explanations. No translated label changes canonical API values. Negation, uncertainty, source limitations, amounts and placeholders require separate QA."
+}

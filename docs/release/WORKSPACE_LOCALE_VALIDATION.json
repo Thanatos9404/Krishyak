@@ -1,0 +1,251 @@
+{
+  "source_sha256": "74989264ab617eae3a8477e62e12f433bfecd2db2202a65b52c1f0e858d85d71",
+  "languages_checked": [
+    "hi",
+    "ur",
+    "gu",
+    "bn",
+    "mr",
+    "kn",
+    "ta",
+    "te",
+    "ml",
+    "pa",
+    "as",
+    "brx",
+    "doi",
+    "ks",
+    "kok",
+    "mai",
+    "mni",
+    "ne",
+    "or",
+    "sa",
+    "sat",
+    "sd"
+  ],
+  "results": [
+    {
+      "language": "hi",
+      "strings": 1980,
+      "bytes": 221501,
+      "script_letter_fraction": 0.9876,
+      "unchanged_english_labels": [],
+      "structural_pass": true,
+      "semantic_approval": "not_established",
+      "native_review": "required"
+    },
+    {
+      "language": "ur",
+      "strings": 1980,
+      "bytes": 174791,
+      "script_letter_fraction": 0.9909,
+      "unchanged_english_labels": [],
+      "structural_pass": true,
+      "semantic_approval": "not_established",
+      "native_review": "required"
+    },
+    {
+      "language": "gu",
+      "strings": 1980,
+      "bytes": 215019,
+      "script_letter_fraction": 0.9851,
+      "unchanged_english_labels": [],
+      "structural_pass": true,
+      "semantic_approval": "not_established",
+      "native_review": "required"
+    },
+    {
+      "language": "bn",
+      "strings": 1980,
+      "bytes": 229748,
+      "script_letter_fraction": 0.9821,
+      "unchanged_english_labels": [],
+      "structural_pass": true,
+      "semantic_approval": "not_established",
+      "native_review": "required"
+    },
+    {
+      "language": "mr",
+      "strings": 1980,
+      "bytes": 218731,
+      "script_letter_fraction": 0.9785,
+      "unchanged_english_labels": [],
+      "structural_pass": true,
+      "semantic_approval": "not_established",
+      "native_review": "required"
+    },
+    {
+      "language": "kn",
+      "strings": 1980,
+      "bytes": 237121,
+      "script_letter_fraction": 0.9866,
+      "unchanged_english_labels": [],
+      "structural_pass": true,
+      "semantic_approval": "not_established",
+      "native_review": "required"
+    },
+    {
+      "language": "ta",
+      "strings": 1980,
+      "bytes": 258454,
+      "script_letter_fraction": 0.9879,
+      "unchanged_english_labels": [],
+      "structural_pass": true,
+      "semantic_approval": "not_established",
+      "native_review": "required"
+    },
+    {
+      "language": "te",
+      "strings": 1980,
+      "bytes": 234902,
+      "script_letter_fraction": 0.985,
+      "unchanged_english_labels": [],
+      "structural_pass": true,
+      "semantic_approval": "not_established",
+      "native_review": "required"
+    },
+    {
+      "language": "ml",
+      "strings": 1980,
+      "bytes": 250962,
+      "script_letter_fraction": 0.9865,
+      "unchanged_english_labels": [],
+      "structural_pass": true,
+      "semantic_approval": "not_established",
+      "native_review": "required"
+    },
+    {
+      "language": "pa",
+      "strings": 1980,
+      "bytes": 219193,
+      "script_letter_fraction": 0.9859,
+      "unchanged_english_labels": [],
+      "structural_pass": true,
+      "semantic_approval": "not_established",
+      "native_review": "required"
+    },
+    {
+      "language": "as",
+      "strings": 1980,
+      "bytes": 224142,
+      "script_letter_fraction": 0.9837,
+      "unchanged_english_labels": [],
+      "structural_pass": true,
+      "semantic_approval": "not_established",
+      "native_review": "required"
+    },
+    {
+      "language": "brx",
+      "strings": 1980,
+      "bytes": 235449,
+      "script_letter_fraction": 0.9886,
+      "unchanged_english_labels": [],
+      "structural_pass": true,
+      "semantic_approval": "not_established",
+      "native_review": "required"
+    },
+    {
+      "language": "doi",
+      "strings": 1980,
+      "bytes": 224476,
+      "script_letter_fraction": 0.99,
+      "unchanged_english_labels": [],
+      "structural_pass": true,
+      "semantic_approval": "not_established",
+      "native_review": "required"
+    },
+    {
+      "language": "ks",
+      "strings": 1980,
+      "bytes": 185962,
+      "script_letter_fraction": 0.9915,
+      "unchanged_english_labels": [],
+      "structural_pass": true,
+      "semantic_approval": "not_established",
+      "native_review": "required"
+    },
+    {
+      "language": "kok",
+      "strings": 1980,
+      "bytes": 217762,
+      "script_letter_fraction": 0.9892,
+      "unchanged_english_labels": [],
+      "structural_pass": true,
+      "semantic_approval": "not_established",
+      "native_review": "required"
+    },
+    {
+      "language": "mai",
+      "strings": 1980,
+      "bytes": 213635,
+      "script_letter_fraction": 0.9879,
+      "unchanged_english_labels": [],
+      "structural_pass": true,
+      "semantic_approval": "not_established",
+      "native_review": "required"
+    },
+    {
+      "language": "mni",
+      "strings": 1980,
+      "bytes": 224616,
+      "script_letter_fraction": 0.9905,
+      "unchanged_english_labels": [],
+      "structural_pass": true,
+      "semantic_approval": "not_established",
+      "native_review": "required"
+    },
+    {
+      "language": "ne",
+      "strings": 1980,
+      "bytes": 227029,
+      "script_letter_fraction": 0.9876,
+      "unchanged_english_labels": [],
+      "structural_pass": true,
+      "semantic_approval": "not_established",
+      "native_review": "required"
+    },
+    {
+      "language": "or",
+      "strings": 1980,
+      "bytes": 233312,
+      "script_letter_fraction": 0.9882,
+      "unchanged_english_labels": [],
+      "structural_pass": true,
+      "semantic_approval": "not_established",
+      "native_review": "required"
+    },
+    {
+      "language": "sa",
+      "strings": 1980,
+      "bytes": 229892,
+      "script_letter_fraction": 0.9869,
+      "unchanged_english_labels": [],
+      "structural_pass": true,
+      "semantic_approval": "not_established",
+      "native_review": "required"
+    },
+    {
+      "language": "sat",
+      "strings": 1980,
+      "bytes": 237289,
+      "script_letter_fraction": 0.9944,
+      "unchanged_english_labels": [],
+      "structural_pass": true,
+      "semantic_approval": "not_established",
+      "native_review": "required"
+    },
+    {
+      "language": "sd",
+      "strings": 1980,
+      "bytes": 168350,
+      "script_letter_fraction": 0.984,
+      "unchanged_english_labels": [],
+      "structural_pass": true,
+      "semantic_approval": "not_established",
+      "native_review": "required"
+    }
+  ],
+  "failures": [],
+  "limits": "Script/placeholder/glossary integrity cannot establish semantic correctness or native usability."
+}

@@ -1,0 +1,38 @@
+{
+  "source": "/krishyak_logo.png",
+  "source_sha256": "b36911ec655eef0096f0772bfbb9f692db0c8cca3df69f78904791df86bf8c14",
+  "source_bytes": 3571981,
+  "method": "Lossless PNG encoding after proportional resizing of user-supplied official logo. Original file unchanged. No generated artwork.",
+  "derivatives": [
+    {
+      "path": "/images/official-logo-32.png",
+      "size": 32,
+      "bytes": 2259,
+      "sha256": "b2f288f0391cba2b7b2e59bd69c499d0f8ce390ca5ef4eeed3bca858363cfa64"
+    },
+    {
+      "path": "/images/official-logo-100.png",
+      "size": 100,
+      "bytes": 13340,
+      "sha256": "d805871caaf6d0f9e00adb22348b5e24008b2d760f6601e75b880478cf6c1023"
+    },
+    {
+      "path": "/images/official-logo-180.png",
+      "size": 180,
+      "bytes": 34643,
+      "sha256": "9231a4157180a75ba36b2722c614992fda83721a5dba9632f4caf538304c7054"
+    },
+    {
+      "path": "/images/official-logo-192.png",
+      "size": 192,
+      "bytes": 38614,
+      "sha256": "53a3127ae3f70a0af8362661a6b539f126a8ab0c5ec3aba8dfea10d3d48c77eb"
+    },
+    {
+      "path": "/images/official-logo-512.png",
+      "size": 512,
+      "bytes": 206826,
+      "sha256": "27159a89948d1e840cba39b99664b4fad0cbefac00fc30ae63b4a3a72f5cd118"
+    }
+  ]
+}

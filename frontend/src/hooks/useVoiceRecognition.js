@@ -1,15 +1,34 @@
-import useVoiceRecognition, { STATUS } from './useSarvamRecognition';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 /**
- * Sarvam recording hook plus the existing reviewable farm-command parser.
- * 
+ * Browser speech recognition plus the reviewable farm-command parser.
+ *
+ * The unauthenticated planning page has no consent-gated server speech
+ * transport, so it only uses the browser's own Web Speech API when the
+ * browser provides one. Every transcript is shown for review before it fills
+ * the form, and manual text entry is always available.
+ *
  * Features:
- * - Graceful degradation when speech recognition unavailable
+ * - Graceful degradation when speech recognition is unavailable
  * - Automatic fallback to manual text input
- * - Provider failures fall back to manual input without automatic paid retries
- * - Support for manual text entry as alternative
+ * - No automatic retries
  * - Works offline via text input mode
  */
+
+export const STATUS = { IDLE: 'idle', LISTENING: 'listening', PROCESSING: 'processing', ERROR: 'error', NO_SUPPORT: 'no_support' };
+
+const browserRecognition = () => (typeof window === 'undefined'
+  ? null
+  : window.SpeechRecognition || window.webkitSpeechRecognition || null);
+
+const RECOGNITION_ERRORS = {
+  'not-allowed': 'microphoneDenied',
+  'service-not-allowed': 'microphoneDenied',
+  'audio-capture': 'noMicrophone',
+  network: 'network',
+  'language-not-supported': 'languageUnavailable',
+  'no-speech': 'noMatch',
+};
 
 const normalizeForSpeechScore = (value = '') => value
   .normalize('NFKC')
@@ -256,5 +275,101 @@ export const parseVoiceCommand = (transcript, localizedTerms = {}) => {
   return params;
 };
 
-export { useVoiceRecognition, STATUS };
+export function useVoiceRecognition({ speechCode = 'en-IN', phraseHints = [], errorMessages = {} } = {}) {
+  const [status, setStatus] = useState(STATUS.IDLE);
+  const [transcript, setTranscript] = useState('');
+  const [confidence, setConfidence] = useState(null);
+  const [error, setError] = useState(null);
+  const [isSupported, setSupported] = useState(() => Boolean(browserRecognition()));
+  const [activeSpeechCode, setActiveSpeechCode] = useState(speechCode);
+  const recognition = useRef(null);
+  const sequence = useRef(0);
+  const options = useRef({ speechCode, phraseHints, errorMessages });
+  options.current = { speechCode, phraseHints, errorMessages };
+
+  const cancel = useCallback(() => {
+    sequence.current += 1;
+    const active = recognition.current;
+    recognition.current = null;
+    if (active) {
+      active.onresult = null; active.onerror = null; active.onend = null;
+      try { active.abort(); } catch { /* Already stopped. */ }
+    }
+  }, []);
+
+  useEffect(() => {
+    setSupported(Boolean(browserRecognition()));
+    cancel();
+    setTranscript(''); setConfidence(null); setError(null);
+    setStatus(STATUS.IDLE);
+    setActiveSpeechCode(speechCode);
+    return cancel;
+  }, [speechCode, cancel]);
+
+  const startListening = useCallback(async () => {
+    const Recognition = browserRecognition();
+    const { speechCode: code, phraseHints: hints, errorMessages: messages } = options.current;
+    const unavailable = messages.notAvailable || 'Speech recognition is not available in this browser. Please type instead.';
+    if (!Recognition) {
+      setSupported(false); setStatus(STATUS.NO_SUPPORT); setError(unavailable);
+      return false;
+    }
+    cancel();
+    const id = sequence.current;
+    const engine = new Recognition();
+    engine.lang = code;
+    engine.continuous = false;
+    engine.interimResults = false;
+    engine.maxAlternatives = 5;
+    engine.onresult = (event) => {
+      if (sequence.current !== id) return;
+      const best = selectBestAlternative(event.results?.[event.results.length - 1], hints);
+      if (!best.transcript) return;
+      setTranscript(best.transcript);
+      // Browsers report 0 when they have no confidence estimate; never invent one.
+      setConfidence(best.confidence > 0 ? best.confidence : null);
+    };
+    engine.onerror = (event) => {
+      if (sequence.current !== id) return;
+      recognition.current = null;
+      setError(messages[RECOGNITION_ERRORS[event.error]] || unavailable);
+      setStatus(STATUS.ERROR);
+    };
+    engine.onend = () => {
+      if (sequence.current !== id) return;
+      recognition.current = null;
+      setStatus((current) => (current === STATUS.ERROR ? current : STATUS.IDLE));
+    };
+    recognition.current = engine;
+    setTranscript(''); setConfidence(null); setError(null);
+    try {
+      engine.start();
+    } catch {
+      cancel();
+      setError(unavailable); setStatus(STATUS.ERROR);
+      return false;
+    }
+    setActiveSpeechCode(code);
+    setStatus(STATUS.LISTENING);
+    return true;
+  }, [cancel]);
+
+  const stopListening = useCallback(() => {
+    const active = recognition.current;
+    if (!active) return;
+    setStatus(STATUS.PROCESSING);
+    try { active.stop(); } catch { cancel(); setStatus(STATUS.IDLE); }
+  }, [cancel]);
+
+  const resetTranscript = useCallback(() => {
+    cancel(); setTranscript(''); setConfidence(null); setError(null); setStatus(STATUS.IDLE);
+  }, [cancel]);
+  const setManualTranscript = useCallback((text) => {
+    cancel(); setTranscript(text); setConfidence(null); setError(null); setStatus(STATUS.IDLE);
+  }, [cancel]);
+
+  return { isListening: status === STATUS.LISTENING, transcript, confidence, activeSpeechCode,
+    error, isSupported, status, startListening, stopListening, resetTranscript, setManualTranscript, STATUS };
+}
+
 export default useVoiceRecognition;

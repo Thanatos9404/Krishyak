@@ -1,0 +1,12 @@
+{
+  "provider": "Sarvam",
+  "model": "provider-managed-document-translation",
+  "method": "document_translation_arabic_script_guidelines",
+  "api": "/translate/document/jobs",
+  "generated_at": "2026-10-09T12:52:23.297914+00:00",
+  "source_sha256": "74989264ab617eae3a8477e62e12f433bfecd2db2202a65b52c1f0e858d85d71",
+  "glossary_sha256": "1cb7a8df2b9cfaa66adae2b4cdd96a6462644012dfbbe009628aab32ca4acbd1",
+  "pack_sha256": "a700999ae74418d841ceceb49e296df4d42c6bcafe15c779bd619b611c4e2522",
+  "strings": 1980,
+  "review_status": "machine_translated_needs_native_review"
+}

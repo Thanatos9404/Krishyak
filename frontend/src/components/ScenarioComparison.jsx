@@ -198,7 +198,7 @@ const ScenarioComparison = ({ comparisonData }) => {
             <div className="flex items-center">
               <p className={`text-xl font-bold ${data.profit >= 0 ? 'text-green-600' : 'text-red-600'
                 }`}>
-                ₹{Math.round(Math.abs(data.profit)).toLocaleString(languageInfo.speechCode)}
+                ₹{Math.round(data.profit).toLocaleString(languageInfo.speechCode)}
               </p>
               {data.profit >= 0 ? (
                 <ArrowUpRight className="w-5 h-5 text-green-600 ml-2" />

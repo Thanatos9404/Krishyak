@@ -1,14 +1,25 @@
 {
   "short_name": "Krishyak",
-  "name": "Krishyak - AI Farm Decision Simulator",
+  "name": "Krishyak Field Intelligence",
   "icons": [
     {
-      "src": "krishyak_logo.png",
-      "type": "image/png"
+      "src": "/images/official-logo-192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/official-logo-512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any"
     }
   ],
-  "start_url": ".",
+  "id": "/app/today",
+  "start_url": "/app/today",
+  "scope": "/",
   "display": "standalone",
-  "theme_color": "#22c55e",
-  "background_color": "#ffffff"
+  "theme_color": "#214b3a",
+  "background_color": "#f7f6f0",
+  "description": "Private farm records and source-aware field context."
 }

@@ -4,19 +4,17 @@ import YieldChart from './YieldChart';
 import RiskGauge from './RiskGauge';
 import RiskScoreGauge from './RiskScoreGauge';
 import WeatherAlertCard from './WeatherAlertCard';
-import PestAlertCard from './PestAlertCard';
 import FertilizerRecommendationCard from './FertilizerRecommendationCard';
-import JAMTrinityVerification from './JAMTrinityVerification';
 import { getRiskInfo } from '../utils/riskHelper';
 import { useTranslation } from '../i18n';
 import { riskInsightKey } from '../utils/localization';
 
-const Dashboard = ({ simulationData, formData, farmer, crops = [] }) => {
+const Dashboard = ({ simulationData, formData }) => {
   const { t, languageInfo } = useTranslation();
   if (!simulationData) {
     return (
       <div className="farm-empty-state">
-        <div className="farm-empty-state__photo" role="img" aria-label={t('landing.photoAlt')} />
+        <div className="farm-empty-state__photo" role="img" aria-label="Green terraced rice fields, an illustrative photograph" />
         <div className="farm-empty-state__copy">
           <div className="mb-6 animate-pulse-soft">
             <Target className="w-10 h-10 text-farm-green-600" />
@@ -155,25 +153,15 @@ const Dashboard = ({ simulationData, formData, farmer, crops = [] }) => {
         </div>
       </div>
 
-      {/* Pest Intelligence Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <PestAlertCard
-          crop={formData?.crop || simulationData?.crop || ''}
-          crops={crops}
-          location={null}
-          state={farmer?.state || null}
-          district={farmer?.district || ''}
-          weather={{}}
-        />
-
         {/* Risk Distribution */}
         <div className="card-farm card-glow p-4 sm:p-8 animate-fade-in">
           <RiskGauge riskData={risk} />
         </div>
+        <YieldChart yieldData={yieldData} />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <YieldChart yieldData={yieldData} />
+      <div className="grid grid-cols-1 gap-6">
         <FertilizerRecommendationCard
           crop={formData?.crop || simulationData?.crop || ''}
           areaHectares={formData?.area_hectares || simulationData?.area || 1}
@@ -214,46 +202,6 @@ const Dashboard = ({ simulationData, formData, farmer, crops = [] }) => {
               </p>
             </div>
           ))}
-        </div>
-      </div>
-
-      {/* JAM Trinity Farmer Verification Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="relative">
-          <JAMTrinityVerification
-            onVerificationComplete={(profile) => {
-              console.log('Farmer profile verified:', profile);
-            }}
-          />
-          <p className="text-xs text-gray-500 mt-3 text-center px-4">
-            {t('jam.demoNotice')}
-          </p>
-        </div>
-
-        {/* Verification Benefits Info */}
-        <div className="card-farm card-glow p-6 animate-fade-in">
-          <h3 className="text-xl font-bold text-gray-800 mb-4 flex items-center">
-            <Shield className="w-6 h-6 text-blue-600 mr-2" />
-            {t('jam.title') || 'Farmer Verification Benefits'}
-          </h3>
-          <div className="space-y-4">
-            <div className="bg-green-50 rounded-xl p-4 border-l-4 border-green-500">
-              <h4 className="font-semibold text-green-800 mb-1 flex items-center gap-2"><Target className="w-4 h-4" /> {t('jam.pmKisanEligibility')}</h4>
-              <p className="text-sm text-green-700">{t('jam.pmKisanBenefit')}</p>
-            </div>
-            <div className="bg-blue-50 rounded-xl p-4 border-l-4 border-blue-500">
-              <h4 className="font-semibold text-blue-800 mb-1 flex items-center gap-2"><DollarSign className="w-4 h-4" /> {t('jam.dbtReady')}</h4>
-              <p className="text-sm text-blue-700">{t('jam.dbtBenefit')}</p>
-            </div>
-            <div className="bg-purple-50 rounded-xl p-4 border-l-4 border-purple-500">
-              <h4 className="font-semibold text-purple-800 mb-1 flex items-center gap-2"><Award className="w-4 h-4" /> {t('jam.schemeMatching')}</h4>
-              <p className="text-sm text-purple-700">{t('jam.schemeBenefit')}</p>
-            </div>
-            <div className="bg-yellow-50 rounded-xl p-4 border-l-4 border-yellow-500">
-              <h4 className="font-semibold text-yellow-800 mb-1 flex items-center gap-2"><Shield className="w-4 h-4" /> {t('jam.privacyProtected')}</h4>
-              <p className="text-sm text-yellow-700">{t('jam.privacyBenefit')}</p>
-            </div>
-          </div>
         </div>
       </div>
     </div>

@@ -1,0 +1,68 @@
+services:
+  db:
+    restart: unless-stopped
+    image: postgis/postgis:17-3.5
+    environment:
+      POSTGRES_DB: krishyak_v2
+      POSTGRES_USER: krishyak
+      POSTGRES_PASSWORD: ${V2_LOCAL_DB_PASSWORD:?Set a local database password}
+    ports:
+      - "127.0.0.1:55432:5432"
+    volumes:
+      - v2-postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U krishyak -d krishyak_v2"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+  redis:
+    restart: unless-stopped
+    image: redis:7-alpine
+    ports:
+      - "127.0.0.1:56379:6379"
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - v2-redis:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+  api:
+    restart: unless-stopped
+    profiles: ["app"]
+    build: ./backend
+    image: krishyak-v2:local
+    env_file: ${V2_ENV_FILE:-.codex-tmp/v2-local.env}
+    environment:
+      V2_DATABASE_URL: postgresql+psycopg://krishyak:${V2_LOCAL_DB_PASSWORD}@db:5432/krishyak_v2
+      V2_REDIS_URL: redis://redis:6379/0
+      V2_STORAGE_ROOT: /app/data/v2-objects
+    ports:
+      - "127.0.0.1:18000:8000"
+    volumes:
+      - v2-photos:/app/data/v2-objects
+    depends_on:
+      db: {condition: service_healthy}
+      redis: {condition: service_healthy}
+  worker:
+    restart: unless-stopped
+    profiles: ["app"]
+    image: krishyak-v2:local
+    env_file: ${V2_ENV_FILE:-.codex-tmp/v2-local.env}
+    environment:
+      V2_DATABASE_URL: postgresql+psycopg://krishyak:${V2_LOCAL_DB_PASSWORD}@db:5432/krishyak_v2
+      V2_REDIS_URL: redis://redis:6379/0
+      V2_STORAGE_ROOT: /app/data/v2-objects
+    command: ["python", "-m", "v2.worker"]
+    volumes:
+      - v2-photos:/app/data/v2-objects
+    depends_on:
+      db: {condition: service_healthy}
+      redis: {condition: service_healthy}
+    healthcheck:
+      disable: true
+volumes:
+  v2-postgres:
+  v2-redis:
+  v2-photos:

@@ -1,13 +1,6 @@
 {
+  "framework": "nextjs",
+  "outputDirectory": ".next",
   "buildCommand": "npm run build",
-  "outputDirectory": "build",
-  "devCommand": "npm start",
-  "installCommand": "npm ci",
-  "framework": "vite",
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
-  ]
+  "installCommand": "npm ci"
 }

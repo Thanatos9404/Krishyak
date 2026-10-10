@@ -37,7 +37,7 @@ const YieldChart = ({ yieldData }) => {
               padding: '12px'
             }}
           />
-          <Legend />
+          <Legend formatter={(label) => <span style={{ color: '#243c30' }}>{label}</span>} />
           <Bar dataKey="Soil" name={t('yieldChart.factors.soil')} fill="#86efac" radius={[8, 8, 0, 0]} />
           <Bar dataKey="Rainfall" name={t('yieldChart.factors.rainfall')} fill="#7dd3fc" radius={[8, 8, 0, 0]} />
           <Bar dataKey="Irrigation" name={t('yieldChart.factors.irrigation')} fill="#60a5fa" radius={[8, 8, 0, 0]} />

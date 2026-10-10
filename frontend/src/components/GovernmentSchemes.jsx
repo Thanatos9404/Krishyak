@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { ExternalLink, CheckCircle, AlertCircle, IndianRupee, FileText, ChevronDown, ChevronUp, Info, Landmark, ShieldAlert } from 'lucide-react';
+import { ExternalLink, CheckCircle, AlertCircle, FileText, ChevronDown, ChevronUp, Info, Landmark, ShieldAlert } from 'lucide-react';
 import schemesData from '../data/governmentSchemes.json';
 import { useTranslation } from '../i18n';
 
@@ -145,7 +145,7 @@ const SchemeCard = ({ scheme, index }) => {
 };
 
 const GovernmentSchemes = ({ formData }) => {
-  const { t, languageInfo } = useTranslation();
+  const { t } = useTranslation();
   const evaluatedSchemes = useMemo(() => {
     if (!formData) return [];
     
@@ -157,7 +157,6 @@ const GovernmentSchemes = ({ formData }) => {
       let missingInfo = [];
       let basisOfMatch = [];
       let matchCategory = hasBasicData ? MATCH_CATEGORIES.LIKELY_ELIGIBLE.id : MATCH_CATEGORIES.MORE_INFO_REQUIRED.id;
-      let potentialBenefit = 0;
 
       if (!hasBasicData) {
         missingInfo.push({ key: 'schemes.notes.enterFarmData' });
@@ -214,16 +213,10 @@ const GovernmentSchemes = ({ formData }) => {
           }
         }
 
-        // 4. Benefit calculations string
-        if (matchCategory !== MATCH_CATEGORIES.INELIGIBLE.id && scheme.benefitAmount > 0) {
-          if (scheme.id === 'organic-farming') {
-            potentialBenefit = scheme.benefitAmount * formData.area_hectares;
-          } else {
-            potentialBenefit = scheme.benefitAmount;
-          }
-        }
       }
 
+      // Area and crop alone cannot establish individual eligibility or approval.
+      if (matchCategory === MATCH_CATEGORIES.LIKELY_ELIGIBLE.id) matchCategory = MATCH_CATEGORIES.NEEDS_VERIFICATION.id;
       const categoryDef = Object.values(MATCH_CATEGORIES).find(c => c.id === matchCategory);
 
       return {
@@ -233,16 +226,10 @@ const GovernmentSchemes = ({ formData }) => {
         basisOfMatch,
         whyMatched,
         missingInfo,
-        potentialBenefit
+        potentialBenefit: 0
       };
     });
   }, [formData, t]);
-
-  const totalBenefits = useMemo(() => {
-    return evaluatedSchemes
-      .filter(s => s.matchCategory === MATCH_CATEGORIES.LIKELY_ELIGIBLE.id || s.matchCategory === MATCH_CATEGORIES.NEEDS_VERIFICATION.id)
-      .reduce((sum, s) => sum + s.potentialBenefit, 0);
-  }, [evaluatedSchemes]);
 
   const categoryCounts = evaluatedSchemes.reduce((acc, s) => {
     acc[s.matchCategory] = (acc[s.matchCategory] || 0) + 1;
@@ -264,11 +251,8 @@ const GovernmentSchemes = ({ formData }) => {
             </p>
           </div>
           <div className="bg-white border-2 border-green-500 text-gray-800 px-6 py-3 rounded-xl shadow-sm">
-            <p className="text-xs font-bold text-green-600 uppercase">{t('schemes.estimatedSupport')}</p>
-            <p className="text-2xl font-black flex items-center">
-              <IndianRupee className="w-5 h-5 mr-1 text-green-600" />
-              {(totalBenefits / 1000).toLocaleString(languageInfo.speechCode, { maximumFractionDigits: 1 })}k
-            </p>
+            <p className="font-bold">Official verification required</p>
+            <p className="text-sm">No personal eligibility, approval or combined financial benefit is established.</p>
           </div>
         </div>
       </div>

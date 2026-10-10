@@ -1,0 +1,22 @@
+{
+  "provider": "Sarvam + Codex",
+  "model": "sarvam-translate:v1",
+  "generated_at": "2026-10-09T12:52:27.635723+00:00",
+  "source_sha256": "74989264ab617eae3a8477e62e12f433bfecd2db2202a65b52c1f0e858d85d71",
+  "pack_sha256": "f01efb7f4a7c15651f260675c21e4302ff4ea81bfd4b20b4131ea7438c558492",
+  "glossary_sha256": "1cb7a8df2b9cfaa66adae2b4cdd96a6462644012dfbbe009628aab32ca4acbd1",
+  "strings": 1980,
+  "review_status": "machine_translated_needs_native_review",
+  "additions": {
+    "provider": "Codex",
+    "method": "model_draft_authored_in_code",
+    "kind": "crop_label_correction",
+    "recorded_at": "2026-10-04T18:14:55.829268+00:00",
+    "review_status": "machine_translated_needs_native_review",
+    "reason": "Different crop identities must have distinct labels. Native-script English loanwords are used where a precise common-name approval is unavailable. These drafts do not establish native semantic approval.",
+    "source_keys": [
+      "Tomato"
+    ],
+    "source_keys_sha256": "17cb10aa8c765c077fbee8b58453a67dc8e21104431dd9041047fb7225fe20b5"
+  }
+}

@@ -1,11 +1,8 @@
 import { act, renderHook, waitFor } from '@testing-library/react';
 import useSarvamRecognition from './useSarvamRecognition';
-import { getSpeechCapabilities, transcribeAudio } from '../api/speechApi';
 
-jest.mock('../api/speechApi', () => ({
-  getSpeechCapabilities: jest.fn(), transcribeAudio: jest.fn(),
-  speechError: (_error, fallback) => fallback,
-}));
+const transcribeAudio = jest.fn();
+const transport = { capabilities: jest.fn(), transcribe: transcribeAudio };
 
 let stopTrack;
 beforeEach(() => {
@@ -24,13 +21,29 @@ beforeEach(() => {
       this.onstop?.();
     }
   };
-  getSpeechCapabilities.mockResolvedValue({ configured: true, stt_languages: ['en', 'hi'] });
+  transport.capabilities.mockResolvedValue({ configured: true, stt_languages: ['en', 'hi'] });
 });
 afterEach(() => { delete global.MediaRecorder; });
 
+test('without an authenticated transport recording is unsupported and no provider is contacted', async () => {
+  const { result } = renderHook(() => useSarvamRecognition());
+  expect(result.current.isSupported).toBe(false);
+  await act(async () => { expect(await result.current.startListening()).toBe(false); });
+  expect(navigator.mediaDevices.getUserMedia).not.toHaveBeenCalled();
+  expect(transport.capabilities).not.toHaveBeenCalled();
+});
+
+test('a provider usage limit shows the localized limit message', async () => {
+  transcribeAudio.mockRejectedValue(Object.assign(new Error('limited'), { status: 429 }));
+  const { result } = renderHook(() => useSarvamRecognition({ transport, errorMessages: { limitReached: 'Limit reached' } }));
+  await act(async () => { await result.current.startListening(); });
+  await act(async () => { result.current.stopListening(); });
+  await waitFor(() => expect(result.current.error).toBe('Limit reached'));
+});
+
 test('records and uploads to Sarvam with the selected language', async () => {
   transcribeAudio.mockResolvedValue({ transcript: 'Rice two hectares', language_code: 'en-IN' });
-  const { result } = renderHook(() => useSarvamRecognition());
+  const { result } = renderHook(() => useSarvamRecognition({ transport }));
   await act(async () => { await result.current.startListening(); });
   expect(result.current.isListening).toBe(true);
   await act(async () => { result.current.stopListening(); });
@@ -43,7 +56,7 @@ test('records and uploads to Sarvam with the selected language', async () => {
 test('closing/resetting cancels an in-flight transcript without updating a new session', async () => {
   let resolve;
   transcribeAudio.mockImplementation(() => new Promise((done) => { resolve = done; }));
-  const { result } = renderHook(() => useSarvamRecognition());
+  const { result } = renderHook(() => useSarvamRecognition({ transport }));
   await act(async () => { await result.current.startListening(); });
   act(() => { result.current.stopListening(); });
   act(() => { result.current.resetTranscript(); });
@@ -55,7 +68,7 @@ test('closing/resetting cancels an in-flight transcript without updating a new s
 test('unmount while permission is pending releases the eventual microphone', async () => {
   let resolve;
   navigator.mediaDevices.getUserMedia.mockImplementation(() => new Promise((done) => { resolve = done; }));
-  const { result, unmount } = renderHook(() => useSarvamRecognition());
+  const { result, unmount } = renderHook(() => useSarvamRecognition({ transport }));
   let started;
   act(() => { started = result.current.startListening(); });
   unmount();
@@ -66,7 +79,7 @@ test('unmount while permission is pending releases the eventual microphone', asy
 
 test('permission denial leaves a usable text fallback and no provider call', async () => {
   navigator.mediaDevices.getUserMedia.mockRejectedValue(Object.assign(new Error(), { name: 'NotAllowedError' }));
-  const { result } = renderHook(() => useSarvamRecognition());
+  const { result } = renderHook(() => useSarvamRecognition({ transport }));
   await act(async () => { await result.current.startListening(); });
   expect(result.current.status).toBe('error');
   act(() => { result.current.setManualTranscript('Rice'); });
@@ -82,7 +95,7 @@ test('a late stop event from a cancelled recording cannot disable the new record
     constructor() { super(); recorders.push(this); }
     stop() { this.state = 'inactive'; }
   };
-  const { result, unmount } = renderHook(() => useSarvamRecognition());
+  const { result, unmount } = renderHook(() => useSarvamRecognition({ transport }));
   try {
     await act(async () => { await result.current.startListening(); });
     act(() => { result.current.resetTranscript(); });

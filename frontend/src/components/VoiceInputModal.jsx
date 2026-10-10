@@ -2,6 +2,8 @@ import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Mic, X, Check, RefreshCw, AlertCircle, Type, MicOff, Square } from 'lucide-react';
 import useVoiceRecognition, { parseVoiceCommand, STATUS } from '../hooks/useVoiceRecognition';
 import { useTranslation } from '../i18n';
+import { useProductLocale } from '../features/product/ProductLocale';
+import { trapDialogFocus } from '../utils/dialogFocus';
 
 const CROP_TRANSLATION_KEYS = {
   Rice: 'rice', Wheat: 'wheat', Maize: 'maize', Cotton: 'cotton', Sugarcane: 'sugarcane',
@@ -30,13 +32,24 @@ const SOIL_TRANSLATION_KEYS = {
  * - Works offline via text input
  */
 const VoiceInputModal = ({ isOpen, onClose, onApply }) => {
-  const { t, languageInfo, speechCode, speechCodes } = useTranslation();
+  const { t, languageInfo, speechCode } = useTranslation();
+  // The privacy notice comes from the workspace pack, which already describes
+  // browser speech processing in every workspace language.
+  const { tx } = useProductLocale();
   const [parsedData, setParsedData] = useState({});
   const [showResults, setShowResults] = useState(false);
   const [inputMode, setInputMode] = useState('voice'); // 'voice' or 'text'
   const [textInput, setTextInput] = useState('');
   const [resultDraft, setResultDraft] = useState('');
   const textInputRef = useRef(null);
+  const dialogRef = useRef(null);
+  useEffect(() => {
+    if (!isOpen) return;
+    const previous = document.activeElement;
+    const overflow = document.body.style.overflow;
+    dialogRef.current?.showModal(); document.body.style.overflow = 'hidden';
+    return () => { document.body.style.overflow = overflow; previous?.focus(); };
+  }, [isOpen]);
 
   const localizedTerms = useMemo(() => ({
     crops: Object.fromEntries(Object.entries(CROP_TRANSLATION_KEYS).map(([name, key]) => [name, t(`crops.${key}`)])),
@@ -56,7 +69,6 @@ const VoiceInputModal = ({ isOpen, onClose, onApply }) => {
   ].filter(Boolean), [localizedTerms]);
 
   const errorMessages = useMemo(() => ({
-    limitReached: t('speech.limitReached'),
     microphoneDenied: t('voiceErrors.microphoneDenied') || t('voice.notSupported'),
     noMicrophone: t('voiceErrors.noMicrophone') || t('voice.notSupported'),
     network: t('voiceErrors.network') || t('voice.notSupported'),
@@ -69,7 +81,7 @@ const VoiceInputModal = ({ isOpen, onClose, onApply }) => {
   const {
     isListening, transcript, error, isSupported, status, startListening,
     stopListening, resetTranscript, setManualTranscript, confidence, activeSpeechCode,
-  } = useVoiceRecognition({ speechCode, speechCodes, phraseHints, errorMessages });
+  } = useVoiceRecognition({ speechCode, phraseHints, errorMessages });
 
   useEffect(() => {
     if (!isOpen) resetTranscript();
@@ -186,8 +198,8 @@ const VoiceInputModal = ({ isOpen, onClose, onApply }) => {
     : '';
 
   return (
-    <div className="fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-4 backdrop-blur-sm" onKeyDown={event => { if (event.key === 'Escape') handleClose(); }}>
-      <div role="dialog" aria-modal="true" aria-label={t('voice.title')} className="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden max-h-[90vh] overflow-y-auto">
+    <dialog ref={dialogRef} className="voice-dialog" aria-label={t('voice.title')} onCancel={handleClose} onKeyDown={trapDialogFocus}>
+      <div className="bg-white rounded-2xl shadow-2xl max-w-lg w-full overflow-hidden max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="bg-green-800 p-5 text-white">
           <div className="flex items-center justify-between">
@@ -254,7 +266,7 @@ const VoiceInputModal = ({ isOpen, onClose, onApply }) => {
                 <>
                   {/* Mic Button */}
                   <div className="flex flex-col items-center py-6">
-                    <p className="mb-4 max-w-sm text-center text-xs text-gray-600">{t('speech.privacyNotice')}</p>
+                    <p className="mb-4 max-w-sm text-center text-xs text-gray-600">{tx("Your browser's speech service processes this recording. Krishyak does not save the audio.")}</p>
                     {isListening ? (
                       <button
                         onClick={handleStop}
@@ -476,7 +488,7 @@ const VoiceInputModal = ({ isOpen, onClose, onApply }) => {
           )}
         </div>
       </div>
-    </div>
+    </dialog>
   );
 };
 

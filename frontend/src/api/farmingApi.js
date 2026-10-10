@@ -64,17 +64,6 @@ export const farmingApi = {
     });
     return response.data;
   },
-
-  // Register farmer and save to CSV
-  registerFarmer: async (farmerData) => {
-    try {
-      const response = await api.post('/register-farmer', farmerData, { timeout: 30000 });
-      return response.data;
-    } catch (error) {
-      // Axios errors contain the submitted farmer profile in config.data.
-      return { success: false, error: 'common.error' };
-    }
-  },
 };
 
 export default farmingApi;

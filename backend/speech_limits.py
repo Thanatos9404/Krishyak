@@ -1,6 +1,10 @@
-"""Persistent per-IP and global quotas for paid speech. No raw IPs or text stored."""
+"""Speech configuration helpers.
+
+positive_env is shared by the v2 speech and read-aloud routes. reserve is the former
+host-local quota for the removed unauthenticated /speech router; it has no runtime
+caller and is kept only because test_private_tts.py patches sarvam_service.reserve.
+"""
 import hashlib
-import asyncio
 import os
 import sqlite3
 import time
@@ -48,38 +52,3 @@ def reserve(request: Request, characters=0):
     except (sqlite3.Error, OSError):
         # Never spend unmetered money if quota storage fails.
         raise HTTPException(503, 'Speech usage controls are temporarily unavailable.') from None
-
-
-class SpeechBodyLimit:
-    """Bound incoming speech bodies before multipart parsing or provider work."""
-    def __init__(self, app):
-        self.app = app
-
-    async def __call__(self, scope, receive, send):
-        if scope['type'] != 'http' or not scope.get('path', '').startswith('/speech/') or scope.get('method') != 'POST':
-            return await self.app(scope, receive, send)
-        from starlette.responses import JSONResponse
-        limit = 32768 if scope.get('path') == '/speech/synthesize' else 7 * 1024 * 1024
-        chunks, size = [], 0
-        while True:
-            try:
-                message = await asyncio.wait_for(receive(), timeout=15)
-            except asyncio.TimeoutError:
-                return await JSONResponse({'detail': 'Speech upload timed out.'}, status_code=408)(scope, receive, send)
-            if message['type'] == 'http.disconnect':
-                return
-            chunk = message.get('body', b'')
-            size += len(chunk)
-            if size > limit:
-                return await JSONResponse({'detail': 'Speech request is too large.'}, status_code=413)(scope, receive, send)
-            chunks.append(chunk)
-            if not message.get('more_body', False):
-                break
-        delivered = False
-        async def bounded_receive():
-            nonlocal delivered
-            if not delivered:
-                delivered = True
-                return {'type': 'http.request', 'body': b''.join(chunks), 'more_body': False}
-            return await receive()
-        return await self.app(scope, bounded_receive, send)

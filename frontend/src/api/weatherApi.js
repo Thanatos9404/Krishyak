@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const getCurrentLocation = () => {
+export const getCurrentLocation = ({ includeAccuracy = false } = {}) => {
   const locationPromise = new Promise((resolve, reject) => {
     if (!navigator.geolocation) {
       reject(new Error('Geolocation not supported'));
@@ -11,7 +11,8 @@ export const getCurrentLocation = () => {
       (position) => {
         resolve({
           lat: position.coords.latitude,
-          lon: position.coords.longitude
+          lon: position.coords.longitude,
+          ...(includeAccuracy ? { accuracy: position.coords.accuracy, detected_at: new Date(position.timestamp || Date.now()).toISOString() } : {})
         });
       },
       (error) => {
@@ -31,11 +32,11 @@ export const getCurrentLocation = () => {
 };
 
 // Reverse geocode to get city/district name
-export const getLocationName = async (lat, lon) => {
+export const getLocationName = async (lat, lon, signal) => {
   try {
     const response = await axios.get(
       `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=10`,
-      { headers: { 'Accept-Language': 'en' }, timeout: 15000 }
+      { headers: { 'Accept-Language': 'en' }, timeout: 15000, signal }
     );
 
     const address = response.data.address;
@@ -46,7 +47,7 @@ export const getLocationName = async (lat, lon) => {
       country: address.country
     };
   } catch (error) {
-    console.error('Reverse geocoding error:', error);
+    console.warn('Reverse geocoding unavailable');
     return null;
   }
 };
@@ -66,12 +67,12 @@ const weatherDescriptions = {
 };
 
 // UTC timestamps make freshness independent of the browser's timezone.
-export const getWeatherForecast = async (lat, lon) => {
+export const getWeatherForecast = async (lat, lon, signal) => {
   if (!inRange(lat,-90,90) || !inRange(lon,-180,180)) return getUnavailableWeatherData();
   try {
     const response = await axios.get(
       `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,weather_code&hourly=temperature_2m,relative_humidity_2m,precipitation&timezone=UTC`,
-      {timeout:15000}
+      {timeout:15000, signal}
     );
     const data = response.data;
     const current = data?.current;

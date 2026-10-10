@@ -1,0 +1,22 @@
+{
+  "provider": "Sarvam + Codex",
+  "model": "sarvam-translate:v1",
+  "generated_at": "2026-10-09T12:52:29.073004+00:00",
+  "source_sha256": "74989264ab617eae3a8477e62e12f433bfecd2db2202a65b52c1f0e858d85d71",
+  "pack_sha256": "89d5ac052892bd0e3eb2396b917375bf48ad44c18fcad0f157825e5724b8a386",
+  "glossary_sha256": "1cb7a8df2b9cfaa66adae2b4cdd96a6462644012dfbbe009628aab32ca4acbd1",
+  "strings": 1980,
+  "review_status": "machine_translated_needs_native_review",
+  "additions": {
+    "provider": "Codex",
+    "method": "model_draft_authored_in_code",
+    "kind": "crop_label_correction",
+    "recorded_at": "2026-10-04T18:14:55.829268+00:00",
+    "review_status": "machine_translated_needs_native_review",
+    "reason": "Different crop identities must have distinct labels. Native-script English loanwords are used where a precise common-name approval is unavailable. These drafts do not establish native semantic approval.",
+    "source_keys": [
+      "Squash"
+    ],
+    "source_keys_sha256": "34f3311c9e02d729ef51b02120f6fd156d96f271f92593e03241b296429da8d2"
+  }
+}

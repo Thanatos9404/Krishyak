@@ -40,7 +40,7 @@ test('clearing the crop clears prior recommendation and schedule', async () => {
 test('a delayed previous crop cannot overwrite any current crop result', async () => {
   const pending = [];
   global.fetch = jest.fn((url, options) => new Promise(resolve => {
-    const crop = options?.body ? JSON.parse(options.body).crop : new URL(url).searchParams.get('crop');
+    const crop = options?.body ? JSON.parse(options.body).crop : new URL(url, 'http://localhost').searchParams.get('crop');
     pending.push({crop, resolve});
   }));
   const { result, rerender } = renderHook(({crop}) => useFertilizerAnalysis(crop), {initialProps:{crop:'Rice'}});

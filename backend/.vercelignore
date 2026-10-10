@@ -18,3 +18,16 @@ requirements-render.txt
 evaluate_plant_disease_model.py
 combine_evaluation_shards.py
 train_model.py
+
+models/active/model.keras
+models/active/*.npz
+test_*.py
+colab_*.py
+build_colab_bundle.py
+finetune_disease_model.py
+evaluate_disease_bundle.py
+prepare_disease_manifest.py
+validate_manifest_runtime.py
+export_disease_runtime.py
+requirements-ml.txt
+requirements-security.txt

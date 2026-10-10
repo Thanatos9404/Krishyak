@@ -5,13 +5,14 @@
       "name": "PM-KISAN",
       "fullName": "Pradhan Mantri Kisan Samman Nidhi",
       "icon": "💰",
-      "description": "Direct income support of ₹6,000/year to farmer families. 21st installment released Nov 2025. Tenant farmers now eligible.",
+      "description": "Income support for landholding farmer families, subject to official exclusions and state/UT verification. Individual eligibility is not established by this catalogue.",
       "benefitAmount": 6000,
       "benefitFrequency": "yearly",
       "eligibility": {
         "requiresLand": true,
         "allCrops": true,
-        "allSoils": true
+        "allSoils": true,
+        "requiresOfficialVerification": true
       },
       "applicationUrl": "https://pmkisan.gov.in/",
       "documents": [
@@ -21,7 +22,9 @@
         "eKYC Completion"
       ],
       "status": "active",
-      "lastUpdated": "November 2025"
+      "lastUpdated": "Official portal reviewed 3 October 2026",
+      "sourceUrl": "https://pmkisan.gov.in/",
+      "catalogueReviewStatus": "Individual eligibility, current rules and benefits require official verification"
     },
     {
       "id": "pmfby",
@@ -57,7 +60,7 @@
         "Crop Insurance App"
       ],
       "status": "active",
-      "enrollmentDeadline": "Rabi: Dec 31, 2025"
+      "catalogueReviewStatus": "Individual eligibility, current rules and benefits require official verification"
     },
     {
       "id": "soil-health-card",
@@ -75,7 +78,8 @@
         "Aadhaar Card",
         "Land Details"
       ],
-      "status": "active"
+      "status": "active",
+      "catalogueReviewStatus": "Individual eligibility, current rules and benefits require official verification"
     },
     {
       "id": "micro-irrigation",
@@ -102,7 +106,8 @@
         "Water Source Proof",
         "Bank Account"
       ],
-      "status": "active"
+      "status": "active",
+      "catalogueReviewStatus": "Individual eligibility, current rules and benefits require official verification"
     },
     {
       "id": "organic-farming",
@@ -123,7 +128,8 @@
         "Cluster Formation",
         "Organic Plan"
       ],
-      "status": "active"
+      "status": "active",
+      "catalogueReviewStatus": "Individual eligibility, current rules and benefits require official verification"
     },
     {
       "id": "kcc",
@@ -144,7 +150,8 @@
         "ID Proof",
         "Passport Photo"
       ],
-      "status": "active"
+      "status": "active",
+      "catalogueReviewStatus": "Individual eligibility, current rules and benefits require official verification"
     },
     {
       "id": "msp",
@@ -176,7 +183,8 @@
         "Produce Quality Certificate"
       ],
       "status": "active",
-      "lastUpdated": "May 2025 (Kharif), Oct 2024 (Rabi)"
+      "lastUpdated": "May 2025 (Kharif), Oct 2024 (Rabi)",
+      "catalogueReviewStatus": "Individual eligibility, current rules and benefits require official verification"
     },
     {
       "id": "smam",
@@ -199,7 +207,8 @@
         "Caste Certificate (if applicable)",
         "Bank Account"
       ],
-      "status": "active"
+      "status": "active",
+      "catalogueReviewStatus": "Individual eligibility, current rules and benefits require official verification"
     },
     {
       "id": "aif",
@@ -221,7 +230,8 @@
         "Land/Lease Documents",
         "Bank Account"
       ],
-      "status": "active"
+      "status": "active",
+      "catalogueReviewStatus": "Individual eligibility, current rules and benefits require official verification"
     },
     {
       "id": "enam",
@@ -240,7 +250,8 @@
         "Bank Account",
         "Mandi Registration"
       ],
-      "status": "active"
+      "status": "active",
+      "catalogueReviewStatus": "Individual eligibility, current rules and benefits require official verification"
     }
   ],
   "metadata": {

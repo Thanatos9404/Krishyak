@@ -145,11 +145,15 @@ class RequestLogger:
     ):
         """Log incoming request"""
         extra_data = extra or {}
+        private = path.startswith('/api/v2')
+        if private:
+            import re
+            path = re.sub(r'[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}', '{id}', path)
         self.logger.info(
             f"Request: {method} {path}",
             extra={
                 "request_id": request_id,
-                "user_ip": user_ip,
+                **({} if private else {"user_ip": user_ip}),
                 "endpoint": path,
                 **extra_data
             }
@@ -164,6 +168,9 @@ class RequestLogger:
     ):
         """Log outgoing response"""
         level = logging.INFO if status_code < 400 else logging.WARNING if status_code < 500 else logging.ERROR
+        if path.startswith('/api/v2'):
+            import re
+            path = re.sub(r'[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}', '{id}', path)
         
         self.logger.log(
             level,

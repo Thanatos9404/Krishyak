@@ -1,0 +1,145 @@
+# India-first release candidate audit
+
+Audit opened 2026-10-03 from the actual PR/API/browser/repository state before RC implementation. This is an incomplete-release baseline, not a completion report.
+
+## Source and release state
+
+- PR [#2](https://github.com/Thanatos9404/Krishyak/pull/2) is OPEN and DRAFT. Its latest head and clean local HEAD are `7425c0cf945a3b54c2cc96fd226aeafc6e2971af`, branch `feat/krishyak-v2-product-experience-seo`, base `feat/krishyak-v2-field-intelligence`.
+- [CI run 37132210505](https://github.com/Thanatos9404/Krishyak/actions/runs/37132210505) completed FAILURE. Backend and container jobs passed; frontend unit/static/build/dependency steps passed; browser step failed; public crawl was consequently skipped.
+- Exact browser result: 25 passed, 3 failed, 2 CDP-only skips, 3 serial successors did not run. All three onboarding/consent flows passed. Current failures are the route audit's unconditional Selected field assertion, including `/institution`, which intentionally omits the farmer field picker. Inspect artifacts and retain role-gate coverage when fixing readiness.
+- Latest independent Windows WebKit run also exposed an offline-flow deadline. A real origin outage can leave `navigator.onLine` true; current observation submission ignores the application's known offline state and attempts a network write before queuing. Investigate and test the actual behavior.
+- Vercel GitHub statuses for both frontend `krishyak` and backend `krishyak-api` report SUCCESS for this head. These statuses do not prove enabled v2 runtime or live providers. Explicit frontend preview from this source is https://krishyak-4eila1uqf-yashvardhan-thanvis-projects.vercel.app . Deployment CLI completed normally.
+- Existing Render service inspected in the authenticated browser: https://krishisaarthi-api.onrender.com ; free Python service, production environment, branch `main`, last deployed commit `03452a1a22b046feb204a4f3c02c38d444b27dc2`. It is not a matching PR #2 staging API. Its dashboard warns of inactivity cold starts of 50 seconds or more. No paid upgrade or production branch change made.
+
+## Runtime and provider configuration
+
+- Local Windows/PowerShell, Node 24 runtime for builds, Python 3.12 venv, Next.js 16.3.8/React 19.3.0. Existing Docker PostGIS/Redis/API/worker environment and isolated local E2E API are preserved.
+- Secret-safe inspection of `backend/.env` found a nonempty Sarvam key. Its value was never printed. V2 database/auth/Redis/S3 bucket, Twilio Verify credentials, CDSE credentials and OGD key are blank there. Local synthetic test configuration exists separately and must not be deployed as real identity.
+- V2 settings currently require Twilio, TLS PostgreSQL, TLS Redis and private S3 for deployed environments; development OTP is prohibited there. Other legitimate OTP adapters need research before changing this contract.
+- Satellite adapter/worker and Open-Meteo context exist. Remote soil integration requires implementation. OGD market/provider and current source validation require re-audit. Existing public speech routes and local speech limiter are not sufficient evidence of authenticated, distributed, production-safe new-workspace speech.
+- Next preview currently defaults to the production API alias unless explicitly configured. Matching isolated staging API, migrations, private storage, distributed limiter and durable worker remain required.
+- Bounded HTTP checks during this audit: local `/api/v2/status` 200 with expressly development identities and disabled satellite; deployed Vercel API `/api/v2/status` and `/health/live` both 404. Render `/health/live` timed out at 12 seconds; that does not establish failure given the dashboard's cold-start behavior.
+
+## Product, localization and performance
+
+- Existing planning has 23 locale modes, including 22 static Sarvam-generated packs (Hindi metadata lists 981 strings, `sarvam-translate:v1`, machine translated and needing native review). New workspace strings remain hardcoded English, `lang=en`, with an explicit fallback banner. Complete core-workspace extraction/generation and all-language QA are required; existing coverage cannot stand in for them.
+- Existing STT/TTS adapters/hooks exist outside the focused farmer workflows. Current capabilities describe Saaras v3 and Bulbul v3; TTS has a smaller language list than STT. Verify official current capabilities and implement secure workflow integration/fallbacks without claiming universal provider coverage.
+- Current public hero provenance explicitly identifies Indonesian rice fields. Replace with licensed Indian photography and hash every derivative. Existing premium design, original content and local script fonts should be retained.
+- Public SSR/SEO implementation covers nine pages, sitemap, robots, canonical/schema, redirects and genuine 404; private/preview noindex is implemented. Local crawl previously passed nine public pages, 20 resources, zero orphans. Re-run against final code and deployed preview.
+- Latest raw local strict 360px anonymous sign-in measurement is **9,411 ms**, at 400ms RTT, 50,000 bytes/sec, 4x CPU. Earlier report's 9,177 ms is superseded. Prior 18-run Lighthouse series is historical; final RC measurements must be repeated, including Hindi and authenticated Today.
+- Existing UI report's 31-pass matrix is historical and is contradicted by current CI. It is not release evidence for this head. Reports will be corrected as each gate is actually verified.
+
+## Required completion evidence
+
+All numbered requirements in the new user brief remain in scope: resilient per-purpose consent; green complete CI; India geography/units/phone/onboarding; all 22 static workspace locales plus English with semantic QA/RTL/offline/fonts; authenticated and budget-protected STT/TTS; real provider provisioning/smokes where legitimate no-spend access exists; satellite/soil/official market/weather caching and provenance; farmer-first legacy-surface replacements; genuinely isolated full-stack staging and restore drill; final multi-engine multilingual accessibility/security/load/performance/live-browser evidence; updated provider/environment/language/security/test/cost reports; logical commits and a pushed clean branch.
+
+External access, compliance, billing, native review and human field trials must be recorded accurately. Missing implementations are not external blockers. No provider is LIVE VERIFIED merely because a mock or deployment job passed. No spending is authorized.
+
+## First correction under test
+
+CI artifacts confirm all three route failures occur on `/institution` with the correct farmer access-denied view present. The corrected audit explicitly waits for that signed-in role gate and verifies absence of privileged cohort creation, while retaining all nine route/width/Axe checks. Observation writes now honor the application's known outage instead of relying solely on browser connectivity. Consent now has separate per-purpose pending/rollback/retry/cancellation state; server-confirmed consents still control processing. Focused tests passed 16 assertions, including the HTTP failure matrix and account switch; full unit/build/browser results will be added after completion.
+
+First correction verification: 326 tests / 47 frontend suites passed; formatting, ESLint and production build passed. The complete production browser run passed **31 tests with two CDP-only skips, zero failures**, including actual-origin WebKit offline reload, queued write, idempotent reconnect and sign-out. Logs: ignored `output/product/rc-consent-unit.log`, `rc-consent-build.log`, `rc-consent-browser.log`. This verifies the consent/offline correction stage, not the entire new India-first RC. Phone/area changes being developed separately were not included in that build. Commit `b518212a64d8a6544cb63a10cc81133f10c9e5ba` is pushed. [CI run 37134635880](https://github.com/Thanatos9404/Krishyak/actions/runs/37134635880) completed **SUCCESS** for backend, frontend-and-browsers and container, including the public crawl. The failed baseline above remains historical evidence.
+
+Authenticated Sarvam billing inspection found existing credits available and auto top-up not configured, with no payment history. No credit purchase, paid plan or auto-recharge was enabled. Static generation and tiny live smokes can use the user's existing credits with bounded usage. Official references: [translation model](https://docs.sarvam.ai/api/getting-started/models/sarvam-translate), [billing](https://docs.sarvam.ai/api/platform/billing), [SoilGrids fair-use](https://rest.isric.org/), [Firebase pricing](https://firebase.google.com/pricing), [MSG91 default OTP widget](https://msg91.com/help/sendotp/how-to-integrate-the-new-login-with-otp-widget/msg91-otp-widget-subscription-). Provider selection is still under investigation; no production OTP claim is made.
+
+India phone/area stage: server and client accept Indian ten-digit or formatted +91 numbers and preserve one canonical E.164 identity; foreign and invalid numbers fail validation. Acre input is the default, hectare input is available, and conversion uses 0.40468564224 hectares per acre. Unchanged field edits preserve the original area. No generic bigha conversion is provided. Frontend: 338 tests / 49 suites, formatting, lint and production build passed. Backend: 235 tests passed with two environment-specific skips. All three engines passed sign-in with spaced +91 numbers, onboarding, permissions, observations, crop-cycle and export flows, with the exact 2.5-acre request asserted as 1.0117141056 hectares. Logs: `rc-india-unit.log`, `rc-india-backend.log`, `rc-india-build.log`, `rc-india-onboarding.log` under ignored `output/product/`. These results do not establish completion of onboarding geography, crop selection, localization or deployment.
+
+
+Crop identity and CI reliability stage (4 October 2026): 62 stable IDs preserve
+legacy provider names, separate record/photo/market coverage, and support native
+crop search in all ten pilot languages. Validation passes 324 frontend tests,
+242 backend tests with two existing environment/provider skips, production
+build/formatting, migration round trip, disposable empty database restore and
+37 complete production browser checks with two existing CDP-only performance
+skips. Hindi/Urdu stable crop form values, unsupported photos, ownership,
+revision controls, offline recovery and accessibility are checked. The public
+crawl passes nine SSR pages and 20 resources with no orphans.
+
+The GitHub startup regression was a stale hard-coded migration version;
+readiness now obtains the release migration head and rejects an old database.
+WebKit offline evidence restoration awaits the existing bounded API timeout.
+The chart legend has readable text and the crop select has an exact associated
+label. [Details and local cleanup runner](CI_RELIABILITY.md).
+
+After full local tests finished, the guarded cleanup removed 70 generated fields
+and 55 empty generated farms from `krishyak_v2_e2e`, preserving other fields.
+The separate public demo contains exactly one `demo field` and makes no account
+writes. Retired demo names were removed from the ten packs without provider
+calls; each pack now contains 830 source strings. These results validate this
+stage; provider provisioning, production promotion and native semantic approval
+remain unverified under the broader release requirements.
+
+
+Official location foundation (4 October 2026): anonymous LGD metadata requests
+supplied a dated snapshot of 36 states/UTs and 784 districts. Public source rows,
+source/published hashes and response receipts are preserved. Profile validation
+stores canonical LGD codes/names, enforces state/district parentage and rejects
+unknown or conflicting identities. Optional tehsil/village remain reported text;
+optional PIN is format-checked without inferring an address. Nullable migration
+`v2_0006` backfills known names from a frozen catalogue without rewriting reports.
+
+Local backend verification passes 250 tests with two existing environment/provider
+skips. Seven catalogue/identity tests cover all 784 parent pairs, real duplicate
+district names, type/PIN constraints and provenance. Actual owner-isolated profile
+updates and exports pass. Six historical PostGIS cases preserve names and leave
+unknown or cross-state codes null. Migration round trip, schema comparison and a
+disposable empty-database dump/restore pass. The local API becomes ready at
+`v2_0006`, confirming the migration-head readiness fix handles the next migration.
+No new local field fixtures were created. Structured selectors and translated
+names in account, market and first-run onboarding remain required; these location
+requirements are expressly incomplete. [Location record](INDIA_LOCATIONS.md).
+
+Location selector stage (4 October 2026): account and market views now share a
+searchable state/UT and parent-scoped district picker. Canonical IDs survive
+language/search changes; changing a state clears its previous district. Legacy
+saved names are preserved until an explicit choice. A real PostGIS regression
+confirms profile PATCH does not erase omitted location, PIN or language fields,
+and an explicit clear remains supported. Market filters retain canonical source
+names while showing translated choices. All ten static pilot packs now contain
+1,654 strings; offline integrity/provenance validation passes. Bounded generation
+used 440 requests and 188,928 characters, within the authorized existing-access
+caps, without new subscriptions or runtime translation requests.
+
+The current frontend suite passes 331 tests across 59 suites, and the backend
+suite passes 250 tests with the same two environment/provider skips. Production
+build, lint and formatting pass. Public crawl passes nine SSR pages and twenty
+resources with zero orphans. The first browser run found a real WebKit Market
+overflow at 320px; constraining grid tracks and selector minimum widths fixes the
+original strict check. The full rerun passes 37 production browser checks with
+the same two CDP-only performance skips and no failures. The guarded runner
+removes all three generated fields and three empty generated farms afterward;
+local private-photo cleanup leaves no queued objects. A dry run confirms zero
+generated fields and zero other fields in the named fixture accounts.
+Ordered first-run onboarding and native-speaker semantic review remain pending;
+the ledger now records that distinction rather than claiming complete onboarding
+from language-selection tests alone.
+
+The prior backend foundation commit `76edd74aa365e46940e1b78db6c0627bcbf064f9`
+passes both exact-head GitHub quality runs: [push](https://github.com/Thanatos9404/Krishyak/actions/runs/37186187719)
+and [pull request](https://github.com/Thanatos9404/Krishyak/actions/runs/37186190454).
+Backend, frontend/browser and container jobs all succeed. In particular, CI API
+startup accepts `v2_0006`, confirming the readiness fix handles a later migration.
+
+Linux browser CI repair (4 October 2026): the location selector revision
+`eae4765e25937838702f25b9431e64c5dd1589f7` passed backend/container jobs but
+failed both frontend/browser jobs on WebKit Market overflow at 320px. Actual
+Ubuntu 24.04 reproduction found native select rendering enlarged document width
+despite constrained element boxes; a saved short state name hid it in repeat
+Windows checks. Explicit select appearance fixes the internal overflow while
+retaining native keyboard/label semantics and RTL placement. The browser audit
+now exercises the empty prompt and longest state/UT name independently of saved
+profile state. All jobs pin the verified Ubuntu 24.04 OS family.
+
+The complete local suite also ran in the official Playwright 1.63.0 Ubuntu 24.04
+container through guarded loopback forwarding: 37 checks pass, two existing
+CDP-only performance checks skip, and none fail. It exposed fractional device/API
+clock skew rejecting a reported observation; validation now permits at most 30
+seconds and preserves reported UTC time. A frozen-clock test rejects larger
+future values and naive times. The browser test requires a successful POST and
+closed dialog, preventing an unsaved textarea from satisfying the saved-entry
+assertion. Backend verification runs 251 tests with two existing skips; frontend
+verification passes 331 tests. Public crawl and static locale validation pass.
+The guarded runner removes three generated fields and three empty farms.
+These are local results; exact-head GitHub results belong in the PR after the
+repair is pushed and both workflows complete. [CI record](CI_RELIABILITY.md).

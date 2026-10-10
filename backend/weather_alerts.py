@@ -10,14 +10,14 @@ Features:
 - Extreme weather warnings
 """
 
-import os
 import logging
-from datetime import datetime, timedelta
-from typing import Optional, List, Dict, Any
-from dataclasses import dataclass, asdict
-from enum import Enum
-import httpx
 import math
+from dataclasses import asdict, dataclass
+from datetime import datetime, timedelta
+from enum import Enum
+from typing import Any, Dict, List, Optional
+
+import httpx
 
 logger = logging.getLogger(__name__)
 
@@ -137,7 +137,6 @@ class WeatherAlertService:
     def __init__(self):
         self.base_url = "https://api.open-meteo.com/v1/forecast"
         self.timeout = 10.0
-        self._cache: Dict[str, Dict] = {}  # Simple in-memory cache
     
     async def get_current_weather(
         self, 
@@ -153,7 +152,7 @@ class WeatherAlertService:
                         "latitude": lat,
                         "longitude": lon,
                         "current": "temperature_2m,relative_humidity_2m,apparent_temperature,wind_speed_10m,weather_code",
-                        "timezone": "auto"
+                        "timezone": "UTC"
                     }
                 )
                 
@@ -173,12 +172,13 @@ class WeatherAlertService:
                         "icon": "02d",
                         "location": "Local",
                         "timestamp": curr.get('time'),
+                        "utc_offset_seconds": data.get("utc_offset_seconds", 0),
                         "source": "Open-Meteo",
                         "source_type": "weather_model_current_conditions"
                     }
                     
         except Exception as e:
-            logger.error(f"Weather API error: {e}")
+            logger.error("Weather provider failed: %s", type(e).__name__)
         
         return None
     
@@ -200,7 +200,7 @@ class WeatherAlertService:
                         "longitude": lon,
                         "hourly": "temperature_2m,relative_humidity_2m,apparent_temperature,precipitation_probability,precipitation,wind_speed_10m,wind_direction_10m,cloud_cover,weather_code",
                         "forecast_days": math.ceil(hours / 24) + 1,
-                        "timezone": "auto"
+                        "timezone": "UTC"
                     }
                 )
                 
@@ -249,7 +249,7 @@ class WeatherAlertService:
                     return forecasts
                     
         except Exception as e:
-            logger.error(f"Forecast API error: {e}")
+            logger.error("Forecast provider failed: %s", type(e).__name__)
         
         return []
 
@@ -297,7 +297,7 @@ class WeatherAlertService:
                 id=f"{alert_id_base}_frost",
                 type=AlertType.FROST,
                 severity=AlertSeverity.WARNING if temp < thresholds["min_temp"] - 5 else AlertSeverity.ADVISORY,
-                title=f"Low Temperature Alert",
+                title="Low Temperature Alert",
                 message=f"Current temperature is {temp:.1f}°C, below optimal {thresholds['min_temp']}°C for {crop}",
                 recommendation="Cover sensitive crops. Delay irrigation to avoid frost damage.",
                 start_time=datetime.now(),
@@ -308,7 +308,7 @@ class WeatherAlertService:
                 id=f"{alert_id_base}_heat",
                 type=AlertType.HEATWAVE,
                 severity=AlertSeverity.WARNING if temp > thresholds["max_temp"] + 5 else AlertSeverity.ADVISORY,
-                title=f"High Temperature Alert",
+                title="High Temperature Alert",
                 message=f"Current temperature is {temp:.1f}°C, above optimal {thresholds['max_temp']}°C for {crop}",
                 recommendation="Increase irrigation frequency. Apply mulch to reduce soil temperature.",
                 start_time=datetime.now(),
@@ -440,55 +440,6 @@ class WeatherAlertService:
         directions = ["N", "NE", "E", "SE", "S", "SW", "W", "NW"]
         idx = round(degrees / 45) % 8
         return directions[idx]
-    
-    def _get_mock_weather(self, lat: float, lon: float) -> Dict[str, Any]:
-        """Deterministic seasonal fallback estimate"""
-        is_north = lat > 23
-        base_temp = 20.0 if is_north else 28.0
-        
-        return {
-            "temperature": base_temp,
-            "feels_like": base_temp + 1.0,
-            "humidity": 65.0,
-            "wind_speed": 10.0,
-            "condition": "Cloudy",
-            "description": "Fallback estimate (Network unavailable)",
-            "icon": "02d",
-            "location": "Regional Fallback",
-            "timestamp": datetime.now().isoformat(),
-            "source": "Static Default"
-        }
-    
-    def _get_mock_forecast(
-        self, 
-        lat: float, 
-        lon: float, 
-        hours: int
-    ) -> List[WeatherForecast]:
-        """Deterministic forecast fallback"""
-        forecasts = []
-        base_time = datetime.now().replace(minute=0, second=0, microsecond=0)
-        
-        for i in range(hours // 3):
-            timestamp = base_time + timedelta(hours=i * 3)
-            # Simple diurnal cycle simulate
-            is_day = 6 <= timestamp.hour <= 18
-            
-            forecasts.append(WeatherForecast(
-                timestamp=timestamp,
-                temperature=28.0 if is_day else 22.0,
-                feels_like=29.0 if is_day else 21.0,
-                humidity=60.0,
-                wind_speed=8.0,
-                wind_direction="E",
-                precipitation=0.0,
-                precipitation_probability=20.0,
-                cloud_cover=50.0,
-                condition="Clouds",
-                icon="02d"
-            ))
-        
-        return forecasts
 
 
 # Global instance
