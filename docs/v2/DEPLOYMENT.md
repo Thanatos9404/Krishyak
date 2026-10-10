@@ -85,6 +85,17 @@ storage, a real sign-in method and a worker trigger secret. Readiness
 heartbeat (dedicated) or that no queued job is stranded for 30 minutes (request
 mode). Liveness alone is not readiness.
 
+## Current environments
+
+| Environment | Frontend | API | Data |
+|---|---|---|---|
+| Production (from `main`, Git-connected) | `krishyak.vercel.app` | `krishyak-api.vercel.app` | Neon production database, Upstash, private Blob; accounts enabled |
+| Staging (protected previews) | `krishyak-staging.vercel.app` | `krishyak-api-staging.vercel.app` | Neon preview database, Upstash, private Blob |
+
+Each environment has its own `V2_AUTH_SECRET`, `CRON_SECRET` and
+`KRISHYAK_PROXY_SECRET`. Merging to `main` redeploys production; schema changes
+still need the migration step below before the new code serves accounts.
+
 ## Release order
 
 1. Provision Postgres (Neon free tier, region Singapore) and Redis (Upstash) from

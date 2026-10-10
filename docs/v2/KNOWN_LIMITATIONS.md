@@ -1,10 +1,15 @@
 # Verified boundaries and external release gates
 
-Updated 9 October 2026. Missing credentials are explicit unavailable states,
+Updated 10 October 2026. Missing credentials are explicit unavailable states,
 never mock successes. Provider usage is budgeted in shared Redis per caller, per
 day and (for metered services) per month, and fails closed if Redis is down.
 
 ## Live-verified integrations
+
+Production (`krishyak.vercel.app`) has farmer accounts enabled since
+10 October 2026 (schema v2_0010 on its own Neon database). The same live
+browser journey as below passed against production with a synthetic account,
+which was then deleted and its photo erased.
 
 Staging (`krishyak-staging.vercel.app` → `krishyak-api-staging.vercel.app`,
 Vercel previews behind deployment protection) runs with farmer accounts
@@ -45,7 +50,7 @@ byte erasure of the photo from Blob storage.
 | Offline | Device cache is not encrypted; photos need a connection; offline logout revokes the server session on reconnection. |
 | Scheduled work | On Vercel, jobs drain inside requests plus a once-daily cron (Hobby plan limit). Cron runs only on production deployments; staging was exercised by calling the protected trigger. |
 | Hosting | Neon, Upstash and Vercel free tiers: Neon compute scales to zero (first request after idle is slower) and has 0.5 GB storage; Upstash free has request limits; Vercel Hobby is for non-commercial use. A commercial launch needs paid plans approved by the operator. |
-| Production | Staging only. `main` and the production deployment still run the earlier release until PR #1/#2 are merged and promoted. |
+| Environments | Production (`krishyak.vercel.app`, `krishyak-api.vercel.app`) and staging have separate Neon databases, Redis keys (separate secrets) and session secrets; both use the same private Blob store under random per-farmer keys. Cron runs daily on production only. |
 | Passkeys | Bound to one hostname; previews use the stable `krishyak-staging.vercel.app` alias. Browsers without WebAuthn see an explanation. |
 | Bigha | Converted only after the farmer confirms the local size; standard sizes are suggested for West Bengal, Assam, Tripura and Rajasthan. |
 | Scale | Bounded local load tests only; no high-volume soak or image-throughput certification. |
