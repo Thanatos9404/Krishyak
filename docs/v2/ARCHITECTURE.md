@@ -6,17 +6,27 @@ autonomous farm control. Public scenario planning remains under `/planning`.
 
 ```mermaid
 flowchart LR
-  UI[React farmer workspace] -->|same origin API| API[FastAPI v2]
+  UI[Next.js 16 farmer workspace PWA] -->|same origin| PX[src/proxy.js, HMAC-signed client header]
   UI --> IDB[Optional owner-scoped IndexedDB]
-  API --> PG[PostgreSQL + PostGIS]
-  API --> Redis[Atomic usage quotas]
-  API --> Objects[Private image storage]
-  API --> OTP[Configured OTP provider]
-  PG --> Worker[Durable evidence worker]
-  Worker --> CDSE[Configured Copernicus adapter]
+  PX --> API[FastAPI v2 on Vercel sin1]
+  API --> PK[WebAuthn passkeys and recovery codes]
+  API --> PG[Neon PostgreSQL + PostGIS]
+  API --> Redis[Upstash Redis usage budgets]
+  API --> Objects[Private Vercel Blob photos, Mumbai]
+  API --> ML[LiteRT EfficientNetV2B0 with abstention]
+  API --> Weather[Open-Meteo 48-hour forecast]
+  API --> Market[AGMARKNET via data.gov.in]
+  API --> Speech[Sarvam speech and read-aloud]
+  Cron[Vercel Cron, daily] --> Worker[Durable evidence worker]
+  API -->|drain in request| Worker
+  PG --> Worker
+  Worker --> CDSE[Copernicus Sentinel-2 L2A]
   Worker --> Objects
-  API --> Weather[Coarse Open-Meteo context]
 ```
+
+The full design, with sequence diagrams for the photo check and satellite jobs,
+the model pipeline and the data model, is in the
+[technical design document](../TECHNICAL_DESIGN.md).
 
 `backend/db` defines persistence; `repositories/ownership.py` scopes resources;
 `v2/auth.py` owns session security; routers own validation and transactions.

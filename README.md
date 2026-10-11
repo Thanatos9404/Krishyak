@@ -8,6 +8,11 @@ phones and patchy networks.
 **Live:** [krishyak.vercel.app](https://krishyak.vercel.app/) (farmer
 workspace at `/app/today`, scenario planning at `/app/more/planning`).
 
+**Start here:** [Technical design document](docs/TECHNICAL_DESIGN.md) ·
+[Sample data and test cases](docs/SAMPLE_DATA_AND_TESTS.md) ·
+[Demo farm, no sign-in](https://krishyak.vercel.app/demo) ·
+[License: Apache-2.0](LICENSE)
+
 **Release status, 10 October 2026:** PR #1 and PR #2 are merged into `main`,
 which deploys production automatically. Farmer accounts are enabled in
 production on Neon Postgres + PostGIS, Upstash Redis and private Vercel Blob
@@ -67,7 +72,10 @@ See [architecture](docs/v2/ARCHITECTURE.md), [API](docs/v2/API.md),
 
 The disease model is `publisher-efficientnet-colab-v1` (EfficientNetV2B0,
 38 classes, 14 crops): 94.39% validation, 93.71% internal test and 57.21% on
-the external PlantDoc set (n=229). It has not been validated on Indian farm
+the external PlantDoc set (n=229). It abstains below 0.75 confidence or on a
+crop mismatch; on the internal test it answers 88.7% of photos at 98.5%
+accuracy, and on PlantDoc it cuts confident wrong answers from 42.8 to 5.2 per
+100 photos. It has not been validated on Indian farm
 photos, so results are presented as a first opinion with expert confirmation.
 Disease care steps and weather advice are conservative drafts without product
 names or doses and need agronomist review. Satellite indices cannot diagnose
@@ -100,6 +108,33 @@ Local development may use synthetic test mobiles with code `123456` (no SMS is
 sent); deployments reject that configuration. Never commit env files, photos,
 tokens or backups.
 
+### Environment variables
+
+Copy `backend/.env.example` to an ignored `.env` (every variable is documented
+there) and `frontend/.env.example` to `frontend/.env.local`. The ones that
+matter most:
+
+| Variable | Where | Required | Purpose |
+|---|---|---|---|
+| `SECRET_KEY` | API | yes | Signing key for legacy endpoints |
+| `CORS_ORIGINS` | API | yes | Exact frontend origins; also the passkey relying parties |
+| `KRISHYAK_V2_ENABLED` | API | for accounts | Turns on the v2 farmer workspace |
+| `V2_DATABASE_URL` (or `DATABASE_URL`) | API | for accounts | PostgreSQL + PostGIS |
+| `V2_REDIS_URL` (or `KV_URL` / `REDIS_URL`) | API | for accounts | Usage budgets and rate limits |
+| `V2_AUTH_SECRET` | API | for accounts | Session secret, 32+ random characters |
+| `V2_STORAGE_PROVIDER`, `BLOB_READ_WRITE_TOKEN` | API | for photos | `local`, `s3` or `vercel_blob` private photo storage |
+| `CRON_SECRET`, `V2_WORKER_MODE` | API | for jobs | Daily worker call and worker mode (`request` or `dedicated`) |
+| `KRISHYAK_PROXY_SECRET` | API and frontend | recommended | HMAC key for the signed client header |
+| `REMOTE_SENSING_ENABLED`, `CDSE_CLIENT_ID`, `CDSE_CLIENT_SECRET` | API | optional | Copernicus Sentinel-2 satellite evidence |
+| `SARVAM_API_KEY` | API | optional | Voice input and read-aloud |
+| `DATA_GOV_IN_API_KEY` | API | optional | AGMARKNET mandi prices |
+| `KRISHYAK_API_ORIGIN` | frontend | yes in production | Where `src/proxy.js` forwards `/api/v2` and `/api/public` |
+
+Without the optional keys the app still runs; the matching screens say the
+source is unavailable instead of inventing data. Production settings are in
+[deployment](docs/v2/DEPLOYMENT.md).
+
+
 ## Verify and operate
 
 - `python -m unittest discover` in `backend/` (PostGIS integration tests need
@@ -129,6 +164,11 @@ tokens or backups.
 - Product and SEO: [UI rebuild](docs/product/UI_REBUILD_REPORT.md),
   [design system](docs/product/DESIGN_SYSTEM.md),
   [SEO report](docs/seo/FINAL_SEO_REPORT.md).
+
+## License
+
+Krishyak is open source under the [Apache License 2.0](LICENSE). See
+[NOTICE](NOTICE) for attribution and third-party data and font licences.
 
 [Public app](https://krishyak.vercel.app/) ·
 [Repository](https://github.com/Thanatos9404/Krishyak)

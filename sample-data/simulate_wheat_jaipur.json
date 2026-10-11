@@ -1,0 +1,19 @@
+{
+  "farming_input": {
+    "crop": "Wheat",
+    "soil_type": "Loamy",
+    "area_hectares": 1.0,
+    "seed_quality": 0.8,
+    "expected_rainfall": 450,
+    "rainfall_delay": 0,
+    "irrigation_frequency": 3,
+    "fertilizer_mix": { "Urea": 120, "DAP": 100, "MOP": 40 },
+    "pest_probability": 0.25,
+    "labour_days": 45,
+    "pest_control_intensity": 0.5,
+    "sale_month": 1,
+    "current_market_price": 2425,
+    "season_months": 5
+  },
+  "num_simulations": 500
+}

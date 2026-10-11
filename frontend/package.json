@@ -2,6 +2,7 @@
   "name": "krishyak-product",
   "version": "2.0.0",
   "private": true,
+  "license": "Apache-2.0",
   "dependencies": {
     "axios": "^1.6.2",
     "lucide-react": "1.51.0",
