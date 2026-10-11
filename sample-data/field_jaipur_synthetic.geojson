@@ -1,0 +1,18 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Synthetic demo field near Chomu, Jaipur district",
+        "crop": "Wheat",
+        "season": "Rabi",
+        "note": "Synthetic boundary for testing. Not a real farm."
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[[75.7200, 27.1600], [75.7230, 27.1600], [75.7230, 27.1625], [75.7200, 27.1625], [75.7200, 27.1600]]]
+      }
+    }
+  ]
+}

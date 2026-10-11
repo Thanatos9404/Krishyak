@@ -1,0 +1,13 @@
+Krishyak
+Copyright 2025-2026 Yashvardhan Thanvi (AMEYOR, Jaipur, India)
+
+This product includes software developed by Yashvardhan Thanvi.
+
+Third-party components keep their own licences. Font and map licences are in
+frontend/public/licenses/ and frontend/public/third-party-maplibre-license.txt;
+JavaScript dependency notices are in frontend/THIRD_PARTY_NOTICES.md. Training
+data comes from the PlantVillage and PlantDoc publisher repositories (PlantDoc:
+CC BY 4.0) at the pinned revisions recorded in datasetused.md. Satellite data: Copernicus Sentinel-2
+(contains modified Copernicus Sentinel data). Weather data: Open-Meteo (CC BY 4.0).
+Website photography is used under the Pexels licence, see
+frontend/public/asset-provenance.json.
