@@ -18,9 +18,7 @@ export function ProductLanguageChooser({ label } = {}) {
   return (
     <>
       <button
-        className={
-          label ? "language-chip more" : "language-picker__trigger"
-        }
+        className={label ? "language-chip more" : "language-picker__trigger"}
         data-testid={label ? undefined : "workspace-language"}
         type="button"
         aria-label={label ? undefined : tx("Select language")}
