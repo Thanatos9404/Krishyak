@@ -57,6 +57,7 @@
     "globals": "^16.5.0",
     "jest": "30.5.1",
     "jest-environment-jsdom": "30.5.1",
+    "krishyak-deepmerge": "file:vendor/deepmerge",
     "lighthouse": "13.5.0",
     "postcss": "^8.4.32",
     "prettier": "^3.9.9",
@@ -68,6 +69,7 @@
   "overrides": {
     "@istanbuljs/load-nyc-config": {
       "js-yaml": "^4.1.0"
-    }
+    },
+    "deepmerge": "$krishyak-deepmerge"
   }
 }
