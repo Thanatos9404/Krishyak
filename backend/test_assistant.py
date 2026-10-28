@@ -7,10 +7,11 @@ from datetime import timedelta
 from unittest.mock import AsyncMock, patch
 from uuid import UUID, uuid4
 
-from db.models import Base, CropCycle, MarketPrice, Observation, utcnow
 from fastapi import FastAPI, HTTPException
 from fastapi.testclient import TestClient
 from sqlalchemy import delete
+
+from db.models import Base, CropCycle, MarketPrice, Observation, utcnow
 from v2.application import install_v2
 from v2.assistant import complete, parse_reply, system_prompt
 from v2.farm_context.models import india_today

@@ -14,14 +14,15 @@ from typing import Literal
 from uuid import UUID
 
 import httpx
-from db.models import CropCycle, ImageAsset, MarketPrice, Observation, utcnow
 from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import Field
+from sqlalchemy import select
+
+from db.models import CropCycle, ImageAsset, MarketPrice, Observation, utcnow
 from repositories.ownership import owned_plot
 from sarvam_service import LANGUAGES
 from security import client_ip
 from speech_limits import positive_env
-from sqlalchemy import select
 
 from .auth import authenticate
 from .crops import BY_ID
