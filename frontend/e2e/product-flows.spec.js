@@ -150,9 +150,7 @@ test("field onboarding, permissions, human update, crop cycle and account export
   await expect(
     page.getByRole("combobox", { name: "Selected field" }),
   ).toHaveValue(/.+/);
-  await page
-    .getByRole("button", { name: "Record an update", exact: true })
-    .click();
+  await page.getByRole("button", { name: /^Note what I saw/ }).click();
   await page
     .getByRole("button", { name: "Something I noticed", exact: true })
     .click();
@@ -571,7 +569,7 @@ test("offline reload, idempotent synchronization and logout clears private recor
   ).toBeChecked();
   await navigation("Home").click();
   await expect(
-    page.getByRole("button", { name: "Record an update", exact: true }),
+    page.getByRole("button", { name: /^Note what I saw/ }),
   ).toBeVisible();
   // Let Today finish loading and storing its offline snapshot before the
   // outage; disconnecting mid-save would test nothing about restoration.
@@ -586,9 +584,7 @@ test("offline reload, idempotent synchronization and logout clears private recor
   await expect(page.getByText(/Saved on this device:/).first()).toBeVisible({
     timeout: 25000,
   });
-  await page
-    .getByRole("button", { name: "Record an update", exact: true })
-    .click();
+  await page.getByRole("button", { name: /^Note what I saw/ }).click();
   await page
     .getByRole("button", { name: "Something I noticed", exact: true })
     .click();
