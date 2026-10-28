@@ -11,6 +11,7 @@ from sqlalchemy import text
 from db.session import make_database
 from security import client_ip, normalize_request_id
 
+from .assistant import router as assistant_router
 from .context import router as context_router
 from .farm_context.router import router as farm_context_router
 from .farm_context.service import FarmContextService
@@ -65,6 +66,7 @@ def install_v2(app, settings=None):
     app.include_router(context_router)
     app.include_router(farm_context_router)
     app.include_router(speech_router)
+    app.include_router(assistant_router)
     app.include_router(pilots_router)
     app.include_router(notifications_router)
 
