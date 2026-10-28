@@ -132,10 +132,19 @@ test("public interactions, keyboard dialog, demo isolation and responsive access
     api = [];
   page.on("pageerror", (error) => errors.push(error.message));
   await page.goto("/");
-  await page.getByRole("button", { name: "A change", exact: true }).click();
+  // The landing page switches language in place and keeps the choice.
+  await page.getByRole("button", { name: "हिन्दी", exact: true }).click();
+  await expect(page.locator("html")).toHaveAttribute("lang", "hi-IN");
+  await expect(page.getByRole("heading", { level: 1 })).not.toHaveText(
+    /Your farming helper/,
+  );
+  await page.getByRole("button", { name: "English", exact: true }).click();
+  await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+    /Your farming helper/,
+  );
   await expect(
-    page.getByRole("heading", { name: "See a change. Understand the source." }),
-  ).toBeVisible();
+    page.getByRole("link", { name: "Sign in", exact: true }),
+  ).toHaveAttribute("href", "/app/today");
   await page.goto("/faq");
   await page
     .getByText("Does a crop photo confirm a disease?", { exact: true })
@@ -228,7 +237,7 @@ test("public interactions, keyboard dialog, demo isolation and responsive access
       violations.push({ path, violations: axe.violations });
   }
   await page.setViewportSize({ width: 390, height: 844 });
-  await page.goto("/");
+  await page.goto("/how-it-works");
   await page
     .getByRole("button", { name: "Open navigation menu", exact: true })
     .click();

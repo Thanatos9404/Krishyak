@@ -84,7 +84,7 @@ test("live passkey sign-up and profile", async () => {
     .check();
   await page.getByRole("button", { name: /Open my farm/ }).click();
   await expect(
-    page.getByRole("heading", { name: "Today on your farm.", exact: true }),
+    page.getByRole("heading", { level: 1, name: /^Namaste, / }),
   ).toBeVisible({ timeout: 30000 });
   csrf = (await (await page.request.get("/api/v2/me")).json()).csrf_token;
   const profile = await api("PATCH", "/api/v2/me", {
@@ -202,4 +202,40 @@ test("market page answers honestly for the farmer's crop and district", async ()
       })
       .first(),
   ).toBeVisible({ timeout: 45000 });
+});
+
+test("voice mode answers a farmer's question from their own records", async () => {
+  test.setTimeout(120000);
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/app/today");
+  await expect(
+    page.getByRole("heading", { level: 1, name: /^Namaste, / }),
+  ).toBeVisible({ timeout: 30000 });
+  await page.screenshot({
+    path: "../output/product/screenshots/staging/home-390.png",
+    fullPage: true,
+  });
+  await page
+    .getByRole("navigation", { name: "Mobile workspace navigation" })
+    .getByRole("button", { name: "Ask Krishyak" })
+    .click();
+  const voice = page.getByRole("dialog", { name: "Ask Krishyak" });
+  await expect(voice).toBeVisible();
+  await voice.getByRole("button", { name: "Allow and start" }).click();
+  await expect(voice.getByRole("button", { name: "Tap to speak" })).toBeVisible(
+    { timeout: 20000 },
+  );
+  await voice.getByRole("button", { name: /Type instead/ }).click();
+  await voice
+    .getByLabel("Type your question")
+    .fill("Will it rain in my field in the next day? Answer briefly.");
+  await voice.getByRole("button", { name: "Send question" }).click();
+  const answer = voice.locator(".voice-turn.assistant p");
+  await expect(answer).toBeVisible({ timeout: 60000 });
+  expect((await answer.innerText()).length).toBeGreaterThan(10);
+  await page.screenshot({
+    path: "../output/product/screenshots/staging/voice-390.png",
+  });
+  await voice.getByRole("button", { name: "Close voice help" }).click();
+  await expect(voice).not.toBeVisible();
 });

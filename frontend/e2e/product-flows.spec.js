@@ -87,7 +87,7 @@ test.beforeAll(async ({ browser }, info) => {
     .getByRole("button", { name: "Verify & continue", exact: true })
     .click();
   await expect(
-    page.getByRole("heading", { name: "Today on your farm.", exact: true }),
+    page.getByRole("heading", { level: 1, name: /^Namaste, / }),
   ).toBeVisible();
 });
 test.afterAll(async () => {
@@ -98,7 +98,7 @@ test.afterAll(async () => {
 test("field onboarding, permissions, human update, crop cycle and account export", async () => {
   const errors = [];
   page.on("pageerror", (error) => errors.push(error.message));
-  await navigation("Farm").click();
+  await navigation("My fields").click();
   await page.getByRole("button", { name: "Add a field", exact: true }).click();
   const dialog = page.getByRole("dialog");
   await expect(dialog).toBeVisible();
@@ -146,7 +146,7 @@ test("field onboarding, permissions, human update, crop cycle and account export
   await expect(
     page.getByText("Your permission choice has been saved.", { exact: true }),
   ).toBeVisible();
-  await navigation("Today").click();
+  await navigation("Home").click();
   await expect(
     page.getByRole("combobox", { name: "Selected field" }),
   ).toHaveValue(/.+/);
@@ -174,7 +174,7 @@ test("field onboarding, permissions, human update, crop cycle and account export
       exact: true,
     }),
   ).toBeVisible();
-  await navigation("Farm").click();
+  await navigation("My fields").click();
   await page
     .getByRole("button", { name: "Add crop cycle", exact: true })
     .click();
@@ -217,7 +217,7 @@ test("mobile controls, nine viewports and workspace accessibility", async () => 
 });
 
 test("revision-aware field edits, completed cycle and reported soil evidence", async () => {
-  await navigation("Farm").click();
+  await navigation("My fields").click();
   await page
     .getByText("Manage farms, field details & crop cycles", { exact: true })
     .click();
@@ -255,7 +255,7 @@ test("revision-aware field edits, completed cycle and reported soil evidence", a
 });
 
 test("crop photo check, plain result, feedback, private download, deletion and official-benefit limits", async () => {
-  await navigation("Scan").click();
+  await navigation("Plant check").click();
   const cropChoice = page.getByRole("combobox", { name: "Crop", exact: true });
   // Only crops the photo model supports are offered; wheat is not one of them.
   await expect(cropChoice.locator('option[value="tomato"]')).toHaveCount(1);
@@ -569,7 +569,7 @@ test("offline reload, idempotent synchronization and logout clears private recor
   await expect(
     page.getByRole("checkbox", { name: /Keep farm records for offline use/ }),
   ).toBeChecked();
-  await navigation("Today").click();
+  await navigation("Home").click();
   await expect(
     page.getByRole("button", { name: "Record an update", exact: true }),
   ).toBeVisible();
@@ -579,7 +579,7 @@ test("offline reload, idempotent synchronization and logout clears private recor
   await disconnected(true);
   await page.reload();
   await expect(
-    page.getByRole("heading", { name: "Today on your farm.", exact: true }),
+    page.getByRole("heading", { level: 1, name: /^Namaste, / }),
   ).toBeVisible();
   // The heading renders before evidence restoration. A real origin outage can
   // take the API's bounded 20 seconds to fail before IndexedDB is read.
