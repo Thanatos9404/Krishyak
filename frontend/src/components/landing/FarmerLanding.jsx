@@ -161,7 +161,7 @@ function LanguageStrip() {
               </button>
             );
           })}
-          <ProductLanguageChooser moreLabel="All languages" />
+          <ProductLanguageChooser label="All languages" />
         </div>
         <p>
           {tx(

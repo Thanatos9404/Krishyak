@@ -4,7 +4,7 @@ import { SUPPORTED_LANGUAGES } from "../../i18n/config";
 import { useProductLocale } from "../../features/product/ProductLocale";
 import { Dialog } from "./Dialog";
 
-export function ProductLanguageChooser({ moreLabel } = {}) {
+export function ProductLanguageChooser({ label } = {}) {
   const { language, info, tx, loading, error, changeLanguage } =
     useProductLocale();
   const [open, setOpen] = useState(false),
@@ -19,11 +19,11 @@ export function ProductLanguageChooser({ moreLabel } = {}) {
     <>
       <button
         className={
-          moreLabel ? "language-chip more" : "language-picker__trigger"
+          label ? "language-chip more" : "language-picker__trigger"
         }
-        data-testid={moreLabel ? undefined : "workspace-language"}
+        data-testid={label ? undefined : "workspace-language"}
         type="button"
-        aria-label={moreLabel ? undefined : tx("Select language")}
+        aria-label={label ? undefined : tx("Select language")}
         aria-haspopup="dialog"
         aria-expanded={open}
         onClick={(event) => {
@@ -34,8 +34,8 @@ export function ProductLanguageChooser({ moreLabel } = {}) {
         }}
       >
         <Globe2 size={19} aria-hidden="true" />
-        {moreLabel ? (
-          <span>{tx(moreLabel)}</span>
+        {label ? (
+          <span>{tx(label)}</span>
         ) : (
           <span lang={info.speechCode}>{info.nativeName}</span>
         )}

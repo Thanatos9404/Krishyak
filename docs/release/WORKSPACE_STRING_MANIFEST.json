@@ -1,6 +1,6 @@
 {
   "extractor": "Babel AST; literals, JSX text, positional template placeholders",
-  "source_strings": 2083,
+  "source_strings": 2084,
   "strings": [
     {
       "source": ". Interval composites may contain several acquisitions; exact contributing dates are not independently verified.",
@@ -1122,6 +1122,17 @@
           "file": "src/features/product/DemoApp.jsx",
           "line": 134,
           "kind": "jsx"
+        }
+      ]
+    },
+    {
+      "source": "All languages",
+      "sha256": "acce3d0e30f951f65b8f58ecc8aff5ca409068626f183de4b7e789117ef591e9",
+      "references": [
+        {
+          "file": "src/components/landing/FarmerLanding.jsx",
+          "line": 164,
+          "kind": "literal"
         }
       ]
     },

@@ -1,10 +1,10 @@
 {
   "provider": "Sarvam",
   "model": "sarvam-translate:v1",
-  "generated_at": "2026-10-28T11:45:12.380382+00:00",
-  "source_sha256": "90a9e7aee63a13a0e83f6f9ec12a0eb771a7b2b9727cd663a0568881b15e0da4",
-  "pack_sha256": "0129cde6e519674861c6d430bc36102165d6a01cf95685ff8499c111a7f1d80a",
+  "generated_at": "2026-10-28T12:03:45.806277+00:00",
+  "source_sha256": "fc4f3c61ab54eb9072b374a029fbf4c2b88d3e2956d3c8f4ecba84578ba74890",
+  "pack_sha256": "e60e04b0e3c90af2c0d3ff71662169fc942e940e5007ffac6ae46c3452c6d336",
   "glossary_sha256": "1cb7a8df2b9cfaa66adae2b4cdd96a6462644012dfbbe009628aab32ca4acbd1",
-  "strings": 2083,
+  "strings": 2084,
   "review_status": "machine_translated_needs_native_review"
 }
