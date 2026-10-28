@@ -5,8 +5,10 @@ checks, satellite views, local weather, mandi prices, government scheme
 information, planning, voice and 22 Indian languages, built to work on low-end
 phones and patchy networks.
 
-**Live:** [krishyak.vercel.app](https://krishyak.vercel.app/) (farmer
-workspace at `/app/today`, scenario planning at `/app/more/planning`).
+**Live:** [krishyak.vercel.app](https://krishyak.vercel.app/). The landing page
+works in every supported language and leads straight to passkey sign-in; the
+farmer dashboard is at `/app/today` and scenario planning at
+`/app/more/planning`.
 
 **Start here:** [Technical design document](docs/TECHNICAL_DESIGN.md) ·
 [Sample data and test cases](docs/SAMPLE_DATA_AND_TESTS.md) ·
@@ -23,10 +25,20 @@ have not happened yet; see [known limitations](docs/v2/KNOWN_LIMITATIONS.md).
 
 ## What farmers get
 
+- **Voice mode.** A big microphone on every screen (centre of the phone's
+  bottom bar, and on Home). The farmer speaks in their language; Sarvam
+  transcribes it, `sarvam-105b` answers in two or three short sentences using
+  only that farmer's own field, crop, weather, mandi and photo-check records,
+  and the answer is read aloud. Answers never name pesticides or doses and
+  point to the free Kisan Call Centre for anything chemical. Nothing from the
+  conversation is stored. Typing works too.
+- **A simple Home.** Greeting, the voice card, six large tiles (plant check,
+  mandi prices, note what I saw, my fields, government schemes, call the
+  helpline), then weather, price and next steps for the selected field.
 - **Sign-in without SMS.** Passkeys use the phone's fingerprint or screen lock;
   a one-time recovery code (shown once) covers a lost phone, and a family
   member's phone can be added. An optional mobile number is stored unverified.
-- **Today.** Plain weather conclusions for the field (rain, heat, wind and what
+- **Field context on Home.** Plain weather conclusions for the field (rain, heat, wind and what
   they mean for spraying or irrigation), the current crop's nearest mandi price
   against MSP, and next steps. Weather refreshes itself; a field needs only a
   GPS point (rounded to about 1 km), not a drawn boundary.
@@ -126,7 +138,8 @@ matter most:
 | `CRON_SECRET`, `V2_WORKER_MODE` | API | for jobs | Daily worker call and worker mode (`request` or `dedicated`) |
 | `KRISHYAK_PROXY_SECRET` | API and frontend | recommended | HMAC key for the signed client header |
 | `REMOTE_SENSING_ENABLED`, `CDSE_CLIENT_ID`, `CDSE_CLIENT_SECRET` | API | optional | Copernicus Sentinel-2 satellite evidence |
-| `SARVAM_API_KEY` | API | optional | Voice input and read-aloud |
+| `SARVAM_API_KEY` | API | optional | Voice mode answers, voice input and read-aloud |
+| `SARVAM_CHAT_MODEL`, `SARVAM_CHAT_DAILY` | API | optional | Voice-mode model (default `sarvam-105b`) and its global daily question budget (default 3000) |
 | `DATA_GOV_IN_API_KEY` | API | optional | AGMARKNET mandi prices |
 | `KRISHYAK_API_ORIGIN` | frontend | yes in production | Where `src/proxy.js` forwards `/api/v2` and `/api/public` |
 

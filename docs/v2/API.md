@@ -26,6 +26,7 @@ their original paths. All private responses are `Cache-Control: no-store`.
 | Enrollment | `/pilot-enrollments`, `/pilot-enrollments/{id}` |
 | Notices/catalog | `/notifications`, `/notifications/{id}/acknowledge`, `/benefits/catalog` |
 | Private speech | `GET /speech/capabilities`, `POST /speech/transcribe`, `POST /speech/synthesize` |
+| Voice assistant | `POST /assistant/ask` with `question` (≤500 characters), `language`, optional owned `plot_id` and up to six earlier `history` turns. Requires `speech_processing` consent; returns `answer`, one `action` (`scan`, `market`, `weather`, `farm`, `note`, `benefits`, `none`), the record groups it was grounded on and `retention: not_stored`. Limited per farmer (30/hour, 120/day), per IP (10/minute) and globally (`SARVAM_CHAT_DAILY`) |
 
 Mutations require the exact allowed `Origin`, cookies and `X-CSRF-Token` from
 verification/bootstrap. Tokens stay in cookies/memory, never browser storage.

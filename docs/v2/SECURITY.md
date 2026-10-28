@@ -32,6 +32,7 @@ provider is called, across all serverless instances:
 |---|---|
 | Copernicus (satellite) | per account 6/minute and 60/day; global 300/day and 9,000 per 30 days (below the free monthly allowance); preview and catalog calls are charged by provider requests made. Public `/remote-sensing/*` processing routes require a signed-in account when deployed. |
 | Sarvam (speech) | signed-in and consented only; per account, per address and global daily request/second/character budgets |
+| Sarvam (voice assistant) | signed-in and consented only; 30/hour and 120/day per account, 10/minute per address, global `SARVAM_CHAT_DAILY` (default 3,000/day); 500-character questions, six-turn history, 30-second bound, 256 KB response cap; the system prompt forbids chemical names and doses and treats the farmer's words as a question, never as instructions |
 | data.gov.in (mandi) | public prices: 30/minute per address, provider refresh at most every 3 hours per scope, 2,000 provider calls/day |
 | Open-Meteo (weather) | accounts: 6/hour per account, 4,000/day global; public routes: 4,000/day global |
 | Photos | 10/hour per account, 2,000/day global, 9 MB request bound, resized on device |

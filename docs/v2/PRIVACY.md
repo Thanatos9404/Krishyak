@@ -10,7 +10,14 @@ Private plot geometry is sent only to a configured satellite provider for the
 requested purpose. Weather sends a centroid rounded to 0.01 degrees, not a phone
 or polygon. Opening the optional basemap contacts its provider and may reveal
 IP/requested area. Crop uploads are decoded, resized and stripped of EXIF.
-Today does not submit farmer records to a chat or translation model. Optional
+Today does not submit farmer records to a chat or translation model. Voice mode
+does, only after the farmer allows voice help (the `speech_processing`
+consent): the question, up to six earlier turns and a compact summary of that
+farmer's own records (name, state/district/village, the selected field's name
+and area, crop and sowing date, the last 24 hours' stored weather, up to three
+stored mandi quotes and the latest photo-check label) go to Sarvam's
+`sarvam-105b` model in India. No question, answer or audio is stored by
+Krishyak, and withdrawing the consent stops it, including mid-request. Optional
 read-aloud can send selected advice text to a configured speech provider only
 with explicit speech consent. Dictation sends a bounded recording for
 transcription; the farmer reviews the draft before applying it to a form.
