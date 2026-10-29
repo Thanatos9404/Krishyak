@@ -239,3 +239,46 @@ test("voice mode answers a farmer's question from their own records", async () =
   await voice.getByRole("button", { name: "Close voice help" }).click();
   await expect(voice).not.toBeVisible();
 });
+
+test("a spoken farm description fills the form and opens a field report", async () => {
+  test.setTimeout(150000);
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/app/setup");
+  await expect(
+    page.getByRole("heading", { name: "Tell Krishyak about your farm" }),
+  ).toBeVisible({ timeout: 30000 });
+  await page
+    .getByLabel("Or type it")
+    .fill(
+      "main ek kisan hoon aur main ek chhote gaon Dhaulpur se hoon aur mere paas 5 bigha zameen hai, tubewell hai, aur main gehun ki kheti karta hoon. meri mitti sookhi hai.",
+    );
+  await page.getByRole("button", { name: /Fill the form/ }).click();
+  await expect(page.getByLabel("Crop", { exact: true })).toHaveValue("wheat", {
+    timeout: 60000,
+  });
+  await expect(page.getByText(/Dholpur/).first()).toBeVisible();
+  await expect(page.getByLabel("Land unit")).toHaveValue("bigha");
+  await expect(page.getByText(/= 1\.26 hectares/)).toBeVisible();
+  await expect(page.getByLabel("Soil", { exact: true })).not.toHaveValue("");
+  await page.screenshot({
+    path: "../output/product/screenshots/staging/setup-390.png",
+    fullPage: true,
+  });
+  await page
+    .getByRole("button", { name: /Save and see my field report/ })
+    .click();
+  await expect(
+    page.getByRole("heading", { name: "Your field report" }),
+  ).toBeVisible({ timeout: 45000 });
+  await expect(page.getByRole("heading", { name: "Field score" })).toBeVisible({
+    timeout: 45000,
+  });
+  await expect(page.getByText(/quintals/).first()).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: /Government schemes/ }),
+  ).toBeVisible();
+  await page.screenshot({
+    path: "../output/product/screenshots/staging/report-390.png",
+    fullPage: true,
+  });
+});

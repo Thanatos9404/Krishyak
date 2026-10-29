@@ -32,6 +32,26 @@ have not happened yet; see [known limitations](docs/v2/KNOWN_LIMITATIONS.md).
   and the answer is read aloud. Answers never name pesticides or doses and
   point to the free Kisan Call Centre for anything chemical. Nothing from the
   conversation is stored. Typing works too.
+- **Spoken farm setup.** On a new account, Home offers "Tell Krishyak about
+  your farm". The farmer says something like "main Dhaulpur se hoon, mere paas
+  5 bigha zameen hai, gehun ki kheti karta hoon, meri mitti sookhi hai".
+  `sarvam-105b` reads it into a draft, which is checked against fixed lists:
+  district names are matched to the official catalogue (Dhaulpur → Dholpur,
+  Rajasthan), land is converted to hectares (bigha uses the state's standard
+  size, which the farmer confirms), and the crop is matched to the catalogue.
+  The village is located with OpenStreetMap, checked to be inside that
+  district. If soil wasn't mentioned, it is estimated from ISRIC SoilGrids
+  texture near the village, or as a labelled regional guess. The farmer
+  corrects anything before it is saved as their profile, field and crop.
+- **Field report.** Field score, expected harvest with a range, profit or
+  loss at the stored mandi price (or MSP), seed and fertilizer amounts,
+  waterings, weather/pest/price/soil risks, pests active this month, a
+  same-season crop comparison with a "better crop" suggestion when one is
+  clearly more profitable at similar risk, a practical improvement plan, and
+  the schemes worth checking for this field (PM-KISAN, PMFBY with its premium
+  rate, Soil Health Card, KCC, PMKSY and PM-KUSUM for dry or rain-fed land,
+  e-NAM). It can be read aloud. Figures come from the planning engine's
+  heuristics and say so.
 - **A simple Home.** Greeting, the voice card, six large tiles (plant check,
   mandi prices, note what I saw, my fields, government schemes, call the
   helpline), then weather, price and next steps for the selected field.

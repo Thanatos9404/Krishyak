@@ -17,7 +17,11 @@ farmer's own records (name, state/district/village, the selected field's name
 and area, crop and sowing date, the last 24 hours' stored weather, up to three
 stored mandi quotes and the latest photo-check label) go to Sarvam's
 `sarvam-105b` model in India. No question, answer or audio is stored by
-Krishyak, and withdrawing the consent stops it, including mid-request. Optional
+Krishyak, and withdrawing the consent stops it, including mid-request. Spoken farm setup sends the farmer's words to the same Sarvam model to fill a
+draft; with location permission it sends the village, district and state
+names (never the farmer's name) to OpenStreetMap Nominatim, and a point
+rounded to 0.01° to ISRIC SoilGrids. The draft is not stored until the farmer
+saves it. Optional
 read-aloud can send selected advice text to a configured speech provider only
 with explicit speech consent. Dictation sends a bounded recording for
 transcription; the farmer reviews the draft before applying it to a form.
