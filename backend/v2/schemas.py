@@ -125,6 +125,17 @@ class FieldLocation(Input):
         return self
 
 
+class SoilProfile(Input):
+    """What is known about a field's soil and where it came from."""
+
+    soil_type: (
+        Literal["Alluvial", "Black", "Red", "Laterite", "Desert", "Mountain", "Loamy", "Clay", "Sandy"] | None
+    ) = None
+    source: Literal["spoken", "farmer_selected", "soil_map", "state_typical", "soil_test"] | None = None
+    condition: Literal["dry", "normal", "wet"] | None = None
+    seed: Literal["certified", "hybrid", "own_saved"] | None = None
+
+
 class PlotInput(Input):
     operation_id: UUID
     farm_id: UUID
@@ -134,6 +145,7 @@ class PlotInput(Input):
     entered_area_hectares: Number | None = Field(default=None, gt=0, le=500)
     boundary_quality: Literal["manual", "approximate", "farmer_drawn"] = "manual"
     irrigation_type: str | None = Field(default=None, max_length=50)
+    soil_metadata: SoilProfile | None = None
 
     @model_validator(mode="after")
     def valid_location(self):

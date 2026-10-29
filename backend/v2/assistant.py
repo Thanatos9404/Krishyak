@@ -31,7 +31,7 @@ from .schemas import Input
 
 router = APIRouter(prefix="/api/v2/assistant", tags=["Farmer voice assistant"])
 CHAT_URL = "https://api.sarvam.ai/v1/chat/completions"
-ACTIONS = ("scan", "market", "weather", "farm", "note", "benefits", "none")
+ACTIONS = ("scan", "market", "weather", "farm", "report", "note", "benefits", "none")
 INDIA = timezone(timedelta(hours=5, minutes=30))
 NAMES = {
     "en": "English",
@@ -185,7 +185,7 @@ Rules:
 
 Answer with one JSON object and nothing else:
 {{"answer": "<your reply in {name}>", "action": "<one of: {", ".join(ACTIONS)}>"}}
-Choose action "scan" for a sick plant or leaf, "market" for prices or selling, "weather" for rain, heat or wind, "farm" for field or crop details, "note" when the farmer reports something they did or saw, "benefits" for government schemes, otherwise "none".
+Choose action "scan" for a sick plant or leaf, "market" for prices or selling, "weather" for rain, heat or wind, "farm" for field or crop details, "report" for expected harvest, yield, profit, risk or which crop to sow, "note" when the farmer reports something they did or saw, "benefits" for government schemes, otherwise "none".
 
 FACTS (the farmer's own records, may be incomplete):
 {json.dumps(facts, ensure_ascii=False, default=str)}"""

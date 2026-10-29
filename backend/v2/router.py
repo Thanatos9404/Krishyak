@@ -362,7 +362,10 @@ def plots(
 
 def plot_values(body, db, farmer):
     owned_farm(db, farmer.id, body.farm_id)
-    values = body.model_dump(exclude={"revision", "boundary", "approximate_location"})
+    values = body.model_dump(exclude={"revision", "boundary", "approximate_location", "soil_metadata"})
+    # Omitted soil details keep what is stored (new fields start empty).
+    if body.soil_metadata is not None:
+        values["soil_metadata"] = body.soil_metadata.model_dump(exclude_none=True)
     location = body.approximate_location
     if location is not None and body.boundary is None:
         require_consent(db, farmer, "location_processing")
@@ -401,6 +404,9 @@ def create_plot(body: PlotInput, farmer=Depends(current_farmer), db=Depends(data
                 previous = float(previous)
             if key == "boundary" and previous is not None:
                 previous = json.loads(json.dumps(previous))
+            if key == "soil_metadata":
+                previous = previous or None
+                value = {k: v for k, v in value.items() if v is not None} if value else None
             if previous != value:
                 raise HTTPException(409, "Operation ID already used for another field")
         return saved

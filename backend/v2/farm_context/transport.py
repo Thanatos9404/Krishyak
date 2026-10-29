@@ -16,6 +16,7 @@ from .models import Source, now
 LOGGER = logging.getLogger(__name__)
 ENDPOINTS = {
     "nominatim": "https://nominatim.openstreetmap.org/reverse",
+    "nominatim_search": "https://nominatim.openstreetmap.org/search",
     "open_meteo": "https://api.open-meteo.com/v1/forecast",
     "imd": "https://api.imd.gov.in/api/v1/cityforecastloc",
     "soilgrids": "https://rest.isric.org/soilgrids/v2.0/properties/query",
@@ -60,18 +61,20 @@ class Gateway:
                 raise Unavailable()
             self.next_call[provider] = self.clock() + interval
 
-    async def read(self, provider, params, *, xml=False):
+    async def read(self, provider, params, *, xml=False, deadline=9):
         if provider not in ENDPOINTS:
             raise Unavailable()
-        if provider in {"nominatim", "soilgrids"}:
-            await self.pace(provider, 1.1 if provider == "nominatim" else 12.1)
+        if provider in {"nominatim", "nominatim_search", "soilgrids"}:
+            # Both Nominatim routes share one public 1 request/second budget.
+            paced = "soilgrids" if provider == "soilgrids" else "nominatim"
+            await self.pace(paced, 1.1 if paced == "nominatim" else 12.1)
         started = self.clock()
         outcome = "unavailable"
         try:
-            async with asyncio.timeout(9):
+            async with asyncio.timeout(deadline):
                 async with self.request_slots:
                     async with self.client_factory(
-                        timeout=httpx.Timeout(7, connect=3), follow_redirects=False
+                        timeout=httpx.Timeout(deadline - 2, connect=3), follow_redirects=False
                     ) as client:
                         async with client.stream(
                             "GET",
