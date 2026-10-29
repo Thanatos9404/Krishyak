@@ -253,13 +253,17 @@ test("a spoken farm description fills the form and opens a field report", async 
       "main ek kisan hoon aur main ek chhote gaon Dhaulpur se hoon aur mere paas 5 bigha zameen hai, tubewell hai, aur main gehun ki kheti karta hoon. meri mitti sookhi hai.",
     );
   await page.getByRole("button", { name: /Fill the form/ }).click();
-  await expect(page.getByLabel("Crop", { exact: true })).toHaveValue("wheat", {
+  await expect(
+    page.getByRole("combobox", { name: "Crop", exact: true }),
+  ).toHaveValue("wheat", {
     timeout: 60000,
   });
   await expect(page.getByText(/Dholpur/).first()).toBeVisible();
   await expect(page.getByLabel("Land unit")).toHaveValue("bigha");
   await expect(page.getByText(/= 1\.26 hectares/)).toBeVisible();
-  await expect(page.getByLabel("Soil", { exact: true })).not.toHaveValue("");
+  await expect(
+    page.getByRole("combobox", { name: "Soil", exact: true }),
+  ).not.toHaveValue("");
   await page.screenshot({
     path: "../output/product/screenshots/staging/setup-390.png",
     fullPage: true,
