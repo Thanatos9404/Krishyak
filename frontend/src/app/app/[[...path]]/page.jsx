@@ -9,6 +9,8 @@ const ALLOWED = new Set([
   "more/settings",
   "more/planning",
   "more/benefits",
+  "setup",
+  "assessment",
 ]);
 export const metadata = {
   title: "Farm workspace",
