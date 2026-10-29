@@ -246,7 +246,7 @@
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #6c7f73;
+  color: #4d6457;
   text-align: center;
 }
 .hero-bubble {
@@ -904,7 +904,7 @@
 .home-date {
   font-size: 15px;
   font-weight: 600;
-  color: var(--k-green-500);
+  color: var(--k-green-700);
 }
 .voice-hero {
   position: relative;
@@ -1021,31 +1021,30 @@
 }
 .home-tile small {
   font-size: 14px;
-  opacity: 0.85;
 }
 .tone-leaf {
   background: var(--k-leaf-soft);
-  color: var(--k-green-700);
+  color: #17592f;
 }
 .tone-amber {
   background: var(--k-sun-soft);
-  color: var(--k-earth);
+  color: #6e4413;
 }
 .tone-sky {
   background: var(--k-sky-soft);
-  color: var(--k-sky);
+  color: #1b4f80;
 }
 .tone-earth {
   background: var(--k-earth-soft);
-  color: var(--k-earth);
+  color: #6b3c1b;
 }
 .tone-plum {
   background: var(--k-plum-soft);
-  color: var(--k-plum);
+  color: #552f73;
 }
 .tone-brick {
   background: var(--k-brick-soft);
-  color: var(--k-brick);
+  color: #8e2c1c;
 }
 @media (max-width: 800px) {
   .voice-hero {

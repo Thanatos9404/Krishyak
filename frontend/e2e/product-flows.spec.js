@@ -278,7 +278,9 @@ test("crop photo check, plain result, feedback, private download, deletion and o
     }),
   ).toBeVisible({ timeout: 30000 });
   await expect(
-    page.getByRole("link", { name: /Kisan Call Centre/ }),
+    page
+      .locator(".scan-result")
+      .getByRole("link", { name: /Kisan Call Centre/ }),
   ).toHaveAttribute("href", "tel:18001801551");
   await page.getByRole("button", { name: "Not sure", exact: true }).click();
   await expect(page.getByText("Your feedback was saved.")).toBeVisible();
