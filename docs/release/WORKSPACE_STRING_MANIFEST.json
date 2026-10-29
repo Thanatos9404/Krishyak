@@ -1,6 +1,6 @@
 {
   "extractor": "Babel AST; literals, JSX text, positional template placeholders",
-  "source_strings": 2084,
+  "source_strings": 2225,
   "strings": [
     {
       "source": ". Interval composites may contain several acquisitions; exact contributing dates are not independently verified.",
@@ -63,7 +63,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 231,
+          "line": 239,
           "kind": "literal"
         }
       ]
@@ -267,6 +267,28 @@
       ]
     },
     {
+      "source": "{{v0}} could earn about {{v1}} more on this soil this season.",
+      "sha256": "5632a2a6a883e56f0be61efa2c9ed500ccf60992f1ac4dbd2677718c9d757119",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 130,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "{{v0}} could earn about {{v1}} more than {{v2}} on your soil this season, with similar risk. Talk to your Krishi Vigyan Kendra before you switch.",
+      "sha256": "b736cf12d666741fb4b59a343a43e22d8e1ab2d13010273539e0faf248a829dc",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 442,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "{{v0}} crops match your search",
       "sha256": "cbf46cf577e2a51c815a8be51f92781466b93bd1b18374e6190377112be4513a",
       "references": [
@@ -278,12 +300,88 @@
       ]
     },
     {
+      "source": "{{v0}} field",
+      "sha256": "06594b9771d3d1cf243f22e125e5b1828db2748b9d0e1f73c69049859c80a01d",
+      "references": [
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 208,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "{{v0}} is a good choice",
+      "sha256": "a85daecf4e85d9ee8267b674067a58bdde5224d2b106ee891afd289296eefcff",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 437,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "{{v0}} kg",
+      "sha256": "699f3195dbba64afee8d071e1fb00b8d6f48d5b62998eadd6b6ef97a1c1e1a81",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 347,
+          "kind": "literal"
+        },
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 354,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "{{v0}} on {{v1}} hectares of {{v2}} soil, {{v3}} season.",
+      "sha256": "0b83edf4776283fe3b363809729605094fb7e5e37e68f8c522487ae99d49c569",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 217,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "{{v0}} price near you",
       "sha256": "338959c8ccfedd6bcae84db0ee7e0e234510781ec0d3cc2242ec3b5e27531d67",
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 45,
+          "line": 44,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "{{v0}} qtl",
+      "sha256": "0bbe1cd98c462d16405ebca16fa8e3303e921624c577e81f461e8d1bee46cf47",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 482,
+          "kind": "literal"
+        },
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 496,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "{{v0}} quintals",
+      "sha256": "224d73e4f5ca64074fb73e59300dd69ed83ca2f7c720a481bd4eaa05c2c76b2f",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 287,
           "kind": "literal"
         }
       ]
@@ -349,6 +447,17 @@
       ]
     },
     {
+      "source": "{{v0}}% sand, {{v1}}% clay",
+      "sha256": "ba6d57593d161a7d53099f709177dea62c6cb222e882ac91f62d92d1ae285e17",
+      "references": [
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 472,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "% · wind",
       "sha256": "9afdfb57aeca1fc338c84dbbae55dd7f05d68857190936bb896b018942e68ff3",
       "references": [
@@ -392,12 +501,34 @@
       ]
     },
     {
+      "source": "= {{v0}} hectares",
+      "sha256": "c4c04393a81664a14bb6aabc15e24041c03fb4d6be17311da10ae45bb821a0c6",
+      "references": [
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 427,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "₹6,000 a year in three instalments for farm families who own land. Needs eKYC and land records.",
+      "sha256": "ffcc5d2208c691839d065196e1d68cc4a363ef4f7b267e0e50bd800c1f8fcf15",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 28,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "22 Indian languages and English. Text translations are machine generated and await native-speaker review.",
       "sha256": "ec562efe31c6270d84053d05a048c87a96c8fef1e974717137778d1b17802052",
       "references": [
         {
           "file": "src/components/product/ProductLanguageChooser.jsx",
-          "line": 54,
+          "line": 52,
           "kind": "literal"
         }
       ]
@@ -414,12 +545,34 @@
       ]
     },
     {
+      "source": "A better crop for this field?",
+      "sha256": "1e34167dd625f89c3103e3e918a9e0b46a6a4b6723eec4f49b9b00526e8362bb",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 436,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "A farm groups your fields. Give it a name you will recognise.",
       "sha256": "2ef90679fd210e0967f21b884f0f7cd76a09dca33d86d32c06953949e381091e",
       "references": [
         {
           "file": "src/components/product/FarmView.jsx",
           "line": 141,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "A free soil test. It tells exactly how much fertilizer your field needs, so you do not waste money.",
+      "sha256": "3746d3fe761d373472494ab6c8617b27f867f68235d40979a3e34da0bfa5d656",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 38,
           "kind": "literal"
         }
       ]
@@ -590,6 +743,28 @@
       ]
     },
     {
+      "source": "About {{v0}} times this season",
+      "sha256": "8cf7e347907fb9ba48a0f5064772f7dc58e2943e7a990515addd2ee7d7f2ef26",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 361,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "About {{v0}}–{{v1}} kg per hectare",
+      "sha256": "cc7bd712f476afb360e3ee3b592c0bfa904924b7aa463d339034dfd1c616bef0",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 290,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Account and settings",
       "sha256": "1e50ce34d4c68624a7c0ff87c9ac09fac5a919e97bfae76ef3383bc8c87c8ee4",
       "references": [
@@ -693,6 +868,17 @@
       ]
     },
     {
+      "source": "Acre",
+      "sha256": "009d492f0f15654fb60a750b1ae49c4267070d2c1b2edf9a3ab54db71be7cad8",
+      "references": [
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 55,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "acres",
       "sha256": "465a702895f910041f2f5879b778e7a74489155447713f0b93b7d0ecaca42dad",
       "references": [
@@ -737,6 +923,17 @@
         {
           "file": "src/features/farms/InstitutionConsole.jsx",
           "line": 293,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Add",
+      "sha256": "9fd728c66c9a256b121472dabf32a34317aed01d8427d70ec830289cf23a7cc8",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 246,
           "kind": "literal"
         }
       ]
@@ -820,11 +1017,6 @@
           "file": "src/components/product/FarmView.jsx",
           "line": 484,
           "kind": "literal"
-        },
-        {
-          "file": "src/components/product/TodayView.jsx",
-          "line": 192,
-          "kind": "literal"
         }
       ]
     },
@@ -834,7 +1026,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 219,
+          "line": 227,
           "kind": "literal"
         }
       ]
@@ -884,12 +1076,23 @@
       ]
     },
     {
+      "source": "Add your place, land, crop and soil first.",
+      "sha256": "9448f5e3323b80b7e51c1448445d9f1eaa3f4346f0997285fe3e9282f812b72b",
+      "references": [
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 182,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Add your state and district to see nearby mandi prices.",
       "sha256": "9c2025974d48dba678e838e3224f94ea961e43be3502e26bedb2bb6333ca5773",
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 51,
+          "line": 50,
           "kind": "literal"
         }
       ]
@@ -1142,7 +1345,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 56,
+          "line": 55,
           "kind": "literal"
         }
       ]
@@ -1170,6 +1373,17 @@
       ]
     },
     {
+      "source": "Allow and continue",
+      "sha256": "27c49c8d9ef6338ee5b61307a04171d6ba371c4f04f162f428dca5f80f45d459",
+      "references": [
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 277,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Allow and start",
       "sha256": "7b9d2a91ae75e98af61f780658f93dfcf9ca063dfd1163b7ad5893203b191ff8",
       "references": [
@@ -1181,12 +1395,34 @@
       ]
     },
     {
+      "source": "Allow field analysis in Settings to see your field report.",
+      "sha256": "05da9f5893255af9ca0bf0ac5ca281959fb7615f66dfc5efbc4b754b3304525a",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 233,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Allow Krishyak to keep your field notes",
       "sha256": "ef35ccf187446fb1232f0bda8ce9ba4aea73b854d805f4657af20b8c39ad25c7",
       "references": [
         {
           "file": "src/components/product/ActionSheet.jsx",
           "line": 133,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Allow Krishyak to set up your farm",
+      "sha256": "a50a9b707978a472206028ab4275841f8410f26c4a2844552b2a984a6f02e21f",
+      "references": [
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 265,
           "kind": "literal"
         }
       ]
@@ -1241,7 +1477,7 @@
       "references": [
         {
           "file": "src/features/product/useVoiceAssistant.js",
-          "line": 146,
+          "line": 147,
           "kind": "literal"
         }
       ]
@@ -1296,6 +1532,17 @@
         {
           "file": "src/features/product/useSimulation.js",
           "line": 12,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Alluvial (river plain)",
+      "sha256": "5b1a56b682c643332fdf4e3720cbbaf0b46f8fdc9b148bd50d4d6e44e311bc41",
+      "references": [
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 43,
           "kind": "literal"
         }
       ]
@@ -1850,7 +2097,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 96,
+          "line": 95,
           "kind": "literal"
         }
       ]
@@ -2481,6 +2728,17 @@
       ]
     },
     {
+      "source": "Based on weather, pests, price and how well {{v0}} suits your soil ({{v1}}% match).",
+      "sha256": "8208f62ba3e014da699d96922e84b57ab6f7cf8ac6508635036ad168a598a1f7",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 266,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Bastar",
       "sha256": "578ea3fd763e4302d119d5873c42cb60e7cec1f56806e491dc9f89bd635d3a3f",
       "references": [
@@ -2585,7 +2843,7 @@
       "references": [
         {
           "file": "src/features/product/ProductApp.jsx",
-          "line": 114,
+          "line": 127,
           "kind": "literal"
         }
       ]
@@ -2840,6 +3098,11 @@
           "file": "src/components/product/AreaInput.jsx",
           "line": 107,
           "kind": "literal"
+        },
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 56,
+          "kind": "literal"
         }
       ]
     },
@@ -2944,6 +3207,17 @@
           "file": "src/features/product/indiaLocations.json",
           "line": 1,
           "kind": "location-name"
+        }
+      ]
+    },
+    {
+      "source": "Black (kali mitti)",
+      "sha256": "8e0a340c0e2e5344707cf05ff51f05c12105a0f3a7735271f8b58620759bc572",
+      "references": [
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 44,
+          "kind": "literal"
         }
       ]
     },
@@ -3233,7 +3507,7 @@
         },
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 82,
+          "line": 81,
           "kind": "literal"
         }
       ]
@@ -3300,6 +3574,17 @@
         {
           "file": "src/components/product/ScanView.jsx",
           "line": 55,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Cent",
+      "sha256": "45dd0c6183c9cff06ee3cd841b8ff9be8a9eeb9ba7aeee77b6beaf2c656e9920",
+      "references": [
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 59,
           "kind": "literal"
         }
       ]
@@ -3545,6 +3830,17 @@
       ]
     },
     {
+      "source": "Check a sick plant with a photo",
+      "sha256": "9533722061216afe29208e013b356792269cec95573337e0021359f21077d425",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 423,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Check for whiteflies under leaves; use yellow sticky traps to monitor them.",
       "sha256": "bbc41e51f18a2ca2a1e99143042b4d1ec1de2196e28724eca26183cb2c6c69ab",
       "references": [
@@ -3578,12 +3874,34 @@
       ]
     },
     {
+      "source": "Check the field every week for pests and act early.",
+      "sha256": "5686515287b84fa7642c835192c1e0e83dc5c62b832a284004c49cc47540ceba",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 76,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Check the field yourself. This context does not prescribe a fertilizer or pesticide dose.",
       "sha256": "1fd6cf0823ff1be4b2dfc549c6d7896c6fcf3b621f14e689e5cca5cdc825753d",
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 351,
+          "line": 359,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Check the rules on the official website or at your Common Service Centre before applying. Krishyak does not apply for you.",
+      "sha256": "0415e1ffe842b2574efb33e0821373fe59a1e249b2979f5121a690ae0b0122a4",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 553,
           "kind": "literal"
         }
       ]
@@ -3622,12 +3940,23 @@
       ]
     },
     {
+      "source": "Check your details",
+      "sha256": "e64d1d84d778f14547d0df8a3b1e92ea1446e247af973136bda782d76629bf0e",
+      "references": [
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 354,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Checking the account and saved records.",
       "sha256": "121fbe4e60d09523f8f66ea18bb4abd7bf903352f5cdfd75b05c1e10da6f341e",
       "references": [
         {
           "file": "src/features/product/ProductApp.jsx",
-          "line": 77,
+          "line": 87,
           "kind": "literal"
         }
       ]
@@ -4044,6 +4373,11 @@
       "sha256": "d4ad260ee7b87f2b3ab5c1424d9b0c8a12a438ff983290b965f39f476edaa0bd",
       "references": [
         {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 438,
+          "kind": "literal"
+        },
+        {
           "file": "src/components/product/ScanView.jsx",
           "line": 265,
           "kind": "literal"
@@ -4078,12 +4412,23 @@
       "references": [
         {
           "file": "src/components/product/ProductLanguageChooser.jsx",
-          "line": 45,
+          "line": 43,
           "kind": "literal"
         },
         {
           "file": "src/components/landing/FarmerLanding.jsx",
           "line": 145,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Choose your soil",
+      "sha256": "099f8f63e2f1a9e42b3880461905c69f3dc5613bde793da3a8fff17899e44387",
+      "references": [
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 459,
           "kind": "literal"
         }
       ]
@@ -4151,6 +4496,17 @@
           "file": "backend/v2/images.py",
           "line": 83,
           "kind": "server"
+        }
+      ]
+    },
+    {
+      "source": "Clay (chikni mitti)",
+      "sha256": "e4929f6979ad60c710d7cfbd9fef36f90003267973a4757d1deabdb078945eea",
+      "references": [
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 50,
+          "kind": "literal"
         }
       ]
     },
@@ -4495,7 +4851,7 @@
       "references": [
         {
           "file": "src/features/product/ProductApp.jsx",
-          "line": 89,
+          "line": 99,
           "kind": "literal"
         }
       ]
@@ -4638,6 +4994,17 @@
       ]
     },
     {
+      "source": "Could add about {{v0}} to your profit.",
+      "sha256": "ef425af5d3ed2cba626bcfe6dc488296f91b87f0d3e269d35e604418a86bc998",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 514,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Create a new farm",
       "sha256": "5dd6859d3a99cb3491e847c3d77c4d577a9eca17668229129479547285d72087",
       "references": [
@@ -4675,8 +5042,18 @@
       "sha256": "98caf7c43c6f2c35cbc0376c937d27f67edad50c0d3e98dbc451c272c02ce479",
       "references": [
         {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 470,
+          "kind": "literal"
+        },
+        {
           "file": "src/components/product/CropPicker.jsx",
           "line": 35,
+          "kind": "literal"
+        },
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 432,
           "kind": "literal"
         },
         {
@@ -4769,6 +5146,17 @@
       ]
     },
     {
+      "source": "Crop insurance (PMFBY)",
+      "sha256": "e255e6143c49738984fae8ef147019d7b3efb56380e3c7d23eeeb3ea5c3e8b42",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 32,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Crop loss reported",
       "sha256": "0e266bd4f77e179a77dc493c085ee10bb94a8e5eed4648c1d8909c8444e7a59e",
       "references": [
@@ -4813,12 +5201,12 @@
       ]
     },
     {
-      "source": "Crops and area",
-      "sha256": "5cf6079070a6a63e56e87c9066b10b15af8ab2f3c27f79ab5842bc398624b6ca",
+      "source": "Crops compared for this field",
+      "sha256": "ca94ed53c3e5ffb1a4e7812c76c8c7685a998df2b3a140894f5d7b45ce461ae0",
       "references": [
         {
-          "file": "src/components/product/TodayView.jsx",
-          "line": 71,
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 466,
           "kind": "literal"
         }
       ]
@@ -4996,6 +5384,17 @@
           "file": "src/features/product/indiaLocations.json",
           "line": 1,
           "kind": "location-name"
+        }
+      ]
+    },
+    {
+      "source": "DAP",
+      "sha256": "10cd9166882bb6adb94910d622afd0a2182570b66400caa32fd2828eed5b1071",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 73,
+          "kind": "literal"
         }
       ]
     },
@@ -5292,6 +5691,17 @@
         {
           "file": "src/components/product/ActionSheet.jsx",
           "line": 110,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Desert",
+      "sha256": "0c8ffc17468868d41c8d6806089deaafa12da5caa0d0b9c31f0ec438fe12ac7c",
+      "references": [
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 47,
           "kind": "literal"
         }
       ]
@@ -5770,6 +6180,17 @@
       ]
     },
     {
+      "source": "Drip and sprinkler subsidy (PMKSY)",
+      "sha256": "fb3077c520cbd803800f88e422ebfaec708ac429734d756a1ef2d4496ee7ce6b",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 47,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "dS/m",
       "sha256": "0a0285753808222e048eafddee1499bec5d96f1645712d0bbeafdde875eb4c3c",
       "references": [
@@ -5810,6 +6231,17 @@
           "file": "src/features/product/indiaLocations.json",
           "line": 1,
           "kind": "location-name"
+        }
+      ]
+    },
+    {
+      "source": "e-NAM online mandi",
+      "sha256": "3f3d12127cda29b8e8f31380070c8a96398b93fbe67a1dd85129479b5f24a6f3",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 57,
+          "kind": "literal"
         }
       ]
     },
@@ -6340,8 +6772,57 @@
       "sha256": "1fcc759e00c5b31b5e17a2ce2c86b51771f2be34bee0696842bd25c5348cb046",
       "references": [
         {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 285,
+          "kind": "literal"
+        },
+        {
           "file": "src/components/product/FarmView.jsx",
           "line": 270,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Expected harvest is about {{v0}} quintals of {{v1}}.",
+      "sha256": "235c5d243024e1eb9f89a77fe4d60eb5117c9137c285e81a5f04a6401cdf915f",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 117,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Expected loss",
+      "sha256": "2a4ce8ff5b1e621448347c69562ff3ba20fd2c93e7fbb5a9731556c29bf07361",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 303,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Expected profit",
+      "sha256": "324e1237a42b56f4f42857806d0f014c2979f081edfa81fecd61826056806d18",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 304,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Expected profit is about {{v0}}.",
+      "sha256": "eab03fbbcdf741196ad81f2a09043b76cbca5ebd73dd2360cdd4be33b4be4dc0",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 124,
           "kind": "literal"
         }
       ]
@@ -6457,6 +6938,17 @@
       ]
     },
     {
+      "source": "Fair",
+      "sha256": "f7b19afcde965ea4942b878d266f89f8ba9a5a833e60f7f901358a34c1f8710c",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 64,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Fallback",
       "sha256": "325e84939c6410fa2e09372b2b49328fdf22136efbd5ca1d6746667edfb92abc",
       "references": [
@@ -6566,7 +7058,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 149,
+          "line": 148,
           "kind": "literal"
         }
       ]
@@ -6791,7 +7283,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 273,
+          "line": 281,
           "kind": "literal"
         }
       ]
@@ -6852,6 +7344,17 @@
       ]
     },
     {
+      "source": "Field score",
+      "sha256": "cdcdabc1a2e7696073ac146af0bf01a143ae1bcc93ebc2bb40fbb3c1070894ad",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 263,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Field update",
       "sha256": "7f58bde6c07b7f96f3129a7d4ad328e4a653396f98d0e5c664fc3916f5e7628f",
       "references": [
@@ -6902,6 +7405,28 @@
         {
           "file": "src/features/farms/AccountDetails.jsx",
           "line": 155,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Fill the form",
+      "sha256": "a73c8b4c785d1ea10395191be27afcbbfd2a145d159dc0f9b716b13f000ab58b",
+      "references": [
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 335,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Filling in your details… finding your soil can take up to 20 seconds.",
+      "sha256": "e886057f8a9a5d3bfb1cb3bdd59efc2a8c9c7e26c584da4e304faa88e250e01c",
+      "references": [
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 310,
           "kind": "literal"
         }
       ]
@@ -7017,6 +7542,17 @@
       ]
     },
     {
+      "source": "For example: “I am Ramlal from Bari village in Dholpur. I have 5 bigha of land with a tubewell. I grow wheat. My soil is dry.”",
+      "sha256": "df99e0c11ae93cf0397816e7e8cca9ca293cd87b4c44a041b2fa0cee73028a1c",
+      "references": [
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 285,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "For farmers",
       "sha256": "c8e783967b45c46c07c2c8c6f13d51cab93befc8426d47495bc93774c4f0e0ff",
       "references": [
@@ -7115,7 +7651,29 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 83,
+          "line": 82,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "From the soil map for your village",
+      "sha256": "c6f3e077d49d56781ae3046f23b73306b1c78c79b5ec2ab1c1a6ed6e603b4077",
+      "references": [
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 75,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "full-year",
+      "sha256": "9d98f8aaee9d9d3852f39ac85a9262a820e49f1fc258d8888930eb08aa328be4",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 226,
           "kind": "literal"
         }
       ]
@@ -7275,12 +7833,34 @@
       ]
     },
     {
+      "source": "General amounts for your whole field. A soil test can lower your fertilizer cost.",
+      "sha256": "781c1940c8c54a2feedecb89426288c794cd414d4350606a86cfc7b8e5745dab",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 378,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Generated",
       "sha256": "827ec8d9f99d052149cd4fce69d14f57563bd5c972074172777670c36907a5a7",
       "references": [
         {
           "file": "src/components/product/FarmContextCard.jsx",
           "line": 263,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Get a free soil test so you buy only the fertilizer your field needs.",
+      "sha256": "30de2bd930afed2c18426671aa5622e0a9ec3037ebe874304753c9a52dd3c25d",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 78,
           "kind": "literal"
         }
       ]
@@ -7359,17 +7939,6 @@
           "file": "src/components/landing/FarmerLanding.jsx",
           "line": 387,
           "kind": "jsx"
-        }
-      ]
-    },
-    {
-      "source": "Give it a name and an area. You can draw its boundary whenever you are ready.",
-      "sha256": "b641f70697f5fad3c7697d52a8952a9727761e53354a12f0384d7795d4a4dcf0",
-      "references": [
-        {
-          "file": "src/components/product/TodayView.jsx",
-          "line": 188,
-          "kind": "literal"
         }
       ]
     },
@@ -7458,6 +8027,17 @@
           "file": "src/features/product/indiaLocations.json",
           "line": 1,
           "kind": "location-name"
+        }
+      ]
+    },
+    {
+      "source": "Good",
+      "sha256": "c939327ca16dcf97ca32521d8b834bf1de16573d21deda3bb2a337cf403787a6",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 63,
+          "kind": "literal"
         }
       ]
     },
@@ -7608,7 +8188,7 @@
         },
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 75,
+          "line": 74,
           "kind": "literal"
         },
         {
@@ -7618,7 +8198,18 @@
         },
         {
           "file": "src/features/product/useVoiceAssistant.js",
-          "line": 16,
+          "line": 17,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Government schemes for your field",
+      "sha256": "770a0b4e775d99b56974d946384d5d5c3dc107260e639c57af9fef02e003c107",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 528,
           "kind": "literal"
         }
       ]
@@ -7741,6 +8332,17 @@
           "file": "src/features/product/indiaLocations.json",
           "line": 1,
           "kind": "location-name"
+        }
+      ]
+    },
+    {
+      "source": "Guntha",
+      "sha256": "c2d25f068367314379091a38e7899992394fac4808d88686f20b053bc97d9e1e",
+      "references": [
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 57,
+          "kind": "literal"
         }
       ]
     },
@@ -7937,12 +8539,34 @@
       ]
     },
     {
+      "source": "Harvest",
+      "sha256": "c91ab8b61d373c0cb1cce94713f161e259f77172c8c08467ecacd138169ea364",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 471,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Harvest recorded",
       "sha256": "2f6ffaadf74293ad5904305f9c0107b3dabe5f308e25b3a040cc396d791c134f",
       "references": [
         {
           "file": "src/components/product/Timeline.jsx",
           "line": 16,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Harvest, profit, risk",
+      "sha256": "d21fba6f0ce65175b0067c240088cc56ab916fcf93a149e4c91cfa4ebef25ea2",
+      "references": [
+        {
+          "file": "src/components/product/TodayView.jsx",
+          "line": 67,
           "kind": "literal"
         }
       ]
@@ -8025,6 +8649,17 @@
       ]
     },
     {
+      "source": "Hectare",
+      "sha256": "526d49081139d28e24541bb904a5643393927a36b11113a71c38ac33343c642e",
+      "references": [
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 54,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Hectares",
       "sha256": "3e1441ec7ee50c25371bc057e34733024e1ed142322ea8e91a607bbb4452cd3d",
       "references": [
@@ -8036,12 +8671,34 @@
       ]
     },
     {
+      "source": "Help to buy drip or sprinkler irrigation, which saves water on dry land.",
+      "sha256": "8bedf477c4ffd4599b8a70a0562ef688b692ef05a4ecadfc8edd7faf8678f1e5",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 48,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Here is today for {{v0}}.",
       "sha256": "db7e07e04b950d167763e04446fc5a6f03244ca3fa3df62ca848016db5e56c41",
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 154,
+          "line": 153,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Hill soil",
+      "sha256": "062a5947ced64961507facda02cd94d9d24af6b3ef01d7587e8f11a23a52127b",
+      "references": [
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 48,
           "kind": "literal"
         }
       ]
@@ -8206,12 +8863,34 @@
       ]
     },
     {
+      "source": "How much land",
+      "sha256": "2b4ae3cee1c6f0872408fc3ef46fd943a9d31366300d90e810c2d3a3b65ad54f",
+      "references": [
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 395,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "How this index was measured",
       "sha256": "7572d019732007a9e473bf8b89828d829249312e04e922ce16106d5ae27a37b1",
       "references": [
         {
           "file": "src/features/farms/PlotHealth.jsx",
           "line": 254,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "How this was worked out",
+      "sha256": "144df2b1ec16e03e98bc84b825c246877be1f7bcef4b73552ad4690c8b1a4902",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 558,
           "kind": "literal"
         }
       ]
@@ -8602,6 +9281,17 @@
       ]
     },
     {
+      "source": "In about {{v0}} days",
+      "sha256": "1bbeee228d704a195d307cf3b112563159352494644d10ab7d4979dee0dd6505",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 370,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "In-app acknowledgements:",
       "sha256": "c9ed2d05bff9a4df91018561b7ca3d57a32264fc3e76f4cbd572f1ec9b88d3ea",
       "references": [
@@ -8733,7 +9423,7 @@
       "references": [
         {
           "file": "src/features/product/ProductApp.jsx",
-          "line": 94,
+          "line": 104,
           "kind": "literal"
         }
       ]
@@ -8760,7 +9450,7 @@
         },
         {
           "file": "src/features/product/ProductApp.jsx",
-          "line": 88,
+          "line": 98,
           "kind": "literal"
         },
         {
@@ -9463,6 +10153,17 @@
       ]
     },
     {
+      "source": "Kanal",
+      "sha256": "fe59abe12ce9fb306ba722d4bd72687775858b052fd997162568d018d2b1932d",
+      "references": [
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 58,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Kanal (8 = 1 acre)",
       "sha256": "7f45c46936344ad3bc35bde6b497debcf24d748e03819b19d088001029eb270e",
       "references": [
@@ -9936,6 +10637,22 @@
       ]
     },
     {
+      "source": "kharif",
+      "sha256": "ca263707b8939f13bf04010cde617611413f4908e3baa45b6b3e3e4ff358e8f6",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 225,
+          "kind": "literal"
+        },
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 458,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Khawzawl",
       "sha256": "3ea1e33234e0210b5798c8cb34c8f5bd0b2d3c2b3fabfe8be47a150af0dab569",
       "references": [
@@ -10041,6 +10758,17 @@
         {
           "file": "src/components/product/VoiceMode.jsx",
           "line": 284,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Kisan Credit Card",
+      "sha256": "6541436c5f6004d728f2ab07ae904168bf1d752c52f8fdba50ade4544f5e2d7d",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 42,
           "kind": "literal"
         }
       ]
@@ -10325,7 +11053,18 @@
       "references": [
         {
           "file": "src/features/product/useVoiceAssistant.js",
-          "line": 118,
+          "line": 119,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Krishyak could not understand that. Please try again or fill the form.",
+      "sha256": "66da9b4fe12bda51942e42b2bf90c6141c54ae3307129af4d68ac2cb6a4b3fd6",
+      "references": [
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 149,
           "kind": "literal"
         }
       ]
@@ -10403,6 +11142,17 @@
         {
           "file": "src/components/product/VoiceMode.jsx",
           "line": 135,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Krishyak's plan for a better harvest",
+      "sha256": "43aeb323fb331c2f01c953982386857b40763d1b9eaa5bce4c1b2569aa9a27fd",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 506,
           "kind": "literal"
         }
       ]
@@ -10595,6 +11345,17 @@
       ]
     },
     {
+      "source": "Land unit",
+      "sha256": "25569201494d5b3c3cc0dcb60c51a0b2c1390c1596656ffd06cfe9e8dd4736bf",
+      "references": [
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 400,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Landholding and family eligibility",
       "sha256": "6ccb0bb264867524dc5f1ba181298afa72d5849ac3d98912829fb0c31a892ea0",
       "references": [
@@ -10646,6 +11407,17 @@
           "file": "src/features/product/indiaLocations.json",
           "line": 1,
           "kind": "location-name"
+        }
+      ]
+    },
+    {
+      "source": "Laterite",
+      "sha256": "39efff74200428751ee00d7dce20bc1beed515aa7fc9c67e23aca352e6b2b1e8",
+      "references": [
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 46,
+          "kind": "literal"
         }
       ]
     },
@@ -10820,7 +11592,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 155,
+          "line": 154,
           "kind": "literal"
         }
       ]
@@ -10903,6 +11675,17 @@
       ]
     },
     {
+      "source": "Listen to my report",
+      "sha256": "208f11133d02d39d6fceef1134fec88e7534eed17beace81b4a4708a8adb3291",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 276,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Listening",
       "sha256": "49c4605816cfbf30455bf95871bcd0ff7c634d728b9d34a85d1ec9f75235d1d4",
       "references": [
@@ -10917,6 +11700,11 @@
       "source": "Listening… tap again when you finish",
       "sha256": "1c73b2a84b7056c8d605ea2df4c3730f6a6b8908480487677eb68d93d415e10e",
       "references": [
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 313,
+          "kind": "literal"
+        },
         {
           "file": "src/components/product/VoiceMode.jsx",
           "line": 25,
@@ -11040,7 +11828,18 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 244,
+          "line": 252,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Loamy (domat)",
+      "sha256": "772e382a6fb14c0e4b41c11035ba8ae6a4eb9eef40e41da246218516d0a164ce",
+      "references": [
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 49,
           "kind": "literal"
         }
       ]
@@ -11250,6 +12049,17 @@
         {
           "file": "src/components/product/SignIn.jsx",
           "line": 272,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Low-interest loans for seed, fertilizer and farm costs, repaid after harvest.",
+      "sha256": "c08285a3b6467b0ee189cf1b78b4b146fffb01a11ca8d7ba7df1682a3080b396",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 43,
           "kind": "literal"
         }
       ]
@@ -11809,6 +12619,17 @@
       ]
     },
     {
+      "source": "Many farmers are checking right now. Please retry in a minute.",
+      "sha256": "6db2cf9ab98b43866eeb460e2cff11c3df913f8ab22bf635da30e3b8d0ff6793",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 169,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Map a field boundary before requesting imagery",
       "sha256": "180a5c448ddaa33ec3f68fe859d0c31b83dd323dbfa29909b28dd8b8e97f4e92",
       "references": [
@@ -12122,7 +12943,7 @@
       "references": [
         {
           "file": "src/features/product/useVoiceAssistant.js",
-          "line": 145,
+          "line": 146,
           "kind": "literal"
         }
       ]
@@ -12311,6 +13132,17 @@
           "file": "src/features/product/cropCatalog.json",
           "line": 1,
           "kind": "crop-label"
+        }
+      ]
+    },
+    {
+      "source": "MOP (potash)",
+      "sha256": "4b5b9187dd3ac266c6fc0b1e564c39eec16881ced441552f9cba93dcb07f5893",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 73,
+          "kind": "literal"
         }
       ]
     },
@@ -12545,6 +13377,28 @@
       ]
     },
     {
+      "source": "My farm",
+      "sha256": "67bdb4af3dc60fb774ddd158df3aa247ad49253682cfa27ee45c0820627f8594",
+      "references": [
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 200,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "My field report",
+      "sha256": "800d93a4fb223f36cba87d7309c13bf91de76ad4b36fd9af141b34d34964bcf1",
+      "references": [
+        {
+          "file": "src/components/product/TodayView.jsx",
+          "line": 67,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "My fields",
       "sha256": "7692af8a1d45014d8a7e2bd5953a0c8cc5fde274483c8c3437d799b24d82d349",
       "references": [
@@ -12556,11 +13410,6 @@
         {
           "file": "src/components/product/ProductShell.jsx",
           "line": 34,
-          "kind": "literal"
-        },
-        {
-          "file": "src/components/product/TodayView.jsx",
-          "line": 71,
           "kind": "literal"
         }
       ]
@@ -12736,7 +13585,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 148,
+          "line": 147,
           "kind": "literal"
         }
       ]
@@ -12957,6 +13806,17 @@
         {
           "file": "src/components/landing/FarmerLanding.jsx",
           "line": 364,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Needs care",
+      "sha256": "f630d44ebc7af5f20d904efd56f7037e9a221afd90a8ba0b92aea4e08a453c5b",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 65,
           "kind": "literal"
         }
       ]
@@ -13224,7 +14084,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 211,
+          "line": 219,
           "kind": "literal"
         }
       ]
@@ -13290,7 +14150,7 @@
       "references": [
         {
           "file": "src/components/product/ProductLanguageChooser.jsx",
-          "line": 101,
+          "line": 99,
           "kind": "literal"
         }
       ]
@@ -13323,7 +14183,18 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 270,
+          "line": 278,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "No other {{v0}} crop is clearly more profitable on your soil.",
+      "sha256": "ecafc75400b83d7b00fd7c7a2be002c7c58b8ee532f26d06a531b76d9b0f6e3c",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 456,
           "kind": "literal"
         }
       ]
@@ -13358,6 +14229,17 @@
           "file": "backend/v2/evidence.py",
           "line": 137,
           "kind": "server"
+        }
+      ]
+    },
+    {
+      "source": "No price is available for this crop yet.",
+      "sha256": "1fdf5b7c4adee7158ce6ef29ff9575d393c4aaf54dbc9cf5d1950dedf45617a7",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 333,
+          "kind": "literal"
         }
       ]
     },
@@ -13680,7 +14562,7 @@
         },
         {
           "file": "src/features/product/useVoiceAssistant.js",
-          "line": 15,
+          "line": 16,
           "kind": "literal"
         }
       ]
@@ -13751,7 +14633,7 @@
         },
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 339,
+          "line": 347,
           "kind": "literal"
         }
       ]
@@ -13795,7 +14677,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 76,
+          "line": 75,
           "kind": "literal"
         }
       ]
@@ -13872,6 +14754,17 @@
       ]
     },
     {
+      "source": "Official website",
+      "sha256": "b16446d4331ad20b13b3c92866fa00eb15a0df69d7efc5dfdf9eca066ccae501",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 544,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Offline · showing saved records",
       "sha256": "229335f1ba1fb74866a8e8fc7e8807bf43712dbd984af45e8195ff54fc4bf97b",
       "references": [
@@ -13888,7 +14781,7 @@
       "references": [
         {
           "file": "src/features/product/ProductApp.jsx",
-          "line": 67,
+          "line": 77,
           "kind": "literal"
         }
       ]
@@ -14037,6 +14930,17 @@
       ]
     },
     {
+      "source": "Only rain",
+      "sha256": "a1d86c7a94a58906c0bfa97bc9abc43415cf147b8911dce0bb5f0468112912f7",
+      "references": [
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 484,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Open field",
       "sha256": "f7782f1c794605849e0d90c9559034c919e184087a269acd672e2d744429e287",
       "references": [
@@ -14118,8 +15022,13 @@
       "sha256": "ca381c1e76e681b6c18fa984a2e2fda6ed4a9f28e914f539db34a6dcb3737149",
       "references": [
         {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 234,
+          "kind": "literal"
+        },
+        {
           "file": "src/components/product/TodayView.jsx",
-          "line": 52,
+          "line": 51,
           "kind": "literal"
         }
       ]
@@ -14196,7 +15105,7 @@
       "references": [
         {
           "file": "src/components/product/ProductLanguageChooser.jsx",
-          "line": 67,
+          "line": 65,
           "kind": "literal"
         }
       ]
@@ -14207,7 +15116,7 @@
       "references": [
         {
           "file": "src/features/product/ProductApp.jsx",
-          "line": 76,
+          "line": 86,
           "kind": "literal"
         },
         {
@@ -14426,6 +15335,28 @@
       ]
     },
     {
+      "source": "Or add a field by hand",
+      "sha256": "cc9e65b324fa2ada56e8ed87d0c81acf98877773cd2f1b86553aca2342a76b93",
+      "references": [
+        {
+          "file": "src/components/product/TodayView.jsx",
+          "line": 199,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Or type it",
+      "sha256": "b99e534f1ea90d9ff93271c5b5012a37e8e4da1404202e158d902b295a880d1d",
+      "references": [
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 321,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Orange",
       "sha256": "78e7771b8b46e11ddb34ba48887e1330525215f96d94778980d1186e6f09f6b4",
       "references": [
@@ -14444,6 +15375,17 @@
           "file": "src/features/product/indiaLocations.json",
           "line": 1,
           "kind": "location-name"
+        }
+      ]
+    },
+    {
+      "source": "Overall {{v0}}/100",
+      "sha256": "d25691357f7eb5cf05830e71605a4f0c084651ae00f149cafe7eab1d591f9126",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 389,
+          "kind": "literal"
         }
       ]
     },
@@ -14910,6 +15852,28 @@
       ]
     },
     {
+      "source": "Pests and disease",
+      "sha256": "b49a08471758c4210da7a8e848245e4df382959c84d0dfff21ad21d1bb829754",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 69,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Pests to watch now",
+      "sha256": "acd93ff2ed0d4cd2839940396e0d747fe291dbaf3ff61cc4bf1a753c6fd0881d",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 414,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Phalodi",
       "sha256": "873f35b1c83fd23c673a436169f278fdc7ee4af38f8dc7098a8f22d08a7382f2",
       "references": [
@@ -15239,6 +16203,17 @@
       ]
     },
     {
+      "source": "Please wait a minute and try again.",
+      "sha256": "8c32bfc562b7a403309921f93f9e116702876e8bba4ddceb7d0faacae2583c98",
+      "references": [
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 146,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Plough in or remove old maize residue after harvest.",
       "sha256": "1443ebf5225465249c223eaad071c295c7efc2aba7e001334f1440259cd1a5fd",
       "references": [
@@ -15246,6 +16221,17 @@
           "file": "backend/v2/disease_guidance.json",
           "line": 1,
           "kind": "server"
+        }
+      ]
+    },
+    {
+      "source": "PM-KISAN",
+      "sha256": "d22bbb24d0a920d9b57340f833b71768398f43630952f2eb526b3bbe4cf335c0",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 27,
+          "kind": "literal"
         }
       ]
     },
@@ -15409,6 +16395,39 @@
         {
           "file": "src/features/farms/AccountDetails.jsx",
           "line": 79,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Price",
+      "sha256": "93c91c851e7acc17d881c9b89ea954be1183070254014be03a93d169cf52dbbd",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 70,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Price {{v0}}/quintal at {{v1}} mandi on {{v2}}",
+      "sha256": "0ab8ae1c442b6bc5af5f87ec8089a0cb2a00b1099d16f882f0259268939562a7",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 319,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Price {{v0}}/quintal, the government MSP for 2025-26",
+      "sha256": "c3c3bd8cdd7dc263bb0e572ea15a72b7be38a628da7d5efde34baebec657b4c5",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 325,
           "kind": "literal"
         }
       ]
@@ -15578,6 +16597,17 @@
       ]
     },
     {
+      "source": "Profit",
+      "sha256": "91b128195f3c5a5c7a800b706070bfb984ed4641a2dc33ca354cfd16b3610769",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 472,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Program information is unavailable.",
       "sha256": "cc5cdcf7c37942b642d265f2384e47db9773114bfd84981eb5aad41ae2826255",
       "references": [
@@ -15595,6 +16625,17 @@
         {
           "file": "src/features/farms/BenefitsPanel.jsx",
           "line": 64,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Protects your {{v0}} against drought, flood, pests and disease. You pay only {{v1}}% of the insured amount.",
+      "sha256": "72605a5e0cadaf68f6389290b6e3b7988ef4bcf15c0429823aac85923d28c9e7",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 33,
           "kind": "literal"
         }
       ]
@@ -15852,7 +16893,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 159,
+          "line": 158,
           "kind": "literal"
         }
       ]
@@ -15875,6 +16916,22 @@
           "file": "src/features/product/DemoApp.jsx",
           "line": 347,
           "kind": "jsx"
+        }
+      ]
+    },
+    {
+      "source": "rabi",
+      "sha256": "6685312c72ef62ed8c1ed46f589b2a150d772a98642faf84984653e9a9e8d735",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 223,
+          "kind": "literal"
+        },
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 458,
+          "kind": "literal"
         }
       ]
     },
@@ -15951,6 +17008,17 @@
         {
           "file": "src/features/farms/PlotContext.jsx",
           "line": 120,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Rain only",
+      "sha256": "9ddf8c0f70cd299e0fc38f8f9d9e467cb93367be493f4a206da9fa1c5ed6b9f8",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 364,
           "kind": "literal"
         }
       ]
@@ -16291,6 +17359,17 @@
       ]
     },
     {
+      "source": "Ready to harvest",
+      "sha256": "36a064abedc63fcc49072722250fa8d2fcc3ed1f5b3b77bf274439fde42a10b2",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 368,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Reasi",
       "sha256": "037ee27507e7544afe98419bce4e6e41a3b063a44079b6e8af7c44cd5aaee666",
       "references": [
@@ -16385,6 +17464,17 @@
           "file": "backend/v2/passkeys.py",
           "line": 336,
           "kind": "server"
+        }
+      ]
+    },
+    {
+      "source": "Red (lal mitti)",
+      "sha256": "e0135b9272eaacc2ba869fdac2b6ff48e9888ac9a71a30183f01bd7fb88f4d38",
+      "references": [
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 45,
+          "kind": "literal"
         }
       ]
     },
@@ -16760,6 +17850,11 @@
       "sha256": "942087cc2d41e01304b7195558d093d10c72af8e838c7556d6a02d471ee71852",
       "references": [
         {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 250,
+          "kind": "literal"
+        },
+        {
           "file": "src/components/product/ProductShell.jsx",
           "line": 229,
           "kind": "literal"
@@ -16799,7 +17894,7 @@
       "references": [
         {
           "file": "src/features/product/ProductApp.jsx",
-          "line": 101,
+          "line": 111,
           "kind": "literal"
         }
       ]
@@ -16898,6 +17993,28 @@
       ]
     },
     {
+      "source": "Risk",
+      "sha256": "0711a8d636e4c068ae59fa80c03ad68e7bd9fe473c1f9248fd2cf3716e3fb715",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 473,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Risks",
+      "sha256": "bb685708eae6c8d55a88ed786bb5388db37ad51e0de5e8da1f2608ff38539e33",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 387,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Rohtak",
       "sha256": "39ab3ac679a4adb4bcc4ceea7270ea67cd42d4c213353bcb58bf9e8328bbff36",
       "references": [
@@ -16949,6 +18066,17 @@
           "file": "backend/v2/disease_guidance.json",
           "line": 1,
           "kind": "server"
+        }
+      ]
+    },
+    {
+      "source": "Rough guess for your area. Choose the right one if you know it.",
+      "sha256": "4044ff70d9da9faaa95e300e9303fed464ac9cfb667f2c7e217002e06edcbdd9",
+      "references": [
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 77,
+          "kind": "literal"
         }
       ]
     },
@@ -17085,6 +18213,17 @@
       ]
     },
     {
+      "source": "Sale {{v0}} − costs {{v1}}",
+      "sha256": "59fd3f98e3a849e314d1eed41452329ecd7e1405883427f9a3674c7a5ec24f7c",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 312,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Salem",
       "sha256": "63217d185022066f949b5fbcd6f5e9c353edd5e075e3b033c638b0a8d5845fad",
       "references": [
@@ -17157,6 +18296,17 @@
         {
           "file": "src/features/farms/PlotContext.jsx",
           "line": 319,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Sandy (balui mitti)",
+      "sha256": "90383a5693bc403947234d45afa63e70e7b0dc1f7cc178e3ba4b3f2db1c2ea5a",
+      "references": [
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 51,
           "kind": "literal"
         }
       ]
@@ -17393,6 +18543,17 @@
       ]
     },
     {
+      "source": "Save and see my field report",
+      "sha256": "386b1bad52175414108f16a40cc37c27428605896ad5acc00d849cdc8d12810f",
+      "references": [
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 519,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Save audited review",
       "sha256": "54e542cfd66802886e258d1fec2c7ed2f52edd1467aa54ebd396330e514d3c41",
       "references": [
@@ -17513,7 +18674,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 228,
+          "line": 236,
           "kind": "literal"
         },
         {
@@ -17540,7 +18701,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 239,
+          "line": 247,
           "kind": "literal"
         }
       ]
@@ -17561,6 +18722,11 @@
       "sha256": "23e39291d6135814ed7c936e278974544b0df5fbf0eb0427b6700979b7472a93",
       "references": [
         {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 518,
+          "kind": "literal"
+        },
+        {
           "file": "src/components/product/VoiceMode.jsx",
           "line": 184,
           "kind": "literal"
@@ -17575,6 +18741,17 @@
           "file": "src/features/product/indiaLocations.json",
           "line": 1,
           "kind": "location-name"
+        }
+      ]
+    },
+    {
+      "source": "Say your village, land, crop and soil in your language. Krishyak fills everything in and shows your expected harvest, profit, risks and the schemes for you.",
+      "sha256": "e153eac8bc386e73cd07582c03b1e3120aa6e51da66044e03b9c86e4ef0b2921",
+      "references": [
+        {
+          "file": "src/components/product/TodayView.jsx",
+          "line": 192,
+          "kind": "literal"
         }
       ]
     },
@@ -17682,7 +18859,7 @@
       "references": [
         {
           "file": "src/components/product/ProductLanguageChooser.jsx",
-          "line": 58,
+          "line": 56,
           "kind": "literal"
         }
       ]
@@ -17704,7 +18881,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 280,
+          "line": 288,
           "kind": "literal"
         }
       ]
@@ -17743,6 +18920,17 @@
       ]
     },
     {
+      "source": "See my field report",
+      "sha256": "0142c3fef108d5a25c9231ac02a5c4d3355562e3d858b79ae023f32a69844fef",
+      "references": [
+        {
+          "file": "src/features/product/useVoiceAssistant.js",
+          "line": 15,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "See the flow from field records to inspection context.",
       "sha256": "dc574392cb443105788390d6c13f43ee170849fbc5aadc23445891e123e6246e",
       "references": [
@@ -17771,6 +18959,17 @@
         {
           "file": "src/features/product/useVoiceAssistant.js",
           "line": 13,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Seed",
+      "sha256": "367ef06b8fbf3aaaccd9cff1301628fae45901ccd9661b5a1b256c7cc5314d24",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 346,
           "kind": "literal"
         }
       ]
@@ -17825,7 +19024,7 @@
       "references": [
         {
           "file": "src/components/product/ProductLanguageChooser.jsx",
-          "line": 26,
+          "line": 24,
           "kind": "literal"
         }
       ]
@@ -17836,7 +19035,7 @@
       "references": [
         {
           "file": "src/components/product/ProductLanguageChooser.jsx",
-          "line": 93,
+          "line": 91,
           "kind": "literal"
         }
       ]
@@ -17908,6 +19107,17 @@
         {
           "file": "src/features/farms/LocalReadout.jsx",
           "line": 150,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Sell your harvest online to buyers in registered mandis and compare rates.",
+      "sha256": "cfd83c0d21a36f38f34195842f5a4ae9b780aae07cd89772a50867e7e24bda0a",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 58,
           "kind": "literal"
         }
       ]
@@ -18242,7 +19452,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 280,
+          "line": 288,
           "kind": "literal"
         }
       ]
@@ -18717,6 +19927,11 @@
           "file": "src/components/product/FarmContextCard.jsx",
           "line": 298,
           "kind": "literal"
+        },
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 448,
+          "kind": "literal"
         }
       ]
     },
@@ -18743,6 +19958,28 @@
         {
           "file": "src/components/product/FarmView.jsx",
           "line": 520,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Soil Health Card",
+      "sha256": "4d4c7d208f72a8b725daff9bbf532206fa771ba419c7e2469ac644edafae10a4",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 37,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Soil match",
+      "sha256": "a087949d0a722c8adf7119eeab9e3888b21d54d3d58c78553c6ee66c9288d32c",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 71,
           "kind": "literal"
         }
       ]
@@ -18792,6 +20029,39 @@
         {
           "file": "src/features/farms/PlotContext.jsx",
           "line": 257,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Soil type comes from the SoilGrids soil map near your village.",
+      "sha256": "141f494c772130624e9029a8c7bc00de799117de572906b85e48b45bf9873df6",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 568,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Soil type is a rough guess for your area. Choose the right one in My fields if you know it.",
+      "sha256": "c833c5192862edb30dcadb0d475426c619004b7bc518068020928045366e3a3c",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 572,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Soil type is what you told us.",
+      "sha256": "b43af8ce62aae7521e98057a86680c724275d2c65f1228ad2494b21fe7e6e6b3",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 574,
           "kind": "literal"
         }
       ]
@@ -18848,6 +20118,17 @@
           "file": "src/features/product/indiaLocations.json",
           "line": 1,
           "kind": "location-name"
+        }
+      ]
+    },
+    {
+      "source": "Solar pump scheme (PM-KUSUM)",
+      "sha256": "febc1d66f9d7085718ceb6e6cf7e5f2412694459088fdac88475db3ac1dca4fc",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 52,
+          "kind": "literal"
         }
       ]
     },
@@ -18923,7 +20204,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 289,
+          "line": 297,
           "kind": "literal"
         }
       ]
@@ -19119,6 +20400,11 @@
       "sha256": "a3c917976a790f2598b1d72ea8c3aa989c64ac36247f67384b99fd031c9f2e1b",
       "references": [
         {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 499,
+          "kind": "literal"
+        },
+        {
           "file": "src/components/product/FarmView.jsx",
           "line": 266,
           "kind": "literal"
@@ -19131,7 +20417,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 215,
+          "line": 223,
           "kind": "literal"
         }
       ]
@@ -19159,12 +20445,34 @@
       ]
     },
     {
+      "source": "Speak about my farm",
+      "sha256": "cd68a7b6fbcb2ae5500b5fda0e78772edb2fed675d4f8470a469e3830586a210",
+      "references": [
+        {
+          "file": "src/components/product/TodayView.jsx",
+          "line": 196,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Speak about your farm",
+      "sha256": "25b194c2a6af1eeb11c613292f9031681b0104b8adef8b66dfd12bb491189c88",
+      "references": [
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 282,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Speak in {{v0}}. Krishyak listens and answers aloud.",
       "sha256": "209237409e026e988cf8b286f60c219bb80cbec31ad1dba82c9934223b5e914c",
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 98,
+          "line": 97,
           "kind": "literal"
         }
       ]
@@ -19187,6 +20495,17 @@
         {
           "file": "src/components/product/VoiceMode.jsx",
           "line": 267,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Speak once. Krishyak fills in your village, land, crop and soil. You check it before saving.",
+      "sha256": "3c93ea3003830d15c63ea5be3ae5a14b2c6eff7a67180d82601027d2f5d95fe9",
+      "references": [
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 258,
           "kind": "literal"
         }
       ]
@@ -19343,6 +20662,17 @@
       ]
     },
     {
+      "source": "Square metres in one bigha in your area",
+      "sha256": "e484fe1e88915d02ce585c48b6ac6d85ed8fad506db377ec3dde6a1e44a37528",
+      "references": [
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 412,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Squash",
       "sha256": "9f9a8456f0eef1e4d02d9d00874d9bb6cc62b7c480b291dedf9d0afeac80b47b",
       "references": [
@@ -19425,7 +20755,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 217,
+          "line": 225,
           "kind": "literal"
         }
       ]
@@ -19513,17 +20843,6 @@
       ]
     },
     {
-      "source": "Start with one field.",
-      "sha256": "310b7b1f4fc505b6787cdb9550596b8716808cb347e88e9b3b87b82a033afa71",
-      "references": [
-        {
-          "file": "src/components/product/TodayView.jsx",
-          "line": 185,
-          "kind": "literal"
-        }
-      ]
-    },
-    {
       "source": "Start your first farm",
       "sha256": "1aea9ef258e705e7d16240b1a8f7061a9cde23e4e4ad45987f2a3c1060a8400c",
       "references": [
@@ -19579,9 +20898,25 @@
       ]
     },
     {
+      "source": "Stop",
+      "sha256": "cae7d57bc067a514b8e34c9589631a95c7dc051638ddd2a190773269279a99df",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 276,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Stop and send",
       "sha256": "87c1a8d4e59f78757cd4549151cb0d736016067816c2ff780b121616144f9331",
       "references": [
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 299,
+          "kind": "literal"
+        },
         {
           "file": "src/components/product/VoiceMode.jsx",
           "line": 227,
@@ -19729,6 +21064,17 @@
           "file": "src/features/product/indiaLocations.json",
           "line": 1,
           "kind": "location-name"
+        }
+      ]
+    },
+    {
+      "source": "Support for a solar pump, so watering does not depend on diesel or power cuts.",
+      "sha256": "723e6bb74b52aa3d2049afeeabafefb55f901ecb39d91e32265acea47b27625f",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 53,
+          "kind": "literal"
         }
       ]
     },
@@ -20018,12 +21364,28 @@
       ]
     },
     {
+      "source": "Tap the mic and speak",
+      "sha256": "41f30ba3577570bd33ba8b695f4a655491fda384290b2f3dfa81aa3710da0d7a",
+      "references": [
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 318,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Tap to speak",
       "sha256": "8e8fa9de53a37ac43af4b1d6027c7bf7f81a92582d2346f158c536351057f0b4",
       "references": [
         {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 299,
+          "kind": "literal"
+        },
+        {
           "file": "src/components/product/TodayView.jsx",
-          "line": 117,
+          "line": 116,
           "kind": "literal"
         },
         {
@@ -20140,6 +21502,43 @@
           "file": "src/features/product/indiaLocations.json",
           "line": 1,
           "kind": "location-name"
+        }
+      ]
+    },
+    {
+      "source": "Tell Krishyak about your farm",
+      "sha256": "2b2a4b471109dde318fff55bcb9fd3075334d3b289d6171e0679d3463a47f5ab",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 206,
+          "kind": "literal"
+        },
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 247,
+          "kind": "literal"
+        },
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 255,
+          "kind": "literal"
+        },
+        {
+          "file": "src/components/product/TodayView.jsx",
+          "line": 188,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Tell Krishyak about your farm first.",
+      "sha256": "047880a1fcdd451151fab3d79ec56cf556b89f33e190beecaee2f800e29d7362",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 204,
+          "kind": "literal"
         }
       ]
     },
@@ -20286,6 +21685,17 @@
         {
           "file": "src/features/farms/V2LegalNotice.jsx",
           "line": 25,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "The field report could not be made right now. Please retry.",
+      "sha256": "5b74e90b6fb55550303691c5090cb30d7a7485e3ee0a2bf15352b9072ebc5f58",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 170,
           "kind": "literal"
         }
       ]
@@ -20483,6 +21893,17 @@
       ]
     },
     {
+      "source": "These are estimates from general crop and soil figures, the water your crop usually gets from rain, soil moisture and watering (about {{v0}} mm) and current prices. They are not a promise. Weather, seed, care and market change the result.",
+      "sha256": "d42d7ae8071902ee91c4b36eee778da204f3e74fe3b9bda4f5851b3f853fba87",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 561,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "These are scenario assumptions, not measurements of your field. Defaults are illustrative. Simulated profit improvements are not measured real-world gains.",
       "sha256": "ea71d5a1dc98a5973b7f39179aecbe1d02898d334615d6a4955b780e21110ce0",
       "references": [
@@ -20587,7 +22008,7 @@
       "references": [
         {
           "file": "src/features/product/ProductApp.jsx",
-          "line": 97,
+          "line": 107,
           "kind": "literal"
         }
       ]
@@ -21152,7 +22573,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 102,
+          "line": 101,
           "kind": "literal"
         },
         {
@@ -21203,6 +22624,17 @@
           "file": "src/features/product/indiaLocations.json",
           "line": 1,
           "kind": "location-name"
+        }
+      ]
+    },
+    {
+      "source": "Tubewell, well or canal",
+      "sha256": "9e5aff293f8ba1658b1451fed169fc602c748ed7741c3cbfc85261b26bc228f3",
+      "references": [
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 483,
+          "kind": "literal"
         }
       ]
     },
@@ -21497,6 +22929,11 @@
       "sha256": "4f40a0b170dc9e5042a8f8e2033439a98109dc15dd70f94f26f0f06b5110443e",
       "references": [
         {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 315,
+          "kind": "literal"
+        },
+        {
           "file": "src/components/product/VoiceMode.jsx",
           "line": 26,
           "kind": "literal"
@@ -21669,6 +23106,17 @@
       ]
     },
     {
+      "source": "Urea",
+      "sha256": "3e5de50019a1586910398c157f820f72f36faebe9709955b899ffd96cf2f8cd7",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 73,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Usage controls busy",
       "sha256": "e9cc6f90b0eb3dc78ab8d33c29923226e932728eecca6ecf56fceb515c7a160b",
       "references": [
@@ -21731,6 +23179,17 @@
           "file": "backend/v2/router.py",
           "line": 258,
           "kind": "server"
+        }
+      ]
+    },
+    {
+      "source": "Use certified seed from a trusted shop.",
+      "sha256": "bad14c2f28121b72194ba8ed13ec1d4f5b12565c72280519cc5591d4bd146989",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 75,
+          "kind": "literal"
         }
       ]
     },
@@ -21839,7 +23298,7 @@
       "references": [
         {
           "file": "src/features/product/ProductApp.jsx",
-          "line": 116,
+          "line": 129,
           "kind": "literal"
         }
       ]
@@ -22185,7 +23644,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 223,
+          "line": 231,
           "kind": "literal"
         }
       ]
@@ -22196,7 +23655,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 355,
+          "line": 363,
           "kind": "literal"
         }
       ]
@@ -22246,6 +23705,17 @@
       ]
     },
     {
+      "source": "Village",
+      "sha256": "9b98e9b9ff1e6d43b9e0f7df9d337dc2b2ded99d61a792dd880821b1fbc37b1c",
+      "references": [
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 366,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Village (optional)",
       "sha256": "489e8a969864fcf7287958cdf25ba01a8fb1fd23fc47361486b4292c266e32e4",
       "references": [
@@ -22263,6 +23733,28 @@
         {
           "file": "src/components/product/FarmContextCard.jsx",
           "line": 271,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Village found on the map.",
+      "sha256": "39903df342fb2b1134e03f257b35b348ee67339cd41d2183052db939a53cbceb",
+      "references": [
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 382,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Village not found on the map; the district centre will be used for weather.",
+      "sha256": "e9a46d3fb1d97f63ca435d02425ac5f14266b1fd9cdcb22142098c5bcc22f89a",
+      "references": [
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 384,
           "kind": "literal"
         }
       ]
@@ -22369,13 +23861,18 @@
       "sha256": "5e4c5e3419ec939a4bbbb921237cdd2de6b4c1596a30425ef01a4323a9c58a71",
       "references": [
         {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 317,
+          "kind": "literal"
+        },
+        {
           "file": "src/components/product/VoiceMode.jsx",
           "line": 235,
           "kind": "literal"
         },
         {
           "file": "src/features/product/useVoiceAssistant.js",
-          "line": 187,
+          "line": 188,
           "kind": "literal"
         }
       ]
@@ -22447,6 +23944,28 @@
       ]
     },
     {
+      "source": "Water for the field",
+      "sha256": "3031e8fd62a0c61a0b4933a8c184670b76b67d50d71fa012d7c3b8ad40c53079",
+      "references": [
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 481,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Watering",
+      "sha256": "2ee1114632b1a8b1babb22aed7c9ca1dee2e69d3a97b8850622a74304c65404a",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 358,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Watering recorded",
       "sha256": "7dabe9d0480af3389b21f157b1335945c43a9d7db1b22d24f85e363273239e47",
       "references": [
@@ -22485,7 +24004,7 @@
       "references": [
         {
           "file": "src/features/product/useVoiceAssistant.js",
-          "line": 147,
+          "line": 148,
           "kind": "literal"
         }
       ]
@@ -22505,6 +24024,11 @@
       "source": "Weather",
       "sha256": "a0bba638124664064545edb48049c05385d1542084b2b79bb6ec0cfea6d636c9",
       "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 68,
+          "kind": "literal"
+        },
         {
           "file": "src/components/product/FarmContextCard.jsx",
           "line": 284,
@@ -22814,7 +24338,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 237,
+          "line": 245,
           "kind": "literal"
         }
       ]
@@ -22825,7 +24349,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 343,
+          "line": 351,
           "kind": "literal"
         }
       ]
@@ -22875,6 +24399,17 @@
       ]
     },
     {
+      "source": "What you will need",
+      "sha256": "57960a070a6fefde7af214165cc37d912123771fe45cffa818940a322cda5419",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 342,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Wheat",
       "sha256": "cca303e99f5f821dfd9d74b81b18be6a03a7ee271123158a9d6a7092f326b1bf",
       "references": [
@@ -22913,7 +24448,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 335,
+          "line": 343,
           "kind": "literal"
         },
         {
@@ -22951,7 +24486,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 327,
+          "line": 335,
           "kind": "literal"
         },
         {
@@ -22972,7 +24507,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 259,
+          "line": 267,
           "kind": "literal"
         }
       ]
@@ -23056,6 +24591,28 @@
           "file": "src/features/product/indiaLocations.json",
           "line": 1,
           "kind": "location-name"
+        }
+      ]
+    },
+    {
+      "source": "Work it out again",
+      "sha256": "ebb98618918ea99989f00a49b70293c56dbf750259c5137efbbf00eb3a71bfd0",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 583,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Working out your harvest, costs and risks…",
+      "sha256": "338200916fc59c4c14f30a331cfd2eb8f57e5e27d8488cf565b09b529d6518ff",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 240,
+          "kind": "literal"
         }
       ]
     },
@@ -23214,12 +24771,23 @@
       ]
     },
     {
+      "source": "You chose this",
+      "sha256": "f0e73e0b174f76388d4d638ffabf39402c74e6acc1fcdf204577380b67ba5716",
+      "references": [
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 78,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "You have asked many questions. Please wait a little and try again.",
       "sha256": "03dbe9f404f1e010e095ead92b22fc6f071325a37d304c0170f4ea859d2db0a4",
       "references": [
         {
           "file": "src/features/product/useVoiceAssistant.js",
-          "line": 117,
+          "line": 118,
           "kind": "literal"
         }
       ]
@@ -23236,6 +24804,17 @@
       ]
     },
     {
+      "source": "You said your soil is dry.",
+      "sha256": "9af04ea37947b90889b70cd02ec000988de76b531d133e5f83f89a72adb25dae",
+      "references": [
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 477,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "You said:",
       "sha256": "2d557eaf73cb5649ef358a0e9ef51355ba58b4d21e24f717c71ef7fcd03dfb46",
       "references": [
@@ -23247,12 +24826,23 @@
       ]
     },
     {
+      "source": "You seem to be offline. Please try again when connected.",
+      "sha256": "10376b58465f8eef54866e4160eccf1b0dd6e459ea287860cfd90a44cbe2f1ab",
+      "references": [
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 148,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "You seem to be offline. Voice help needs the internet.",
       "sha256": "41c7bd3b30195cbf45f173e361e594a229859814967e44e7e7c8984c872c7efc",
       "references": [
         {
           "file": "src/features/product/useVoiceAssistant.js",
-          "line": 115,
+          "line": 116,
           "kind": "literal"
         }
       ]
@@ -23264,6 +24854,17 @@
         {
           "file": "src/features/farms/AccountDetails.jsx",
           "line": 48,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "You told us",
+      "sha256": "74a8543d131f833e1daa1324d2aace2a49680dd61475e09a379786f422268fa8",
+      "references": [
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 74,
           "kind": "literal"
         }
       ]
@@ -23412,6 +25013,33 @@
       ]
     },
     {
+      "source": "Your field report",
+      "sha256": "352aa5af4a71cf259e69904502f94512d20300e18ddf32b64e37acd3c7201a9f",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 203,
+          "kind": "literal"
+        },
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 214,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Your field score is {{v0}} out of 100.",
+      "sha256": "6a96422518f23033121a6d459b7a4c7b8a1648c76f25718093130569280d764e",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 116,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Your field update was saved.",
       "sha256": "f0166714a9a39bdbb7be5b593c4ec668c07c5e83c7ad9111c7dc4afb42a439e5",
       "references": [
@@ -23445,9 +25073,25 @@
       ]
     },
     {
+      "source": "Your land",
+      "sha256": "6ef57249537a15c1e066378bbb5f4f519a3bdca08569bc8c23fe4b9c182ce9f8",
+      "references": [
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 389,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Your name",
       "sha256": "2c6b2e253c01fb2ed7209c15766745ccee92a35ac8209f544789bdf9500e0944",
       "references": [
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 357,
+          "kind": "literal"
+        },
         {
           "file": "src/components/product/SignIn.jsx",
           "line": 301,
@@ -23499,7 +25143,7 @@
         },
         {
           "file": "src/features/product/useVoiceAssistant.js",
-          "line": 168,
+          "line": 169,
           "kind": "literal"
         }
       ]
@@ -23566,6 +25210,28 @@
         {
           "file": "src/components/product/VoiceMode.jsx",
           "line": 175,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Your words go to Sarvam AI to be understood, your village name goes to OpenStreetMap to find it, and its rough location is used for a soil map and your field report. Your recording is not stored.",
+      "sha256": "094a27c3c111606205e6c10f934265640b9d869818662113aa8c4e289fc209d6",
+      "references": [
+        {
+          "file": "src/components/product/FarmSetupView.jsx",
+          "line": 268,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "yours",
+      "sha256": "5eb2da9c26b65531549c8863fa023f9b48c1d3f0e17e01d7c4978876c724b21f",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 479,
           "kind": "literal"
         }
       ]
