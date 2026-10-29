@@ -1443,3 +1443,345 @@
     animation: none;
   }
 }
+
+/* ---------- Spoken farm setup ---------- */
+.setup-hero {
+  display: flex;
+  gap: 18px;
+  align-items: flex-start;
+  padding: 26px;
+  border-radius: 26px;
+  background: var(--k-sun-soft);
+  color: var(--k-green-950);
+}
+.setup-hero > svg {
+  flex: 0 0 auto;
+  padding: 14px;
+  box-sizing: content-box;
+  border-radius: 50%;
+  background: var(--k-green-500);
+  color: #fff;
+}
+.setup-hero h2 {
+  margin: 0 0 6px;
+  font-weight: 600;
+}
+.setup-hero .button {
+  margin: 8px 16px 8px 0;
+}
+.setup-voice,
+.setup-consent {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+}
+.setup-voice {
+  padding: 28px 22px;
+  border-radius: 28px;
+  background: linear-gradient(160deg, var(--k-green-700), var(--k-green-950));
+  color: #fff;
+}
+.workspace-content .setup-voice h2 {
+  color: #fff;
+  margin: 0;
+}
+.workspace-content .setup-voice p {
+  color: rgb(255 255 255 / 0.85);
+  margin: 0;
+}
+.setup-example {
+  max-width: 560px;
+  font-style: italic;
+}
+.setup-status {
+  font-weight: 600;
+  min-height: 1.5em;
+}
+.setup-text {
+  width: min(560px, 100%);
+  text-align: start;
+  color: #fff;
+}
+.setup-text textarea {
+  width: 100%;
+  margin-top: 6px;
+  border-radius: 14px;
+  padding: 12px;
+  font-size: 17px;
+}
+.setup-voice .button.secondary {
+  background: var(--k-sun);
+  color: var(--k-green-950);
+  border-color: var(--k-sun);
+}
+.setup-form h2 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--k-green-700);
+}
+.setup-area,
+.setup-choice {
+  border: 1px solid rgb(18 61 39 / 0.12);
+  border-radius: 16px;
+  padding: 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+.setup-area legend,
+.setup-choice legend {
+  font-weight: 600;
+  padding: 0 6px;
+}
+.setup-area input,
+.setup-area select {
+  min-height: 48px;
+  font-size: 18px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  padding: 0 12px;
+}
+.setup-area > input {
+  width: 120px;
+}
+.setup-area .v2-label,
+.setup-area .inline-note {
+  width: 100%;
+}
+.setup-choice label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 0 14px;
+  border-radius: 12px;
+  background: var(--k-leaf-soft);
+  font-size: 16px;
+}
+
+/* ---------- Field report ---------- */
+.report-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+.report-score,
+.report-inputs,
+.report-risks,
+.report-choice,
+.report-schemes,
+.report-details {
+  grid-column: 1 / -1;
+}
+.report-score {
+  display: flex;
+  gap: 26px;
+  align-items: center;
+}
+.report-score h2 {
+  margin-top: 0;
+}
+.score-ring {
+  position: relative;
+  flex: 0 0 auto;
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+}
+.score-ring svg {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+.score-track {
+  fill: none;
+  stroke: rgb(18 61 39 / 0.08);
+  stroke-width: 12;
+}
+.score-value {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 12;
+  stroke-linecap: round;
+}
+.score-ring > div {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.score-ring strong {
+  font-size: 44px;
+  line-height: 1;
+  color: var(--k-green-950);
+}
+.score-ring span {
+  font-weight: 700;
+}
+.report-stat h2 {
+  margin: 8px 0 4px;
+  font-size: 18px !important;
+}
+.workspace-content .report-stat p {
+  color: inherit;
+  margin: 0;
+}
+.report-big {
+  font-size: 34px !important;
+  font-weight: 700;
+  color: var(--k-green-950) !important;
+}
+.report-loading {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  font-weight: 600;
+}
+.report-inputs h2,
+.report-choice h2,
+.report-schemes h2,
+.report-risks h2 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.report-list {
+  list-style: none;
+  margin: 0 0 10px;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 10px;
+}
+.report-list li {
+  display: flex;
+  flex-direction: column;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: var(--k-leaf-soft);
+}
+.report-list span {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--k-green-700);
+}
+.risk-bars {
+  list-style: none;
+  margin: 0 0 16px;
+  padding: 0;
+  display: grid;
+  gap: 12px;
+}
+.risk-bars li {
+  display: grid;
+  grid-template-columns: minmax(130px, 1fr) 2fr 36px;
+  gap: 12px;
+  align-items: center;
+  font-size: 16px;
+}
+.risk-bars li > span:first-child {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.risk-bar {
+  height: 14px;
+  border-radius: 8px;
+  background: rgb(18 61 39 / 0.08);
+  overflow: hidden;
+}
+.risk-bar i {
+  display: block;
+  height: 100%;
+  border-radius: 8px;
+  background: var(--k-green-500);
+}
+.risk-bar.medium i {
+  background: var(--k-sun);
+}
+.risk-bar.high i {
+  background: var(--k-brick);
+}
+.report-choice.has-better {
+  border: 2px solid var(--k-sun);
+  background: linear-gradient(180deg, var(--k-sun-soft), #fff 60%);
+}
+.workspace-content .report-advice {
+  font-size: 18px;
+  color: var(--k-green-950);
+}
+.report-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 8px 0 16px;
+  font-size: 16px;
+}
+.report-table th,
+.report-table td {
+  text-align: start;
+  padding: 10px 8px;
+  border-bottom: 1px solid var(--line);
+}
+.report-table tr.current {
+  background: var(--k-leaf-soft);
+}
+.report-plan {
+  padding: 16px;
+  border-radius: 16px;
+  background: var(--k-sky-soft);
+}
+.scheme-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 12px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 12px;
+}
+.scheme-list li {
+  padding: 16px;
+  border-radius: 18px;
+  background: var(--k-plum-soft);
+}
+.scheme-list strong {
+  color: var(--k-plum);
+  font-size: 17px;
+}
+.workspace-content .scheme-list p {
+  margin: 6px 0 8px;
+  color: var(--ink);
+}
+.scheme-list a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  font-weight: 600;
+  color: var(--k-plum);
+}
+@media (max-width: 700px) {
+  .report-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .report-score {
+    flex-direction: column;
+    text-align: center;
+  }
+  .risk-bars li {
+    grid-template-columns: 1fr 36px;
+  }
+  .risk-bars .risk-bar {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+  .setup-hero {
+    flex-direction: column;
+  }
+}

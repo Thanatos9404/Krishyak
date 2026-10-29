@@ -31,6 +31,16 @@ const MoreView = deferredFeature(() =>
     default: module.MoreView,
   })),
 );
+const FarmSetupView = deferredFeature(() =>
+  import("../../components/product/FarmSetupView").then((module) => ({
+    default: module.FarmSetupView,
+  })),
+);
+const AssessmentView = deferredFeature(() =>
+  import("../../components/product/AssessmentView").then((module) => ({
+    default: module.AssessmentView,
+  })),
+);
 const SettingsView = deferredFeature(() =>
   import("../../components/product/SettingsView").then((module) => ({
     default: module.SettingsView,
@@ -102,6 +112,9 @@ function Workspace() {
         </a>
       </section>
     );
+  else if (pathname === "/app/setup") content = <FarmSetupView workspace={w} />;
+  else if (pathname === "/app/assessment")
+    content = <AssessmentView workspace={w} />;
   else if (pathname.startsWith("/app/farm"))
     content = <FarmView workspace={w} plotId={pathname.split("/")[3]} />;
   else if (pathname === "/app/health") content = <ScanView workspace={w} />;

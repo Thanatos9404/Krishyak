@@ -12,6 +12,7 @@ export const ACTION_LINKS = {
   market: ["/app/market", "See mandi prices"],
   weather: ["/app/today#weather", "See weather"],
   farm: ["/app/farm", "Open my fields"],
+  report: ["/app/assessment", "See my field report"],
   note: ["/app/today#note", "Note what I saw"],
   benefits: ["/app/more/benefits", "Government schemes"],
 };

@@ -4,14 +4,13 @@ import { motion, useReducedMotion } from "framer-motion";
 import {
   ArrowRight,
   Camera,
+  Gauge,
   IndianRupee,
   Info,
   Landmark,
-  Map,
   Mic,
   NotebookPen,
   Phone,
-  Sprout,
   Store,
   Sun,
 } from "lucide-react";
@@ -65,10 +64,10 @@ const NoticeList = deferredFeature(
   () => import("../../features/farms/NoticeList"),
 );
 const TILES = [
+  ["/app/assessment", Gauge, "My field report", "Harvest, profit, risk", "sky"],
   ["/app/health", Camera, "Check a sick plant", "Photo of a leaf", "leaf"],
   ["/app/market", IndianRupee, "Mandi prices", "Today's rates", "amber"],
-  ["#note", NotebookPen, "Note what I saw", "Keep a record", "sky"],
-  ["/app/farm", Map, "My fields", "Crops and area", "earth"],
+  ["#note", NotebookPen, "Note what I saw", "Keep a record", "earth"],
   [
     "/app/more/benefits",
     Landmark,
@@ -157,40 +156,49 @@ export function TodayView({ workspace: w }) {
       </header>
       <VoiceHero />
       <nav className="home-tiles" aria-label={tx("Quick actions")}>
-        {TILES.filter(([href]) => href !== "#note" || w.plot).map(
-          ([href, Icon, title, hint, tone]) =>
-            href === "#note" ? (
-              <button
-                type="button"
-                key={href}
-                className={`home-tile tone-${tone}`}
-                onClick={() => setRecording(true)}
-              >
-                <Icon size={30} aria-hidden="true" />
-                <strong>{tx(title)}</strong>
-                <small>{tx(hint)}</small>
-              </button>
-            ) : (
-              <a key={href} href={href} className={`home-tile tone-${tone}`}>
-                <Icon size={30} aria-hidden="true" />
-                <strong>{tx(title)}</strong>
-                <small>{tx(hint)}</small>
-              </a>
-            ),
+        {TILES.filter(
+          ([href]) =>
+            (href !== "#note" && href !== "/app/assessment") || w.plot,
+        ).map(([href, Icon, title, hint, tone]) =>
+          href === "#note" ? (
+            <button
+              type="button"
+              key={href}
+              className={`home-tile tone-${tone}`}
+              onClick={() => setRecording(true)}
+            >
+              <Icon size={30} aria-hidden="true" />
+              <strong>{tx(title)}</strong>
+              <small>{tx(hint)}</small>
+            </button>
+          ) : (
+            <a key={href} href={href} className={`home-tile tone-${tone}`}>
+              <Icon size={30} aria-hidden="true" />
+              <strong>{tx(title)}</strong>
+              <small>{tx(hint)}</small>
+            </a>
+          ),
         )}
       </nav>
       {!w.plot ? (
-        <section className="product-card welcome-card">
-          <Sprout size={42} aria-hidden="true" />
-          <h2>{tx("Start with one field.")}</h2>
-          <p>
-            {tx(
-              "Give it a name and an area. You can draw its boundary whenever you are ready.",
-            )}
-          </p>
-          <a className="button primary large" href="/app/farm">
-            {tx("Add my first field")} <ArrowRight size={18} />
-          </a>
+        <section className="setup-hero" aria-labelledby="setup-hero-heading">
+          <Mic size={40} aria-hidden="true" />
+          <div>
+            <h2 id="setup-hero-heading">
+              {tx("Tell Krishyak about your farm")}
+            </h2>
+            <p>
+              {tx(
+                "Say your village, land, crop and soil in your language. Krishyak fills everything in and shows your expected harvest, profit, risks and the schemes for you.",
+              )}
+            </p>
+            <a className="button primary large" href="/app/setup">
+              {tx("Speak about my farm")} <ArrowRight size={18} />
+            </a>
+            <a className="text-link" href="/app/farm">
+              {tx("Or add a field by hand")}
+            </a>
+          </div>
         </section>
       ) : (
         <>
