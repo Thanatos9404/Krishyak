@@ -51,6 +51,12 @@ CROP_SOIL_COMPATIBILITY = {
     "Bajra": {"Alluvial": 0.7, "Black": 0.75, "Red": 0.8, "Laterite": 0.6, "Desert": 0.85, "Mountain": 0.5, "Loamy": 0.8, "Clay": 0.6, "Sandy": 0.9},
     "Jowar": {"Alluvial": 0.75, "Black": 0.9, "Red": 0.8, "Laterite": 0.6, "Desert": 0.7, "Mountain": 0.5, "Loamy": 0.85, "Clay": 0.75, "Sandy": 0.6},
     
+    # Oilseeds
+    "Mustard": {"Alluvial": 0.85, "Black": 0.7, "Red": 0.65, "Laterite": 0.5, "Desert": 0.6, "Mountain": 0.5, "Loamy": 0.9, "Clay": 0.6, "Sandy": 0.75},
+    "Groundnut": {"Alluvial": 0.75, "Black": 0.65, "Red": 0.85, "Laterite": 0.65, "Desert": 0.6, "Mountain": 0.45, "Loamy": 0.85, "Clay": 0.45, "Sandy": 0.9},
+    "Soybean": {"Alluvial": 0.8, "Black": 0.95, "Red": 0.75, "Laterite": 0.55, "Desert": 0.3, "Mountain": 0.5, "Loamy": 0.9, "Clay": 0.8, "Sandy": 0.45},
+    "Sesame": {"Alluvial": 0.75, "Black": 0.7, "Red": 0.8, "Laterite": 0.6, "Desert": 0.6, "Mountain": 0.5, "Loamy": 0.85, "Clay": 0.55, "Sandy": 0.8},
+
     # Pulses
     "Gram": {"Alluvial": 0.8, "Black": 0.9, "Red": 0.75, "Laterite": 0.5, "Desert": 0.4, "Mountain": 0.55, "Loamy": 0.9, "Clay": 0.7, "Sandy": 0.4},
     "Lentil": {"Alluvial": 0.85, "Black": 0.8, "Red": 0.7, "Laterite": 0.5, "Desert": 0.35, "Mountain": 0.5, "Loamy": 0.9, "Clay": 0.7, "Sandy": 0.4},
