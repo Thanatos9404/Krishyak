@@ -51,7 +51,8 @@ Return one JSON object and nothing else, with these keys (use null when not said
 "area_value": the number of land units as a number,
 "area_unit": one of {list(AREA_UNITS)},
 "crop": the crop they grow or will sow, one of {CROPS},
-"soil_type": one of {list(SOIL_TYPES)} only if they name a soil kind (kali/regur = Black, domat = Loamy, balui/retili = Sandy, chikni/matiyar = Clay, lal = Red, kachari/jalodh = Alluvial, pahadi = Mountain),
+"soil_type": one of {list(SOIL_TYPES)} only if they name a soil kind (never guess it from the place) (kali/regur = Black, domat = Loamy, balui/retili = Sandy, chikni/matiyar = Clay, lal = Red, kachari/jalodh = Alluvial, pahadi = Mountain),
+"soil_words": the exact words the farmer used to name their soil kind, else null,
 "soil_condition": "dry", "normal" or "wet" if they describe moisture (sookhi = dry, geeli = wet),
 "water": "irrigated" if they have a tubewell, well, canal or pump, "rainfed" if they depend on rain,
 "seed": "certified", "hybrid" or "own_saved" if they mention seed.
@@ -105,6 +106,8 @@ def normalize(raw):
     if value is not None and not 0 < value <= 100000:
         value = None
     state = place["state"] if place else None
+    # A soil kind counts only when the farmer actually named it.
+    spoken_soil = choice(raw.get("soil_type"), SOIL_TYPES) if text(raw.get("soil_words")) else None
     draft = {
         "name": text(raw.get("name")),
         "village": text(raw.get("village")),
@@ -121,8 +124,8 @@ def normalize(raw):
         "crop_id": crop["id"] if crop else None,
         "season": CROP_PLANS[crop["id"]][0] if crop and crop["id"] in CROP_PLANS else None,
         "days_to_harvest": CROP_PLANS[crop["id"]][1] if crop and crop["id"] in CROP_PLANS else None,
-        "soil_type": choice(raw.get("soil_type"), SOIL_TYPES),
-        "soil_source": "spoken" if choice(raw.get("soil_type"), SOIL_TYPES) else None,
+        "soil_type": spoken_soil,
+        "soil_source": "spoken" if spoken_soil else None,
         "soil_condition": choice(raw.get("soil_condition"), ("dry", "normal", "wet")),
         "water": choice(raw.get("water"), ("irrigated", "rainfed")),
         "seed": choice(raw.get("seed"), ("certified", "hybrid", "own_saved")),
@@ -226,7 +229,7 @@ async def understand(
     messages = [{"role": "system", "content": PROMPT}, {"role": "user", "content": body.text}]
     for attempt in range(2):
         try:
-            raw = read_json(await complete(messages))
+            raw = read_json(await complete(messages, temperature=0))
             break
         except HTTPException as error:
             # One retry for an occasional malformed or failed reply; never for limits.

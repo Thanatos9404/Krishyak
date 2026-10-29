@@ -77,6 +77,10 @@ class SetupNormalizationTests(unittest.TestCase):
         self.assertAlmostEqual(draft["area_hectares"], 1.2646, places=3)
         self.assertEqual(draft["bigha_square_metres"], 2529.3)
         self.assertEqual((draft["soil_condition"], draft["water"], draft["soil_type"]), ("dry", "irrigated", None))
+        guessed = normalize(SPOKEN | {"soil_type": "Alluvial"})
+        self.assertIsNone(guessed["soil_type"])  # not named by the farmer
+        named = normalize(SPOKEN | {"soil_type": "Black", "soil_words": "kali mitti"})
+        self.assertEqual((named["soil_type"], named["soil_source"]), ("Black", "spoken"))
         wild = normalize(
             {"crop": "Moon rice", "area_value": "lots", "area_unit": "furlong", "soil_type": "Purple", "water": "pipes"}
         )

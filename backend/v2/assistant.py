@@ -212,15 +212,17 @@ def parse_reply(content):
     return answer[:900], action
 
 
-async def complete(messages):
+async def complete(messages, *, temperature=0.2):
     key = os.getenv("SARVAM_API_KEY", "").strip()
     if not key:
         raise HTTPException(503, "The voice assistant is not configured on the server.")
     payload = {
         "model": os.getenv("SARVAM_CHAT_MODEL", "sarvam-105b"),
         "messages": messages,
-        "temperature": 0.2,
+        "temperature": temperature,
         "max_tokens": 400,
+        # Both callers ask for one JSON object; JSON mode guarantees valid syntax.
+        "response_format": {"type": "json_object"},
         # Answers are short and spoken; reasoning would only add delay.
         "reasoning_effort": None,
     }
