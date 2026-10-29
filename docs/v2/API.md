@@ -26,6 +26,9 @@ their original paths. All private responses are `Cache-Control: no-store`.
 | Enrollment | `/pilot-enrollments`, `/pilot-enrollments/{id}` |
 | Notices/catalog | `/notifications`, `/notifications/{id}/acknowledge`, `/benefits/catalog` |
 | Private speech | `GET /speech/capabilities`, `POST /speech/transcribe`, `POST /speech/synthesize` |
+| Spoken farm setup | `POST /farm-setup/understand` with `text` (≤1,000 characters) and `language`. Needs `speech_processing`; with `location_processing` it also finds the village (OpenStreetMap Nominatim, checked against the district) and estimates soil from SoilGrids texture. Returns a draft (place codes, hectares, crop ID, soil and its source, water, rounded location, missing fields) and stores nothing. 20/hour per farmer, 10/minute per IP, shared global model budget |
+| Field assessment | `POST /plots/{id}/assessment` (needs `agronomic_analysis`; 20/hour): field score, harvest and profit ranges, price source, seed/fertilizer/watering inputs, risk components, active pests, same-season alternatives and `better_crop`, an improvement plan and scheme IDs with reasons. Plots accept an optional `soil_metadata` (`soil_type`, `source`, `condition`, `seed`); edits that omit it keep the stored value |
+| Voice assistant | `POST /assistant/ask` with `question` (≤500 characters), `language`, optional owned `plot_id` and up to six earlier `history` turns. Requires `speech_processing` consent; returns `answer`, one `action` (`scan`, `market`, `weather`, `farm`, `note`, `benefits`, `none`), the record groups it was grounded on and `retention: not_stored`. Limited per farmer (30/hour, 120/day), per IP (10/minute) and globally (`SARVAM_CHAT_DAILY`) |
 
 Mutations require the exact allowed `Origin`, cookies and `X-CSRF-Token` from
 verification/bootstrap. Tokens stay in cookies/memory, never browser storage.

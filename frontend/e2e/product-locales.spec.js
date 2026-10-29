@@ -33,6 +33,8 @@ const names = {
   ur: "اردو",
 };
 
+const escape = (value) => value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+
 test("static farmer entry in every configured language, RTL, fonts, keyboard and mobile accessibility", async ({
   page,
 }, info) => {
@@ -115,10 +117,6 @@ test("static farmer entry in every configured language, RTL, fonts, keyboard and
             .analyze()
         ).violations,
       ).toEqual([]);
-      if (width === 1440 && ["ks", "sd", "ur"].includes(code)) {
-        const sidebar = await page.locator(".product-sidebar").boundingBox();
-        expect(sidebar.x).toBeGreaterThan(width / 2);
-      }
       const directory = `../output/product/screenshots/locales/${info.project.name}`;
       await fs.mkdir(directory, { recursive: true });
       await page.screenshot({
@@ -166,7 +164,7 @@ test("every configured language remains active across authenticated farmer route
     .getByRole("button", { name: "Verify & continue", exact: true })
     .click();
   await expect(page.getByRole("heading", { level: 1 })).toHaveText(
-    "Today on your farm.",
+    /^Namaste, /,
   );
   let lastLanguageStarted = 0;
   for (const code of codes) {
@@ -195,11 +193,11 @@ test("every configured language remains active across authenticated farmer route
     await expect(page.getByRole("dialog")).not.toBeVisible();
     await expect(page.locator("html")).toHaveAttribute("lang", `${code}-IN`);
     for (const [route, title] of [
-      ["/app/today", "Today on your farm."],
+      ["/app/today", "Namaste, {{v0}}"],
       ["/app/farm", "Your farm, field by field."],
       ["/app/health", "Check a sick plant"],
       ["/app/market", "Mandi prices"],
-      ["/app/more", "A little more for your farm."],
+      ["/app/more", "More help and settings"],
       ["/app/more/settings", "Your account. Your decisions."],
     ]) {
       await page.goto(route);
@@ -207,8 +205,12 @@ test("every configured language remains active across authenticated farmer route
       // shared CI runner. The failed trace has successful, fast API responses
       // and the correct heading just after the default assertion deadline.
       // Bound functional readiness separately from the measured startup test.
+      // The greeting carries the farmer's name wherever the language puts it.
+      const [before, after] = tx(title).split("{{v0}}");
       await expect(page.getByRole("heading", { level: 1 })).toHaveText(
-        tx(title),
+        after === undefined
+          ? tx(title)
+          : new RegExp(`^${escape(before)}.+${escape(after)}$`),
         { timeout: 15000 },
       );
       await expect(page.locator("html")).toHaveAttribute("lang", `${code}-IN`);

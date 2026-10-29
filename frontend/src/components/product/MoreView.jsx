@@ -1,84 +1,89 @@
 import { useProductLocale } from "../../features/product/ProductLocale";
 import {
-  ArrowUpRight,
-  Calculator,
-  BadgeHelp,
-  Settings,
-  Building2,
   BookOpen,
+  Building2,
+  Calculator,
+  Landmark,
+  Phone,
+  Settings,
   ShieldCheck,
 } from "lucide-react";
 const ITEMS = [
   [
-    "/app/more/planning",
-    Calculator,
-    "Plan a season",
-    "Explore assumptions with the farm decision simulator.",
+    "/app/more/benefits",
+    Landmark,
+    "Government schemes",
+    "Official links to check what help you can get.",
+    "plum",
   ],
   [
-    "/app/more/benefits",
-    BadgeHelp,
-    "Benefits & official services",
-    "Find official portals and verify eligibility with the source.",
+    "/app/more/planning",
+    Calculator,
+    "Plan my season",
+    "Try different crops and costs before you sow.",
+    "amber",
   ],
   [
     "/app/more/settings",
     Settings,
-    "Account & settings",
-    "Your profile, permissions, offline records and data rights.",
+    "My account and settings",
+    "Name, place, language, sign-in and permissions.",
+    "leaf",
+  ],
+  [
+    "tel:18001801551",
+    Phone,
+    "Call Kisan helpline",
+    "Free advice from experts: 1800-180-1551.",
+    "brick",
   ],
   [
     "/how-it-works",
     BookOpen,
     "How Krishyak works",
-    "Understand the records, evidence and limits.",
+    "What Krishyak can and cannot tell you.",
+    "sky",
   ],
   [
     "/privacy",
     ShieldCheck,
-    "Privacy & terms",
-    "Read how your information is handled.",
+    "Privacy and terms",
+    "How your information is kept safe.",
+    "earth",
   ],
 ];
 export function MoreView({ workspace: w }) {
   const { tx } = useProductLocale();
   return (
     <>
-      <header className="product-page-heading">
-        <div>
-          <span className="eyebrow">{tx("EVERYTHING ELSE, IN ONE PLACE")}</span>
-          <h1>{tx("A little more for your farm.")}</h1>
-          <p>
-            {tx(
-              "Planning tools, official services and settings, when you need them.",
-            )}
-          </p>
-        </div>
+      <header className="home-greeting">
+        <h1>{tx("More help and settings")}</h1>
+        <p>
+          {tx(
+            "Government schemes, season planning and your account, in one place.",
+          )}
+        </p>
       </header>
-      <div className="more-grid">
-        {ITEMS.map(([href, Icon, title, description]) => (
-          <a className="more-card" key={href} href={href}>
-            <Icon size={28} />
-            <div>
-              <h2>{tx(title)}</h2>
-              <p>{tx(description)}</p>
-            </div>
-            <ArrowUpRight size={20} />
+      <nav className="home-tiles more-tiles" aria-label={tx("More")}>
+        {ITEMS.map(([href, Icon, title, description, tone]) => (
+          <a className={`home-tile tone-${tone}`} key={href} href={href}>
+            <Icon size={30} aria-hidden="true" />
+            <strong>{tx(title)}</strong>
+            <small>{tx(description)}</small>
           </a>
         ))}
         {["admin", "organisation_admin", "agronomist"].includes(
           w.farmer?.role,
         ) && (
-          <a className="more-card" href="/institution">
-            <Building2 size={28} />
-            <div>
-              <h2>{tx("Institutional workspace")}</h2>
-              <p>{tx("Consented cohort evidence and research review.")}</p>
-            </div>
-            <ArrowUpRight size={20} />
+          <a className="home-tile tone-sky" href="/institution">
+            <Building2 size={30} aria-hidden="true" />
+            <strong>{tx("Institutional workspace")}</strong>
+            <small>
+              {tx("Consented cohort evidence and research review.")}
+            </small>
           </a>
         )}
-      </div>
+      </nav>
       <p className="small muted">
         {tx(
           "Krishyak supports your judgement. It does not replace a field visit or official eligibility verification.",

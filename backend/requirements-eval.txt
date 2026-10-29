@@ -4,4 +4,4 @@
 tensorflow==2.20.0
 keras==3.15.1
 scikit-learn==1.9.0
-pillow==12.3.0
+pillow==13.0.0

@@ -1,11 +1,16 @@
 import { useProductLocale } from "../../features/product/ProductLocale";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 import {
   ArrowRight,
   Camera,
+  Gauge,
+  IndianRupee,
   Info,
-  Plus,
-  Sprout,
+  Landmark,
+  Mic,
+  NotebookPen,
+  Phone,
   Store,
   Sun,
 } from "lucide-react";
@@ -18,6 +23,10 @@ import { WeatherStrip } from "./WeatherStrip";
 import { cropLabel } from "../../features/product/crops";
 import { locationFromProfile } from "../../features/product/indiaLocations";
 import { MarketPrices, useMarketPrices } from "./MarketView";
+import {
+  SUGGESTIONS,
+  useVoiceLauncher,
+} from "../../features/product/voiceLauncher";
 
 function PriceGlance({ w, cycle }) {
   const { tx } = useProductLocale();
@@ -54,58 +63,146 @@ const LocalReadout = deferredFeature(
 const NoticeList = deferredFeature(
   () => import("../../features/farms/NoticeList"),
 );
+const TILES = [
+  ["/app/assessment", Gauge, "My field report", "Harvest, profit, risk", "sky"],
+  ["/app/health", Camera, "Check a sick plant", "Photo of a leaf", "leaf"],
+  ["/app/market", IndianRupee, "Mandi prices", "Today's rates", "amber"],
+  ["#note", NotebookPen, "Note what I saw", "Keep a record", "earth"],
+  [
+    "/app/more/benefits",
+    Landmark,
+    "Government schemes",
+    "Official help",
+    "plum",
+  ],
+  [
+    "tel:18001801551",
+    Phone,
+    "Call Kisan helpline",
+    "Free, 1800-180-1551",
+    "brick",
+  ],
+];
+
+function VoiceHero() {
+  const { tx, info } = useProductLocale();
+  const openVoice = useVoiceLauncher();
+  const still = useReducedMotion();
+  if (!openVoice) return null;
+  return (
+    <section className="voice-hero" aria-labelledby="voice-hero-heading">
+      <div className="voice-hero-copy">
+        <h2 id="voice-hero-heading">{tx("Ask Krishyak anything")}</h2>
+        <p>
+          {tx("Speak in {{v0}}. Krishyak listens and answers aloud.", {
+            v0: info.nativeName,
+          })}
+        </p>
+        <ul className="voice-hero-examples" aria-label={tx("Try asking")}>
+          {SUGGESTIONS.slice(0, 3).map((question) => (
+            <li key={question}>“{tx(question)}”</li>
+          ))}
+        </ul>
+      </div>
+      <motion.button
+        type="button"
+        className="voice-hero-mic"
+        onClick={openVoice}
+        aria-haspopup="dialog"
+        whileTap={still ? undefined : { scale: 0.95 }}
+      >
+        <span className="voice-hero-pulse" aria-hidden="true" />
+        <Mic size={44} strokeWidth={1.8} aria-hidden="true" />
+        <span>{tx("Tap to speak")}</span>
+      </motion.button>
+    </section>
+  );
+}
+
 export function TodayView({ workspace: w }) {
-  const { tx, formatDate } = useProductLocale();
+  const { tx, formatDate, info } = useProductLocale();
   const [evidence, setEvidence] = useState(null),
     [recording, setRecording] = useState(false),
     [all, setAll] = useState(false);
   const actions = w.today?.actions || [];
   const cycle =
     w.cycles.find((item) => item.status === "active") || w.cycles[0];
+  useEffect(() => {
+    if (w.plot && location.hash === "#note") {
+      // Open once for a voice-mode link, then forget the request.
+      history.replaceState(null, "", location.pathname + location.search);
+      setRecording(true);
+    }
+  }, [w.plot]);
+  const today = new Intl.DateTimeFormat(info.speechCode, {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+  }).format(new Date());
   return (
     <>
-      <header className="product-page-heading">
-        <div>
-          <h1>{tx("Today on your farm.")}</h1>
-          <p>
-            {w.plot
-              ? tx(
-                  "Your next steps for {{v0}}. Inspect the field before acting.",
-                  {
-                    v0: w.plot.name,
-                  },
-                )
-              : tx(
-                  "Add a field to bring your observations and next steps together.",
-                )}
-          </p>
-        </div>
-        {w.plot && (
-          <button className="button primary" onClick={() => setRecording(true)}>
-            <Plus size={18} />
-            {tx("Record an update")}
-          </button>
-        )}
+      <header className="home-greeting">
+        <span className="home-date">{today}</span>
+        <h1>
+          {tx("Namaste, {{v0}}", {
+            v0: w.farmer.display_name || tx("farmer"),
+          })}
+        </h1>
+        <p>
+          {w.plot
+            ? tx("Here is today for {{v0}}.", { v0: w.plot.name })
+            : tx("Let us set up your first field.")}
+        </p>
       </header>
+      <VoiceHero />
+      <nav className="home-tiles" aria-label={tx("Quick actions")}>
+        {TILES.filter(
+          ([href]) =>
+            (href !== "#note" && href !== "/app/assessment") || w.plot,
+        ).map(([href, Icon, title, hint, tone]) =>
+          href === "#note" ? (
+            <button
+              type="button"
+              key={href}
+              className={`home-tile tone-${tone}`}
+              onClick={() => setRecording(true)}
+            >
+              <Icon size={30} aria-hidden="true" />
+              <strong>{tx(title)}</strong>
+              <small>{tx(hint)}</small>
+            </button>
+          ) : (
+            <a key={href} href={href} className={`home-tile tone-${tone}`}>
+              <Icon size={30} aria-hidden="true" />
+              <strong>{tx(title)}</strong>
+              <small>{tx(hint)}</small>
+            </a>
+          ),
+        )}
+      </nav>
       {!w.plot ? (
-        <section className="product-card welcome-card">
-          <Sprout size={42} />
-          <h2>{tx("Start with one field.")}</h2>
-          <p>
-            {tx(
-              "Give it a name and an area. You can draw its boundary whenever you are ready.",
-            )}
-          </p>
-          <a className="button primary" href="/app/farm">
-            {tx("Add my first field")} <ArrowRight size={18} />
-          </a>
-          <a className="text-link" href="/demo">
-            {tx("See an example first")}
-          </a>
+        <section className="setup-hero" aria-labelledby="setup-hero-heading">
+          <Mic size={40} aria-hidden="true" />
+          <div>
+            <h2 id="setup-hero-heading">
+              {tx("Tell Krishyak about your farm")}
+            </h2>
+            <p>
+              {tx(
+                "Say your village, land, crop and soil in your language. Krishyak fills everything in and shows your expected harvest, profit, risks and the schemes for you.",
+              )}
+            </p>
+            <a className="button primary large" href="/app/setup">
+              {tx("Speak about my farm")} <ArrowRight size={18} />
+            </a>
+            <a className="text-link" href="/app/farm">
+              {tx("Or add a field by hand")}
+            </a>
+          </div>
         </section>
       ) : (
         <>
-          <div className="today-glance">
+          <div className="today-glance" id="weather">
             <WeatherStrip
               plotId={w.selected}
               plot={w.plot}
@@ -115,29 +212,15 @@ export function TodayView({ workspace: w }) {
             />
             <PriceGlance w={w} cycle={cycle} />
           </div>
-          <nav className="quick-actions" aria-label={tx("Quick actions")}>
-            <button type="button" onClick={() => setRecording(true)}>
-              <Plus size={24} aria-hidden="true" />
-              {tx("Note what I saw")}
-            </button>
-            <a href="/app/health">
-              <Camera size={24} aria-hidden="true" />
-              {tx("Check a sick plant")}
-            </a>
-            <a href="/app/market">
-              <Store size={24} aria-hidden="true" />
-              {tx("Mandi prices")}
-            </a>
-          </nav>
           <div className="context-strip">
-            <Sun size={24} />
+            <Sun size={24} aria-hidden="true" />
             <div>
               <strong>
                 {cropLabel(w.cycles[0], tx) || tx("No crop cycle recorded")}
               </strong>
               <span>
                 {w.cycles[0]
-                  ? tx("Sown {{v0}} \xB7 {{v1}}", {
+                  ? tx("Sown {{v0}} · {{v1}}", {
                       v0: formatDate(w.cycles[0].sowing_date),
                       v1: w.cycles[0].growth_stage || tx("Stage not recorded"),
                     })
