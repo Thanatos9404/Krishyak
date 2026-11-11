@@ -93,6 +93,10 @@ and Redis inside WSL; accounts were synthetic and deleted afterwards.
 | Dependency audit | pip-audit and npm audit report no known vulnerabilities | pyasn1 0.6.5; glob and minimatch pinned by override |
 | Live staging | 9 of 9 on schema v2_0011 | Real passkey, weather, leaf model, private storage, Copernicus job, Sarvam voice, spoken setup, claim pack, calendar, Pest Radar, Krishyak Live, guides |
 
+`scripts/smoke_staging.py` passed all 11 required checks on staging; its one
+optional check, live mandi data, still reported the source unavailable from
+Vercel Singapore.
+
 Repeated local runs hit the sign-up (10/hour) and recovery (5/hour) limits
 by design; those counters were cleared in the local Redis only. Not covered:
 physical Android or iOS devices, a real camera stream in Krishyak Live, a

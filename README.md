@@ -185,7 +185,9 @@ Live-verified on 9–10 October 2026: Copernicus, Sarvam, Open-Meteo, private
 Blob storage, Neon and Upstash. data.gov.in's API host refused connections
 throughout October; it answered again on 11–12 November 2026 and the Home
 screen showed a dated AGMARKNET wheat price for Jaipur district in a local
-run with the project key.
+run with the project key. The staging deployment (Vercel Singapore) still
+reported the source as unavailable on 12 November, so live mandi data is
+verified locally only.
 
 ## Run locally
 
