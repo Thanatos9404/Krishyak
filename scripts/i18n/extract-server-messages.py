@@ -17,6 +17,12 @@ for directory in (ROOT / "backend/v2", ROOT / "backend/remote_sensing"):
                 for target in node.targets
             ):
                 nodes.extend(ast.walk(node.value))
+            # Farmer-facing lists and calendars defined as module constants.
+            if isinstance(node, ast.Assign) and any(
+                isinstance(target, ast.Name) and target.id in {"CALENDAR", "SHARED", "NEVER_SHARED", "LIMITS"}
+                for target in node.targets
+            ):
+                nodes.extend(ast.walk(node.value))
             if isinstance(node, ast.Dict):
                 for key, value in zip(node.keys, node.values):
                     if isinstance(key, ast.Constant) and key.value in FIELDS:

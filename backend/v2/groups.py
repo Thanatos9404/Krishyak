@@ -43,7 +43,7 @@ SHARED = [
     "The fields you pick: name, crop, area and sowing date",
     "Latest photo-check result, satellite greenness, nearby disease alerts and loss reports for those fields",
 ]
-NEVER_SHARED = ["Phone number", "Field outline or exact location", "Photographs", "Notes, costs and sales"]
+NEVER_SHARED = ["Phone number", "Field outline or exact location", "Your photographs", "Notes, costs and sales"]
 
 
 def new_code():

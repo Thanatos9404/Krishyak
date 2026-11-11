@@ -33,7 +33,7 @@ SHARED = [
     "The field you pick: crop, sowing date, area and rounded location (about 1 km)",
     "Satellite greenness of that field since sowing, and how many leaf photos you checked there",
 ]
-NEVER_SHARED = ["Phone number", "Field outline", "Photographs", "Other fields, notes, costs and sales"]
+NEVER_SHARED = ["Phone number", "Field outline", "Your photographs", "Other fields, notes, costs and sales"]
 LIMITS = [
     "Sentinel-2 greenness shows that plants grew, not which crop they are",
     "Cloud can hide the field for weeks; missing views are not evidence against the farmer",
@@ -133,7 +133,9 @@ def evaluate(db, record):
             ImageAsset.created_at >= record.accepted_at - timedelta(days=60),
         )
     )
-    record.status = "processing" if waiting and verdict == "not_enough_evidence" else "ready"
+    if waiting and verdict == "not_enough_evidence":
+        reason = "satellite_check_running"
+    record.status = "processing" if reason == "satellite_check_running" else "ready"
     record.result = {
         "verdict": verdict,
         "reason": reason,
