@@ -118,3 +118,25 @@ Rollback code and routing to the prior known-good release. Prefer forward schema
 repair; inspect retained data before any downgrade. Restore database/objects
 together using [disaster recovery](DISASTER_RECOVERY.md). Never expose a database
 port or enable development identities in a deployment (startup rejects them).
+
+## Release v2_0011 (groups and Verify)
+
+Migration `v2_0011_groups_verify` adds `kind` and `join_code` to
+`v2_pilot_cohorts` and creates `v2_verifications`. It is additive and safe
+to apply before the new code is live. Apply it to staging and production
+with the HTTP migration step above (set `V2_HTTP_MIGRATIONS=true`, redeploy,
+call `POST /api/v2/internal/migrate` with the cron bearer, set it back to
+`false`). Until then `/health/ready` is not ready, because it compares the
+database with the migration head in the code. No new environment variable
+is required. To make an
+account an organiser, an operator sets `role = 'organisation_admin'` on its
+`v2_farmers` row.
+
+## Local PostGIS and Redis without Docker Desktop
+
+On Windows machines where Docker Desktop will not start, PostgreSQL 16 with
+PostGIS 3.4 and Redis can run inside WSL Ubuntu, bound to 127.0.0.1 only.
+Use a Postgres port outside Windows' reserved ranges (`netsh interface ipv4
+show excludedportrange protocol=tcp`); this project uses 55532 and Redis on
+56379. Point an ignored env file at them and start the API with
+`python scripts/run_v2_local.py api --env .codex-tmp/v2-wsl.env`.

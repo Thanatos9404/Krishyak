@@ -36,6 +36,10 @@ provider is called, across all serverless instances:
 | data.gov.in (mandi) | public prices: 30/minute per address, provider refresh at most every 3 hours per scope, 2,000 provider calls/day |
 | Open-Meteo (weather) | accounts: 6/hour per account, 4,000/day global; public routes: 4,000/day global |
 | Photos | 10/hour per account, 2,000/day global, 9 MB request bound, resized on device |
+| Krishyak Live | 40 turns/hour per account, then the voice-assistant budgets (120/day per account, 10/minute per address, global `SARVAM_CHAT_DAILY`); a frame also draws on the 2,000/day photo budget |
+| Claim photos | 24/hour per account, 8 per report, the same global photo budget and request bound |
+| Group and Verify codes | Eight characters from a 31-symbol alphabet without look-alikes (about 8.5 × 10^11 values); lookups 20/hour per account; unknown, used, expired and withdrawn codes all answer 404 |
+| Verify requests | 200/day per organiser account |
 | Sign-up/sign-in | per address limits on passkey registration, verification, recovery and OTP, plus global caps |
 | Public API | 60/minute and 1,000/day per address in Redis; model and simulation routes 10/minute |
 
@@ -75,3 +79,18 @@ CI pins action commits, uses read-only repository permissions, scans runtime
 dependencies and v2 code, and retains only synthetic failure artifacts for seven
 days. See [threat model](THREAT_MODEL.md), [testing](TESTING.md) and
 [privacy](PRIVACY.md). Independent penetration testing has not been performed.
+
+## Sharing features (November 2026)
+
+Organiser routes (`/admin/groups`, `/admin/verifications`) require the
+`organisation_admin` or `admin` role and a recent sign-in, and return only
+rows that organiser created. A farmer can share only plots they own; another
+account's plot ID answers 404. The dashboard and Verify report are built
+from an allow-list of fields, so phone numbers, geometry, photographs,
+notes and economics cannot leak through a serializer change. Pest Radar
+excludes the asking farmer's own results, needs three distinct other
+accounts and rounds counts down, which keeps a single neighbour from being
+singled out. Loss photos are tagged as evidence and excluded from leaf-check
+lists, model feedback and Pest Radar. Saved offline photos are keyed by
+account in IndexedDB and are not encrypted at rest; the app removes them on
+sign-out and when a different account signs in.

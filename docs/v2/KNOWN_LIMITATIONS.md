@@ -47,7 +47,14 @@ byte erasure of the photo from Blob storage.
 
 | Area | Limit |
 |---|---|
-| Offline | Device cache is not encrypted; photos need a connection; offline logout revokes the server session on reconnection. |
+| Offline | Device cache and saved photos are not encrypted; a saved photo is checked only after the farmer reconnects and taps the button; there is no on-phone leaf model or language model; offline logout revokes the server session on reconnection. |
+| Krishyak Live | One still frame and one question per turn through Sarvam, not a continuous Gemini Live stream; needs a connection; the leaf model's limits apply to the frame. |
+| Pest Radar | Needs at least three sharing farmers within 10 km, so it stays quiet until a district has real users; it repeats model findings, which can be wrong; no alert has been checked against a confirmed outbreak. |
+| Krishyak Verify | Sentinel-2 NDVI shows that plants grew after the stated sowing date, not the crop type; cloud can leave "not enough evidence" for weeks; no AlphaEarth, no billing and no PDF or partner API beyond the organiser desk and its print view. |
+| Claim Kit | Prepares evidence and shows the official routes; it does not submit to PMFBY or an insurer, and the 72-hour rule text needs review against the current notified guidelines for each state and season. |
+| Crop calendar | General day-count reminders for eight crops; not adjusted for variety, region or weather; awaiting agronomist review. |
+| FPO Command Centre | Organiser accounts are granted by an operator in the database; there is no self-service organiser sign-up, billing or BigQuery analytics. |
+| Google AI | Gemini Live, Earth Engine AlphaEarth, BigQuery, Nano Banana and Gemma are in the Buildathon plan but not integrated: no Google Cloud credentials exist for this project. |
 | Scheduled work | On Vercel, jobs drain inside requests plus a once-daily cron (Hobby plan limit). Cron runs only on production deployments; staging was exercised by calling the protected trigger. |
 | Hosting | Neon, Upstash and Vercel free tiers: Neon compute scales to zero (first request after idle is slower) and has 0.5 GB storage; Upstash free has request limits; Vercel Hobby is for non-commercial use. A commercial launch needs paid plans approved by the operator. |
 | Environments | Production (`krishyak.vercel.app`, `krishyak-api.vercel.app`) and staging have separate Neon databases, Redis keys (separate secrets) and session secrets; both use the same private Blob store under random per-farmer keys. Cron runs daily on production only. |
