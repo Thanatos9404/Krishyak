@@ -13,25 +13,31 @@ from security import client_ip, normalize_request_id
 
 from .assessment import router as assessment_router
 from .assistant import router as assistant_router
+from .claims import router as claims_router
 from .context import router as context_router
+from .crop_calendar import router as calendar_router
 from .farm_context.router import router as farm_context_router
 from .farm_context.service import FarmContextService
 from .farm_setup import router as farm_setup_router
 from .government import router as government_router
 from .government_auth import MeriPehchaanAdapter
 from .government_auth import router as government_auth_router
+from .groups import router as groups_router
 from .images import router as images_router
 from .limits import Quotas
+from .live import router as live_router
 from .market import router as market_router
 from .notifications import router as notifications_router
 from .passkeys import router as passkeys_router
 from .pilots import router as pilots_router
+from .radar import router as radar_router
 from .rights import router as rights_router
 from .router import router
 from .satellite import router as satellite_router
 from .settings import Settings
 from .speech import router as speech_router
 from .tts import ReadAloud
+from .verify import router as verify_router
 from .worker_http import router as worker_router
 
 
@@ -71,6 +77,12 @@ def install_v2(app, settings=None):
     app.include_router(assistant_router)
     app.include_router(farm_setup_router)
     app.include_router(assessment_router)
+    app.include_router(radar_router)
+    app.include_router(calendar_router)
+    app.include_router(claims_router)
+    app.include_router(live_router)
+    app.include_router(groups_router)
+    app.include_router(verify_router)
     app.include_router(pilots_router)
     app.include_router(notifications_router)
 

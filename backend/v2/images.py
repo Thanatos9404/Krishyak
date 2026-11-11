@@ -108,37 +108,8 @@ def owned_image(db, farmer, image_id):
     return image
 
 
-@router.post("/disease-scans", status_code=201)
-@bounded_scan
-def scan(
-    request: Request,
-    operation_id: UUID = Form(...),
-    plot_id: UUID = Form(...),
-    crop: str = Form(..., max_length=100),
-    image: UploadFile = File(...),
-    farmer=Depends(current_farmer),
-    db=Depends(database, scope="function"),
-):
-    owned_plot(db, farmer.id, plot_id)
-    require_consent(db, farmer, "agronomic_analysis")
-    content = image.file.read(8 * 1024 * 1024 + 1)
-    try:
-        clean, width, height, digest = sanitize_image(content, image.content_type)
-    except (ValueError, UnidentifiedImageError, Image.DecompressionBombError, OSError):
-        raise HTTPException(
-            422, "Use a valid single JPEG, PNG or WebP image within size and dimension limits"
-        ) from None
-    finally:
-        image.file.close()
-    existing = db.scalar(
-        select(ImageAsset).where(ImageAsset.farmer_id == farmer.id, ImageAsset.operation_id == operation_id)
-    )
-    if existing:
-        if existing.plot_id != plot_id or existing.sha256 != digest or existing.result.get("crop") != crop:
-            raise HTTPException(409, "Operation ID already used for another photograph")
-        return {"image_id": existing.id, "result": existing.result}
-    request.app.state.v2_quotas.check("images", str(farmer.id), 10, 3600)
-    request.app.state.v2_quotas.check("images_global", "global", 2000, 86400)
+def classify(clean, crop):
+    """Run the active leaf model on a sanitised photo for one crop."""
     metadata, labels = model_release()
     from model_inference import class_crop, predict_from_image
 
@@ -184,6 +155,41 @@ def scan(
             "Chemical treatment and dosing require locally applicable expert/label verification",
         ],
     }
+    return result, metadata
+
+
+@router.post("/disease-scans", status_code=201)
+@bounded_scan
+def scan(
+    request: Request,
+    operation_id: UUID = Form(...),
+    plot_id: UUID = Form(...),
+    crop: str = Form(..., max_length=100),
+    image: UploadFile = File(...),
+    farmer=Depends(current_farmer),
+    db=Depends(database, scope="function"),
+):
+    owned_plot(db, farmer.id, plot_id)
+    require_consent(db, farmer, "agronomic_analysis")
+    content = image.file.read(8 * 1024 * 1024 + 1)
+    try:
+        clean, width, height, digest = sanitize_image(content, image.content_type)
+    except (ValueError, UnidentifiedImageError, Image.DecompressionBombError, OSError):
+        raise HTTPException(
+            422, "Use a valid single JPEG, PNG or WebP image within size and dimension limits"
+        ) from None
+    finally:
+        image.file.close()
+    existing = db.scalar(
+        select(ImageAsset).where(ImageAsset.farmer_id == farmer.id, ImageAsset.operation_id == operation_id)
+    )
+    if existing:
+        if existing.plot_id != plot_id or existing.sha256 != digest or existing.result.get("crop") != crop:
+            raise HTTPException(409, "Operation ID already used for another photograph")
+        return {"image_id": existing.id, "result": existing.result}
+    request.app.state.v2_quotas.check("images", str(farmer.id), 10, 3600)
+    request.app.state.v2_quotas.check("images_global", "global", 2000, 86400)
+    result, metadata = classify(clean, crop)
     # Unreviewed pesticide doses from legacy knowledge tables are intentionally
     # not promoted into v2 authoritative advice.
     object_key = f"{farmer.id}/{uuid4()}.jpg"
@@ -256,7 +262,11 @@ def scans(
 ):
     records = db.scalars(
         select(ImageAsset)
-        .where(ImageAsset.farmer_id == farmer.id, *([ImageAsset.plot_id == plot_id] if plot_id else []))
+        .where(
+            ImageAsset.farmer_id == farmer.id,
+            ImageAsset.result["kind"].astext.is_(None),  # loss evidence lives in the Claim Kit
+            *([ImageAsset.plot_id == plot_id] if plot_id else []),
+        )
         .order_by(ImageAsset.created_at.desc(), ImageAsset.id)
         .offset(offset)
         .limit(limit)

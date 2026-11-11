@@ -61,7 +61,9 @@ def institution(farmer, request, db):
 
 def own_cohort(db, farmer, cohort_id):
     cohort = db.scalar(
-        select(PilotCohort).where(PilotCohort.id == cohort_id, PilotCohort.organisation_admin_id == farmer.id)
+        select(PilotCohort).where(
+            PilotCohort.id == cohort_id, PilotCohort.organisation_admin_id == farmer.id, PilotCohort.kind == "pilot"
+        )
     )
     if cohort is None:
         raise HTTPException(404, "Pilot cohort not found")
@@ -79,7 +81,7 @@ def cohorts(
     institution(farmer, request, db)
     records = db.scalars(
         select(PilotCohort)
-        .where(PilotCohort.organisation_admin_id == farmer.id)
+        .where(PilotCohort.organisation_admin_id == farmer.id, PilotCohort.kind == "pilot")
         .order_by(PilotCohort.created_at.desc())
         .offset(offset)
         .limit(limit)
@@ -106,7 +108,12 @@ def create_cohort(
 
 @router.get("/pilot-enrollments")
 def enrollments(farmer=Depends(current_farmer), db=Depends(database, scope="function")):
-    records = db.scalars(select(PilotEnrollment).where(PilotEnrollment.farmer_id == farmer.id).limit(100))
+    records = db.scalars(
+        select(PilotEnrollment)
+        .join(PilotCohort, PilotEnrollment.cohort_id == PilotCohort.id)
+        .where(PilotEnrollment.farmer_id == farmer.id, PilotCohort.kind == "pilot")
+        .limit(100)
+    )
     return {"items": [serialize(record) for record in records]}
 
 
@@ -116,7 +123,7 @@ def enroll(
 ):
     consent = require_consent(db, farmer, "pilot_research")
     cohort = db.get(PilotCohort, cohort_id)
-    if cohort is None or cohort.status not in {"planned", "active"}:
+    if cohort is None or cohort.kind != "pilot" or cohort.status not in {"planned", "active"}:
         raise HTTPException(404, "Available pilot cohort not found")
     ids = sorted(set(map(str, body.plot_ids)))
     for plot_id in body.plot_ids:

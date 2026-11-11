@@ -289,12 +289,17 @@ def set_consent(body: ConsentInput, farmer=Depends(current_farmer), db=Depends(d
         db.execute(
             update(Job).where(Job.plot_id.in_(plots), Job.status.in_(["pending", "retry"])).values(status="cancelled")
         )
-    if body.purpose == "pilot_research":
-        from db.models import PilotEnrollment
+    if body.purpose in {"pilot_research", "organisation_sharing"}:
+        from db.models import PilotCohort, PilotEnrollment
 
+        kind = "pilot" if body.purpose == "pilot_research" else "fpo"
         db.execute(
             update(PilotEnrollment)
-            .where(PilotEnrollment.farmer_id == farmer.id, PilotEnrollment.withdrawn_at.is_(None))
+            .where(
+                PilotEnrollment.farmer_id == farmer.id,
+                PilotEnrollment.withdrawn_at.is_(None),
+                PilotEnrollment.cohort_id.in_(select(PilotCohort.id).where(PilotCohort.kind == kind)),
+            )
             .values(withdrawn_at=utcnow())
         )
     return {"purpose": body.purpose, "granted": False}

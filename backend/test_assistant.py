@@ -179,7 +179,7 @@ class AssistantEndpointTests(unittest.TestCase):
         self.assertEqual(response.status_code, 200, response.text)
         body = response.json()
         self.assertEqual(body["action"], "weather")
-        self.assertEqual(body["grounded_on"], ["crop", "field", "mandi_prices", "weather"])
+        self.assertEqual(body["grounded_on"], ["crop", "crop_calendar", "field", "mandi_prices", "weather"])
         self.assertEqual(body["retention"], "not_stored")
         messages = provider.call_args.args[0]
         self.assertEqual([m["role"] for m in messages], ["system", "user", "assistant", "user"])
@@ -187,6 +187,7 @@ class AssistantEndpointTests(unittest.TestCase):
         self.assertEqual(facts["weather"]["rain_next_24h_mm"], 4.2)
         self.assertEqual(facts["weather"]["max_temperature_next_48h_c"], 33.5)
         self.assertEqual(facts["crop"]["days_since_sowing"], 30)
+        self.assertIn("Remove weeds", facts["crop_calendar"]["due_now"][0])  # wheat, day 30
         self.assertEqual(facts["mandi_prices"][0]["modal_price_rupees_per_quintal"], 2450)
         self.assertEqual(facts["field"]["area_hectares"], 1.5)
         self.assertEqual(self._rows(), before)
