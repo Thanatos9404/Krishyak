@@ -1,6 +1,6 @@
 // Cache only public assets and the explicitly anonymous Next app shell.
 // Account data, RSC payloads, private photographs and mutations stay network-only.
-const CACHE = "krishyak-shell-v3-7";
+const CACHE = "krishyak-shell-v3-8";
 const SHELL = [
   "/app/today",
   "/offline",
@@ -64,7 +64,7 @@ self.addEventListener("fetch", (event) => {
         })
         .catch(async () => {
           const farmerRoute =
-            /^\/app\/(today|farm(?:\/[a-f0-9-]{36})?|health|market|more(?:\/(settings|planning|benefits))?)$/.test(
+            /^\/app\/(today|farm(?:\/[a-f0-9-]{36})?|health|market|guides|setup|assessment|live|claim(?:\/[a-f0-9-]{36})?|more(?:\/(settings|planning|benefits|group|verify))?)$/.test(
               url.pathname,
             );
           return (

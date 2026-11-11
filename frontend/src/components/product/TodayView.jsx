@@ -11,8 +11,10 @@ import {
   Mic,
   NotebookPen,
   Phone,
+  ShieldAlert,
   Store,
   Sun,
+  Video,
 } from "lucide-react";
 import { farmApi } from "../../features/farms/api";
 import { deferredFeature } from "../../features/product/deferredProductFeature";
@@ -23,6 +25,7 @@ import { WeatherStrip } from "./WeatherStrip";
 import { cropLabel } from "../../features/product/crops";
 import { locationFromProfile } from "../../features/product/indiaLocations";
 import { MarketPrices, useMarketPrices } from "./MarketView";
+import { CalendarCard, RadarCard, usePestRadar } from "./FieldAlerts";
 import {
   SUGGESTIONS,
   useVoiceLauncher,
@@ -64,10 +67,18 @@ const NoticeList = deferredFeature(
   () => import("../../features/farms/NoticeList"),
 );
 const TILES = [
+  ["/app/live", Video, "Show and ask", "Camera and voice", "leaf"],
   ["/app/assessment", Gauge, "My field report", "Harvest, profit, risk", "sky"],
   ["/app/health", Camera, "Check a sick plant", "Photo of a leaf", "leaf"],
   ["/app/market", IndianRupee, "Mandi prices", "Today's rates", "amber"],
   ["#note", NotebookPen, "Note what I saw", "Keep a record", "earth"],
+  [
+    "/app/claim",
+    ShieldAlert,
+    "Report crop loss",
+    "Photos for insurance",
+    "brick",
+  ],
   [
     "/app/more/benefits",
     Landmark,
@@ -80,7 +91,7 @@ const TILES = [
     Phone,
     "Call Kisan helpline",
     "Free, 1800-180-1551",
-    "brick",
+    "sky",
   ],
 ];
 
@@ -125,6 +136,7 @@ export function TodayView({ workspace: w }) {
     [recording, setRecording] = useState(false),
     [all, setAll] = useState(false);
   const actions = w.today?.actions || [];
+  const radar = usePestRadar(w);
   const cycle =
     w.cycles.find((item) => item.status === "active") || w.cycles[0];
   useEffect(() => {
@@ -154,11 +166,34 @@ export function TodayView({ workspace: w }) {
             : tx("Let us set up your first field.")}
         </p>
       </header>
+      <RadarCard workspace={w} radar={radar} show="alert" />
+      {!w.plot && (
+        <section className="setup-hero" aria-labelledby="setup-hero-heading">
+          <Mic size={40} aria-hidden="true" />
+          <div>
+            <h2 id="setup-hero-heading">
+              {tx("Tell Krishyak about your farm")}
+            </h2>
+            <p>
+              {tx(
+                "Say your village, land, crop and soil in your language. Krishyak fills everything in and shows your expected harvest, profit, risks and the schemes for you.",
+              )}
+            </p>
+            <a className="button primary large" href="/app/setup">
+              {tx("Speak about my farm")} <ArrowRight size={18} />
+            </a>
+            <a className="text-link" href="/app/farm">
+              {tx("Or add a field by hand")}
+            </a>
+          </div>
+        </section>
+      )}
       <VoiceHero />
       <nav className="home-tiles" aria-label={tx("Quick actions")}>
         {TILES.filter(
           ([href]) =>
-            (href !== "#note" && href !== "/app/assessment") || w.plot,
+            !["#note", "/app/assessment", "/app/claim"].includes(href) ||
+            w.plot,
         ).map(([href, Icon, title, hint, tone]) =>
           href === "#note" ? (
             <button
@@ -180,28 +215,10 @@ export function TodayView({ workspace: w }) {
           ),
         )}
       </nav>
-      {!w.plot ? (
-        <section className="setup-hero" aria-labelledby="setup-hero-heading">
-          <Mic size={40} aria-hidden="true" />
-          <div>
-            <h2 id="setup-hero-heading">
-              {tx("Tell Krishyak about your farm")}
-            </h2>
-            <p>
-              {tx(
-                "Say your village, land, crop and soil in your language. Krishyak fills everything in and shows your expected harvest, profit, risks and the schemes for you.",
-              )}
-            </p>
-            <a className="button primary large" href="/app/setup">
-              {tx("Speak about my farm")} <ArrowRight size={18} />
-            </a>
-            <a className="text-link" href="/app/farm">
-              {tx("Or add a field by hand")}
-            </a>
-          </div>
-        </section>
-      ) : (
+      {w.plot && (
         <>
+          <RadarCard workspace={w} radar={radar} show="status" />
+          <CalendarCard workspace={w} />
           <div className="today-glance" id="weather">
             <WeatherStrip
               plotId={w.selected}

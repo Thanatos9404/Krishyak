@@ -51,6 +51,16 @@ const PURPOSES = [
     "Optional. Separate from using the crop-photo service.",
   ],
   [
+    "community_alerts",
+    "Warn nearby farmers with my photo checks",
+    "Your photo-check results count, without your name or place, towards disease alerts for farms within 10 km.",
+  ],
+  [
+    "organisation_sharing",
+    "Share chosen fields with my farmer group",
+    "Your FPO or cooperative sees the fields you pick. Turning this off removes you from its dashboard at once.",
+  ],
+  [
     "pilot_research",
     "Participate in pilot research",
     "Optional. Pilot enrollment and field selection remain separate.",

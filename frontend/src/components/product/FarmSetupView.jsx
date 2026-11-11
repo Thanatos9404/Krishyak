@@ -278,7 +278,11 @@ export function FarmSetupView({ workspace: w, onSaved = openReport }) {
           </button>
         </section>
       ) : (
-        <section className="setup-voice" aria-labelledby="setup-speak">
+        <section
+          className="setup-voice"
+          data-voice-controls="own"
+          aria-labelledby="setup-speak"
+        >
           <h2 id="setup-speak">{tx("Speak about your farm")}</h2>
           <p className="setup-example">
             {tx(

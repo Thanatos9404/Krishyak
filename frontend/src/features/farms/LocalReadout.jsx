@@ -136,8 +136,13 @@ export default function LocalReadout({ text, workspace: w }) {
     }
   };
   return (
-    <div>
-      <button disabled={(!voice && !serverAvailable) || !text} onClick={speak}>
+    <div className="readout">
+      <button
+        type="button"
+        className="button secondary"
+        disabled={(!voice && !serverAvailable) || !text}
+        onClick={speak}
+      >
         {speaking ? tx("Stop reading") : tx("Read today’s advice aloud")}
       </button>
       <p>

@@ -13,7 +13,14 @@ import { farmApi } from "../../features/farms/api";
 import { deferredFeature } from "../../features/product/deferredProductFeature";
 import { ConsentPrompt } from "../../features/farms/ConsentPrompt";
 import { preparePhoto } from "../../features/farms/photo";
+import guides from "../../features/product/diseaseGuides.json";
+import {
+  queueScan,
+  removeScan,
+  waitingScans,
+} from "../../features/farms/scanQueue";
 import { cropCatalog, cropLabel, findCrop } from "../../features/product/crops";
+import { PictureSteps } from "../../features/product/PictureGuide";
 const ScanHistory = deferredFeature(
   () => import("../../features/farms/ScanHistory"),
 );
@@ -56,11 +63,7 @@ function ScanResult({ scan, w }) {
         </p>
       )}
       <h3>{tx("What you can do now")}</h3>
-      <ol className="care-steps">
-        {guidance.steps.map((step) => (
-          <li key={step}>{tx(step)}</li>
-        ))}
-      </ol>
+      <PictureSteps steps={guidance.steps} />
       <a className="button secondary" href="tel:18001801551">
         <Phone size={18} /> {tx("Call Kisan Call Centre (free)")}
       </a>
@@ -140,7 +143,15 @@ export function ScanView({ workspace: w }) {
     [photo, setPhoto] = useState(null),
     [preview, setPreview] = useState(null),
     [result, setResult] = useState(null),
-    [problem, setProblem] = useState("");
+    [problem, setProblem] = useState(""),
+    [waiting, setWaiting] = useState([]);
+  const owner = w.farmer?.id;
+  useEffect(() => {
+    if (!owner) return;
+    waitingScans(owner)
+      .then(setWaiting)
+      .catch(() => setWaiting([]));
+  }, [owner]);
   const camera = useRef(null),
     upload = useRef(null),
     chosen = useRef(false);
@@ -148,7 +159,13 @@ export function ScanView({ workspace: w }) {
     const controller = new AbortController();
     farmApi("/model", { signal: controller.signal })
       .then(setModel)
-      .catch(() => setModel({ supported_crops: [] }));
+      .catch((error) =>
+        // With no signal, offer the crops the bundled guide library covers,
+        // so a photo can still be saved to check later.
+        setModel({
+          supported_crops: error?.network ? Object.keys(guides.crops) : [],
+        }),
+      );
     return () => controller.abort();
   }, []);
   const supported = cropCatalog.filter((row) =>
@@ -225,6 +242,55 @@ export function ScanView({ workspace: w }) {
         throw error;
       }
     });
+  // No signal in the field: keep the photo on this phone and check it later.
+  const saveForLater = () =>
+    w.act(async () => {
+      setProblem("");
+      try {
+        await queueScan(owner, {
+          plot_id: w.selected,
+          crop: findCrop(crop)?.name || crop,
+          photo: await preparePhoto(photo),
+        });
+        setWaiting(await waitingScans(owner));
+        setPhoto(null);
+        w.setNotice(
+          "Photo saved on this phone. Open this page when you are online to check it.",
+        );
+      } catch (error) {
+        setProblem(error.message);
+      }
+    });
+  const checkWaiting = () =>
+    w.act(async () => {
+      setProblem("");
+      for (const item of waiting) {
+        const data = new FormData();
+        data.set("operation_id", item.id);
+        data.set("plot_id", item.plot_id);
+        data.set("crop", item.crop);
+        data.set("image", item.photo, "leaf.jpg");
+        try {
+          const scan = await farmApi("/disease-scans", {
+            method: "POST",
+            body: data,
+            timeoutMs: 60000,
+          });
+          await removeScan(owner, item.id);
+          if (item.plot_id === w.selected) setResult(scan);
+        } catch (error) {
+          // A photo the server will never accept is dropped; anything else waits.
+          if ([404, 409, 422].includes(error.status))
+            await removeScan(owner, item.id);
+          else {
+            setProblem(error.message);
+            break;
+          }
+        }
+      }
+      setWaiting(await waitingScans(owner));
+      await w.refreshEvidence?.();
+    });
   return (
     <>
       <header className="product-page-heading">
@@ -243,12 +309,49 @@ export function ScanView({ workspace: w }) {
           {tx("before saving a crop photograph.")}
         </p>
       )}
-      <ConsentPrompt
-        workspace={w}
-        purposes={["agronomic_analysis"]}
-        title="Allow photo checks"
-        reason="Your photo is checked by Krishyak's crop model and saved privately with this field. You can delete it at any time."
-      />
+      {/* Permissions cannot be read or changed without a connection. */}
+      {!w.offline && (
+        <ConsentPrompt
+          workspace={w}
+          purposes={["agronomic_analysis"]}
+          title="Allow photo checks"
+          reason="Your photo is checked by Krishyak's crop model and saved privately with this field. You can delete it at any time."
+        />
+      )}
+      {waiting.length > 0 && (
+        <section className="scan-waiting" role="status">
+          <p>
+            <strong>
+              {waiting.length === 1
+                ? tx("1 saved photo is waiting to be checked.")
+                : tx("{{v0}} saved photos are waiting to be checked.", {
+                    v0: waiting.length,
+                  })}
+            </strong>{" "}
+            {w.offline
+              ? tx("Open this page when you are online to check.")
+              : tx("You are online now.")}
+          </p>
+          {!w.offline && (
+            <button
+              type="button"
+              className="button primary"
+              disabled={w.busy}
+              onClick={checkWaiting}
+            >
+              {tx("Check saved photos now")}
+            </button>
+          )}
+        </section>
+      )}
+      {w.offline && (
+        <p className="inline-note">
+          {tx(
+            "You are offline. You can save a photo to check later, or open the picture guides.",
+          )}{" "}
+          <a href="/app/guides">{tx("Picture guides")}</a>
+        </p>
+      )}
       <div className="scan-layout">
         <section className="product-card camera-card">
           <label className="v2-label">
@@ -346,6 +449,17 @@ export function ScanView({ workspace: w }) {
           >
             {tx("Check this photograph")} <ArrowRight size={18} />
           </button>
+          {w.offline && owner && (
+            <button
+              type="button"
+              className="button secondary large"
+              // Permission is confirmed by the server when the photo is sent.
+              disabled={w.busy || !w.selected || !photo || !crop}
+              onClick={saveForLater}
+            >
+              {tx("Save photo and check it later")}
+            </button>
+          )}
           {problem && (
             <p role="alert" className="error-panel inline">
               {tx(problem)}

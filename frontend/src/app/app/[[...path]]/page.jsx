@@ -11,6 +11,11 @@ const ALLOWED = new Set([
   "more/benefits",
   "setup",
   "assessment",
+  "live",
+  "guides",
+  "claim",
+  "more/group",
+  "more/verify",
 ]);
 export const metadata = {
   title: "Farm workspace",
@@ -20,6 +25,7 @@ export const metadata = {
 export default async function WorkspacePage({ params }) {
   const { path } = await params;
   const route = (path || []).join("/");
-  if (!ALLOWED.has(route) && !/^farm\/[a-f0-9-]{36}$/.test(route)) notFound();
+  if (!ALLOWED.has(route) && !/^(farm|claim)\/[a-f0-9-]{36}$/.test(route))
+    notFound();
   return <PrivateEntry />;
 }

@@ -286,3 +286,79 @@ test("a spoken farm description fills the form and opens a field report", async 
     fullPage: true,
   });
 });
+
+test("the crop calendar, Pest Radar and a claim pack work on live data", async () => {
+  test.setTimeout(150000);
+  const plots = await (await page.request.get("/api/v2/plots")).json();
+  let calendar, radar;
+  for (const plot of plots.items) {
+    const answer = await (
+      await page.request.get(`/api/v2/plots/${plot.id}/calendar`)
+    ).json();
+    if (answer.status !== "available") continue;
+    calendar = answer;
+    radar = await (
+      await page.request.get(`/api/v2/plots/${plot.id}/pest-radar`)
+    ).json();
+  }
+  expect(calendar, "the wheat field has a calendar").toBeTruthy();
+  expect(calendar.crop_id).toBe("wheat");
+  expect(calendar.now.length + (calendar.next ? 1 : 0)).toBeGreaterThan(0);
+  // A new district has no sharing neighbours yet: quiet, never a made-up alert.
+  expect(["watching", "needs_permission"]).toContain(radar.status);
+
+  await page.goto("/app/claim");
+  await expect(
+    page.getByRole("heading", { name: "Report crop loss", level: 1 }),
+  ).toBeVisible({ timeout: 30000 });
+  await page.getByRole("radio", { name: "Hail" }).check();
+  await page.getByRole("radio", { name: "About half" }).check();
+  await page.getByRole("button", { name: /Next: take photos/ }).click();
+  await expect(
+    page.getByRole("heading", { name: "Your claim pack" }),
+  ).toBeVisible({ timeout: 45000 });
+  await expect(page.getByRole("link", { name: /Call 14447/ })).toHaveAttribute(
+    "href",
+    "tel:14447",
+  );
+  await page
+    .getByLabel("Take a claim photo", { exact: true })
+    .setInputFiles(path.join(process.cwd(), "public/sample-crop-leaf.jpg"));
+  const photo = page.locator(".claim-photo").first();
+  await expect(photo).toBeVisible({ timeout: 60000 });
+  await expect(photo).toContainText("26.9124, 75.7873");
+  // The stored photo is served back from private storage.
+  await expect(page.locator(".claim-photo img")).toHaveJSProperty(
+    "complete",
+    true,
+  );
+  await page.screenshot({
+    path: "../output/product/screenshots/staging/claim-390.png",
+    fullPage: true,
+  });
+});
+
+test("Krishyak Live answers a typed question and the picture guides open", async () => {
+  test.setTimeout(120000);
+  await page.goto("/app/live");
+  await expect(
+    page.getByRole("heading", { name: "Krishyak Live" }),
+  ).toBeVisible({ timeout: 30000 });
+  const type = page.getByRole("button", { name: /Type instead/ });
+  await expect(type).toBeVisible({ timeout: 20000 });
+  await type.click();
+  await page
+    .getByLabel("Type your question")
+    .fill("What should I do for my wheat this week? Answer briefly.");
+  await page.getByRole("button", { name: "Send question" }).click();
+  const answer = page.locator(".live-answer p").first();
+  await expect(answer).toBeVisible({ timeout: 60000 });
+  expect((await answer.innerText()).length).toBeGreaterThan(10);
+  await page.screenshot({
+    path: "../output/product/screenshots/staging/live-390.png",
+  });
+  await page.goto("/app/guides");
+  await expect(
+    page.getByRole("region", { name: "Late blight (tomato)" }),
+  ).toBeVisible({ timeout: 30000 });
+});

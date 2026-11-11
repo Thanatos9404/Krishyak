@@ -1,3 +1,4 @@
+import { clearScans } from "./scanQueue";
 // Private offline records are keyed by the last authenticated owner. Auth tokens
 // never enter IndexedDB. Logout deletes that owner's cache and outbox.
 const DATABASE = "krishyak-field-v2";
@@ -102,7 +103,11 @@ export const pendingOperations = (owner) =>
   );
 
 export async function clearOwner(owner, block = false) {
-  if (block) blockedOwners.add(owner);
+  if (block) {
+    blockedOwners.add(owner);
+    // Signing out, deleting or switching account also removes waiting photos.
+    await clearScans(owner);
+  }
   const database = await openDatabase();
   await new Promise((resolve, reject) => {
     const tx = database.transaction(["records", "outbox"], "readwrite");

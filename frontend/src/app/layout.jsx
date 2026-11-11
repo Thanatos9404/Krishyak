@@ -24,6 +24,9 @@ export const metadata = {
 export const viewport = {
   width: "device-width",
   initialScale: 1,
+  // Paint edge to edge; the chrome pads itself with safe-area insets.
+  viewportFit: "cover",
+  interactiveWidget: "resizes-content",
   themeColor: "#123d27",
 };
 

@@ -1,12 +1,16 @@
 import { useProductLocale } from "../../features/product/ProductLocale";
 import {
   BookOpen,
+  BookOpenCheck,
   Building2,
   Calculator,
+  FileCheck2,
   Landmark,
   Phone,
   Settings,
+  ShieldAlert,
   ShieldCheck,
+  Users,
 } from "lucide-react";
 const ITEMS = [
   [
@@ -15,6 +19,34 @@ const ITEMS = [
     "Government schemes",
     "Official links to check what help you can get.",
     "plum",
+  ],
+  [
+    "/app/guides",
+    BookOpenCheck,
+    "Picture guides",
+    "First steps for leaf diseases. Works offline.",
+    "amber",
+  ],
+  [
+    "/app/more/group",
+    Users,
+    "My farmer group",
+    "Share chosen fields with your FPO or cooperative.",
+    "leaf",
+  ],
+  [
+    "/app/more/verify",
+    FileCheck2,
+    "Farm check for a loan",
+    "Answer your bank's or insurer's satellite check.",
+    "sky",
+  ],
+  [
+    "/app/claim",
+    ShieldAlert,
+    "Report crop loss",
+    "Photos and details for your crop insurer.",
+    "brick",
   ],
   [
     "/app/more/planning",
@@ -35,7 +67,7 @@ const ITEMS = [
     Phone,
     "Call Kisan helpline",
     "Free advice from experts: 1800-180-1551.",
-    "brick",
+    "amber",
   ],
   [
     "/how-it-works",

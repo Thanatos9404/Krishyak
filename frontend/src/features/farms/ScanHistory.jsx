@@ -29,7 +29,7 @@ export default function ScanHistory({ plotId, refresh, act, busy, offline }) {
       <h3>{tx("Saved crop photographs")}</h3>
       <p>
         {tx(
-          "Photographs require a connection. They are not saved in offline storage.",
+          "Past photo checks need a connection. A photo you save offline waits on this phone until you check it.",
         )}
       </p>
       {error && <p role="alert">{error}</p>}
