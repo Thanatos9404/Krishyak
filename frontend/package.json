@@ -70,6 +70,8 @@
     "@istanbuljs/load-nyc-config": {
       "js-yaml": "^4.1.0"
     },
-    "deepmerge": "$krishyak-deepmerge"
+    "deepmerge": "$krishyak-deepmerge",
+    "glob": "^14.0.5",
+    "minimatch": "^11.0.8"
   }
 }
