@@ -77,3 +77,24 @@ These results do not certify physical phones, public deployment latency/capacity
 production backup restoration, commercial provider terms, security penetration
 testing, scientific remote-sensing quality or farmer impact. See
 [known limitations](KNOWN_LIMITATIONS.md).
+
+## Field services release, 12 November 2026
+
+Branch `feat/farmer-ui-revamp`. Local runs used PostgreSQL 16 + PostGIS 3.4
+and Redis inside WSL; accounts were synthetic and deleted afterwards.
+
+| Gate | Recorded result | Scope |
+|---|---|---|
+| Backend | 332 run, 330 passed, 2 skipped | Whole suite on real PostGIS, including 13 field-service tests (Pest Radar thresholds and privacy, claim photos, groups, Verify verdicts, crop calendar) |
+| Frontend unit | 385 passed, 62 suites | Adds picture guides, guide library parity with server guidance, alert and calendar cards, offline photo queue and its clearing rules |
+| Browser, production build | Field services 6 of 6, product flows and passkeys passed (Chromium and the Pixel 7 profile) | Includes a real service-worker run: guides open with no signal, a leaf photo is saved, survives a reload, and is checked once after reconnecting |
+| Accessibility and layout | No axe violations (WCAG 2 A/AA, 2.1 AA, 2.2 AA) on the new screens; no horizontal overflow | Ten screens at 1440, 1024, 768, 390 and 320 px; emulated viewports, not physical phones |
+| Translations | 22 packs, 2,583 strings each, 0 structural failures | Script, placeholder and glossary checks only; native review still required |
+| Dependency audit | pip-audit and npm audit report no known vulnerabilities | pyasn1 0.6.5; glob and minimatch pinned by override |
+| Live staging | 9 of 9 on schema v2_0011 | Real passkey, weather, leaf model, private storage, Copernicus job, Sarvam voice, spoken setup, claim pack, calendar, Pest Radar, Krishyak Live, guides |
+
+Repeated local runs hit the sign-up (10/hour) and recovery (5/hour) limits
+by design; those counters were cleared in the local Redis only. Not covered:
+physical Android or iOS devices, a real camera stream in Krishyak Live, a
+Pest Radar alert built from real neighbouring farms (unit tests build one
+from synthetic accounts), and any Google AI service.
