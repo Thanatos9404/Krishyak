@@ -1826,6 +1826,12 @@
 .landing input {
   font-size: max(16px, 1em);
 }
+/* Plain buttons in the older record panels still need a finger-sized target. */
+.workspace-content button:not([class]),
+.workspace-content .v2-danger {
+  min-height: 44px;
+  touch-action: manipulation;
+}
 /* Controls answer on press, never double-tap-zoom, and their labels are not selectable text. */
 .button,
 .landing-button,
