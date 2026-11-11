@@ -2,7 +2,67 @@
   {
     "source": "Core storage or usage controls unavailable",
     "file": "backend/v2/application.py",
-    "line": 191
+    "line": 209
+  },
+  {
+    "source": "Add a field crop that Krishyak can assess, such as wheat, rice or mustard",
+    "file": "backend/v2/assessment.py",
+    "line": 163
+  },
+  {
+    "source": "Add your field's area first",
+    "file": "backend/v2/assessment.py",
+    "line": 166
+  },
+  {
+    "source": "Tell Krishyak your soil type or your state first",
+    "file": "backend/v2/assessment.py",
+    "line": 170
+  },
+  {
+    "source": "Many farmers are checking right now. Please retry in a minute.",
+    "file": "backend/v2/assessment.py",
+    "line": 195
+  },
+  {
+    "source": "The assistant returned an empty answer",
+    "file": "backend/v2/assistant.py",
+    "line": 249
+  },
+  {
+    "source": "The voice assistant is not configured on the server.",
+    "file": "backend/v2/assistant.py",
+    "line": 256
+  },
+  {
+    "source": "The voice assistant is busy. Please try again in a minute.",
+    "file": "backend/v2/assistant.py",
+    "line": 274
+  },
+  {
+    "source": "The voice assistant is unavailable. Please try again.",
+    "file": "backend/v2/assistant.py",
+    "line": 276
+  },
+  {
+    "source": "Select a supported language",
+    "file": "backend/v2/assistant.py",
+    "line": 293
+  },
+  {
+    "source": "Account changed during the question",
+    "file": "backend/v2/assistant.py",
+    "line": 311
+  },
+  {
+    "source": "The voice assistant is unavailable. Please try again.",
+    "file": "backend/v2/assistant.py",
+    "line": 272
+  },
+  {
+    "source": "The assistant returned an invalid answer",
+    "file": "backend/v2/assistant.py",
+    "line": 280
   },
   {
     "source": "Untrusted request origin",
@@ -33,6 +93,81 @@
     "source": "Session expired",
     "file": "backend/v2/auth.py",
     "line": 60
+  },
+  {
+    "source": "Crop greenness also falls at harvest and ripening",
+    "file": "backend/v2/claims.py",
+    "line": 304
+  },
+  {
+    "source": "A satellite index cannot show the cause of damage",
+    "file": "backend/v2/claims.py",
+    "line": 305
+  },
+  {
+    "source": "Prepared by the farmer with Krishyak; not verified by Krishyak, an insurer or the government",
+    "file": "backend/v2/claims.py",
+    "line": 347
+  },
+  {
+    "source": "Photo place and time come from the farmer's phone",
+    "file": "backend/v2/claims.py",
+    "line": 348
+  },
+  {
+    "source": "Only the insurer decides a claim under the scheme rules",
+    "file": "backend/v2/claims.py",
+    "line": 349
+  },
+  {
+    "source": "Loss report not found",
+    "file": "backend/v2/claims.py",
+    "line": 82
+  },
+  {
+    "source": "Send both coordinates or neither",
+    "file": "backend/v2/claims.py",
+    "line": 190
+  },
+  {
+    "source": "Photo time must be recent and include a time zone",
+    "file": "backend/v2/claims.py",
+    "line": 195
+  },
+  {
+    "source": "A loss report holds at most ",
+    "file": "backend/v2/claims.py",
+    "line": 210
+  },
+  {
+    "source": " photographs",
+    "file": "backend/v2/claims.py",
+    "line": 210
+  },
+  {
+    "source": "Operation ID already used for another report",
+    "file": "backend/v2/claims.py",
+    "line": 145
+  },
+  {
+    "source": "Not independently verified",
+    "file": "backend/v2/claims.py",
+    "line": 156
+  },
+  {
+    "source": "Use a valid JPEG, PNG or WebP photograph",
+    "file": "backend/v2/claims.py",
+    "line": 199
+  },
+  {
+    "source": "Operation ID already used for another photograph",
+    "file": "backend/v2/claims.py",
+    "line": 207
+  },
+  {
+    "source": "Photo storage unavailable; retry later",
+    "file": "backend/v2/claims.py",
+    "line": 233
   },
   {
     "source": "Weather provider unavailable or incomplete. Saved evidence remains available.",
@@ -98,6 +233,251 @@
     "source": "Commercial use requires a separately approved provider/license",
     "file": "backend/v2/context.py",
     "line": 252
+  },
+  {
+    "source": "First watering now. It is the most important one for wheat: roots are forming.",
+    "file": "backend/v2/crop_calendar.py",
+    "line": 31
+  },
+  {
+    "source": "Remove weeds once now, while they are small.",
+    "file": "backend/v2/crop_calendar.py",
+    "line": 32
+  },
+  {
+    "source": "Second watering: the plants are making side shoots.",
+    "file": "backend/v2/crop_calendar.py",
+    "line": 33
+  },
+  {
+    "source": "Water now: the stems are growing fast.",
+    "file": "backend/v2/crop_calendar.py",
+    "line": 34
+  },
+  {
+    "source": "Water at flowering. Do not let the field dry out this week.",
+    "file": "backend/v2/crop_calendar.py",
+    "line": 35
+  },
+  {
+    "source": "Water once while the grains are milky.",
+    "file": "backend/v2/crop_calendar.py",
+    "line": 36
+  },
+  {
+    "source": "Last light watering. Stop watering after this so the crop can dry.",
+    "file": "backend/v2/crop_calendar.py",
+    "line": 37
+  },
+  {
+    "source": "Harvest when the grain is hard and the straw is golden and dry.",
+    "file": "backend/v2/crop_calendar.py",
+    "line": 38
+  },
+  {
+    "source": "Thin the plants so each has a hand's width of space.",
+    "file": "backend/v2/crop_calendar.py",
+    "line": 41
+  },
+  {
+    "source": "Remove weeds once now.",
+    "file": "backend/v2/crop_calendar.py",
+    "line": 42
+  },
+  {
+    "source": "First watering, just before flowering.",
+    "file": "backend/v2/crop_calendar.py",
+    "line": 43
+  },
+  {
+    "source": "Flowering: look under leaves and on shoots for aphids twice a week.",
+    "file": "backend/v2/crop_calendar.py",
+    "line": 44
+  },
+  {
+    "source": "Second watering while pods are forming.",
+    "file": "backend/v2/crop_calendar.py",
+    "line": 45
+  },
+  {
+    "source": "Harvest when three out of four pods have turned golden.",
+    "file": "backend/v2/crop_calendar.py",
+    "line": 46
+  },
+  {
+    "source": "Remove weeds once now.",
+    "file": "backend/v2/crop_calendar.py",
+    "line": 49
+  },
+  {
+    "source": "Pinch off the top shoots to get more branches.",
+    "file": "backend/v2/crop_calendar.py",
+    "line": 50
+  },
+  {
+    "source": "One watering before flowering, only if there has been no winter rain.",
+    "file": "backend/v2/crop_calendar.py",
+    "line": 51
+  },
+  {
+    "source": "Flowering: do not water now. Look for pod borer caterpillars.",
+    "file": "backend/v2/crop_calendar.py",
+    "line": 52
+  },
+  {
+    "source": "One light watering while pods fill, only if the soil is dry.",
+    "file": "backend/v2/crop_calendar.py",
+    "line": 53
+  },
+  {
+    "source": "Harvest when leaves turn reddish brown and start to drop.",
+    "file": "backend/v2/crop_calendar.py",
+    "line": 54
+  },
+  {
+    "source": "Remove weeds now, while the maize is small.",
+    "file": "backend/v2/crop_calendar.py",
+    "line": 57
+  },
+  {
+    "source": "Knee-high stage: water, weed again and heap soil around the stems.",
+    "file": "backend/v2/crop_calendar.py",
+    "line": 58
+  },
+  {
+    "source": "Tassels and silks are coming. Never let the field dry out now.",
+    "file": "backend/v2/crop_calendar.py",
+    "line": 59
+  },
+  {
+    "source": "Water while the grains fill.",
+    "file": "backend/v2/crop_calendar.py",
+    "line": 60
+  },
+  {
+    "source": "Harvest when the husk is dry and the grains are hard.",
+    "file": "backend/v2/crop_calendar.py",
+    "line": 61
+  },
+  {
+    "source": "Fill gaps and thin crowded plants now.",
+    "file": "backend/v2/crop_calendar.py",
+    "line": 64
+  },
+  {
+    "source": "Remove weeds once now.",
+    "file": "backend/v2/crop_calendar.py",
+    "line": 65
+  },
+  {
+    "source": "Water once now if there has been no rain.",
+    "file": "backend/v2/crop_calendar.py",
+    "line": 66
+  },
+  {
+    "source": "Flowering: water if the soil is dry.",
+    "file": "backend/v2/crop_calendar.py",
+    "line": 67
+  },
+  {
+    "source": "Grain filling: water if the soil is dry.",
+    "file": "backend/v2/crop_calendar.py",
+    "line": 68
+  },
+  {
+    "source": "Harvest when the grains are hard and the ear heads look dry.",
+    "file": "backend/v2/crop_calendar.py",
+    "line": 69
+  },
+  {
+    "source": "Keep one or two healthy plants at each spot and remove the rest.",
+    "file": "backend/v2/crop_calendar.py",
+    "line": 72
+  },
+  {
+    "source": "Remove weeds now.",
+    "file": "backend/v2/crop_calendar.py",
+    "line": 73
+  },
+  {
+    "source": "Weed again and heap soil around the plants.",
+    "file": "backend/v2/crop_calendar.py",
+    "line": 74
+  },
+  {
+    "source": "Flowers and bolls are forming. Do not let the crop face a dry spell, and drain standing water.",
+    "file": "backend/v2/crop_calendar.py",
+    "line": 79
+  },
+  {
+    "source": "Check ten plants every week for whitefly and bollworm, and use traps to watch them.",
+    "file": "backend/v2/crop_calendar.py",
+    "line": 81
+  },
+  {
+    "source": "Pick only fully opened, dry bolls, in the morning after the dew has gone.",
+    "file": "backend/v2/crop_calendar.py",
+    "line": 82
+  },
+  {
+    "source": "Remove weeds now.",
+    "file": "backend/v2/crop_calendar.py",
+    "line": 85
+  },
+  {
+    "source": "Weed once more before the crop closes over.",
+    "file": "backend/v2/crop_calendar.py",
+    "line": 86
+  },
+  {
+    "source": "Flowering: water if there is a dry spell, and drain standing water.",
+    "file": "backend/v2/crop_calendar.py",
+    "line": 87
+  },
+  {
+    "source": "Pods are filling. Water if the soil is dry.",
+    "file": "backend/v2/crop_calendar.py",
+    "line": 88
+  },
+  {
+    "source": "Harvest when nine out of ten pods have turned brown.",
+    "file": "backend/v2/crop_calendar.py",
+    "line": 89
+  },
+  {
+    "source": "Keep shallow water, two to three fingers deep, so the seedlings settle.",
+    "file": "backend/v2/crop_calendar.py",
+    "line": 92
+  },
+  {
+    "source": "Remove weeds now.",
+    "file": "backend/v2/crop_calendar.py",
+    "line": 93
+  },
+  {
+    "source": "Weed once more. This is when the plant makes the most shoots.",
+    "file": "backend/v2/crop_calendar.py",
+    "line": 94
+  },
+  {
+    "source": "The ear is forming inside the stem. Never let the field dry out now.",
+    "file": "backend/v2/crop_calendar.py",
+    "line": 95
+  },
+  {
+    "source": "Flowering: keep water in the field.",
+    "file": "backend/v2/crop_calendar.py",
+    "line": 96
+  },
+  {
+    "source": "Drain the field about two weeks before harvest.",
+    "file": "backend/v2/crop_calendar.py",
+    "line": 97
+  },
+  {
+    "source": "Harvest when most of the grains on the ear have turned golden.",
+    "file": "backend/v2/crop_calendar.py",
+    "line": 98
   },
   {
     "source": "No universal farm health score",
@@ -352,12 +732,27 @@
   {
     "source": "Cached evidence has expired; refresh before acting",
     "file": "backend/v2/farm_context/transport.py",
-    "line": 162
+    "line": 165
   },
   {
     "source": "This source is unavailable. Other sections remain usable.",
     "file": "backend/v2/farm_context/transport.py",
-    "line": 176
+    "line": 179
+  },
+  {
+    "source": "Krishyak could not understand that. Please try again or fill the form.",
+    "file": "backend/v2/farm_setup.py",
+    "line": 74
+  },
+  {
+    "source": "Select a supported language",
+    "file": "backend/v2/farm_setup.py",
+    "line": 221
+  },
+  {
+    "source": "Account changed while reading your details",
+    "file": "backend/v2/farm_setup.py",
+    "line": 248
   },
   {
     "source": "This is public program information, not eligibility approval",
@@ -525,6 +920,71 @@
     "line": 222
   },
   {
+    "source": "Your name and village",
+    "file": "backend/v2/groups.py",
+    "line": 42
+  },
+  {
+    "source": "The fields you pick: name, crop, area and sowing date",
+    "file": "backend/v2/groups.py",
+    "line": 43
+  },
+  {
+    "source": "Latest photo-check result, satellite greenness, nearby disease alerts and loss reports for those fields",
+    "file": "backend/v2/groups.py",
+    "line": 44
+  },
+  {
+    "source": "Phone number",
+    "file": "backend/v2/groups.py",
+    "line": 46
+  },
+  {
+    "source": "Field outline or exact location",
+    "file": "backend/v2/groups.py",
+    "line": 46
+  },
+  {
+    "source": "Your photographs",
+    "file": "backend/v2/groups.py",
+    "line": 46
+  },
+  {
+    "source": "Notes, costs and sales",
+    "file": "backend/v2/groups.py",
+    "line": 46
+  },
+  {
+    "source": "Institutional role required",
+    "file": "backend/v2/groups.py",
+    "line": 55
+  },
+  {
+    "source": "Sign in again to continue",
+    "file": "backend/v2/groups.py",
+    "line": 58
+  },
+  {
+    "source": "Group not found",
+    "file": "backend/v2/groups.py",
+    "line": 68
+  },
+  {
+    "source": "Maximum groups reached",
+    "file": "backend/v2/groups.py",
+    "line": 105
+  },
+  {
+    "source": "No group has this code. Check it with your group.",
+    "file": "backend/v2/groups.py",
+    "line": 275
+  },
+  {
+    "source": "No group has this code. Check it with your group.",
+    "file": "backend/v2/groups.py",
+    "line": 296
+  },
+  {
     "source": "External performance differs from internal evaluation",
     "file": "backend/v2/images.py",
     "line": 97
@@ -542,22 +1002,22 @@
   {
     "source": "Model score is not calibrated disease probability",
     "file": "backend/v2/images.py",
-    "line": 181
+    "line": 152
   },
   {
     "source": "Healthy-class prediction does not rule out disease",
     "file": "backend/v2/images.py",
-    "line": 182
+    "line": 153
   },
   {
     "source": "Classification does not measure field severity",
     "file": "backend/v2/images.py",
-    "line": 183
+    "line": 154
   },
   {
     "source": "Chemical treatment and dosing require locally applicable expert/label verification",
     "file": "backend/v2/images.py",
-    "line": 184
+    "line": 155
   },
   {
     "source": "Image not found",
@@ -567,27 +1027,27 @@
   {
     "source": "Agronomist role required",
     "file": "backend/v2/images.py",
-    "line": 307
+    "line": 317
   },
   {
     "source": "Sign in again before expert review",
     "file": "backend/v2/images.py",
-    "line": 309
+    "line": 319
   },
   {
     "source": "Consented image not found",
     "file": "backend/v2/images.py",
-    "line": 353
+    "line": 363
   },
   {
     "source": "Correction must match the active classifier label set",
     "file": "backend/v2/images.py",
-    "line": 356
+    "line": 366
   },
   {
     "source": "Consented image not found",
     "file": "backend/v2/images.py",
-    "line": 403
+    "line": 413
   },
   {
     "source": "Photo processing is busy; retry shortly",
@@ -602,42 +1062,42 @@
   {
     "source": "Use a valid single JPEG, PNG or WebP image within size and dimension limits",
     "file": "backend/v2/images.py",
-    "line": 129
+    "line": 179
   },
   {
     "source": "Operation ID already used for another photograph",
     "file": "backend/v2/images.py",
-    "line": 138
+    "line": 188
   },
   {
     "source": "Photo storage unavailable; retry later",
     "file": "backend/v2/images.py",
-    "line": 196
+    "line": 202
   },
   {
     "source": "Operation ID already used for another photograph",
     "file": "backend/v2/images.py",
-    "line": 207
+    "line": 213
   },
   {
     "source": "Photo unavailable; retry later",
     "file": "backend/v2/images.py",
-    "line": 273
+    "line": 283
   },
   {
     "source": "Operation ID already used for other feedback",
     "file": "backend/v2/images.py",
-    "line": 294
+    "line": 304
   },
   {
     "source": "Operation ID already used for another review",
     "file": "backend/v2/images.py",
-    "line": 367
+    "line": 377
   },
   {
     "source": "Photo unavailable; retry later",
     "file": "backend/v2/images.py",
-    "line": 407
+    "line": 417
   },
   {
     "source": "Request limit reached; retry later",
@@ -658,6 +1118,26 @@
     "source": "Usage controls busy",
     "file": "backend/v2/limits.py",
     "line": 51
+  },
+  {
+    "source": "Select a supported language",
+    "file": "backend/v2/live.py",
+    "line": 66
+  },
+  {
+    "source": "Account changed during the question",
+    "file": "backend/v2/live.py",
+    "line": 106
+  },
+  {
+    "source": "Conversation history is invalid",
+    "file": "backend/v2/live.py",
+    "line": 70
+  },
+  {
+    "source": "The camera picture could not be read. Please try again.",
+    "file": "backend/v2/live.py",
+    "line": 77
   },
   {
     "source": "Reported wholesale mandi prices; your actual offer depends on quality, quantity and buyer.",
@@ -752,42 +1232,42 @@
   {
     "source": "Record counts are not measured agronomic impact",
     "file": "backend/v2/pilots.py",
-    "line": 217
+    "line": 224
   },
   {
     "source": "Farmer-entered outcomes are not independently verified",
     "file": "backend/v2/pilots.py",
-    "line": 218
+    "line": 225
   },
   {
     "source": "Distributions require at least five consented farmers",
     "file": "backend/v2/pilots.py",
-    "line": 219
+    "line": 226
   },
   {
     "source": "No unrecorded outcome is inferred",
     "file": "backend/v2/pilots.py",
-    "line": 220
+    "line": 227
   },
   {
     "source": "Feedback is selected and may be biased",
     "file": "backend/v2/pilots.py",
-    "line": 264
+    "line": 271
   },
   {
     "source": "Repeated reviewers/responses are records, not independent samples",
     "file": "backend/v2/pilots.py",
-    "line": 265
+    "line": 272
   },
   {
     "source": "Operational agreement is not field accuracy",
     "file": "backend/v2/pilots.py",
-    "line": 266
+    "line": 273
   },
   {
     "source": "No images or identity details included",
     "file": "backend/v2/pilots.py",
-    "line": 267
+    "line": 274
   },
   {
     "source": "Institutional role required",
@@ -802,22 +1282,22 @@
   {
     "source": "Pilot cohort not found",
     "file": "backend/v2/pilots.py",
-    "line": 67
+    "line": 69
   },
   {
     "source": "Maximum pilot cohorts reached",
     "file": "backend/v2/pilots.py",
-    "line": 99
+    "line": 101
   },
   {
     "source": "Available pilot cohort not found",
     "file": "backend/v2/pilots.py",
-    "line": 120
+    "line": 127
   },
   {
     "source": "Pilot enrollment not found",
     "file": "backend/v2/pilots.py",
-    "line": 143
+    "line": 150
   },
   {
     "source": "Phone sign-in is unavailable",
@@ -845,14 +1325,24 @@
     "line": 60
   },
   {
+    "source": "Based on photo checks by nearby farmers who chose to share; it is not a field survey",
+    "file": "backend/v2/radar.py",
+    "line": 135
+  },
+  {
+    "source": "A photo check is a suggestion, not a diagnosis",
+    "file": "backend/v2/radar.py",
+    "line": 136
+  },
+  {
     "source": "Backups expire according to the operator's retention policy",
     "file": "backend/v2/rights.py",
-    "line": 134
+    "line": 136
   },
   {
     "source": "Provider-side processing records require separate provider retention controls",
     "file": "backend/v2/rights.py",
-    "line": 135
+    "line": 137
   },
   {
     "source": "Farm accounts are not yet available",
@@ -892,62 +1382,62 @@
   {
     "source": "Maximum 100 farms per account reached",
     "file": "backend/v2/router.py",
-    "line": 325
+    "line": 330
   },
   {
     "source": "Farm changed on another device; refresh before saving",
     "file": "backend/v2/router.py",
-    "line": 338
+    "line": 343
   },
   {
     "source": "Field changed on another device; refresh before saving",
     "file": "backend/v2/router.py",
-    "line": 424
+    "line": 435
   },
   {
     "source": "Crop cycle not found",
     "file": "backend/v2/router.py",
-    "line": 503
+    "line": 514
   },
   {
     "source": "Crop cycle changed; refresh before saving",
     "file": "backend/v2/router.py",
-    "line": 505
+    "line": 516
   },
   {
     "source": "Crop cycle overlaps another active or planned cycle",
     "file": "backend/v2/router.py",
-    "line": 515
+    "line": 526
   },
   {
     "source": "Crop cycle not found",
     "file": "backend/v2/router.py",
-    "line": 529
+    "line": 540
   },
   {
     "source": "Operation ID already used for another farm",
     "file": "backend/v2/router.py",
-    "line": 322
+    "line": 327
   },
   {
     "source": "Operation ID already used for another crop cycle",
     "file": "backend/v2/router.py",
-    "line": 453
+    "line": 464
   },
   {
     "source": "Crop cycle overlaps an existing active or planned cycle",
     "file": "backend/v2/router.py",
-    "line": 465
+    "line": 476
   },
   {
     "source": "Operation ID already used with different evidence",
     "file": "backend/v2/router.py",
-    "line": 547
+    "line": 558
   },
   {
     "source": "Not independently verified",
     "file": "backend/v2/router.py",
-    "line": 558
+    "line": 569
   },
   {
     "source": "Farm storage unavailable; retry later",
@@ -957,12 +1447,12 @@
   {
     "source": "Field geometry exceeds supported limits",
     "file": "backend/v2/router.py",
-    "line": 378
+    "line": 386
   },
   {
     "source": "Operation ID already used for another field",
     "file": "backend/v2/router.py",
-    "line": 405
+    "line": 416
   },
   {
     "source": "Map a field boundary before requesting imagery",
@@ -1090,19 +1580,109 @@
     "line": 56
   },
   {
+    "source": "Your name, village and district",
+    "file": "backend/v2/verify.py",
+    "line": 32
+  },
+  {
+    "source": "The field you pick: crop, sowing date, area and rounded location (about 1 km)",
+    "file": "backend/v2/verify.py",
+    "line": 33
+  },
+  {
+    "source": "Satellite greenness of that field since sowing, and how many leaf photos you checked there",
+    "file": "backend/v2/verify.py",
+    "line": 34
+  },
+  {
+    "source": "Phone number",
+    "file": "backend/v2/verify.py",
+    "line": 36
+  },
+  {
+    "source": "Field outline",
+    "file": "backend/v2/verify.py",
+    "line": 36
+  },
+  {
+    "source": "Your photographs",
+    "file": "backend/v2/verify.py",
+    "line": 36
+  },
+  {
+    "source": "Other fields, notes, costs and sales",
+    "file": "backend/v2/verify.py",
+    "line": 36
+  },
+  {
+    "source": "Sentinel-2 greenness shows that plants grew, not which crop they are",
+    "file": "backend/v2/verify.py",
+    "line": 38
+  },
+  {
+    "source": "Cloud can hide the field for weeks; missing views are not evidence against the farmer",
+    "file": "backend/v2/verify.py",
+    "line": 39
+  },
+  {
+    "source": "This report supports a decision by a person; it is not an approval or a rejection",
+    "file": "backend/v2/verify.py",
+    "line": 40
+  },
+  {
+    "source": "Verification not found",
+    "file": "backend/v2/verify.py",
+    "line": 247
+  },
+  {
+    "source": "This code is not valid or has already been used.",
+    "file": "backend/v2/verify.py",
+    "line": 259
+  },
+  {
+    "source": "You cannot answer your own request",
+    "file": "backend/v2/verify.py",
+    "line": 292
+  },
+  {
+    "source": "Draw this field's outline in My fields first, so the satellite can find it",
+    "file": "backend/v2/verify.py",
+    "line": 295
+  },
+  {
+    "source": "Add the crop and sowing date for this field first",
+    "file": "backend/v2/verify.py",
+    "line": 303
+  },
+  {
+    "source": "Verification not found",
+    "file": "backend/v2/verify.py",
+    "line": 368
+  },
+  {
     "source": "Satellite processing completed",
     "file": "backend/v2/worker.py",
-    "line": 242
+    "line": 246
   },
   {
     "source": "Review the latest field evidence and its quality before taking action.",
     "file": "backend/v2/worker.py",
-    "line": 243
+    "line": 247
   },
   {
     "source": "Not found",
     "file": "backend/v2/worker_http.py",
-    "line": 54
+    "line": 59
+  },
+  {
+    "source": "Not found",
+    "file": "backend/v2/worker_http.py",
+    "line": 73
+  },
+  {
+    "source": "Migration failed; schema unchanged or partially locked, retry",
+    "file": "backend/v2/worker_http.py",
+    "line": 92
   },
   {
     "source": "Gridded model reanalysis, not a measurement at the farm.",

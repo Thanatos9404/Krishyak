@@ -25,6 +25,8 @@ CRITICAL = {
     "Your fields, crops and prices in one place.", "Sign in with fingerprint or screen lock",
     "New here? Create my account", "Create account", "Write down your recovery code",
     "Check a sick plant", "Mandi prices", "What to do next", "Weather",
+    "Report crop loss", "Picture guides", "Disease alert near you", "Show and ask",
+    "Save photo and check it later",
 }
 BLOCKS = {
     "as": [(0x980, 0x9FF)], "bn": [(0x980, 0x9FF)],
