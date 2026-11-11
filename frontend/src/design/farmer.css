@@ -4,6 +4,7 @@
   --k-green-950: #0d2e1d;
   --k-green-900: #123d27;
   --k-green-700: #1d6a3a;
+  --k-green-600: #258048;
   --k-green-500: #2f9e4f;
   --k-leaf: #8cc63f;
   --k-leaf-soft: #eaf5dc;
@@ -181,7 +182,7 @@
     box-shadow var(--micro) var(--ease);
 }
 .landing-button.primary {
-  background: linear-gradient(135deg, var(--k-green-500), var(--k-green-700));
+  background: linear-gradient(135deg, var(--k-green-600), var(--k-green-700));
   color: #fff;
   box-shadow: var(--k-shadow);
 }
@@ -276,7 +277,7 @@
   border-radius: 50%;
   display: grid;
   place-items: center;
-  background: linear-gradient(135deg, var(--k-green-500), var(--k-green-700));
+  background: linear-gradient(135deg, var(--k-green-600), var(--k-green-700));
   color: #fff;
 }
 .hero-phone-mic span {
@@ -750,7 +751,7 @@
   padding: 0 18px;
   border: 0;
   border-radius: 18px;
-  background: linear-gradient(135deg, var(--k-green-500), var(--k-green-700));
+  background: linear-gradient(135deg, var(--k-green-600), var(--k-green-700));
   color: #fff;
   font-size: 17px;
   font-weight: 700;
@@ -873,7 +874,7 @@
     box-sizing: content-box;
     padding: 17px;
     border-radius: 50%;
-    background: linear-gradient(135deg, var(--k-green-500), var(--k-green-700));
+    background: linear-gradient(135deg, var(--k-green-600), var(--k-green-700));
     color: #fff;
     border: 5px solid #fff;
     box-shadow: 0 10px 24px -8px rgb(29 106 58 / 0.7);
@@ -957,7 +958,11 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-  background: radial-gradient(circle at 30% 30%, #7fe09a, var(--k-green-500));
+  background: radial-gradient(
+    circle at 30% 30%,
+    var(--k-green-600),
+    var(--k-green-700)
+  );
   color: #fff;
   font-size: 15px;
   font-weight: 700;
@@ -973,7 +978,7 @@
   position: absolute;
   inset: 0;
   border-radius: 50%;
-  background: var(--k-green-500);
+  background: var(--k-green-600);
   animation: k-pulse 2.2s ease-out infinite;
 }
 @keyframes k-pulse {
@@ -1369,7 +1374,7 @@
   min-height: 58px;
   border: 0;
   border-radius: 18px;
-  background: linear-gradient(135deg, var(--k-green-500), var(--k-green-700));
+  background: linear-gradient(135deg, var(--k-green-600), var(--k-green-700));
   color: #fff;
   font-size: 18px;
   font-weight: 700;
