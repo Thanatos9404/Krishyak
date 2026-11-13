@@ -128,7 +128,7 @@ a reason and can be withdrawn in Settings.
 
 - **Frontend:** Next.js 16 (App Router, React 19) on Vercel. The middleware
   forwards API calls same-origin with a two-minute HMAC-signed client address.
-- **API:** FastAPI on Vercel (region `sin1`) with SQLAlchemy/PostGIS, Alembic
+- **API:** FastAPI on Vercel (region `bom1`, Mumbai) with SQLAlchemy/PostGIS, Alembic
   migrations (`v2_0001`–`v2_0011`), opaque hashed sessions, CSRF and Origin
   binding, and WebAuthn passkeys.
 - **Jobs:** a durable Postgres queue drained inside requests and by a daily
@@ -185,9 +185,9 @@ Live-verified on 9–10 October 2026: Copernicus, Sarvam, Open-Meteo, private
 Blob storage, Neon and Upstash. data.gov.in's API host refused connections
 throughout October; it answered again on 11–12 November 2026 and the Home
 screen showed a dated AGMARKNET wheat price for Jaipur district in a local
-run with the project key. The staging deployment (Vercel Singapore) still
-reported the source as unavailable on 12 November, so live mandi data is
-verified locally only.
+run with the project key. data.gov.in refuses connections from Vercel's
+Singapore and US regions but answers from Mumbai, so both Vercel projects run
+in `bom1` since 13 November 2026.
 
 ## Run locally
 

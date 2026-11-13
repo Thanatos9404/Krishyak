@@ -8,7 +8,7 @@ autonomous farm control. Public scenario planning remains under `/planning`.
 flowchart LR
   UI[Next.js 16 farmer workspace PWA] -->|same origin| PX[src/proxy.js, HMAC-signed client header]
   UI --> IDB[Optional owner-scoped IndexedDB]
-  PX --> API[FastAPI v2 on Vercel sin1]
+  PX --> API[FastAPI v2 on Vercel bom1]
   API --> PK[WebAuthn passkeys and recovery codes]
   API --> PG[Neon PostgreSQL + PostGIS]
   API --> Redis[Upstash Redis usage budgets]

@@ -94,8 +94,10 @@ and Redis inside WSL; accounts were synthetic and deleted afterwards.
 | Live staging | 9 of 9 on schema v2_0011 | Real passkey, weather, leaf model, private storage, Copernicus job, Sarvam voice, spoken setup, claim pack, calendar, Pest Radar, Krishyak Live, guides |
 
 `scripts/smoke_staging.py` passed all 11 required checks on staging; its one
-optional check, live mandi data, still reported the source unavailable from
-Vercel Singapore.
+optional check, live mandi data, failed from Vercel Singapore. On 13 November
+the provider log showed a `ConnectError` within about 100 ms from Singapore and
+from Washington, and live prices from a Mumbai preview, so both projects moved
+to `bom1`.
 
 Repeated local runs hit the sign-up (10/hour) and recovery (5/hour) limits
 by design; those counters were cleared in the local Redis only. Not covered:

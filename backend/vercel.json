@@ -1,7 +1,7 @@
 {
   "version": 2,
   "fluid": true,
-  "regions": ["sin1"],
+  "regions": ["bom1"],
   "builds": [
     {
       "src": "main.py",

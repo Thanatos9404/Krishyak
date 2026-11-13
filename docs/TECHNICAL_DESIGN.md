@@ -9,7 +9,7 @@ plain next steps in 22 scheduled Indian languages plus English.
 |---|---|
 | Live app | <https://krishyak.vercel.app> (farmer workspace at `/app/today`) |
 | Demo farm (no sign-in) | <https://krishyak.vercel.app/demo> |
-| API | FastAPI v2 on Vercel, region `sin1` |
+| API | FastAPI v2 on Vercel, region `bom1` (Mumbai) |
 | License | Apache-2.0 (see [LICENSE](../LICENSE) and [NOTICE](../NOTICE)) |
 | Related docs | [API](v2/API.md), [database](v2/DATABASE.md), [security](v2/SECURITY.md), [deployment](v2/DEPLOYMENT.md), [offline](v2/OFFLINE_ARCHITECTURE.md), [remote sensing](v2/REMOTE_SENSING.md), [model governance](v2/MODEL_GOVERNANCE.md), [known limitations](v2/KNOWN_LIMITATIONS.md) |
 
@@ -58,7 +58,7 @@ flowchart TB
     PX["src/proxy.js middleware<br/>same-origin /api/v2 and /api/public<br/>HMAC-signed client header"]
   end
 
-  subgraph API["Vercel: krishyak-api (FastAPI, sin1)"]
+  subgraph API["Vercel: krishyak-api (FastAPI, bom1)"]
     R["v2 routers<br/>auth, passkeys, farms, plots, crop cycles,<br/>observations, images, consent, rights,<br/>market, speech, pilots, internal"]
     EV["Evidence composer<br/>Today feed"]
     CLS["LiteRT classifier<br/>EfficientNetV2B0, 38 classes<br/>abstention gate"]

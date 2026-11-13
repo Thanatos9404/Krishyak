@@ -52,7 +52,13 @@ support transient storage recovery. Do not run `down --volumes` on retained data
 ## Production contract
 
 Hosting is two Vercel projects: `krishyak` (Next.js, frontend) and `krishyak-api`
-(FastAPI, region `sin1` next to the database). The frontend middleware
+(FastAPI). Both run their functions in `bom1` (Mumbai), set in each
+`vercel.json`. data.gov.in refuses TCP connections from Vercel's Singapore and
+US regions (`detail=ConnectError` in the provider log within about 100 ms) but
+answers from Mumbai, and farmers' phones are closest to Mumbai. The Neon
+database stays in Singapore, which adds roughly 75 ms to a database-heavy
+request; private photos are already in Mumbai. Changing the region is free on
+every Vercel plan. The frontend middleware
 (`frontend/src/proxy.js`) forwards `/api/v2/*` and `/api/public/*` same-origin to
 `KRISHYAK_API_ORIGIN`, so session cookies stay first-party. It adds a 2-minute
 HMAC-signed `x-krishyak-client` header with the farmer's address (trusted by
