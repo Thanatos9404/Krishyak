@@ -8,7 +8,6 @@ normal profile, farm, field and crop routes.
 
 import asyncio
 import difflib
-import hashlib
 import json
 import re
 
@@ -34,7 +33,7 @@ from .agronomy import (
 from .assistant import complete
 from .auth import authenticate
 from .crops import BY_ID, BY_NAME
-from .farm_context.providers import normalize_soil
+from .farm_context.providers import normalize_soil, soil_map
 from .farm_context.transport import Unavailable
 from .locations import normalized_name
 from .router import current_farmer, database, require_consent
@@ -180,35 +179,6 @@ async def locate(gateway, draft):
             urban = row.get("addresstype") in {"city", "town", "suburb", "city_district", "borough"}
             return {"latitude": lat, "longitude": lon, "matched": matched, "urban": urban}
     return None
-
-
-SOIL_CACHE_SECONDS = 180 * 86400
-
-
-async def soil_map(gateway, params):
-    """Read SoilGrids through a shared cache: soil texture does not change.
-
-    SoilGrids often takes 30 s or more for a point it has not served recently,
-    so a neighbour's earlier answer for the same 1 km cell is reused. The key
-    is a hash of the rounded cell, never the coordinates themselves.
-    """
-    redis = getattr(getattr(gateway, "quotas", None), "redis", None)
-    key = "krishyak:soilgrids:v1:" + hashlib.sha256(json.dumps(params).encode()).hexdigest()
-    if redis is not None:
-        try:
-            cached = await asyncio.to_thread(redis.get, key)
-            if cached:
-                return json.loads(cached)
-        except Exception:  # noqa: BLE001 - a cache failure must not block setup
-            pass
-    payload = await gateway.read("soilgrids", params, deadline=20)
-    normalize_soil(payload)  # only a usable answer is kept
-    if redis is not None:
-        try:
-            await asyncio.to_thread(redis.set, key, json.dumps(payload), ex=SOIL_CACHE_SECONDS)
-        except Exception:  # noqa: BLE001
-            pass
-    return payload
 
 
 async def estimate_soil(gateway, draft):

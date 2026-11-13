@@ -1,5 +1,8 @@
 """Normalize documented public-provider payloads, never invent evidence."""
 
+import asyncio
+import hashlib
+import json
 import math
 from datetime import datetime, timedelta, timezone
 
@@ -159,10 +162,39 @@ def normalize_soil(payload):
     return Soil(**values)
 
 
+SOIL_CACHE_SECONDS = 180 * 86400
+
+
+async def soil_map(gateway, params, *, deadline=20):
+    """Read SoilGrids through a shared cache: soil texture does not change.
+
+    SoilGrids often takes 10 to 30 s for a point it has not served recently,
+    so an earlier answer for the same 1 km cell is reused across instances.
+    The key is a hash of the rounded cell, never the coordinates themselves.
+    """
+    redis = getattr(getattr(gateway, "quotas", None), "redis", None)
+    key = "krishyak:soilgrids:v1:" + hashlib.sha256(json.dumps(params).encode()).hexdigest()
+    if redis is not None:
+        try:
+            cached = await asyncio.to_thread(redis.get, key)
+            if cached:
+                return json.loads(cached)
+        except Exception:  # noqa: BLE001 - a cache failure must not block the answer
+            pass
+    payload = await gateway.read("soilgrids", params, deadline=deadline)
+    normalize_soil(payload)  # only a usable answer is kept
+    if redis is not None:
+        try:
+            await asyncio.to_thread(redis.set, key, json.dumps(payload), ex=SOIL_CACHE_SECONDS)
+        except Exception:  # noqa: BLE001
+            pass
+    return payload
+
+
 async def soilgrids(gateway, lat, lon):
     params = [("lat", lat), ("lon", lon), ("depth", "0-5cm"), ("value", "mean")]
     params.extend(("property", x) for x in SOIL_PROPERTIES)
-    return normalize_soil(await gateway.read("soilgrids", params))
+    return normalize_soil(await soil_map(gateway, params))
 
 
 def normalize_capabilities(raw):
