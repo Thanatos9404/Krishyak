@@ -21,7 +21,12 @@ Krishyak, and withdrawing the consent stops it, including mid-request. Spoken fa
 draft; with location permission it sends the village, district and state
 names (never the farmer's name) to OpenStreetMap Nominatim, and a point
 rounded to 0.01° to ISRIC SoilGrids. The draft is not stored until the farmer
-saves it. Optional
+saves it. When SoilGrids is too slow during setup and the field is saved with
+the regional soil guess, the same rounded point is sent to SoilGrids once more
+from the background job queue (still only with location permission); if the
+farmer has not changed the soil by then, the estimate is replaced by the
+soil-map class and a notice says so. SoilGrids answers are cached in Redis for
+180 days under a hash of the rounded cell, with no farmer identity. Optional
 read-aloud can send selected advice text to a configured speech provider only
 with explicit speech consent. Dictation sends a bounded recording for
 transcription; the farmer reviews the draft before applying it to a form.

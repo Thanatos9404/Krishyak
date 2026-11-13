@@ -5,7 +5,7 @@ import json
 from datetime import timedelta
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query, Request, Response
 from geoalchemy2.shape import from_shape, to_shape
 from shapely.geometry import Point, mapping, shape
 from sqlalchemy import func, select, text, update
@@ -395,7 +395,13 @@ def plot_values(body, db, farmer):
 
 
 @router.post("/plots", status_code=201)
-def create_plot(body: PlotInput, farmer=Depends(current_farmer), db=Depends(database, scope="function")):
+def create_plot(
+    body: PlotInput,
+    request: Request,
+    tasks: BackgroundTasks,
+    farmer=Depends(current_farmer),
+    db=Depends(database, scope="function"),
+):
     farm = owned_farm(db, farmer.id, body.farm_id)
     db.execute(select(Farm.id).where(Farm.id == farm.id).with_for_update())
     existing = db.scalar(select(Plot).where(Plot.farm_id == farm.id, Plot.operation_id == body.operation_id))
@@ -418,6 +424,12 @@ def create_plot(body: PlotInput, farmer=Depends(current_farmer), db=Depends(data
     plot = Plot(**plot_values(body, db, farmer))
     db.add(plot)
     db.flush()
+    from . import soil_refine
+    from .worker_http import schedule_drain
+
+    if soil_refine.queue(db, plot, farmer.id):
+        # The job is committed with the field; the drain runs after the response.
+        schedule_drain(request, tasks)
     return serialize(plot)
 
 

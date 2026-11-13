@@ -119,6 +119,22 @@ def run_once(factory, settings, service=None):
         plot = db.get(Plot, plot_id)
         farm = db.get(Farm, plot.farm_id) if plot else None
         owner = db.get(Farmer, farm.farmer_id) if farm else None
+        soil_job = job.kind == "soil"
+        if soil_job:
+            from . import soil_refine
+
+            where = soil_refine.target(db, plot, farm, owner)
+            if where is None:
+                job.status, job.leased_until = "cancelled", None
+                return True
+    if soil_job:
+        # The provider call runs outside the transaction, under the job lease.
+        return soil_refine.run(factory, job_id, plot_id, attempt, *where)
+    with factory.begin() as db:
+        job = db.get(Job, job_id)
+        plot = db.get(Plot, plot_id)
+        farm = db.get(Farm, plot.farm_id) if plot else None
+        owner = db.get(Farmer, farm.farmer_id) if farm else None
         consent = (
             db.scalar(
                 select(Consent.id).where(

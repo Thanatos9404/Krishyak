@@ -742,17 +742,17 @@
   {
     "source": "Krishyak could not understand that. Please try again or fill the form.",
     "file": "backend/v2/farm_setup.py",
-    "line": 75
+    "line": 74
   },
   {
     "source": "Select a supported language",
     "file": "backend/v2/farm_setup.py",
-    "line": 251
+    "line": 228
   },
   {
     "source": "Account changed while reading your details",
     "file": "backend/v2/farm_setup.py",
-    "line": 278
+    "line": 255
   },
   {
     "source": "This is public program information, not eligibility approval",
@@ -1392,27 +1392,27 @@
   {
     "source": "Field changed on another device; refresh before saving",
     "file": "backend/v2/router.py",
-    "line": 435
+    "line": 447
   },
   {
     "source": "Crop cycle not found",
-    "file": "backend/v2/router.py",
-    "line": 514
-  },
-  {
-    "source": "Crop cycle changed; refresh before saving",
-    "file": "backend/v2/router.py",
-    "line": 516
-  },
-  {
-    "source": "Crop cycle overlaps another active or planned cycle",
     "file": "backend/v2/router.py",
     "line": 526
   },
   {
+    "source": "Crop cycle changed; refresh before saving",
+    "file": "backend/v2/router.py",
+    "line": 528
+  },
+  {
+    "source": "Crop cycle overlaps another active or planned cycle",
+    "file": "backend/v2/router.py",
+    "line": 538
+  },
+  {
     "source": "Crop cycle not found",
     "file": "backend/v2/router.py",
-    "line": 540
+    "line": 552
   },
   {
     "source": "Operation ID already used for another farm",
@@ -1422,22 +1422,22 @@
   {
     "source": "Operation ID already used for another crop cycle",
     "file": "backend/v2/router.py",
-    "line": 464
+    "line": 476
   },
   {
     "source": "Crop cycle overlaps an existing active or planned cycle",
     "file": "backend/v2/router.py",
-    "line": 476
+    "line": 488
   },
   {
     "source": "Operation ID already used with different evidence",
     "file": "backend/v2/router.py",
-    "line": 558
+    "line": 570
   },
   {
     "source": "Not independently verified",
     "file": "backend/v2/router.py",
-    "line": 569
+    "line": 581
   },
   {
     "source": "Farm storage unavailable; retry later",
@@ -1452,7 +1452,7 @@
   {
     "source": "Operation ID already used for another field",
     "file": "backend/v2/router.py",
-    "line": 416
+    "line": 422
   },
   {
     "source": "Map a field boundary before requesting imagery",
@@ -1478,6 +1478,16 @@
     "source": "Operation ID already used for another satellite request",
     "file": "backend/v2/satellite.py",
     "line": 105
+  },
+  {
+    "source": "Soil estimate updated",
+    "file": "backend/v2/soil_refine.py",
+    "line": 147
+  },
+  {
+    "source": "The soil map now gives an estimate for this field. Check it in My fields and change it if your soil is different.",
+    "file": "backend/v2/soil_refine.py",
+    "line": 148
   },
   {
     "source": "Select a supported language",
@@ -1662,12 +1672,12 @@
   {
     "source": "Satellite processing completed",
     "file": "backend/v2/worker.py",
-    "line": 246
+    "line": 262
   },
   {
     "source": "Review the latest field evidence and its quality before taking action.",
     "file": "backend/v2/worker.py",
-    "line": 247
+    "line": 263
   },
   {
     "source": "Not found",

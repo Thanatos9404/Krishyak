@@ -9,6 +9,7 @@ from tempfile import TemporaryDirectory
 from unittest.mock import AsyncMock, patch
 from uuid import UUID, uuid4
 
+import httpx
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from PIL import Image
@@ -83,6 +84,46 @@ class CalendarAndEvidenceTests(unittest.TestCase):
         self.assertEqual(assess(sowing, [], sowing + timedelta(days=12))[0], "too_early")
         weak = views(sowing, [0.2, 0.2, 0.22, 0.25, 0.3, 0.33])
         self.assertEqual(assess(sowing, weak, sowing + timedelta(days=35))[0], "not_enough_evidence")
+
+
+class FakeSoilGrids:
+    """Stands in for httpx.Client; answers like SoilGrids did on 13 November 2026."""
+
+    calls = []
+    failure = None
+
+    def __init__(self, **options):
+        pass
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *exc):
+        return False
+
+    def get(self, url, params, headers):
+        FakeSoilGrids.calls.append(dict(params)["lat"])
+        if FakeSoilGrids.failure:
+            raise FakeSoilGrids.failure
+
+        def layer(name, unit, mean):
+            return {
+                "name": name,
+                "unit_measure": {"d_factor": 10, "target_units": unit},
+                "depths": [{"label": "0-5cm", "values": {"mean": mean}}],
+            }
+
+        payload = {
+            "properties": {
+                "layers": [
+                    layer("clay", "%", 255),
+                    layer("sand", "%", 466),
+                    layer("silt", "%", 278),
+                    layer("phh2o", "-", 73),
+                ]
+            }
+        }
+        return httpx.Response(200, json=payload, headers={"content-type": "application/json"})
 
 
 @unittest.skipUnless(os.getenv("V2_TEST_DATABASE_URL"), "Dedicated disposable PostGIS test URL required")
@@ -167,6 +208,101 @@ class FieldServiceTests(unittest.TestCase):
             )
             self.assertEqual(cycle.status_code, 201, cycle.text)
         return plot.json()
+
+    def soil_field(self, client, source="state_typical"):
+        farm = client.post("/api/v2/farms", json={"operation_id": str(uuid4()), "name": "Farm"}).json()
+        body = {
+            "operation_id": str(uuid4()),
+            "farm_id": farm["id"],
+            "name": "Spoken field",
+            "entered_area_hectares": 1.26,
+            "approximate_location": {"latitude": 27.17, "longitude": 75.72},
+            "soil_metadata": {"soil_type": "Sandy", "source": source, "condition": "dry"},
+        }
+        plot = client.post("/api/v2/plots", json=body)
+        self.assertEqual(plot.status_code, 201, plot.text)
+        return plot.json()
+
+    def soil_jobs(self, plot):
+        from db.models import Job
+
+        with self.factory() as db:
+            return db.scalars(select(Job).where(Job.plot_id == UUID(plot["id"]), Job.kind == "soil")).all()
+
+    def run_soil_jobs(self):
+        from v2.worker import run_once
+
+        FakeSoilGrids.calls = []
+        with patch("v2.soil_refine.httpx.Client", FakeSoilGrids):
+            while run_once(self.factory, self.app.state.v2_settings):
+                pass
+
+    def test_an_estimated_soil_is_upgraded_from_the_soil_map_in_the_background(self):
+        from db.models import Notification
+
+        a = self.farmer(0, "Asha", "location_processing")
+        plot = self.soil_field(a)
+        own = self.soil_field(a, source="farmer_selected")
+        self.assertEqual(len(self.soil_jobs(plot)), 1)
+        self.assertEqual(self.soil_jobs(own), [])  # a farmer's own choice is never second-guessed
+        # Replaying the same save queues nothing more.
+        self.assertEqual(len(self.soil_jobs(plot)), 1)
+        self.run_soil_jobs()
+        self.assertEqual(FakeSoilGrids.calls, [27.17])
+        saved = a.get(f"/api/v2/plots/{plot['id']}").json()
+        self.assertEqual(saved["soil_metadata"], {"soil_type": "Loamy", "source": "soil_map", "condition": "dry"})
+        self.assertEqual(saved["revision"], plot["revision"])  # satellite jobs and edits stay valid
+        self.assertEqual(self.soil_jobs(plot)[0].status, "completed")
+        with self.factory() as db:
+            notice = db.scalar(select(Notification).where(Notification.kind == "soil_updated"))
+        self.assertEqual((notice.payload["soil_type"], notice.payload["previous"]), ("Loamy", "Sandy"))
+        self.assertNotIn("27.17", str(notice.payload))
+        self.assertEqual(a.get(f"/api/v2/plots/{own['id']}").json()["soil_metadata"]["soil_type"], "Sandy")
+
+    def test_a_soil_changed_by_the_farmer_meanwhile_is_left_alone(self):
+        a = self.farmer(0, "Asha", "location_processing")
+        plot = self.soil_field(a)
+        from db.models import Plot
+
+        with self.factory.begin() as db:  # the farmer picks a soil before the job runs
+            db.execute(
+                update(Plot)
+                .where(Plot.id == UUID(plot["id"]))
+                .values(soil_metadata={"soil_type": "Black", "source": "farmer_selected"})
+            )
+        self.run_soil_jobs()
+        self.assertEqual(FakeSoilGrids.calls, [])
+        self.assertEqual(self.soil_jobs(plot)[0].status, "cancelled")
+        self.assertEqual(a.get(f"/api/v2/plots/{plot['id']}").json()["soil_metadata"]["soil_type"], "Black")
+
+    def test_a_field_without_a_location_queues_no_soil_lookup(self):
+        a = self.farmer(0, "Asha")
+        farm = a.post("/api/v2/farms", json={"operation_id": str(uuid4()), "name": "Farm"}).json()
+        plot = a.post(
+            "/api/v2/plots",
+            json={
+                "operation_id": str(uuid4()),
+                "farm_id": farm["id"],
+                "name": "No place",
+                "entered_area_hectares": 1,
+                "soil_metadata": {"soil_type": "Sandy", "source": "state_typical"},
+            },
+        )
+        self.assertEqual(plot.status_code, 201, plot.text)
+        self.assertEqual(self.soil_jobs(plot.json()), [])
+
+    def test_a_soil_map_outage_is_retried_later_without_changing_the_field(self):
+        a = self.farmer(0, "Asha", "location_processing")
+        plot = self.soil_field(a)
+        FakeSoilGrids.failure = httpx.ReadTimeout("slow")
+        try:
+            self.run_soil_jobs()
+        finally:
+            FakeSoilGrids.failure = None
+        job = self.soil_jobs(plot)[0]
+        self.assertEqual((job.status, job.error_code), ("retry", "soil_map_unavailable"))
+        self.assertGreater(job.available_at, utcnow())
+        self.assertEqual(a.get(f"/api/v2/plots/{plot['id']}").json()["soil_metadata"]["source"], "state_typical")
 
     def photo_check(self, plot, label="Tomato___Late_blight", status="detected", crop_id="tomato", days_ago=1):
         with self.factory.begin() as db:

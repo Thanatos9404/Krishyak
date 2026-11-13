@@ -1,6 +1,6 @@
 {
   "extractor": "Babel AST; literals, JSX text, positional template placeholders",
-  "source_strings": 2584,
+  "source_strings": 2586,
   "strings": [
     {
       "source": ". Interval composites may contain several acquisitions; exact contributing dates are not independently verified.",
@@ -305,7 +305,7 @@
       "references": [
         {
           "file": "src/components/product/FarmSetupView.jsx",
-          "line": 208,
+          "line": 199,
           "kind": "literal"
         }
       ]
@@ -551,7 +551,7 @@
       "references": [
         {
           "file": "src/components/product/FarmSetupView.jsx",
-          "line": 476,
+          "line": 467,
           "kind": "literal"
         }
       ]
@@ -605,7 +605,7 @@
       "references": [
         {
           "file": "src/components/product/FarmSetupView.jsx",
-          "line": 431,
+          "line": 422,
           "kind": "literal"
         }
       ]
@@ -1028,7 +1028,7 @@
       "references": [
         {
           "file": "backend/v2/farm_setup.py",
-          "line": 278,
+          "line": 255,
           "kind": "server"
         }
       ]
@@ -1098,7 +1098,7 @@
       "references": [
         {
           "file": "src/features/farms/NoticeList.jsx",
-          "line": 57,
+          "line": 67,
           "kind": "literal"
         }
       ]
@@ -1109,7 +1109,7 @@
       "references": [
         {
           "file": "src/features/farms/NoticeList.jsx",
-          "line": 35,
+          "line": 45,
           "kind": "literal"
         }
       ]
@@ -1120,7 +1120,7 @@
       "references": [
         {
           "file": "src/components/product/FarmSetupView.jsx",
-          "line": 55,
+          "line": 46,
           "kind": "literal"
         }
       ]
@@ -1405,7 +1405,7 @@
       "references": [
         {
           "file": "src/components/product/FarmSetupView.jsx",
-          "line": 182,
+          "line": 173,
           "kind": "literal"
         }
       ]
@@ -1735,7 +1735,7 @@
       "references": [
         {
           "file": "src/components/product/FarmSetupView.jsx",
-          "line": 277,
+          "line": 268,
           "kind": "literal"
         }
       ]
@@ -1790,7 +1790,7 @@
       "references": [
         {
           "file": "src/components/product/FarmSetupView.jsx",
-          "line": 265,
+          "line": 256,
           "kind": "literal"
         }
       ]
@@ -1942,8 +1942,8 @@
       "sha256": "5b1a56b682c643332fdf4e3720cbbaf0b46f8fdc9b148bd50d4d6e44e311bc41",
       "references": [
         {
-          "file": "src/components/product/FarmSetupView.jsx",
-          "line": 43,
+          "file": "src/features/product/soils.js",
+          "line": 3,
           "kind": "literal"
         }
       ]
@@ -3633,7 +3633,7 @@
         },
         {
           "file": "src/components/product/FarmSetupView.jsx",
-          "line": 56,
+          "line": 47,
           "kind": "literal"
         }
       ]
@@ -3747,8 +3747,8 @@
       "sha256": "8e0a340c0e2e5344707cf05ff51f05c12105a0f3a7735271f8b58620759bc572",
       "references": [
         {
-          "file": "src/components/product/FarmSetupView.jsx",
-          "line": 44,
+          "file": "src/features/product/soils.js",
+          "line": 4,
           "kind": "literal"
         }
       ]
@@ -4159,7 +4159,7 @@
       "references": [
         {
           "file": "src/components/product/FarmSetupView.jsx",
-          "line": 59,
+          "line": 50,
           "kind": "literal"
         }
       ]
@@ -4569,7 +4569,7 @@
       "references": [
         {
           "file": "src/components/product/FarmSetupView.jsx",
-          "line": 358,
+          "line": 349,
           "kind": "literal"
         }
       ]
@@ -5009,7 +5009,7 @@
       "references": [
         {
           "file": "src/components/product/FarmSetupView.jsx",
-          "line": 442,
+          "line": 433,
           "kind": "literal"
         },
         {
@@ -5063,7 +5063,7 @@
       "references": [
         {
           "file": "src/components/product/FarmSetupView.jsx",
-          "line": 463,
+          "line": 454,
           "kind": "literal"
         }
       ]
@@ -5139,8 +5139,8 @@
       "sha256": "e4929f6979ad60c710d7cfbd9fef36f90003267973a4757d1deabdb078945eea",
       "references": [
         {
-          "file": "src/components/product/FarmSetupView.jsx",
-          "line": 50,
+          "file": "src/features/product/soils.js",
+          "line": 10,
           "kind": "literal"
         }
       ]
@@ -5770,7 +5770,7 @@
         },
         {
           "file": "src/components/product/FarmSetupView.jsx",
-          "line": 436,
+          "line": 427,
           "kind": "literal"
         },
         {
@@ -5807,7 +5807,7 @@
       "references": [
         {
           "file": "backend/v2/router.py",
-          "line": 516,
+          "line": 528,
           "kind": "server"
         }
       ]
@@ -5818,12 +5818,12 @@
       "references": [
         {
           "file": "backend/v2/router.py",
-          "line": 514,
+          "line": 526,
           "kind": "server"
         },
         {
           "file": "backend/v2/router.py",
-          "line": 540,
+          "line": 552,
           "kind": "server"
         }
       ]
@@ -5834,7 +5834,7 @@
       "references": [
         {
           "file": "backend/v2/router.py",
-          "line": 476,
+          "line": 488,
           "kind": "server"
         }
       ]
@@ -5845,7 +5845,7 @@
       "references": [
         {
           "file": "backend/v2/router.py",
-          "line": 526,
+          "line": 538,
           "kind": "server"
         }
       ]
@@ -6553,8 +6553,8 @@
       "sha256": "0c8ffc17468868d41c8d6806089deaafa12da5caa0d0b9c31f0ec438fe12ac7c",
       "references": [
         {
-          "file": "src/components/product/FarmSetupView.jsx",
-          "line": 47,
+          "file": "src/features/product/soils.js",
+          "line": 7,
           "kind": "literal"
         }
       ]
@@ -8283,7 +8283,7 @@
       "references": [
         {
           "file": "backend/v2/router.py",
-          "line": 435,
+          "line": 447,
           "kind": "server"
         }
       ]
@@ -8415,7 +8415,7 @@
       "references": [
         {
           "file": "src/features/farms/NoticeList.jsx",
-          "line": 27,
+          "line": 28,
           "kind": "literal"
         }
       ]
@@ -8503,7 +8503,7 @@
       "references": [
         {
           "file": "src/components/product/FarmSetupView.jsx",
-          "line": 339,
+          "line": 330,
           "kind": "literal"
         }
       ]
@@ -8514,7 +8514,7 @@
       "references": [
         {
           "file": "src/components/product/FarmSetupView.jsx",
-          "line": 314,
+          "line": 305,
           "kind": "literal"
         }
       ]
@@ -8778,7 +8778,7 @@
       "references": [
         {
           "file": "src/components/product/FarmSetupView.jsx",
-          "line": 289,
+          "line": 280,
           "kind": "literal"
         }
       ]
@@ -8915,7 +8915,7 @@
       "references": [
         {
           "file": "src/components/product/FarmSetupView.jsx",
-          "line": 75,
+          "line": 66,
           "kind": "literal"
         }
       ]
@@ -9833,7 +9833,7 @@
       "references": [
         {
           "file": "src/components/product/FarmSetupView.jsx",
-          "line": 57,
+          "line": 48,
           "kind": "literal"
         }
       ]
@@ -10250,7 +10250,7 @@
       "references": [
         {
           "file": "src/components/product/FarmSetupView.jsx",
-          "line": 54,
+          "line": 45,
           "kind": "literal"
         }
       ]
@@ -10303,8 +10303,8 @@
       "sha256": "062a5947ced64961507facda02cd94d9d24af6b3ef01d7587e8f11a23a52127b",
       "references": [
         {
-          "file": "src/components/product/FarmSetupView.jsx",
-          "line": 48,
+          "file": "src/features/product/soils.js",
+          "line": 8,
           "kind": "literal"
         }
       ]
@@ -10474,7 +10474,7 @@
       "references": [
         {
           "file": "src/components/product/FarmSetupView.jsx",
-          "line": 399,
+          "line": 390,
           "kind": "literal"
         }
       ]
@@ -11890,7 +11890,7 @@
       "references": [
         {
           "file": "src/components/product/FarmSetupView.jsx",
-          "line": 58,
+          "line": 49,
           "kind": "literal"
         }
       ]
@@ -12834,12 +12834,12 @@
       "references": [
         {
           "file": "src/components/product/FarmSetupView.jsx",
-          "line": 149,
+          "line": 140,
           "kind": "literal"
         },
         {
           "file": "backend/v2/farm_setup.py",
-          "line": 75,
+          "line": 74,
           "kind": "server"
         }
       ]
@@ -13202,7 +13202,7 @@
       "references": [
         {
           "file": "src/components/product/FarmSetupView.jsx",
-          "line": 404,
+          "line": 395,
           "kind": "literal"
         }
       ]
@@ -13289,8 +13289,8 @@
       "sha256": "39efff74200428751ee00d7dce20bc1beed515aa7fc9c67e23aca352e6b2b1e8",
       "references": [
         {
-          "file": "src/components/product/FarmSetupView.jsx",
-          "line": 46,
+          "file": "src/features/product/soils.js",
+          "line": 6,
           "kind": "literal"
         }
       ]
@@ -13603,7 +13603,7 @@
       "references": [
         {
           "file": "src/components/product/FarmSetupView.jsx",
-          "line": 317,
+          "line": 308,
           "kind": "literal"
         },
         {
@@ -13744,8 +13744,8 @@
       "sha256": "772e382a6fb14c0e4b41c11035ba8ae6a4eb9eef40e41da246218516d0a164ce",
       "references": [
         {
-          "file": "src/components/product/FarmSetupView.jsx",
-          "line": 49,
+          "file": "src/features/product/soils.js",
+          "line": 9,
           "kind": "literal"
         }
       ]
@@ -15458,7 +15458,7 @@
       "references": [
         {
           "file": "src/components/product/FarmSetupView.jsx",
-          "line": 200,
+          "line": 191,
           "kind": "literal"
         }
       ]
@@ -16763,7 +16763,7 @@
         },
         {
           "file": "backend/v2/router.py",
-          "line": 569,
+          "line": 581,
           "kind": "server"
         }
       ]
@@ -17249,7 +17249,7 @@
       "references": [
         {
           "file": "src/components/product/FarmSetupView.jsx",
-          "line": 488,
+          "line": 479,
           "kind": "literal"
         }
       ]
@@ -17505,7 +17505,7 @@
       "references": [
         {
           "file": "backend/v2/router.py",
-          "line": 464,
+          "line": 476,
           "kind": "server"
         }
       ]
@@ -17527,7 +17527,7 @@
       "references": [
         {
           "file": "backend/v2/router.py",
-          "line": 416,
+          "line": 422,
           "kind": "server"
         }
       ]
@@ -17619,7 +17619,7 @@
       "references": [
         {
           "file": "backend/v2/router.py",
-          "line": 558,
+          "line": 570,
           "kind": "server"
         }
       ]
@@ -17740,7 +17740,7 @@
       "references": [
         {
           "file": "src/components/product/FarmSetupView.jsx",
-          "line": 325,
+          "line": 316,
           "kind": "literal"
         }
       ]
@@ -18820,7 +18820,7 @@
       "references": [
         {
           "file": "src/components/product/FarmSetupView.jsx",
-          "line": 146,
+          "line": 137,
           "kind": "literal"
         },
         {
@@ -20209,8 +20209,8 @@
       "sha256": "e0135b9272eaacc2ba869fdac2b6ff48e9888ac9a71a30183f01bd7fb88f4d38",
       "references": [
         {
-          "file": "src/components/product/FarmSetupView.jsx",
-          "line": 45,
+          "file": "src/features/product/soils.js",
+          "line": 5,
           "kind": "literal"
         }
       ]
@@ -20803,7 +20803,7 @@
       "references": [
         {
           "file": "backend/v2/worker.py",
-          "line": 247,
+          "line": 263,
           "kind": "server"
         }
       ]
@@ -20951,7 +20951,7 @@
       "references": [
         {
           "file": "src/components/product/FarmSetupView.jsx",
-          "line": 77,
+          "line": 68,
           "kind": "literal"
         }
       ]
@@ -21192,8 +21192,8 @@
       "sha256": "90383a5693bc403947234d45afa63e70e7b0dc1f7cc178e3ba4b3f2db1c2ea5a",
       "references": [
         {
-          "file": "src/components/product/FarmSetupView.jsx",
-          "line": 51,
+          "file": "src/features/product/soils.js",
+          "line": 11,
           "kind": "literal"
         }
       ]
@@ -21380,7 +21380,7 @@
       "references": [
         {
           "file": "backend/v2/worker.py",
-          "line": 246,
+          "line": 262,
           "kind": "server"
         }
       ]
@@ -21468,7 +21468,7 @@
       "references": [
         {
           "file": "src/components/product/FarmSetupView.jsx",
-          "line": 523,
+          "line": 514,
           "kind": "literal"
         }
       ]
@@ -21665,7 +21665,7 @@
       "references": [
         {
           "file": "src/components/product/FarmSetupView.jsx",
-          "line": 522,
+          "line": 513,
           "kind": "literal"
         },
         {
@@ -21982,7 +21982,7 @@
         },
         {
           "file": "backend/v2/farm_setup.py",
-          "line": 251,
+          "line": 228,
           "kind": "server"
         },
         {
@@ -23057,7 +23057,7 @@
         },
         {
           "file": "src/components/product/FarmSetupView.jsx",
-          "line": 452,
+          "line": 443,
           "kind": "literal"
         }
       ]
@@ -23075,6 +23075,17 @@
           "file": "src/features/farms/PlotContext.jsx",
           "line": 84,
           "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Soil estimate updated",
+      "sha256": "8ea156b17ae32792c8c91c1b1f2a7593e6e3d500988a45f70afa96140683265b",
+      "references": [
+        {
+          "file": "backend/v2/soil_refine.py",
+          "line": 147,
+          "kind": "server"
         }
       ]
     },
@@ -23544,7 +23555,7 @@
       "references": [
         {
           "file": "src/components/product/FarmSetupView.jsx",
-          "line": 503,
+          "line": 494,
           "kind": "literal"
         },
         {
@@ -23630,7 +23641,7 @@
       "references": [
         {
           "file": "src/components/product/FarmSetupView.jsx",
-          "line": 286,
+          "line": 277,
           "kind": "literal"
         }
       ]
@@ -23679,7 +23690,7 @@
       "references": [
         {
           "file": "src/components/product/FarmSetupView.jsx",
-          "line": 258,
+          "line": 249,
           "kind": "literal"
         }
       ]
@@ -23846,7 +23857,7 @@
       "references": [
         {
           "file": "src/components/product/FarmSetupView.jsx",
-          "line": 416,
+          "line": 407,
           "kind": "literal"
         }
       ]
@@ -24126,7 +24137,7 @@
       "references": [
         {
           "file": "src/components/product/FarmSetupView.jsx",
-          "line": 303,
+          "line": 294,
           "kind": "literal"
         },
         {
@@ -24640,7 +24651,7 @@
       "references": [
         {
           "file": "src/components/product/FarmSetupView.jsx",
-          "line": 322,
+          "line": 313,
           "kind": "literal"
         }
       ]
@@ -24651,7 +24662,7 @@
       "references": [
         {
           "file": "src/components/product/FarmSetupView.jsx",
-          "line": 303,
+          "line": 294,
           "kind": "literal"
         },
         {
@@ -24813,7 +24824,7 @@
         },
         {
           "file": "src/components/product/FarmSetupView.jsx",
-          "line": 255,
+          "line": 246,
           "kind": "literal"
         },
         {
@@ -25433,6 +25444,17 @@
           "file": "src/features/product/useSimulation.js",
           "line": 135,
           "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "The soil map now gives an estimate for this field. Check it in My fields and change it if your soil is different.",
+      "sha256": "4c2dbc0f078c55281bac75796a7f77c64b5f824d6d6c9357500183a3921b45b7",
+      "references": [
+        {
+          "file": "backend/v2/soil_refine.py",
+          "line": 148,
+          "kind": "server"
         }
       ]
     },
@@ -26462,7 +26484,7 @@
       "references": [
         {
           "file": "src/components/product/FarmSetupView.jsx",
-          "line": 487,
+          "line": 478,
           "kind": "literal"
         }
       ]
@@ -26785,7 +26807,7 @@
       "references": [
         {
           "file": "src/components/product/FarmSetupView.jsx",
-          "line": 319,
+          "line": 310,
           "kind": "literal"
         },
         {
@@ -27619,7 +27641,7 @@
       "references": [
         {
           "file": "src/components/product/FarmSetupView.jsx",
-          "line": 370,
+          "line": 361,
           "kind": "literal"
         }
       ]
@@ -27652,7 +27674,7 @@
       "references": [
         {
           "file": "src/components/product/FarmSetupView.jsx",
-          "line": 386,
+          "line": 377,
           "kind": "literal"
         }
       ]
@@ -27663,7 +27685,7 @@
       "references": [
         {
           "file": "src/components/product/FarmSetupView.jsx",
-          "line": 388,
+          "line": 379,
           "kind": "literal"
         }
       ]
@@ -27809,7 +27831,7 @@
       "references": [
         {
           "file": "src/components/product/FarmSetupView.jsx",
-          "line": 321,
+          "line": 312,
           "kind": "literal"
         },
         {
@@ -27956,7 +27978,7 @@
       "references": [
         {
           "file": "src/components/product/FarmSetupView.jsx",
-          "line": 485,
+          "line": 476,
           "kind": "literal"
         }
       ]
@@ -29024,7 +29046,7 @@
       "references": [
         {
           "file": "src/components/product/FarmSetupView.jsx",
-          "line": 78,
+          "line": 69,
           "kind": "literal"
         }
       ]
@@ -29079,7 +29101,7 @@
       "references": [
         {
           "file": "src/components/product/FarmSetupView.jsx",
-          "line": 481,
+          "line": 472,
           "kind": "literal"
         }
       ]
@@ -29112,7 +29134,7 @@
       "references": [
         {
           "file": "src/components/product/FarmSetupView.jsx",
-          "line": 148,
+          "line": 139,
           "kind": "literal"
         }
       ]
@@ -29145,7 +29167,7 @@
       "references": [
         {
           "file": "src/components/product/FarmSetupView.jsx",
-          "line": 74,
+          "line": 65,
           "kind": "literal"
         }
       ]
@@ -29403,7 +29425,7 @@
       "references": [
         {
           "file": "src/components/product/FarmSetupView.jsx",
-          "line": 393,
+          "line": 384,
           "kind": "literal"
         }
       ]
@@ -29425,7 +29447,7 @@
       "references": [
         {
           "file": "src/components/product/FarmSetupView.jsx",
-          "line": 361,
+          "line": 352,
           "kind": "literal"
         },
         {
@@ -29649,7 +29671,7 @@
       "references": [
         {
           "file": "src/components/product/FarmSetupView.jsx",
-          "line": 268,
+          "line": 259,
           "kind": "literal"
         }
       ]

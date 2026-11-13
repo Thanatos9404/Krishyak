@@ -39,17 +39,8 @@ export const ASSESSED_CROPS = {
   sesame: 90,
   sugarcane: 330,
 };
-export const SOILS = {
-  Alluvial: "Alluvial (river plain)",
-  Black: "Black (kali mitti)",
-  Red: "Red (lal mitti)",
-  Laterite: "Laterite",
-  Desert: "Desert",
-  Mountain: "Hill soil",
-  Loamy: "Loamy (domat)",
-  Clay: "Clay (chikni mitti)",
-  Sandy: "Sandy (balui mitti)",
-};
+export { SOILS } from "../../features/product/soils";
+import { SOILS } from "../../features/product/soils";
 const UNITS = {
   hectare: "Hectare",
   acre: "Acre",

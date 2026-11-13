@@ -160,12 +160,19 @@ async def locate(gateway, draft):
     for index, (query, matched) in enumerate(queries):
         if index:
             await asyncio.sleep(1.2)  # Nominatim allows one request per second.
-        try:
-            rows = await gateway.read(
-                "nominatim_search",
-                {"q": query, "format": "jsonv2", "countrycodes": "in", "limit": 5, "addressdetails": 1},
-            )
-        except Unavailable:
+        rows = None
+        for retry in range(2):
+            try:
+                rows = await gateway.read(
+                    "nominatim_search",
+                    {"q": query, "format": "jsonv2", "countrycodes": "in", "limit": 5, "addressdetails": 1},
+                )
+                break
+            except Unavailable:
+                # Usually the shared one-per-second spacing; wait for the next slot once.
+                if not retry:
+                    await asyncio.sleep(1.2)
+        if rows is None:
             continue
         for row in rows if isinstance(rows, list) else []:
             try:
