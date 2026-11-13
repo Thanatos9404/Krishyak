@@ -128,7 +128,9 @@ async def imd(gateway, lat, lon):
 
 
 SOIL_PROPERTIES = {
-    "phh2o": ("ph", 10, 10, "pH"),
+    # SoilGrids labels pH as dimensionless ("-", mapped "pH*10") since 2026;
+    # older answers said "pH". Both carry the same x10 factor.
+    "phh2o": ("ph", 10, 10, ("pH", "-")),
     "nitrogen": ("nitrogen_g_kg", 100, 100, "g/kg"),
     "soc": ("organic_carbon_g_kg", 10, 10, "g/kg"),
     # The API conventional texture unit is percent. Keep our contract in g/kg,
@@ -150,7 +152,8 @@ def normalize_soil(payload):
             continue
         target, factor, provider_factor, unit = SOIL_PROPERTIES[name]
         metadata = layer["unit_measure"]
-        if metadata.get("d_factor") != provider_factor or metadata.get("target_units") != unit:
+        units = unit if isinstance(unit, tuple) else (unit,)
+        if metadata.get("d_factor") != provider_factor or metadata.get("target_units") not in units:
             raise Unavailable()
         depths = [d for d in layer["depths"] if d["label"] == "0-5cm"]
         if len(depths) != 1 or target in values:
