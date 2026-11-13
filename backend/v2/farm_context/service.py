@@ -150,7 +150,7 @@ class FarmContextService:
             if not self.settings.soilgrids_enabled:
                 return absent(
                     "soilgrids",
-                    "SoilGrids REST is paused by its publisher. Add a measured report instead.",
+                    "The SoilGrids soil estimate is turned off in this deployment. Add a measured report instead.",
                     disabled=True,
                     url="https://docs.isric.org/globaldata/soilgrids/SoilGrids_faqs_02.html",
                 )

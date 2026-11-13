@@ -1,5 +1,6 @@
 """Spoken farm setup and the field assessment built from the farmer's records."""
 
+import asyncio
 import os
 import unittest
 from datetime import timedelta
@@ -16,6 +17,7 @@ from v2.agronomy import area_to_hectares, fertilizer_products, match_location, s
 from v2.application import install_v2
 from v2.assessment import plan_inputs, schemes
 from v2.farm_context.models import Soil, india_today
+from v2.farm_context.transport import Unavailable
 from v2.farm_setup import normalize, same_district
 from v2.settings import Settings
 
@@ -210,6 +212,52 @@ class SetupAndAssessmentEndpointTests(unittest.TestCase):
         self.assertEqual((draft["soil_type"], draft["soil_source"]), ("Loamy", "soil_map"))
         self.assertEqual(draft["soil_measurements"]["sand_percent"], 46)
         self.assertEqual(draft["missing"], ["area", "crop"])
+
+    def test_a_soil_map_answer_is_reused_for_the_same_cell(self):
+        from v2.farm_setup import soil_map
+
+        class Store:
+            def __init__(self):
+                self.items = {}
+
+            def get(self, key):
+                return self.items.get(key)
+
+            def set(self, key, value, ex):
+                assert ex > 30 * 86400
+                self.items[key] = value
+
+        layer = {
+            "name": "clay",
+            "unit_measure": {"d_factor": 10, "target_units": "%"},
+            "depths": [{"label": "0-5cm", "values": {"mean": 252}}],
+        }
+        calls = []
+
+        async def read(provider, params, **options):
+            calls.append(provider)
+            return {"properties": {"layers": [layer]}}
+
+        store = Store()
+        gateway = SimpleNamespace(read=read, quotas=SimpleNamespace(redis=store))
+        params = [("lat", 26.74), ("lon", 77.9)]
+        first = asyncio.run(soil_map(gateway, params))
+        second = asyncio.run(soil_map(gateway, params))
+        self.assertEqual(first, second)
+        self.assertEqual(calls, ["soilgrids"])
+        # The key is a hash: no coordinates are written in clear.
+        self.assertFalse(any("26.74" in key for key in store.items))
+
+        # An unusable answer is not cached, and a broken cache never blocks setup.
+        async def empty(provider, params, **options):
+            return {"properties": {"layers": []}}
+
+        broken = SimpleNamespace(get=lambda key: 1 / 0, set=lambda *a, **k: 1 / 0)
+        with self.assertRaises(Unavailable):
+            asyncio.run(soil_map(SimpleNamespace(read=empty, quotas=SimpleNamespace(redis=broken)), [("lat", 1.0)]))
+        self.assertEqual(
+            asyncio.run(soil_map(SimpleNamespace(read=read, quotas=SimpleNamespace(redis=broken)), params)), first
+        )
 
     def test_saved_field_gets_a_full_assessment(self):
         self.consent("agronomic_analysis")
