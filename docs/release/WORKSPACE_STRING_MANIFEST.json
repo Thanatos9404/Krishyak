@@ -1,6 +1,6 @@
 {
   "extractor": "Babel AST; literals, JSX text, positional template placeholders",
-  "source_strings": 2583,
+  "source_strings": 2584,
   "strings": [
     {
       "source": ". Interval composites may contain several acquisitions; exact contributing dates are not independently verified.",
@@ -1028,7 +1028,7 @@
       "references": [
         {
           "file": "backend/v2/farm_setup.py",
-          "line": 248,
+          "line": 278,
           "kind": "server"
         }
       ]
@@ -1350,7 +1350,7 @@
       "references": [
         {
           "file": "src/components/product/LiveView.jsx",
-          "line": 299,
+          "line": 306,
           "kind": "literal"
         }
       ]
@@ -4012,7 +4012,7 @@
       "references": [
         {
           "file": "backend/v2/farm_context/transport.py",
-          "line": 165,
+          "line": 171,
           "kind": "server"
         }
       ]
@@ -5580,6 +5580,17 @@
         {
           "file": "src/components/product/SettingsView.jsx",
           "line": 50,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Conversation",
+      "sha256": "ccca1817575365871461752f3229dd59ede742ae69e350e20fd00a6ce3d149e3",
+      "references": [
+        {
+          "file": "src/components/product/LiveView.jsx",
+          "line": 261,
           "kind": "literal"
         }
       ]
@@ -12828,7 +12839,7 @@
         },
         {
           "file": "backend/v2/farm_setup.py",
-          "line": 74,
+          "line": 75,
           "kind": "server"
         }
       ]
@@ -12982,7 +12993,7 @@
       "references": [
         {
           "file": "src/components/product/LiveView.jsx",
-          "line": 374,
+          "line": 381,
           "kind": "literal"
         }
       ]
@@ -13554,7 +13565,7 @@
       "references": [
         {
           "file": "src/components/product/LiveView.jsx",
-          "line": 276,
+          "line": 283,
           "kind": "literal"
         },
         {
@@ -21971,7 +21982,7 @@
         },
         {
           "file": "backend/v2/farm_setup.py",
-          "line": 221,
+          "line": 251,
           "kind": "server"
         },
         {
@@ -22118,7 +22129,7 @@
       "references": [
         {
           "file": "src/components/product/LiveView.jsx",
-          "line": 358,
+          "line": 365,
           "kind": "literal"
         },
         {
@@ -22568,7 +22579,7 @@
       "references": [
         {
           "file": "src/components/product/LiveView.jsx",
-          "line": 290,
+          "line": 297,
           "kind": "literal"
         }
       ]
@@ -23205,17 +23216,6 @@
       ]
     },
     {
-      "source": "SoilGrids REST is paused by its publisher. Add a measured report instead.",
-      "sha256": "1ce9ab87eb39c7e7ba08d904dfb396780a5a36b76aa5d1b6e1889ded06665eec",
-      "references": [
-        {
-          "file": "backend/v2/farm_context/service.py",
-          "line": 153,
-          "kind": "server"
-        }
-      ]
-    },
-    {
       "source": "Solan",
       "sha256": "3ed2629a328ce7f3c2b90183ff21e3be6d71adc5f60e0324dea6babbc7298ede",
       "references": [
@@ -23663,7 +23663,7 @@
       "references": [
         {
           "file": "src/components/product/LiveView.jsx",
-          "line": 370,
+          "line": 377,
           "kind": "literal"
         },
         {
@@ -24131,7 +24131,7 @@
         },
         {
           "file": "src/components/product/LiveView.jsx",
-          "line": 321,
+          "line": 328,
           "kind": "literal"
         },
         {
@@ -24180,7 +24180,7 @@
       "references": [
         {
           "file": "src/components/product/LiveView.jsx",
-          "line": 323,
+          "line": 330,
           "kind": "literal"
         },
         {
@@ -24656,7 +24656,7 @@
         },
         {
           "file": "src/components/product/LiveView.jsx",
-          "line": 324,
+          "line": 331,
           "kind": "literal"
         },
         {
@@ -24818,7 +24818,7 @@
         },
         {
           "file": "src/components/product/LiveView.jsx",
-          "line": 302,
+          "line": 309,
           "kind": "literal"
         },
         {
@@ -25437,6 +25437,17 @@
       ]
     },
     {
+      "source": "The SoilGrids soil estimate is turned off in this deployment. Add a measured report instead.",
+      "sha256": "3895d304b3c9ed4d57187d020c1deba59c095a8f5562e9f5af31f3d1ccb907d8",
+      "references": [
+        {
+          "file": "backend/v2/farm_context/service.py",
+          "line": 153,
+          "kind": "server"
+        }
+      ]
+    },
+    {
       "source": "The stored moisture-sensitive index declined and the current forecast contains no rain in the next 24 hours. These signals provide context for a field inspection.",
       "sha256": "fe6428591228ea4d2fbf8b58b65fe818922f84c2e45e3666bfbc4c9c8f99901e",
       "references": [
@@ -26018,7 +26029,7 @@
       "references": [
         {
           "file": "backend/v2/farm_context/transport.py",
-          "line": 179,
+          "line": 185,
           "kind": "server"
         }
       ]
@@ -26528,7 +26539,7 @@
       "references": [
         {
           "file": "src/components/product/LiveView.jsx",
-          "line": 370,
+          "line": 377,
           "kind": "literal"
         },
         {
@@ -26544,12 +26555,12 @@
       "references": [
         {
           "file": "src/components/product/LiveView.jsx",
-          "line": 344,
+          "line": 351,
           "kind": "literal"
         },
         {
           "file": "src/components/product/LiveView.jsx",
-          "line": 352,
+          "line": 359,
           "kind": "literal"
         },
         {
@@ -28936,7 +28947,7 @@
       "references": [
         {
           "file": "src/components/product/LiveView.jsx",
-          "line": 329,
+          "line": 336,
           "kind": "literal"
         }
       ]

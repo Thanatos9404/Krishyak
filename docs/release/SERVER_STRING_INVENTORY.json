@@ -665,7 +665,7 @@
     "line": 146
   },
   {
-    "source": "SoilGrids REST is paused by its publisher. Add a measured report instead.",
+    "source": "The SoilGrids soil estimate is turned off in this deployment. Add a measured report instead.",
     "file": "backend/v2/farm_context/service.py",
     "line": 153
   },
@@ -732,27 +732,27 @@
   {
     "source": "Cached evidence has expired; refresh before acting",
     "file": "backend/v2/farm_context/transport.py",
-    "line": 165
+    "line": 171
   },
   {
     "source": "This source is unavailable. Other sections remain usable.",
     "file": "backend/v2/farm_context/transport.py",
-    "line": 179
+    "line": 185
   },
   {
     "source": "Krishyak could not understand that. Please try again or fill the form.",
     "file": "backend/v2/farm_setup.py",
-    "line": 74
+    "line": 75
   },
   {
     "source": "Select a supported language",
     "file": "backend/v2/farm_setup.py",
-    "line": 221
+    "line": 251
   },
   {
     "source": "Account changed while reading your details",
     "file": "backend/v2/farm_setup.py",
-    "line": 248
+    "line": 278
   },
   {
     "source": "This is public program information, not eligibility approval",
