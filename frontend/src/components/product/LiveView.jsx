@@ -253,7 +253,14 @@ export function LiveView({ workspace: w }) {
           />
         ) : (
           <>
-            <div className="live-transcript" aria-live="polite">
+            <div
+              className="live-transcript"
+              aria-live="polite"
+              // A long answer scrolls here; keyboard users must be able to reach it.
+              role="region"
+              aria-label={tx("Conversation")}
+              tabIndex={0}
+            >
               {asked && <p className="live-asked">{asked.text}</p>}
               {last ? (
                 <div className="live-answer">

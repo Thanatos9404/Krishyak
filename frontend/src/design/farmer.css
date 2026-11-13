@@ -1881,6 +1881,11 @@
 .live-transcript {
   overscroll-behavior: contain;
 }
+.live-transcript:focus-visible {
+  outline: 3px solid var(--k-sun);
+  outline-offset: 4px;
+  border-radius: 12px;
+}
 @media (prefers-reduced-motion: reduce) {
   .button:active,
   .landing-button:active,

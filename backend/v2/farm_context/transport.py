@@ -70,6 +70,8 @@ class Gateway:
             await self.pace(paced, 1.1 if paced == "nominatim" else 12.1)
         started = self.clock()
         outcome = "unavailable"
+        # Logged without URL parameters, which can carry provider keys.
+        detail = "none"
         try:
             async with asyncio.timeout(deadline):
                 async with self.request_slots:
@@ -85,12 +87,14 @@ class Gateway:
                                 "Accept": "application/xml" if xml else "application/json",
                             },
                         ) as response:
+                            detail = f"http_{response.status_code}"
                             if response.status_code != 200:
                                 raise Unavailable()
                             content_type = response.headers.get("content-type", "").lower()
                             if (xml and not any(x in content_type for x in ("xml", "vnd.ogc.wms"))) or (
                                 not xml and "json" not in content_type
                             ):
+                                detail = "unexpected_content_type"
                                 raise Unavailable()
                             size, parts = 0, []
                             async for chunk in response.aiter_bytes():
@@ -102,14 +106,16 @@ class Gateway:
             result = raw if xml else json.loads(raw)
             outcome = "success"
             return result
-        except (httpx.HTTPError, TimeoutError, ValueError, TypeError):
+        except (httpx.HTTPError, TimeoutError, ValueError, TypeError) as error:
+            detail = type(error).__name__
             raise Unavailable() from None
         finally:
             self.last_health[provider] = {"status": outcome, "checked_at": now().isoformat()}
             LOGGER.info(
-                "farm_context provider=%s status=%s duration_ms=%d",
+                "farm_context provider=%s status=%s detail=%s duration_ms=%d",
                 provider,
                 outcome,
+                detail,
                 int((self.clock() - started) * 1000),
             )
 
