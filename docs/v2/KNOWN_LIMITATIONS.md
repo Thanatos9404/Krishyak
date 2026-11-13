@@ -27,8 +27,10 @@ On 12 November 2026 staging was migrated to schema v2_0011 and
 seven journeys above plus a crop-loss report with a geo-tagged photo served
 back from private storage, the crop calendar and Pest Radar answering for a
 live wheat field, a Krishyak Live answer from Sarvam and the picture guides.
-Production is still on v2_0010 and does not have these features until the
-pull request is merged and migration v2_0011 is applied there.
+On 13 November 2026 every external provider was checked on staging after both
+Vercel projects moved to Mumbai (see the test report); live mandi prices now
+load there. Production is still on v2_0010 and does not have these features
+until the pull request is merged and migration v2_0011 is applied there.
 
 | Area | Verification on 9 October 2026 |
 |---|---|
@@ -36,7 +38,7 @@ pull request is merged and migration v2_0011 is applied there.
 | Sarvam (speech + translation) | Authenticated, consented `/api/v2/speech/synthesize` (Hindi) then `/api/v2/speech/transcribe` returned the exact sentence. All 22 workspace language packs regenerated (21 via translate API, Sindhi via the document API in Arabic script). |
 | Open-Meteo (weather) | Live 48-hour forecast saved for a field located only by a rounded GPS point and shown as plain conclusions. |
 | Vercel private Blob (photos) | Private store in Mumbai (`bom1`); unauthenticated fetch returns 403, authenticated put/get/delete verified. |
-| data.gov.in (mandi prices) | Answering again on 11-12 November 2026 (a dated AGMARKNET price was shown in a local run with the project key), It refuses connections from Vercel's Singapore and US regions, so both projects run in Mumbai (`bom1`), where it answers. Status on 9 October: **Not verified.** `api.data.gov.in`, the base URL in the portal's own OpenAPI spec, refused TCP connections on 80 and 443 from India and from Vercel Singapore throughout the session while `data.gov.in` itself was up. The adapter (current + variety-wise history, stored series, stale fallback) is covered by tests; live verification must be repeated when the host returns. |
+| data.gov.in (mandi prices) | Live on staging since 13 November 2026. It refuses connections from Vercel's Singapore and US regions, so both projects run in Mumbai (`bom1`), where it answers. Status on 9 October: **Not verified.** `api.data.gov.in`, the base URL in the portal's own OpenAPI spec, refused TCP connections on 80 and 443 from India and from Vercel Singapore throughout the session while `data.gov.in` itself was up. The adapter (current + variety-wise history, stored series, stale fallback) is covered by tests; live verification must be repeated when the host returns. |
 
 ## External gates (outside engineering control)
 

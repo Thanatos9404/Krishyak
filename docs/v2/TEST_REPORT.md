@@ -104,3 +104,32 @@ by design; those counters were cleared in the local Redis only. Not covered:
 physical Android or iOS devices, a real camera stream in Krishyak Live, a
 Pest Radar alert built from real neighbouring farms (unit tests build one
 from synthetic accounts), and any Google AI service.
+
+## Provider checks on staging, 13 November 2026
+
+A probe script signed up a throwaway staging account, called each external
+service through the real API and deleted the account. Results after the
+fixes below:
+
+| Provider | Result on staging (Vercel `bom1`) |
+|---|---|
+| data.gov.in AGMARKNET | Live prices (4 Jaipur markets for wheat). Before the region move it failed with `ConnectError` in about 100 ms from Singapore and Washington |
+| Sarvam | Chat (`sarvam-105b`) for setup and the assistant, speech-to-text, text-to-speech: all answered |
+| OpenStreetMap Nominatim | Reverse and search answered (about 20 to 340 ms) |
+| ISRIC SoilGrids | Setup got the soil-map class once the pH unit fix shipped. Fresh points still take 13 s to over 60 s; the field-context card often times out at 20 s and says so |
+| Background soil map | A field saved as "Sandy (regional guess)" was upgraded to "Loamy" from the soil map 22 s later, with a notice; revision unchanged |
+| Open-Meteo | Field weather saved; the context card uses it as the IMD fallback |
+| Leaf model + private Blob | Photo checked (201) and read back (200, image/jpeg) |
+| Copernicus Sentinel-2 | Job queued (202); the browser journey drained one through the worker |
+| Bhuvan | Off by default: timed out from India (28 s) and from Vercel |
+| IMD | Needs government approval; not enabled |
+
+`scripts/smoke_staging.py`: 12 of 12 checks passed, including the optional
+live mandi check. `e2e/staging.spec.js`: 9 of 9 passed on the final commit.
+Backend: 338 tests (2 skipped). Frontend: 386 Jest tests. pip-audit, npm
+audit and Bandit report nothing.
+
+Through the frontend proxy, 1 of 30 HTTP/1.1 requests from a script dropped
+its connection once; repeat runs of 40 requests over HTTP/1.1 and HTTP/2 had
+no drops, and requests sent straight to the API never dropped. Browsers use
+HTTP/2 and retry such drops, and no browser journey has hit one.
