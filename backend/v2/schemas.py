@@ -21,6 +21,8 @@ Purpose = Literal[
     "government_integration",
     "government_identity",
     "speech_processing",
+    "community_alerts",
+    "organisation_sharing",
 ]
 
 
@@ -125,6 +127,17 @@ class FieldLocation(Input):
         return self
 
 
+class SoilProfile(Input):
+    """What is known about a field's soil and where it came from."""
+
+    soil_type: (
+        Literal["Alluvial", "Black", "Red", "Laterite", "Desert", "Mountain", "Loamy", "Clay", "Sandy"] | None
+    ) = None
+    source: Literal["spoken", "farmer_selected", "soil_map", "state_typical", "soil_test"] | None = None
+    condition: Literal["dry", "normal", "wet"] | None = None
+    seed: Literal["certified", "hybrid", "own_saved"] | None = None
+
+
 class PlotInput(Input):
     operation_id: UUID
     farm_id: UUID
@@ -134,6 +147,7 @@ class PlotInput(Input):
     entered_area_hectares: Number | None = Field(default=None, gt=0, le=500)
     boundary_quality: Literal["manual", "approximate", "farmer_drawn"] = "manual"
     irrigation_type: str | None = Field(default=None, max_length=50)
+    soil_metadata: SoilProfile | None = None
 
     @model_validator(mode="after")
     def valid_location(self):
@@ -168,7 +182,9 @@ class CycleInput(Input):
         self.crop_id, self.crop = resolve_crop(self.crop_id, self.crop)
         if not 1 <= (self.expected_harvest - self.sowing_date).days <= 1095:
             raise ValueError("Crop dates must be ordered and within three years")
-        if self.status == "active" and self.sowing_date > datetime.now(timezone.utc).date():
+        # "Today" is the farmer's day in India, which starts 5.5 hours before UTC's.
+        india_today = (datetime.now(timezone.utc) + timedelta(hours=5, minutes=30)).date()
+        if self.status == "active" and self.sowing_date > india_today:
             raise ValueError("Future cycles must be planned")
         return self
 

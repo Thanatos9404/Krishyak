@@ -7,14 +7,15 @@ const root = path.resolve(import.meta.dirname, "../..");
 const require = createRequire(path.join(root, "frontend/package.json"));
 const { parse } = require("@babel/parser");
 const traverse = require("@babel/traverse").default;
-const directories = ["src/components/product", "src/features/product", "src/features/farms"];
+const directories = ["src/components/product", "src/components/landing", "src/features/product", "src/features/farms"];
 const records = new Map();
 const human = (value) => /[A-Za-z]/.test(value) &&
   !value.includes("SameSite=") &&
   /[A-Z]/.test(value) && !/^;/.test(value) && !/^(\d{4}-\d{2}-\d{2}T|\{\{v\d+\}\}T\d)/.test(value) &&
   !/^(\/|\.\.?\/|https?:)/.test(value) && !value.includes("${") &&
   !/^[a-z][\w.-]*$/.test(value) && !/^#[\da-f]+$/i.test(value) &&
-  !/^(GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS|SELECT|TEXTAREA|UTC|RIFF|WAVE|LOCATION_UNAVAILABLE|NotAllowedError|AbortError|InvalidStateError|SecurityError|Invalid redirect|Content-Type|X-CSRF-Token|SameSite|UTF-8)$/.test(value);
+  !/^M[\s\d.,{}vQqLlHhCcZz-]*$/.test(value) &&
+  !/^(GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS|SELECT|TEXTAREA|UTC|RIFF|WAVE|LOCATION_UNAVAILABLE|NotAllowedError|AbortError|InvalidStateError|SecurityError|Invalid redirect|Content-Type|X-CSRF-Token|SameSite|UTF-8|Escape)$/.test(value);
 const cleanText = (value) => value.split(/\r?\n/).map((line) => line.trim()).filter(Boolean).join(" ");
 function collect(value, file, line, kind, force = false) {
   const text = cleanText(value);
@@ -31,7 +32,7 @@ for (const directory of directories) {
     traverse(ast, {
       StringLiteral({ node, parent }) {
         if (["ImportDeclaration", "ExportNamedDeclaration", "ExportAllDeclaration"].includes(parent.type)) return;
-        if (parent.type === "JSXAttribute" && !["aria-label", "placeholder", "title", "alt", "label"].includes(parent.name.name)) return;
+        if (parent.type === "JSXAttribute" && !["aria-label", "placeholder", "title", "alt", "label", "reason"].includes(parent.name.name)) return;
         collect(node.value, file, node.loc.start.line, "literal", parent.type === "CallExpression" && parent.callee.name === "tx");
       },
       JSXText({ node }) {
@@ -57,7 +58,9 @@ for (const row of [...locations.states, ...locations.districts]) {
   collect(row.name, locationsFile, 1, "location-name", true);
 }
 if (fs.existsSync(serverInventory))
-  for (const row of JSON.parse(fs.readFileSync(serverInventory, "utf8"))) collect(row.source, row.file, row.line, "server");
+  for (const row of JSON.parse(fs.readFileSync(serverInventory, "utf8")))
+    // Disease causes are short lowercase words ("fungus"); they are still farmer-facing.
+    collect(row.source, row.file, row.line, "server", row.file.endsWith("disease_guidance.json"));
 const entries = [...records.values()].sort((a, b) => a.source.localeCompare(b.source, "en"));
 const destination = path.join(root, "frontend/src/features/product/locales");
 fs.mkdirSync(destination, { recursive: true });

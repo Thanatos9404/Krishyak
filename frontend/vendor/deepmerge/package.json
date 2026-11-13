@@ -1,0 +1,8 @@
+{
+  "name": "krishyak-deepmerge",
+  "version": "4.3.1",
+  "description": "deepmerge 4.3.1 API (Krishyak patch) without prototype keys (GHSA-gcqx-w48m-w2h4); used only by Jest's config loader",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true
+}

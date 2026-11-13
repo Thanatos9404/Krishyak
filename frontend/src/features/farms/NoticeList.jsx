@@ -1,6 +1,7 @@
 import { useProductLocale } from "../product/ProductLocale";
 import React, { useEffect, useState } from "react";
 import { farmApi } from "./api";
+import { SOILS } from "../product/soils";
 export default function NoticeList({ owner, act, busy, offline }) {
   const { tx, formatDate } = useProductLocale();
   const [records, setRecords] = useState([]);
@@ -27,8 +28,17 @@ export default function NoticeList({ owner, act, busy, offline }) {
       <h2>{tx("Field updates")}</h2>
       {records.map((record) => (
         <article className="v2-event" key={record.id}>
-          <h3>{record.payload.title}</h3>
-          <p>{record.payload.message}</p>
+          <h3>{tx(record.payload.title)}</h3>
+          <p>{tx(record.payload.message)}</p>
+          {record.kind === "soil_updated" && record.payload.soil_type && (
+            <p>
+              <strong>
+                {tx(
+                  SOILS[record.payload.soil_type] || record.payload.soil_type,
+                )}
+              </strong>
+            </p>
+          )}
           <time>{formatDate(record.created_at, { time: true })}</time>
           {record.acknowledged_at ? (
             <p>

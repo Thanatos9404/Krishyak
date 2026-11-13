@@ -70,6 +70,34 @@ class ContextModelsTests(unittest.TestCase):
         with self.assertRaises(ValidationError):
             Soil(ph=15)
 
+    def test_soil_ph_accepts_the_current_dimensionless_label(self):
+        # Unit metadata exactly as SoilGrids returned it on 13 November 2026.
+        def layer(name, factor, unit, mapped, mean):
+            return {
+                "name": name,
+                "unit_measure": {"d_factor": factor, "target_units": unit, "mapped_units": mapped},
+                "depths": [{"label": "0-5cm", "values": {"mean": mean}}],
+            }
+
+        live = {
+            "properties": {
+                "layers": [
+                    layer("clay", 10, "%", "g/kg", 255),
+                    layer("phh2o", 10, "-", "pH*10", 73),
+                    layer("sand", 10, "%", "g/kg", 466),
+                    layer("silt", 10, "%", "g/kg", 278),
+                ]
+            }
+        }
+        soil = normalize_soil(live)
+        self.assertEqual((soil.ph, soil.sand_g_kg, soil.clay_g_kg), (7.3, 466, 255))
+        live["properties"]["layers"][1]["unit_measure"]["target_units"] = "pH"
+        self.assertEqual(normalize_soil(live).ph, 7.3)
+        # Any other unit is still refused rather than guessed.
+        live["properties"]["layers"][1]["unit_measure"]["target_units"] = "mol/L"
+        with self.assertRaises(Unavailable):
+            normalize_soil(live)
+
     def test_wms_catalogue_cannot_claim_point_evidence_or_expand_entities(self):
         spatial = normalize_capabilities(
             b'<WMS_Capabilities><Layer><Name>landuse</Name><Layer queryable="1"><Name>district</Name></Layer></Layer></WMS_Capabilities>'

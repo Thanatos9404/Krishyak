@@ -52,7 +52,13 @@ support transient storage recovery. Do not run `down --volumes` on retained data
 ## Production contract
 
 Hosting is two Vercel projects: `krishyak` (Next.js, frontend) and `krishyak-api`
-(FastAPI, region `sin1` next to the database). The frontend middleware
+(FastAPI). Both run their functions in `bom1` (Mumbai), set in each
+`vercel.json`. data.gov.in refuses TCP connections from Vercel's Singapore and
+US regions (`detail=ConnectError` in the provider log within about 100 ms) but
+answers from Mumbai, and farmers' phones are closest to Mumbai. The Neon
+database stays in Singapore, which adds roughly 75 ms to a database-heavy
+request; private photos are already in Mumbai. Changing the region is free on
+every Vercel plan. The frontend middleware
 (`frontend/src/proxy.js`) forwards `/api/v2/*` and `/api/public/*` same-origin to
 `KRISHYAK_API_ORIGIN`, so session cookies stay first-party. It adds a 2-minute
 HMAC-signed `x-krishyak-client` header with the farmer's address (trusted by
@@ -118,3 +124,25 @@ Rollback code and routing to the prior known-good release. Prefer forward schema
 repair; inspect retained data before any downgrade. Restore database/objects
 together using [disaster recovery](DISASTER_RECOVERY.md). Never expose a database
 port or enable development identities in a deployment (startup rejects them).
+
+## Release v2_0011 (groups and Verify)
+
+Migration `v2_0011_groups_verify` adds `kind` and `join_code` to
+`v2_pilot_cohorts` and creates `v2_verifications`. It is additive and safe
+to apply before the new code is live. Apply it to staging and production
+with the HTTP migration step above (set `V2_HTTP_MIGRATIONS=true`, redeploy,
+call `POST /api/v2/internal/migrate` with the cron bearer, set it back to
+`false`). Until then `/health/ready` is not ready, because it compares the
+database with the migration head in the code. No new environment variable
+is required. To make an
+account an organiser, an operator sets `role = 'organisation_admin'` on its
+`v2_farmers` row.
+
+## Local PostGIS and Redis without Docker Desktop
+
+On Windows machines where Docker Desktop will not start, PostgreSQL 16 with
+PostGIS 3.4 and Redis can run inside WSL Ubuntu, bound to 127.0.0.1 only.
+Use a Postgres port outside Windows' reserved ranges (`netsh interface ipv4
+show excludedportrange protocol=tcp`); this project uses 55532 and Redis on
+56379. Point an ignored env file at them and start the API with
+`python scripts/run_v2_local.py api --env .codex-tmp/v2-wsl.env`.

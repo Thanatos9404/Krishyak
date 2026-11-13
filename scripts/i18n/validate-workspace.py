@@ -16,13 +16,17 @@ PILOT = [code for code in json.loads((ROOT / "frontend/src/i18n/pilotLanguages.j
 PLACEHOLDERS = re.compile(r"\{\{\w+\}\}")
 CRITICAL = {
     "Mobile number", "Six-digit code", "Send sign-in code", "Verify & continue",
-    "Today on your farm.", "Your farm, field by field.", "Record an update",
+    "Namaste, {{v0}}", "Your farm, field by field.", "Note what I saw",
+    "Your farming helper that listens.", "Start free", "Ask Krishyak", "Tap to speak",
+    "Allow voice help", "Allow and start", "Type your question", "Plant check", "My fields",
     "Save account details", "Choose your language", "Read today’s advice aloud",
     "Your account. Your decisions.", "Start with a clear photograph.",
     "Prices with a place and a date.", "No voice is available for this language. Written advice remains available.",
     "Your fields, crops and prices in one place.", "Sign in with fingerprint or screen lock",
     "New here? Create my account", "Create account", "Write down your recovery code",
     "Check a sick plant", "Mandi prices", "What to do next", "Weather",
+    "Report crop loss", "Picture guides", "Disease alert near you", "Show and ask",
+    "Save photo and check it later",
 }
 BLOCKS = {
     "as": [(0x980, 0x9FF)], "bn": [(0x980, 0x9FF)],

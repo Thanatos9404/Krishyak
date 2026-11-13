@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { farmApi, restoreFarmSession, setCsrfToken } from "../farms/api";
 import { activateOwner, clearOwner, readRecord } from "../farms/offline";
+import { keepOnlyScansOf } from "../farms/scanQueue";
 import { deviceSession } from "./sessionStorage";
 
 export async function revokeDeviceSession() {
@@ -30,6 +31,7 @@ export function useAccountSession({ setError, setNotice }) {
       await clearOwner(stored.owner, true);
       deviceSession("clear");
     }
+    await keepOnlyScansOf(session.farmer.id);
     if (!alive.current) return;
     ownerRef.current = session.farmer.id;
     activateOwner(session.farmer.id);

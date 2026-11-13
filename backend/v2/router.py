@@ -5,7 +5,7 @@ import json
 from datetime import timedelta
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query, Request, Response
 from geoalchemy2.shape import from_shape, to_shape
 from shapely.geometry import Point, mapping, shape
 from sqlalchemy import func, select, text, update
@@ -289,12 +289,17 @@ def set_consent(body: ConsentInput, farmer=Depends(current_farmer), db=Depends(d
         db.execute(
             update(Job).where(Job.plot_id.in_(plots), Job.status.in_(["pending", "retry"])).values(status="cancelled")
         )
-    if body.purpose == "pilot_research":
-        from db.models import PilotEnrollment
+    if body.purpose in {"pilot_research", "organisation_sharing"}:
+        from db.models import PilotCohort, PilotEnrollment
 
+        kind = "pilot" if body.purpose == "pilot_research" else "fpo"
         db.execute(
             update(PilotEnrollment)
-            .where(PilotEnrollment.farmer_id == farmer.id, PilotEnrollment.withdrawn_at.is_(None))
+            .where(
+                PilotEnrollment.farmer_id == farmer.id,
+                PilotEnrollment.withdrawn_at.is_(None),
+                PilotEnrollment.cohort_id.in_(select(PilotCohort.id).where(PilotCohort.kind == kind)),
+            )
             .values(withdrawn_at=utcnow())
         )
     return {"purpose": body.purpose, "granted": False}
@@ -362,7 +367,10 @@ def plots(
 
 def plot_values(body, db, farmer):
     owned_farm(db, farmer.id, body.farm_id)
-    values = body.model_dump(exclude={"revision", "boundary", "approximate_location"})
+    values = body.model_dump(exclude={"revision", "boundary", "approximate_location", "soil_metadata"})
+    # Omitted soil details keep what is stored (new fields start empty).
+    if body.soil_metadata is not None:
+        values["soil_metadata"] = body.soil_metadata.model_dump(exclude_none=True)
     location = body.approximate_location
     if location is not None and body.boundary is None:
         require_consent(db, farmer, "location_processing")
@@ -387,7 +395,13 @@ def plot_values(body, db, farmer):
 
 
 @router.post("/plots", status_code=201)
-def create_plot(body: PlotInput, farmer=Depends(current_farmer), db=Depends(database, scope="function")):
+def create_plot(
+    body: PlotInput,
+    request: Request,
+    tasks: BackgroundTasks,
+    farmer=Depends(current_farmer),
+    db=Depends(database, scope="function"),
+):
     farm = owned_farm(db, farmer.id, body.farm_id)
     db.execute(select(Farm.id).where(Farm.id == farm.id).with_for_update())
     existing = db.scalar(select(Plot).where(Plot.farm_id == farm.id, Plot.operation_id == body.operation_id))
@@ -401,12 +415,21 @@ def create_plot(body: PlotInput, farmer=Depends(current_farmer), db=Depends(data
                 previous = float(previous)
             if key == "boundary" and previous is not None:
                 previous = json.loads(json.dumps(previous))
+            if key == "soil_metadata":
+                previous = previous or None
+                value = {k: v for k, v in value.items() if v is not None} if value else None
             if previous != value:
                 raise HTTPException(409, "Operation ID already used for another field")
         return saved
     plot = Plot(**plot_values(body, db, farmer))
     db.add(plot)
     db.flush()
+    from . import soil_refine
+    from .worker_http import schedule_drain
+
+    if soil_refine.queue(db, plot, farmer.id):
+        # The job is committed with the field; the drain runs after the response.
+        schedule_drain(request, tasks)
     return serialize(plot)
 
 

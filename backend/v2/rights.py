@@ -20,6 +20,7 @@ from db.models import (
     Observation,
     PilotEnrollment,
     Plot,
+    Verification,
 )
 from repositories.ownership import owned_farm, owned_plot
 
@@ -55,6 +56,7 @@ def export(request: Request, farmer=Depends(current_farmer)):
         ),
         ("pilot_enrollments", select(PilotEnrollment).where(PilotEnrollment.farmer_id == owner), ()),
         ("notifications", select(Notification).where(Notification.farmer_id == owner), ()),
+        ("verifications", select(Verification).where(Verification.farmer_id == owner), ("code", "requester_id")),
     ]
 
     def encode(value):

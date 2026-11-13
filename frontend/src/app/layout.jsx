@@ -3,6 +3,7 @@ import "../design/fonts.css";
 import "../design/tokens.css";
 import "../design/public.css";
 import "../design/product.css";
+import "../design/farmer.css";
 import { SITE_ORIGIN } from "../lib/seo";
 
 export const metadata = {
@@ -23,7 +24,10 @@ export const metadata = {
 export const viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#214b3a",
+  // Paint edge to edge; the chrome pads itself with safe-area insets.
+  viewportFit: "cover",
+  interactiveWidget: "resizes-content",
+  themeColor: "#123d27",
 };
 
 export default async function RootLayout({ children }) {

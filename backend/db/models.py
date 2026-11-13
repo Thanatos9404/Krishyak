@@ -264,6 +264,10 @@ class PilotCohort(Record, Base):
     district: Mapped[str] = mapped_column(String(100))
     crops: Mapped[list] = mapped_column(JSONB, default=list)
     status: Mapped[str] = mapped_column(String(20), default="planned")
+    # "pilot" cohorts report anonymous totals; "fpo" groups show member fields
+    # that each farmer chose to share by entering the group's join code.
+    kind: Mapped[str] = mapped_column(String(20), default="pilot")
+    join_code: Mapped[str | None] = mapped_column(String(12), unique=True)
 
 
 class PilotEnrollment(Record, Base):
@@ -274,6 +278,23 @@ class PilotEnrollment(Record, Base):
     consent_id: Mapped[UUID] = mapped_column(ForeignKey("v2_consents.id", ondelete="CASCADE"))
     withdrawn_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     plot_ids: Mapped[list] = mapped_column(JSONB, default=list)
+
+
+class Verification(Record, Base):
+    """A lender's or insurer's farm check that one farmer chose to answer."""
+
+    __tablename__ = "v2_verifications"
+    requester_id: Mapped[UUID] = mapped_column(ForeignKey("v2_farmers.id", ondelete="CASCADE"), index=True)
+    reference: Mapped[str] = mapped_column(String(60))
+    purpose: Mapped[str] = mapped_column(String(30))
+    code: Mapped[str] = mapped_column(String(12), unique=True)
+    status: Mapped[str] = mapped_column(String(20), default="awaiting_farmer")
+    farmer_id: Mapped[UUID | None] = mapped_column(ForeignKey("v2_farmers.id", ondelete="CASCADE"), index=True)
+    plot_id: Mapped[UUID | None] = mapped_column(ForeignKey("v2_plots.id", ondelete="CASCADE"))
+    accepted_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    expires_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
+    declared: Mapped[dict] = mapped_column(JSONB, default=dict)
+    result: Mapped[dict] = mapped_column(JSONB, default=dict)
 
 
 class Notification(Record, Base):

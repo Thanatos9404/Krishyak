@@ -1,5 +1,5 @@
 {
-  "source_sha256": "74989264ab617eae3a8477e62e12f433bfecd2db2202a65b52c1f0e858d85d71",
+  "source_sha256": "b712d5e1512b69476230f88350df8ce6b9b4052af1aa3ed20d41aff0d2ae526e",
   "languages_checked": [
     "hi",
     "ur",
@@ -27,220 +27,266 @@
   "results": [
     {
       "language": "hi",
-      "strings": 1980,
-      "bytes": 221501,
-      "script_letter_fraction": 0.9876,
-      "unchanged_english_labels": [],
+      "strings": 2586,
+      "bytes": 313372,
+      "script_letter_fraction": 0.9771,
+      "unchanged_english_labels": [
+        "{{v0}} kg"
+      ],
       "structural_pass": true,
       "semantic_approval": "not_established",
       "native_review": "required"
     },
     {
       "language": "ur",
-      "strings": 1980,
-      "bytes": 174791,
-      "script_letter_fraction": 0.9909,
-      "unchanged_english_labels": [],
+      "strings": 2586,
+      "bytes": 248324,
+      "script_letter_fraction": 0.9844,
+      "unchanged_english_labels": [
+        "{{v0}} kg"
+      ],
       "structural_pass": true,
       "semantic_approval": "not_established",
       "native_review": "required"
     },
     {
       "language": "gu",
-      "strings": 1980,
-      "bytes": 215019,
-      "script_letter_fraction": 0.9851,
-      "unchanged_english_labels": [],
+      "strings": 2586,
+      "bytes": 304859,
+      "script_letter_fraction": 0.9741,
+      "unchanged_english_labels": [
+        "{{v0}} kg"
+      ],
       "structural_pass": true,
       "semantic_approval": "not_established",
       "native_review": "required"
     },
     {
       "language": "bn",
-      "strings": 1980,
-      "bytes": 229748,
-      "script_letter_fraction": 0.9821,
-      "unchanged_english_labels": [],
+      "strings": 2586,
+      "bytes": 324900,
+      "script_letter_fraction": 0.9744,
+      "unchanged_english_labels": [
+        "{{v0}} kg",
+        "{{v0}} qtl"
+      ],
       "structural_pass": true,
       "semantic_approval": "not_established",
       "native_review": "required"
     },
     {
       "language": "mr",
-      "strings": 1980,
-      "bytes": 218731,
-      "script_letter_fraction": 0.9785,
-      "unchanged_english_labels": [],
+      "strings": 2586,
+      "bytes": 311519,
+      "script_letter_fraction": 0.9692,
+      "unchanged_english_labels": [
+        "{{v0}} kg"
+      ],
       "structural_pass": true,
       "semantic_approval": "not_established",
       "native_review": "required"
     },
     {
       "language": "kn",
-      "strings": 1980,
-      "bytes": 237121,
-      "script_letter_fraction": 0.9866,
-      "unchanged_english_labels": [],
+      "strings": 2586,
+      "bytes": 337257,
+      "script_letter_fraction": 0.9776,
+      "unchanged_english_labels": [
+        "{{v0}} kg"
+      ],
       "structural_pass": true,
       "semantic_approval": "not_established",
       "native_review": "required"
     },
     {
       "language": "ta",
-      "strings": 1980,
-      "bytes": 258454,
-      "script_letter_fraction": 0.9879,
-      "unchanged_english_labels": [],
+      "strings": 2586,
+      "bytes": 369632,
+      "script_letter_fraction": 0.9795,
+      "unchanged_english_labels": [
+        "{{v0}} kg"
+      ],
       "structural_pass": true,
       "semantic_approval": "not_established",
       "native_review": "required"
     },
     {
       "language": "te",
-      "strings": 1980,
-      "bytes": 234902,
-      "script_letter_fraction": 0.985,
-      "unchanged_english_labels": [],
+      "strings": 2586,
+      "bytes": 332645,
+      "script_letter_fraction": 0.9751,
+      "unchanged_english_labels": [
+        "{{v0}} kg"
+      ],
       "structural_pass": true,
       "semantic_approval": "not_established",
       "native_review": "required"
     },
     {
       "language": "ml",
-      "strings": 1980,
-      "bytes": 250962,
-      "script_letter_fraction": 0.9865,
-      "unchanged_english_labels": [],
+      "strings": 2586,
+      "bytes": 359445,
+      "script_letter_fraction": 0.9781,
+      "unchanged_english_labels": [
+        "{{v0}} kg"
+      ],
       "structural_pass": true,
       "semantic_approval": "not_established",
       "native_review": "required"
     },
     {
       "language": "pa",
-      "strings": 1980,
-      "bytes": 219193,
-      "script_letter_fraction": 0.9859,
-      "unchanged_english_labels": [],
+      "strings": 2586,
+      "bytes": 312826,
+      "script_letter_fraction": 0.9748,
+      "unchanged_english_labels": [
+        "{{v0}} kg"
+      ],
       "structural_pass": true,
       "semantic_approval": "not_established",
       "native_review": "required"
     },
     {
       "language": "as",
-      "strings": 1980,
-      "bytes": 224142,
-      "script_letter_fraction": 0.9837,
-      "unchanged_english_labels": [],
+      "strings": 2586,
+      "bytes": 318813,
+      "script_letter_fraction": 0.9756,
+      "unchanged_english_labels": [
+        "{{v0}} kg"
+      ],
       "structural_pass": true,
       "semantic_approval": "not_established",
       "native_review": "required"
     },
     {
       "language": "brx",
-      "strings": 1980,
-      "bytes": 235449,
-      "script_letter_fraction": 0.9886,
-      "unchanged_english_labels": [],
+      "strings": 2586,
+      "bytes": 335059,
+      "script_letter_fraction": 0.9787,
+      "unchanged_english_labels": [
+        "{{v0}} kg"
+      ],
       "structural_pass": true,
       "semantic_approval": "not_established",
       "native_review": "required"
     },
     {
       "language": "doi",
-      "strings": 1980,
-      "bytes": 224476,
-      "script_letter_fraction": 0.99,
-      "unchanged_english_labels": [],
+      "strings": 2586,
+      "bytes": 319330,
+      "script_letter_fraction": 0.9793,
+      "unchanged_english_labels": [
+        "{{v0}} kg"
+      ],
       "structural_pass": true,
       "semantic_approval": "not_established",
       "native_review": "required"
     },
     {
       "language": "ks",
-      "strings": 1980,
-      "bytes": 185962,
-      "script_letter_fraction": 0.9915,
-      "unchanged_english_labels": [],
+      "strings": 2586,
+      "bytes": 265991,
+      "script_letter_fraction": 0.9843,
+      "unchanged_english_labels": [
+        "{{v0}} kg"
+      ],
       "structural_pass": true,
       "semantic_approval": "not_established",
       "native_review": "required"
     },
     {
       "language": "kok",
-      "strings": 1980,
-      "bytes": 217762,
-      "script_letter_fraction": 0.9892,
-      "unchanged_english_labels": [],
+      "strings": 2586,
+      "bytes": 309211,
+      "script_letter_fraction": 0.9785,
+      "unchanged_english_labels": [
+        "{{v0}} kg"
+      ],
       "structural_pass": true,
       "semantic_approval": "not_established",
       "native_review": "required"
     },
     {
       "language": "mai",
-      "strings": 1980,
-      "bytes": 213635,
-      "script_letter_fraction": 0.9879,
-      "unchanged_english_labels": [],
+      "strings": 2586,
+      "bytes": 301899,
+      "script_letter_fraction": 0.9775,
+      "unchanged_english_labels": [
+        "{{v0}} kg"
+      ],
       "structural_pass": true,
       "semantic_approval": "not_established",
       "native_review": "required"
     },
     {
       "language": "mni",
-      "strings": 1980,
-      "bytes": 224616,
-      "script_letter_fraction": 0.9905,
-      "unchanged_english_labels": [],
+      "strings": 2586,
+      "bytes": 320041,
+      "script_letter_fraction": 0.9812,
+      "unchanged_english_labels": [
+        "{{v0}} kg"
+      ],
       "structural_pass": true,
       "semantic_approval": "not_established",
       "native_review": "required"
     },
     {
       "language": "ne",
-      "strings": 1980,
-      "bytes": 227029,
-      "script_letter_fraction": 0.9876,
-      "unchanged_english_labels": [],
+      "strings": 2586,
+      "bytes": 323694,
+      "script_letter_fraction": 0.9778,
+      "unchanged_english_labels": [
+        "{{v0}} kg"
+      ],
       "structural_pass": true,
       "semantic_approval": "not_established",
       "native_review": "required"
     },
     {
       "language": "or",
-      "strings": 1980,
-      "bytes": 233312,
-      "script_letter_fraction": 0.9882,
-      "unchanged_english_labels": [],
+      "strings": 2586,
+      "bytes": 332252,
+      "script_letter_fraction": 0.9788,
+      "unchanged_english_labels": [
+        "{{v0}} kg"
+      ],
       "structural_pass": true,
       "semantic_approval": "not_established",
       "native_review": "required"
     },
     {
       "language": "sa",
-      "strings": 1980,
-      "bytes": 229892,
-      "script_letter_fraction": 0.9869,
-      "unchanged_english_labels": [],
+      "strings": 2586,
+      "bytes": 329110,
+      "script_letter_fraction": 0.9755,
+      "unchanged_english_labels": [
+        "{{v0}} kg"
+      ],
       "structural_pass": true,
       "semantic_approval": "not_established",
       "native_review": "required"
     },
     {
       "language": "sat",
-      "strings": 1980,
-      "bytes": 237289,
-      "script_letter_fraction": 0.9944,
-      "unchanged_english_labels": [],
+      "strings": 2586,
+      "bytes": 338322,
+      "script_letter_fraction": 0.9886,
+      "unchanged_english_labels": [
+        "{{v0}} kg"
+      ],
       "structural_pass": true,
       "semantic_approval": "not_established",
       "native_review": "required"
     },
     {
       "language": "sd",
-      "strings": 1980,
-      "bytes": 168350,
-      "script_letter_fraction": 0.984,
-      "unchanged_english_labels": [],
+      "strings": 2586,
+      "bytes": 240198,
+      "script_letter_fraction": 0.9792,
+      "unchanged_english_labels": [
+        "{{v0}} kg",
+        "{{v0}} qtl"
+      ],
       "structural_pass": true,
       "semantic_approval": "not_established",
       "native_review": "required"

@@ -102,6 +102,22 @@ class YieldEstimator:
             "Maize": (600, 900),
             "Cotton": (600, 1000),
             "Sugarcane": (1200, 1800),
+            # Hardy rabi and dryland crops need far less water (ICAR crop water requirements).
+            "Mustard": (250, 400),
+            "Gram": (250, 400),
+            "Chickpea": (250, 400),
+            "Lentil": (250, 400),
+            "Barley": (300, 450),
+            "Cumin": (200, 350),
+            "Bajra": (350, 550),
+            "Jowar": (400, 600),
+            "Moong": (300, 500),
+            "Urad": (350, 600),
+            "Sesame": (300, 500),
+            "Groundnut": (500, 700),
+            "Soybean": (450, 700),
+            "Potato": (450, 650),
+            "Onion": (350, 550),
         }
         
         optimal = optimal_ranges.get(crop, (500, 800))

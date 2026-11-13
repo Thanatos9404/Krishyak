@@ -66,7 +66,7 @@ test("create an account with a passkey and keep the recovery code", async () => 
     .check();
   await open.click();
   await expect(
-    page.getByRole("heading", { name: "Today on your farm.", exact: true }),
+    page.getByRole("heading", { level: 1, name: /^Namaste, / }),
   ).toBeVisible();
   const me = await (await page.request.get("/api/v2/me")).json();
   expect(me.farmer.display_name).toBe(name);
@@ -95,7 +95,7 @@ test("sign out, then sign back in with the fingerprint passkey", async () => {
   ).toBeVisible();
   await page.getByRole("button", { name: /Sign in with fingerprint/ }).click();
   await expect(
-    page.getByRole("heading", { name: "Today on your farm.", exact: true }),
+    page.getByRole("heading", { level: 1, name: /^Namaste, / }),
   ).toBeVisible();
   const me = await (await page.request.get("/api/v2/me")).json();
   expect(me.farmer.display_name).toBe(name);
@@ -126,7 +126,7 @@ test("a lost phone is recovered with the code, which then rotates", async () => 
     .check();
   await page.getByRole("button", { name: /Open my farm/ }).click();
   await expect(
-    page.getByRole("heading", { name: "Today on your farm.", exact: true }),
+    page.getByRole("heading", { level: 1, name: /^Namaste, / }),
   ).toBeVisible();
   // The new phone is added from Settings with its own screen lock.
   await page.goto("/app/more/settings");

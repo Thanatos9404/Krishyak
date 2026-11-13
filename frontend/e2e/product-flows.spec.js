@@ -87,7 +87,7 @@ test.beforeAll(async ({ browser }, info) => {
     .getByRole("button", { name: "Verify & continue", exact: true })
     .click();
   await expect(
-    page.getByRole("heading", { name: "Today on your farm.", exact: true }),
+    page.getByRole("heading", { level: 1, name: /^Namaste, / }),
   ).toBeVisible();
 });
 test.afterAll(async () => {
@@ -98,7 +98,7 @@ test.afterAll(async () => {
 test("field onboarding, permissions, human update, crop cycle and account export", async () => {
   const errors = [];
   page.on("pageerror", (error) => errors.push(error.message));
-  await navigation("Farm").click();
+  await navigation("My fields").click();
   await page.getByRole("button", { name: "Add a field", exact: true }).click();
   const dialog = page.getByRole("dialog");
   await expect(dialog).toBeVisible();
@@ -146,13 +146,11 @@ test("field onboarding, permissions, human update, crop cycle and account export
   await expect(
     page.getByText("Your permission choice has been saved.", { exact: true }),
   ).toBeVisible();
-  await navigation("Today").click();
+  await navigation("Home").click();
   await expect(
     page.getByRole("combobox", { name: "Selected field" }),
   ).toHaveValue(/.+/);
-  await page
-    .getByRole("button", { name: "Record an update", exact: true })
-    .click();
+  await page.getByRole("button", { name: /^Note what I saw/ }).click();
   await page
     .getByRole("button", { name: "Something I noticed", exact: true })
     .click();
@@ -174,7 +172,7 @@ test("field onboarding, permissions, human update, crop cycle and account export
       exact: true,
     }),
   ).toBeVisible();
-  await navigation("Farm").click();
+  await navigation("My fields").click();
   await page
     .getByRole("button", { name: "Add crop cycle", exact: true })
     .click();
@@ -217,7 +215,7 @@ test("mobile controls, nine viewports and workspace accessibility", async () => 
 });
 
 test("revision-aware field edits, completed cycle and reported soil evidence", async () => {
-  await navigation("Farm").click();
+  await navigation("My fields").click();
   await page
     .getByText("Manage farms, field details & crop cycles", { exact: true })
     .click();
@@ -255,7 +253,7 @@ test("revision-aware field edits, completed cycle and reported soil evidence", a
 });
 
 test("crop photo check, plain result, feedback, private download, deletion and official-benefit limits", async () => {
-  await navigation("Scan").click();
+  await navigation("Plant check").click();
   const cropChoice = page.getByRole("combobox", { name: "Crop", exact: true });
   // Only crops the photo model supports are offered; wheat is not one of them.
   await expect(cropChoice.locator('option[value="tomato"]')).toHaveCount(1);
@@ -280,7 +278,9 @@ test("crop photo check, plain result, feedback, private download, deletion and o
     }),
   ).toBeVisible({ timeout: 30000 });
   await expect(
-    page.getByRole("link", { name: /Kisan Call Centre/ }),
+    page
+      .locator(".scan-result")
+      .getByRole("link", { name: /Kisan Call Centre/ }),
   ).toHaveAttribute("href", "tel:18001801551");
   await page.getByRole("button", { name: "Not sure", exact: true }).click();
   await expect(page.getByText("Your feedback was saved.")).toBeVisible();
@@ -569,9 +569,9 @@ test("offline reload, idempotent synchronization and logout clears private recor
   await expect(
     page.getByRole("checkbox", { name: /Keep farm records for offline use/ }),
   ).toBeChecked();
-  await navigation("Today").click();
+  await navigation("Home").click();
   await expect(
-    page.getByRole("button", { name: "Record an update", exact: true }),
+    page.getByRole("button", { name: /^Note what I saw/ }),
   ).toBeVisible();
   // Let Today finish loading and storing its offline snapshot before the
   // outage; disconnecting mid-save would test nothing about restoration.
@@ -579,16 +579,14 @@ test("offline reload, idempotent synchronization and logout clears private recor
   await disconnected(true);
   await page.reload();
   await expect(
-    page.getByRole("heading", { name: "Today on your farm.", exact: true }),
+    page.getByRole("heading", { level: 1, name: /^Namaste, / }),
   ).toBeVisible();
   // The heading renders before evidence restoration. A real origin outage can
   // take the API's bounded 20 seconds to fail before IndexedDB is read.
   await expect(page.getByText(/Saved on this device:/).first()).toBeVisible({
     timeout: 25000,
   });
-  await page
-    .getByRole("button", { name: "Record an update", exact: true })
-    .click();
+  await page.getByRole("button", { name: /^Note what I saw/ }).click();
   await page
     .getByRole("button", { name: "Something I noticed", exact: true })
     .click();

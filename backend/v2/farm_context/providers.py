@@ -1,5 +1,9 @@
 """Normalize documented public-provider payloads, never invent evidence."""
 
+import asyncio
+import hashlib
+import json
+import logging
 import math
 from datetime import datetime, timedelta, timezone
 
@@ -8,6 +12,8 @@ from defusedxml import ElementTree
 from ..locations import normalized_name
 from .models import ForecastDay, ForecastHour, MarketRecord, Soil, Spatial, Weather, india_today, now
 from .transport import Unavailable
+
+LOGGER = logging.getLogger(__name__)
 
 
 def number(value):
@@ -125,7 +131,9 @@ async def imd(gateway, lat, lon):
 
 
 SOIL_PROPERTIES = {
-    "phh2o": ("ph", 10, 10, "pH"),
+    # SoilGrids labels pH as dimensionless ("-", mapped "pH*10") since 2026;
+    # older answers said "pH". Both carry the same x10 factor.
+    "phh2o": ("ph", 10, 10, ("pH", "-")),
     "nitrogen": ("nitrogen_g_kg", 100, 100, "g/kg"),
     "soc": ("organic_carbon_g_kg", 10, 10, "g/kg"),
     # The API conventional texture unit is percent. Keep our contract in g/kg,
@@ -147,7 +155,8 @@ def normalize_soil(payload):
             continue
         target, factor, provider_factor, unit = SOIL_PROPERTIES[name]
         metadata = layer["unit_measure"]
-        if metadata.get("d_factor") != provider_factor or metadata.get("target_units") != unit:
+        units = unit if isinstance(unit, tuple) else (unit,)
+        if metadata.get("d_factor") != provider_factor or metadata.get("target_units") not in units:
             raise Unavailable()
         depths = [d for d in layer["depths"] if d["label"] == "0-5cm"]
         if len(depths) != 1 or target in values:
@@ -159,10 +168,39 @@ def normalize_soil(payload):
     return Soil(**values)
 
 
+SOIL_CACHE_SECONDS = 180 * 86400
+
+
+async def soil_map(gateway, params, *, deadline=20):
+    """Read SoilGrids through a shared cache: soil texture does not change.
+
+    SoilGrids often takes 10 to 30 s for a point it has not served recently,
+    so an earlier answer for the same 1 km cell is reused across instances.
+    The key is a hash of the rounded cell, never the coordinates themselves.
+    """
+    redis = getattr(getattr(gateway, "quotas", None), "redis", None)
+    key = "krishyak:soilgrids:v1:" + hashlib.sha256(json.dumps(params).encode()).hexdigest()
+    if redis is not None:
+        try:
+            cached = await asyncio.to_thread(redis.get, key)
+            if cached:
+                return json.loads(cached)
+        except Exception as error:  # noqa: BLE001 - a cache failure must not block the answer
+            LOGGER.warning("SoilGrids cache read failed type=%s", type(error).__name__)
+    payload = await gateway.read("soilgrids", params, deadline=deadline)
+    normalize_soil(payload)  # only a usable answer is kept
+    if redis is not None:
+        try:
+            await asyncio.to_thread(redis.set, key, json.dumps(payload), ex=SOIL_CACHE_SECONDS)
+        except Exception as error:  # noqa: BLE001
+            LOGGER.warning("SoilGrids cache write failed type=%s", type(error).__name__)
+    return payload
+
+
 async def soilgrids(gateway, lat, lon):
     params = [("lat", lat), ("lon", lon), ("depth", "0-5cm"), ("value", "mean")]
     params.extend(("property", x) for x in SOIL_PROPERTIES)
-    return normalize_soil(await gateway.read("soilgrids", params))
+    return normalize_soil(await soil_map(gateway, params))
 
 
 def normalize_capabilities(raw):
