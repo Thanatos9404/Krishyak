@@ -3,6 +3,7 @@
 import asyncio
 import hashlib
 import json
+import logging
 import math
 from datetime import datetime, timedelta, timezone
 
@@ -11,6 +12,8 @@ from defusedxml import ElementTree
 from ..locations import normalized_name
 from .models import ForecastDay, ForecastHour, MarketRecord, Soil, Spatial, Weather, india_today, now
 from .transport import Unavailable
+
+LOGGER = logging.getLogger(__name__)
 
 
 def number(value):
@@ -182,15 +185,15 @@ async def soil_map(gateway, params, *, deadline=20):
             cached = await asyncio.to_thread(redis.get, key)
             if cached:
                 return json.loads(cached)
-        except Exception:  # noqa: BLE001 - a cache failure must not block the answer
-            pass
+        except Exception as error:  # noqa: BLE001 - a cache failure must not block the answer
+            LOGGER.warning("SoilGrids cache read failed type=%s", type(error).__name__)
     payload = await gateway.read("soilgrids", params, deadline=deadline)
     normalize_soil(payload)  # only a usable answer is kept
     if redis is not None:
         try:
             await asyncio.to_thread(redis.set, key, json.dumps(payload), ex=SOIL_CACHE_SECONDS)
-        except Exception:  # noqa: BLE001
-            pass
+        except Exception as error:  # noqa: BLE001
+            LOGGER.warning("SoilGrids cache write failed type=%s", type(error).__name__)
     return payload
 
 
