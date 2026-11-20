@@ -18,9 +18,11 @@ from sqlalchemy import select
 
 from db.models import CropCycle, MarketPrice, utcnow
 from repositories.ownership import owned_plot
+from security import client_ip
 
 from .agronomy import CROP_PLANS, SEASON_RAIN_MM, fertilizer_products, typical_soil
-from .climate import normals, plot_point
+from .climate import normals, outlook, plot_point
+from .crop_calendar import calendar_for
 from .crops import BY_ID
 from .farm_context.models import india_today
 from .farm_context.transport import Unavailable
@@ -80,9 +82,19 @@ def price_for(db, crop_id, state, district):
                 "market": best.market,
                 "date": best.arrival_date.isoformat(),
             }
-    msp = config().MSP_RATES_2025.get(planning_name(crop_id) or "")
-    if msp:
-        return {"per_quintal": float(msp), "source": "msp", "market": None, "date": "2025-26"}
+    # The dated, source-linked support prices the MSP page serves (not a copy in code).
+    from gov_api_service import MSP_DATA
+
+    names = [name for name in row.get("planning_names", []) if name in MSP_DATA["crops"]]
+    if names:
+        entry = MSP_DATA["crops"][names[0]]
+        return {
+            "per_quintal": float(entry["msp"]),
+            "source": "msp",
+            "market": None,
+            "date": entry["year"],
+            "source_url": entry.get("source_url"),
+        }
     return None
 
 
@@ -118,7 +130,9 @@ def plan_inputs(crop_id, area, soil_type, soil, water, price, pest_level, rain_m
         "labour_days": max(10, round(area * 30)),
         "pest_control_intensity": 0.5,
         "sale_month": 1,
-        "current_market_price": price["per_quintal"] if price else 2000,
+        # Without any price the engine still needs a number to run; the report then
+        # withholds every money figure instead of presenting a made-up profit.
+        "current_market_price": price["per_quintal"] if price else 1,
         "seed_quantity_kg": round(seed_rate * area, 1),
         "season_months": months,
     }
@@ -232,59 +246,29 @@ async def store_report(request, key, report):
         LOGGER.warning("Assessment cache write failed type=%s", type(error).__name__)
 
 
-@router.get("/plots/{plot_id}/assessment")
-@router.post("/plots/{plot_id}/assessment")
-async def assess(
-    plot_id: UUID, request: Request, farmer=Depends(current_farmer), db=Depends(database, scope="function")
-):
-    plot = owned_plot(db, farmer.id, plot_id)
-    require_consent(db, farmer, "agronomic_analysis")
-    cycle = db.scalar(
-        select(CropCycle)
-        .where(CropCycle.plot_id == plot.id, CropCycle.status.in_(["active", "planned"]))
-        .order_by(CropCycle.sowing_date.desc())
-        .limit(1)
-    )
-    if cycle is None or cycle.crop_id not in CROP_PLANS or planning_name(cycle.crop_id) is None:
-        raise HTTPException(422, "Add a field crop that Krishyak can assess, such as wheat, rice or mustard")
-    area = float(plot.area_hectares if plot.area_hectares is not None else plot.entered_area_hectares or 0)
-    if area <= 0:
-        raise HTTPException(422, "Add your field's area first")
-    soil = dict(plot.soil_metadata or {})
-    soil_type = soil.get("soil_type") or typical_soil(farmer.state, farmer.district)
-    if not soil_type:
-        raise HTTPException(422, "Tell Krishyak your soil type or your state first")
-    if not soil.get("soil_type"):
-        soil.update(soil_type=soil_type, source="state_typical")
-    water = {"irrigated": "irrigated", "rainfed": "rainfed"}.get((plot.irrigation_type or "").lower())
-    season = CROP_PLANS[cycle.crop_id][0]
+async def build_report(request, db, *, crop_id, area, soil, soil_type, water, state, district, point, identity, quota):
+    """The field report from plain values: district forecast, local rainfall, prices, risks, schemes."""
+    season = CROP_PLANS[crop_id][0]
     from pest_intelligence import PestAnalyzer
 
-    pests = PestAnalyzer().get_seasonal_risk(planning_name(cycle.crop_id))
-    price = price_for(db, cycle.crop_id, farmer.state, farmer.district)
-    state, district = farmer.state, farmer.district
-    point = plot_point(plot) if has_consent(db, farmer.id, "location_processing") else None
+    pests = PestAnalyzer().get_seasonal_risk(planning_name(crop_id))
+    price = price_for(db, crop_id, state, district)
     candidates = [
         crop_id
         for crop_id, plan in CROP_PLANS.items()
-        if plan[0] == season and crop_id != cycle.crop_id and planning_name(crop_id)
+        if plan[0] == season and crop_id != crop_id and planning_name(crop_id)
     ]
     alternative_inputs = []
     for crop_id in candidates:
-        alt_price = price_for(db, crop_id, farmer.state, farmer.district)
+        alt_price = price_for(db, crop_id, state, district)
         if alt_price:
             alternative_inputs.append((crop_id, alt_price))
     # The same field records give the same report for the rest of the day, so
     # Home can show it on every visit without recomputing or using up the limit.
     fingerprint = json.dumps(
         [
-            str(plot.id),
-            plot.revision,
-            plot.updated_at.isoformat(),
-            str(cycle.id),
-            cycle.revision,
-            cycle.sowing_date.isoformat(),
-            cycle.crop_id,
+            identity,
+            crop_id,
             area,
             soil,
             water,
@@ -304,7 +288,7 @@ async def assess(
     cached = await stored_report(request, cache_key)
     if cached:
         return cached
-    request.app.state.v2_quotas.check("assessment", str(farmer.id), 20, 3600)
+    request.app.state.v2_quotas.check(*quota)
     normal = None
     if point is not None:
         try:
@@ -312,9 +296,9 @@ async def assess(
         except (Unavailable, KeyError, TypeError, ValueError):
             normal = None
     rain_mm, rain_source = season_rain(season, normal)
-    params = plan_inputs(cycle.crop_id, area, soil_type, soil, water, price, pests.get("risk_level"), rain_mm)
+    params = plan_inputs(crop_id, area, soil_type, soil, water, price, pests.get("risk_level"), rain_mm)
     reference = plan_inputs(
-        cycle.crop_id, area, typical_soil(state, district) or soil_type, {}, None, price, "medium", rain_mm
+        crop_id, area, typical_soil(state, district) or soil_type, {}, None, price, "medium", rain_mm
     )
     alternative_inputs = [
         (crop_id, alt_price, plan_inputs(crop_id, area, soil_type, soil, water, alt_price, None, rain_mm))
@@ -326,7 +310,7 @@ async def assess(
     simulator = engine(request)
 
     better_inputs, changes = improved_plan(params)
-    baseline, local = local_baseline(simulator, cycle.crop_id, season, state, district, params, reference)
+    baseline, local = local_baseline(simulator, crop_id, season, state, district, params, reference)
 
     def scenario(inputs, kind, record):
         context = simulator._prepare_context(inputs["crop"])
@@ -353,6 +337,9 @@ async def assess(
     fit = suitability(crop, soil_type)
     score = round(max(0, min(100, 0.6 * (100 - current["risk"]["overall_risk_score"]) + 40 * fit)))
     mine = summarize(current, area)
+    priced = price is not None
+    if not priced:
+        mine.update(revenue=None, profit=None, profit_per_hectare=None)
     alternatives = sorted(
         (
             {
@@ -379,7 +366,7 @@ async def assess(
     if soil.get("source") != "soil_test":
         changes.append({"kind": "soil_test"})
     report = {
-        "crop_id": cycle.crop_id,
+        "crop_id": crop_id,
         "season": season,
         "area_hectares": round(area, 3),
         "soil": {**soil, "suitability_percent": round(fit * 100)},
@@ -392,17 +379,19 @@ async def assess(
             "profit_range": [
                 round(stats["profit_stats"]["percentile_25"]),
                 round(stats["profit_stats"]["percentile_75"]),
-            ],
-            "chance_of_profit_percent": round(stats["probability_of_profit"]),
+            ]
+            if priced
+            else None,
+            "chance_of_profit_percent": round(stats["probability_of_profit"]) if priced else None,
             "basis": local,
         },
         "price": price,
         "inputs": {
             "seed_kg": params["seed_quantity_kg"],
             "fertilizer_kg": {name: round(kg * area, 1) for name, kg in params["fertilizer_mix"].items()},
-            "nutrients_kg_per_hectare": dict(zip(("N", "P2O5", "K2O"), CROP_PLANS[cycle.crop_id][3:], strict=True)),
+            "nutrients_kg_per_hectare": dict(zip(("N", "P2O5", "K2O"), CROP_PLANS[crop_id][3:], strict=True)),
             "waterings": round(params["irrigation_frequency"] * params["season_months"]),
-            "days_to_harvest": CROP_PLANS[cycle.crop_id][1],
+            "days_to_harvest": CROP_PLANS[crop_id][1],
         },
         "risk": {
             "overall": round(current["risk"]["overall_risk_score"]),
@@ -417,12 +406,12 @@ async def assess(
         },
         "ai_plan": {
             "changes": changes,
-            "profit": round(optimal["profit"]),
-            "extra_profit": max(0, round(optimal["profit"] - current["profit"])),
+            "profit": round(optimal["profit"]) if priced else None,
+            "extra_profit": max(0, round(optimal["profit"] - current["profit"])) if priced else None,
         },
         "better_crop": better,
         "alternatives": alternatives,
-        "schemes": schemes(cycle.crop_id, season, soil, water, price),
+        "schemes": schemes(crop_id, season, soil, water, price),
         "assumptions": {
             "water_mm": params["expected_rainfall"],
             "season_rain_mm": rain_mm,
@@ -437,3 +426,101 @@ async def assess(
     }
     await store_report(request, cache_key, report)
     return report
+
+
+@router.get("/plots/{plot_id}/assessment")
+@router.post("/plots/{plot_id}/assessment")
+async def assess(
+    plot_id: UUID, request: Request, farmer=Depends(current_farmer), db=Depends(database, scope="function")
+):
+    plot = owned_plot(db, farmer.id, plot_id)
+    require_consent(db, farmer, "agronomic_analysis")
+    cycle = db.scalar(
+        select(CropCycle)
+        .where(CropCycle.plot_id == plot.id, CropCycle.status.in_(["active", "planned"]))
+        .order_by(CropCycle.sowing_date.desc())
+        .limit(1)
+    )
+    if cycle is None or cycle.crop_id not in CROP_PLANS or planning_name(cycle.crop_id) is None:
+        raise HTTPException(422, "Add a field crop that Krishyak can assess, such as wheat, rice or mustard")
+    area = float(plot.area_hectares if plot.area_hectares is not None else plot.entered_area_hectares or 0)
+    if area <= 0:
+        raise HTTPException(422, "Add your field's area first")
+    soil = dict(plot.soil_metadata or {})
+    soil_type = soil.get("soil_type") or typical_soil(farmer.state, farmer.district)
+    if not soil_type:
+        raise HTTPException(422, "Tell Krishyak your soil type or your state first")
+    if not soil.get("soil_type"):
+        soil.update(soil_type=soil_type, source="state_typical")
+    water = {"irrigated": "irrigated", "rainfed": "rainfed"}.get((plot.irrigation_type or "").lower())
+    point = plot_point(plot) if has_consent(db, farmer.id, "location_processing") else None
+    return await build_report(
+        request,
+        db,
+        crop_id=cycle.crop_id,
+        area=area,
+        soil=soil,
+        soil_type=soil_type,
+        water=water,
+        state=farmer.state,
+        district=farmer.district,
+        point=point,
+        identity=[
+            str(plot.id),
+            plot.revision,
+            plot.updated_at.isoformat(),
+            str(cycle.id),
+            cycle.revision,
+            cycle.sowing_date.isoformat(),
+        ],
+        quota=("assessment", str(farmer.id), 20, 3600),
+    )
+
+
+# One fixed example so visitors can see the dashboard before making an account.
+# The inputs are an example; every output is computed live from the same
+# district records, rainfall archive, forecast and prices a real field gets.
+EXAMPLE_FIELD = {
+    "crop_id": "wheat",
+    "area_hectares": 1.0,
+    "soil_type": "Loamy",
+    "water": "irrigated",
+    "village": "Chomu",
+    "district": "Jaipur",
+    "state": "Rajasthan",
+    "latitude": 27.17,
+    "longitude": 75.72,
+    "sown_days_ago": 25,
+}
+
+
+@router.get("/example/field")
+async def example_field(request: Request, db=Depends(database, scope="function")):
+    settings = request.app.state.v2_settings
+    if not settings.enabled:
+        raise HTTPException(503, "The example field is not available in this deployment")
+    request.app.state.v2_quotas.check("example_ip", client_ip(request), 30, 60)
+    field = EXAMPLE_FIELD
+    point = (field["latitude"], field["longitude"])
+    report = await build_report(
+        request,
+        db,
+        crop_id=field["crop_id"],
+        area=field["area_hectares"],
+        soil={"soil_type": field["soil_type"], "source": "farmer_selected"},
+        soil_type=field["soil_type"],
+        water=field["water"],
+        state=field["state"],
+        district=field["district"],
+        point=point,
+        identity=["example-field-v1"],
+        quota=("example_report", "all", 600, 3600),
+    )
+    sown = india_today() - timedelta(days=field["sown_days_ago"])
+    return {
+        "example": {**field, "sowing_date": sown.isoformat()},
+        "report": report,
+        "outlook": await outlook(request.app.state.v2_farm_context.gateway, *point),
+        "calendar": {"status": "available"} | calendar_for(field["crop_id"], sown),
+        "notice": "An example field. The weather, rain record, prices and district forecast are real and current; the field itself is not a real farm.",
+    }

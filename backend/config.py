@@ -124,16 +124,6 @@ DEFAULT_YIELDS = {
     "Turmeric": 5000, "Cumin": 600, "Fenugreek": 1200, "Black Pepper": 500, "Cardamom": 250,
 }
 
-# MSP 2025-26 (INR per quintal)
-MSP_RATES_2025 = {
-    "Rice": 2369, "Wheat": 2425, "Maize": 2400, "Barley": 1980,
-    "Bajra": 2625, "Jowar": 3371, "Ragi": 4290,
-    "Tur": 7550, "Gram": 5725, "Urad": 7400, "Moong": 8682, "Lentil": 6700,
-    "Cotton": 7521, "Groundnut": 6783, "Soybean": 4892, "Sunflower": 7280,
-    "Mustard": 5950, "Sesame": 9267,
-    "Sugarcane": 340,  # per quintal FRP
-}
-
 # Fertilizer types and their NPK ratios
 FERTILIZERS = {
     "Urea": {"N": 46, "P": 0, "K": 0, "cost_per_kg": 6},

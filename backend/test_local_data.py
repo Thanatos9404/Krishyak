@@ -368,6 +368,52 @@ class RegistrationAndReportTests(unittest.TestCase):
         climate.LOCAL.clear()
         self.assertEqual(self.client.get(f"/api/v2/plots/{located['id']}/outlook").status_code, 503)
 
+    def test_the_example_field_is_public_and_computed_from_live_sources(self):
+        visitor = TestClient(self.app)
+        response = visitor.get("/api/v2/example/field")
+        self.assertEqual(response.status_code, 200, response.text)
+        body = response.json()
+        self.assertEqual((body["example"]["district"], body["example"]["crop_id"]), ("Jaipur", "wheat"))
+        self.assertIn("not a real farm", body["notice"])
+        basis = body["report"]["harvest"]["basis"]
+        district = yields.district_yield("wheat", "rabi", "Rajasthan", "Jaipur")
+        self.assertEqual((basis["level"], basis["kg_per_hectare"]), ("district", district["kg_per_hectare"]))
+        self.assertEqual(body["report"]["assumptions"]["season_rain_source"], "ten_year_normal")
+        self.assertEqual(len(body["outlook"]["forecast"]["days"]), 7)
+        self.assertEqual(body["calendar"]["status"], "available")
+        # No account, no cookie, nothing stored.
+        self.assertNotIn("set-cookie", {key.lower() for key in response.headers})
+        with self.factory() as db:
+            from db.models import Plot
+
+            self.assertEqual(db.query(Plot).count(), 0)
+        visitor.close()
+
+    def test_without_a_mandi_quote_the_report_uses_the_dated_support_price(self):
+        from gov_api_service import MSP_DATA
+
+        self.allow("agronomic_analysis")
+        plot = self.wheat_field()
+        price = self.client.get(f"/api/v2/plots/{plot['id']}/assessment").json()["price"]
+        entry = MSP_DATA["crops"]["Wheat"]
+        self.assertEqual((price["source"], price["per_quintal"]), ("msp", float(entry["msp"])))
+        self.assertEqual(price["date"], entry["year"])
+        self.assertTrue(price["source_url"].startswith("https://"))
+
+    def test_a_crop_with_no_price_gets_a_harvest_but_no_invented_money(self):
+        self.allow("agronomic_analysis")
+        plot = self.wheat_field()
+        with patch("v2.assessment.price_for", return_value=None):
+            report = self.client.post(f"/api/v2/plots/{plot['id']}/assessment")
+        self.assertEqual(report.status_code, 200, report.text)
+        report = report.json()
+        self.assertGreater(report["harvest"]["yield_kg_per_hectare"], 0)
+        self.assertIsNone(report["price"])
+        for key in ("profit", "revenue", "profit_per_hectare", "profit_range", "chance_of_profit_percent"):
+            self.assertIsNone(report["harvest"][key], key)
+        self.assertIsNone(report["ai_plan"]["profit"])
+        self.assertIsNone(report["ai_plan"]["extra_profit"])
+
     def test_the_farming_profile_is_saved_and_checked(self):
         saved = self.client.patch(
             "/api/v2/me",
