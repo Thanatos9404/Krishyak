@@ -1,6 +1,6 @@
 {
   "extractor": "Babel AST; literals, JSX text, positional template placeholders",
-  "source_strings": 2784,
+  "source_strings": 2785,
   "strings": [
     {
       "source": ". Interval composites may contain several acquisitions; exact contributing dates are not independently verified.",
@@ -453,12 +453,12 @@
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 482,
+          "line": 488,
           "kind": "literal"
         },
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 496,
+          "line": 504,
           "kind": "literal"
         }
       ]
@@ -1022,7 +1022,7 @@
       "references": [
         {
           "file": "backend/v2/speech.py",
-          "line": 94,
+          "line": 87,
           "kind": "server"
         }
       ]
@@ -1033,12 +1033,23 @@
       "references": [
         {
           "file": "backend/v2/assistant.py",
-          "line": 311,
+          "line": 308,
           "kind": "server"
         },
         {
           "file": "backend/v2/live.py",
-          "line": 106,
+          "line": 103,
+          "kind": "server"
+        }
+      ]
+    },
+    {
+      "source": "Account changed during this request",
+      "sha256": "788bb7e3364551ff0fffa61e115a97006212f6daba9d11b4a2eb10c81a0d46a1",
+      "references": [
+        {
+          "file": "backend/v2/router.py",
+          "line": 59,
           "kind": "server"
         }
       ]
@@ -1049,7 +1060,7 @@
       "references": [
         {
           "file": "backend/v2/farm_setup.py",
-          "line": 325,
+          "line": 323,
           "kind": "server"
         }
       ]
@@ -1060,7 +1071,7 @@
       "references": [
         {
           "file": "backend/v2/farm_setup.py",
-          "line": 383,
+          "line": 379,
           "kind": "server"
         }
       ]
@@ -1108,7 +1119,7 @@
         },
         {
           "file": "backend/v2/router.py",
-          "line": 185,
+          "line": 207,
           "kind": "server"
         }
       ]
@@ -4980,7 +4991,7 @@
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 553,
+          "line": 562,
           "kind": "literal"
         }
       ]
@@ -4991,7 +5002,7 @@
       "references": [
         {
           "file": "backend/v2/farm_context/router.py",
-          "line": 67,
+          "line": 65,
           "kind": "server"
         }
       ]
@@ -5475,7 +5486,7 @@
       "references": [
         {
           "file": "backend/v2/farm_context/router.py",
-          "line": 74,
+          "line": 72,
           "kind": "server"
         }
       ]
@@ -6008,7 +6019,7 @@
       "references": [
         {
           "file": "backend/v2/router.py",
-          "line": 65,
+          "line": 87,
           "kind": "server"
         }
       ]
@@ -6187,7 +6198,7 @@
       "references": [
         {
           "file": "backend/v2/live.py",
-          "line": 70,
+          "line": 69,
           "kind": "server"
         }
       ]
@@ -6286,7 +6297,7 @@
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 514,
+          "line": 523,
           "kind": "literal"
         }
       ]
@@ -6352,7 +6363,7 @@
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 470,
+          "line": 476,
           "kind": "literal"
         },
         {
@@ -6409,7 +6420,7 @@
       "references": [
         {
           "file": "backend/v2/router.py",
-          "line": 528,
+          "line": 550,
           "kind": "server"
         }
       ]
@@ -6420,12 +6431,12 @@
       "references": [
         {
           "file": "backend/v2/router.py",
-          "line": 526,
+          "line": 548,
           "kind": "server"
         },
         {
           "file": "backend/v2/router.py",
-          "line": 552,
+          "line": 574,
           "kind": "server"
         }
       ]
@@ -6436,7 +6447,7 @@
       "references": [
         {
           "file": "backend/v2/router.py",
-          "line": 488,
+          "line": 510,
           "kind": "server"
         }
       ]
@@ -6447,7 +6458,7 @@
       "references": [
         {
           "file": "backend/v2/router.py",
-          "line": 538,
+          "line": 560,
           "kind": "server"
         }
       ]
@@ -6600,7 +6611,12 @@
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 466,
+          "line": 468,
+          "kind": "literal"
+        },
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 472,
           "kind": "literal"
         }
       ]
@@ -8622,7 +8638,7 @@
       "references": [
         {
           "file": "backend/v2/router.py",
-          "line": 41,
+          "line": 42,
           "kind": "server"
         }
       ]
@@ -8633,7 +8649,7 @@
       "references": [
         {
           "file": "backend/v2/router.py",
-          "line": 343,
+          "line": 365,
           "kind": "server"
         }
       ]
@@ -8688,7 +8704,7 @@
       "references": [
         {
           "file": "backend/v2/router.py",
-          "line": 48,
+          "line": 49,
           "kind": "server"
         }
       ]
@@ -9005,7 +9021,7 @@
       "references": [
         {
           "file": "backend/v2/router.py",
-          "line": 447,
+          "line": 469,
           "kind": "server"
         }
       ]
@@ -9054,7 +9070,7 @@
       "references": [
         {
           "file": "backend/v2/router.py",
-          "line": 386,
+          "line": 408,
           "kind": "server"
         }
       ]
@@ -10618,7 +10634,7 @@
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 528,
+          "line": 537,
           "kind": "literal"
         }
       ]
@@ -11052,7 +11068,7 @@
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 471,
+          "line": 477,
           "kind": "literal"
         },
         {
@@ -11599,7 +11615,7 @@
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 558,
+          "line": 567,
           "kind": "literal"
         }
       ]
@@ -12050,7 +12066,7 @@
       "references": [
         {
           "file": "backend/v2/router.py",
-          "line": 176,
+          "line": 198,
           "kind": "server"
         }
       ]
@@ -13983,7 +13999,7 @@
       "references": [
         {
           "file": "backend/v2/farm_setup.py",
-          "line": 306,
+          "line": 305,
           "kind": "server"
         }
       ]
@@ -14021,7 +14037,7 @@
         },
         {
           "file": "backend/v2/farm_setup.py",
-          "line": 77,
+          "line": 76,
           "kind": "server"
         }
       ]
@@ -14230,7 +14246,7 @@
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 506,
+          "line": 515,
           "kind": "literal"
         }
       ]
@@ -16223,7 +16239,7 @@
       "references": [
         {
           "file": "backend/v2/router.py",
-          "line": 330,
+          "line": 352,
           "kind": "server"
         }
       ]
@@ -17934,7 +17950,7 @@
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 487,
+          "line": 495,
           "kind": "literal"
         }
       ]
@@ -18296,7 +18312,7 @@
         },
         {
           "file": "backend/v2/router.py",
-          "line": 581,
+          "line": 603,
           "kind": "server"
         }
       ]
@@ -18607,7 +18623,7 @@
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 544,
+          "line": 553,
           "kind": "literal"
         }
       ]
@@ -18744,8 +18760,8 @@
       ]
     },
     {
-      "source": "On a public test set of field photos, the model was right about {{v0}}% of the time. It has not been validated on Indian farms, so treat it as a first opinion.",
-      "sha256": "831092b546f45ce48e9778977e912c4aacc501b8570ff39dcc18b9927f6a8f0a",
+      "source": "On test photos from Indian farms like the ones it learned from, the model was right about {{v0}}% of the time. On farms and cameras it has not seen, it is right much less often. Treat every answer as a first opinion.",
+      "sha256": "876b2dbaaa09216d94955eec87dbbdd13b5093899af25bf41e06053882d24d28",
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
@@ -19060,7 +19076,7 @@
       "references": [
         {
           "file": "backend/v2/router.py",
-          "line": 476,
+          "line": 498,
           "kind": "server"
         }
       ]
@@ -19071,7 +19087,7 @@
       "references": [
         {
           "file": "backend/v2/router.py",
-          "line": 327,
+          "line": 349,
           "kind": "server"
         }
       ]
@@ -19082,7 +19098,7 @@
       "references": [
         {
           "file": "backend/v2/router.py",
-          "line": 422,
+          "line": 444,
           "kind": "server"
         }
       ]
@@ -19174,7 +19190,7 @@
       "references": [
         {
           "file": "backend/v2/router.py",
-          "line": 570,
+          "line": 592,
           "kind": "server"
         }
       ]
@@ -19597,7 +19613,7 @@
       "references": [
         {
           "file": "backend/v2/farm_context/router.py",
-          "line": 51,
+          "line": 49,
           "kind": "server"
         }
       ]
@@ -21024,7 +21040,7 @@
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 472,
+          "line": 478,
           "kind": "literal"
         }
       ]
@@ -21917,7 +21933,7 @@
       "references": [
         {
           "file": "src/components/product/ScanView.jsx",
-          "line": 501,
+          "line": 504,
           "kind": "literal"
         }
       ]
@@ -22985,7 +23001,7 @@
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 473,
+          "line": 479,
           "kind": "literal"
         },
         {
@@ -23868,7 +23884,7 @@
       "references": [
         {
           "file": "backend/v2/farm_context/router.py",
-          "line": 80,
+          "line": 78,
           "kind": "server"
         }
       ]
@@ -23879,7 +23895,7 @@
       "references": [
         {
           "file": "backend/v2/farm_context/router.py",
-          "line": 63,
+          "line": 61,
           "kind": "server"
         }
       ]
@@ -24131,17 +24147,17 @@
       "references": [
         {
           "file": "backend/v2/assistant.py",
-          "line": 293,
+          "line": 292,
           "kind": "server"
         },
         {
           "file": "backend/v2/farm_setup.py",
-          "line": 356,
+          "line": 354,
           "kind": "server"
         },
         {
           "file": "backend/v2/live.py",
-          "line": 66,
+          "line": 65,
           "kind": "server"
         },
         {
@@ -25385,7 +25401,7 @@
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 568,
+          "line": 577,
           "kind": "literal"
         }
       ]
@@ -25396,7 +25412,7 @@
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 572,
+          "line": 581,
           "kind": "literal"
         }
       ]
@@ -25407,7 +25423,7 @@
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 574,
+          "line": 583,
           "kind": "literal"
         }
       ]
@@ -27196,7 +27212,7 @@
       "references": [
         {
           "file": "backend/v2/assistant.py",
-          "line": 249,
+          "line": 248,
           "kind": "server"
         }
       ]
@@ -27207,7 +27223,7 @@
       "references": [
         {
           "file": "backend/v2/assistant.py",
-          "line": 280,
+          "line": 279,
           "kind": "server"
         }
       ]
@@ -27218,7 +27234,7 @@
       "references": [
         {
           "file": "backend/v2/live.py",
-          "line": 77,
+          "line": 76,
           "kind": "server"
         }
       ]
@@ -27707,7 +27723,7 @@
       "references": [
         {
           "file": "backend/v2/assistant.py",
-          "line": 274,
+          "line": 273,
           "kind": "server"
         }
       ]
@@ -27718,7 +27734,7 @@
       "references": [
         {
           "file": "backend/v2/assistant.py",
-          "line": 256,
+          "line": 255,
           "kind": "server"
         }
       ]
@@ -27729,12 +27745,12 @@
       "references": [
         {
           "file": "backend/v2/assistant.py",
-          "line": 276,
+          "line": 275,
           "kind": "server"
         },
         {
           "file": "backend/v2/assistant.py",
-          "line": 272,
+          "line": 271,
           "kind": "server"
         }
       ]
@@ -27844,7 +27860,7 @@
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 561,
+          "line": 570,
           "kind": "literal"
         }
       ]
@@ -28146,7 +28162,7 @@
       "references": [
         {
           "file": "backend/v2/farm_setup.py",
-          "line": 296,
+          "line": 295,
           "kind": "server"
         }
       ]
@@ -29329,7 +29345,7 @@
       "references": [
         {
           "file": "backend/v2/router.py",
-          "line": 258,
+          "line": 280,
           "kind": "server"
         }
       ]
@@ -29815,12 +29831,12 @@
       "references": [
         {
           "file": "backend/v2/router.py",
-          "line": 151,
+          "line": 173,
           "kind": "server"
         },
         {
           "file": "backend/v2/router.py",
-          "line": 165,
+          "line": 187,
           "kind": "server"
         }
       ]
@@ -31310,7 +31326,7 @@
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 583,
+          "line": 592,
           "kind": "literal"
         }
       ]
@@ -32270,7 +32286,7 @@
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 479,
+          "line": 485,
           "kind": "literal"
         }
       ]

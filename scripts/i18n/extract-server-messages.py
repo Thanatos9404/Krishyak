@@ -29,6 +29,13 @@ for directory in (ROOT / "backend/v2", ROOT / "backend/remote_sensing"):
                         nodes.extend(ast.walk(value))
             elif isinstance(node, ast.Call) and isinstance(node.func, ast.Name) and node.func.id in {"V2Error", "HTTPException"}:
                 nodes.extend(ast.walk(node))
+            # recheck() raises its "changed" text when the account changes during provider work.
+            elif isinstance(node, ast.Call) and isinstance(node.func, ast.Name) and node.func.id == "recheck":
+                for keyword in node.keywords:
+                    if keyword.arg == "changed": nodes.extend(ast.walk(keyword.value))
+            elif isinstance(node, ast.AsyncFunctionDef) and node.name == "recheck":
+                for default in node.args.kw_defaults:
+                    if default is not None: nodes.extend(ast.walk(default))
             elif (isinstance(node, ast.Call) and isinstance(node.func, ast.Name) and node.func.id == "ValueError"
                   and file.parent.name == "farm_context" and file.name in {"service.py", "engines.py"}):
                 nodes.extend(ast.walk(node))

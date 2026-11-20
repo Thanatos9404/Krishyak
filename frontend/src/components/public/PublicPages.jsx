@@ -212,24 +212,27 @@ function Technology() {
           <summary>About the current model and its validation</summary>
           <h3>85 labels across 18 crops</h3>
           <p>
-            The active release is <code>krishyak-leaf-v2</code>, an
-            EfficientNetV2 classifier trained on 102,318 public leaf photographs
-            after duplicates were removed. It covers rice, wheat, cotton and
-            sugarcane as well as vegetables and fruit.
+            The active release is <code>krishyak-leaf-v3</code>: two
+            EfficientNetV2 classifiers whose answers are averaged, trained on
+            103,530 public leaf photographs after duplicates were removed. It
+            covers rice, wheat, cotton and sugarcane as well as vegetables and
+            fruit.
           </p>
           <p>
-            With the crop selected, it is right on 90.8% of 7,595 held-out field
-            photographs and on 85.1% of 235 photographs from PlantDoc, a
-            separate public collection it never saw in training. The earlier
-            release scored 75.6% on those PlantDoc photographs.
+            About 22,850 of those photographs were taken on Indian farms: paddy
+            in Tamil Nadu, tomato in Rajasthan, rice in Odisha, sugarcane and
+            cotton in Maharashtra. On 3,659 photographs from those sources that
+            were kept out of training, it is right 95.7% of the time with the
+            crop selected. On PlantDoc, a separate public collection, it is
+            right 83.4% of the time.
           </p>
           <p>
-            It only answers when it is confident and the photograph looks like
-            the selected crop. On the PlantDoc photographs it answers about two
-            in three and is right 94% of the time when it does. Rice, wheat,
-            cotton and sugarcane have no separate collection to test against
-            yet, and no result has been checked on Indian farms, so every answer
-            is a first opinion to confirm with an expert.
+            It does much worse on farms unlike the ones it learned from. On 300
+            photographs from two small Indian collections it never trained on,
+            it was right 47% of the time. There are also no public Indian farm
+            photographs for wheat, potato or maize diseases. It only answers
+            when it is confident and the photograph looks like the selected
+            crop, and every answer is a first opinion to confirm with an expert.
           </p>
           <a
             className="text-link"

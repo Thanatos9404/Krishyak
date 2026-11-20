@@ -191,3 +191,19 @@ connection; the drop happened seconds after the staging address was moved
 to a new build. Layout was re-checked with a 14-hectare field so that
 seven-digit amounts fit the dashboard cards and the comparison table at
 320 px.
+
+## Leaf model v3 and Indian farm photographs, 21 November 2026
+
+| Gate | Recorded result | Scope |
+|---|---|---|
+| Data audit | 103,530 photographs kept; 22,854 from documented Indian farms | `LEAF_DATASETS.md`; the older unverified rice photographs were found to be the Odisha set, and one "Indian" set's maize images to be studio copies |
+| v2 on Indian photographs | 94.9 % on 3,659 held-out photographs of sources it trained on; 92.2 % on 933 Pune cotton photographs it had never seen; 48.3 % on 300 Kashmir and Jalgaon photographs it had never seen | Crop selected |
+| Retrained network | Better than v2 on field and Indian farm test photographs (p = 0.012, 0.021), worse on the unseen farms (p = 0.029) | Exact McNemar test, `leaf_v2/compare.py` |
+| Weight averaging | No gain: validation macro-F1 dips between the two networks | `leaf_v2/soup.py` |
+| Released model (two networks, predictions averaged) | 95.7 % Indian farm test, 91.7 % field test, 83.4 % PlantDoc, 47.0 % unseen Indian farms | `MODEL_GOVERNANCE.md` |
+| Overfitting check | Field photographs: 97.1 % training, 91.3 % validation, 91.7 % test; validation still rising at the last epoch | `metrics.fit` and `learning_curve` in `release.json` |
+| Export equivalence | Same top class and decision on 247 inputs; largest probability difference 1.5e-6 | `runtime-verification.json` |
+| Serving path | 5,694 original photographs through the LiteRT artifact | `serving-check.json` |
+| Backend | 368 run, 366 passed, 2 skipped | Adds mirror-averaging and decision-rule tests |
+| Frontend unit | 402 passed, 65 suites | |
+| Translations | 22 packs, 2,785 strings each, 0 structural failures | Four account-change messages that the refactor of 20 November had hidden from the extractor were restored |

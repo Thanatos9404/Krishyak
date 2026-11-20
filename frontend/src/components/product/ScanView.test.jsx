@@ -21,7 +21,12 @@ jest.mock("../../features/product/deferredProductFeature", () => ({
 
 const MODEL = {
   supported_crops: ["tomato", "potato", "maize"],
-  release: { metrics: { external_test: { accuracy: 0.5721 } } },
+  release: {
+    metrics: {
+      external_test: { accuracy: 0.834 },
+      india_farm_test: { accuracy: 0.9565 },
+    },
+  },
 };
 const initial = {
   selected: "field-a",
@@ -50,7 +55,10 @@ test("only crops the photo model supports can be chosen", async () => {
   ).toEqual(["maize", "potato", "tomato"]);
   // Without a supported field crop the farmer is asked, not given a guess.
   expect(crop()).toHaveValue("");
-  expect(screen.getByText(/right about 57% of the time/)).toBeInTheDocument();
+  expect(screen.getByText(/right about 96% of the time/)).toBeInTheDocument();
+  expect(
+    screen.getByText(/has not seen, it is right much less often/),
+  ).toBeInTheDocument();
 });
 
 test("late crop-cycle evidence preserves the crop explicitly chosen by the farmer", async () => {

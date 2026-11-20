@@ -1,5 +1,5 @@
 {
-  "source_sha256": "36bd64daea625becaa38ac9f8fe07b1030a0d788b441cfdc0870160ea53cfdae",
+  "source_sha256": "5655395ec36d6eb7234b89e841ff3475ac357278f94187d20a340de9bb91fbad",
   "languages_checked": [
     "hi",
     "ur",
@@ -27,8 +27,8 @@
   "results": [
     {
       "language": "hi",
-      "strings": 2784,
-      "bytes": 344483,
+      "strings": 2785,
+      "bytes": 344762,
       "script_letter_fraction": 0.9762,
       "unchanged_english_labels": [
         "{{v0}} kg"
@@ -39,9 +39,9 @@
     },
     {
       "language": "ur",
-      "strings": 2784,
-      "bytes": 273211,
-      "script_letter_fraction": 0.9837,
+      "strings": 2785,
+      "bytes": 273463,
+      "script_letter_fraction": 0.9838,
       "unchanged_english_labels": [
         "{{v0}} kg"
       ],
@@ -51,8 +51,8 @@
     },
     {
       "language": "gu",
-      "strings": 2784,
-      "bytes": 335063,
+      "strings": 2785,
+      "bytes": 335367,
       "script_letter_fraction": 0.9719,
       "unchanged_english_labels": [
         "{{v0}} kg"
@@ -63,8 +63,8 @@
     },
     {
       "language": "bn",
-      "strings": 2784,
-      "bytes": 356476,
+      "strings": 2785,
+      "bytes": 356822,
       "script_letter_fraction": 0.9726,
       "unchanged_english_labels": [
         "{{v0}} kg",
@@ -76,8 +76,8 @@
     },
     {
       "language": "mr",
-      "strings": 2784,
-      "bytes": 341789,
+      "strings": 2785,
+      "bytes": 342092,
       "script_letter_fraction": 0.9687,
       "unchanged_english_labels": [
         "{{v0}} kg"
@@ -88,9 +88,9 @@
     },
     {
       "language": "kn",
-      "strings": 2784,
-      "bytes": 370628,
-      "script_letter_fraction": 0.9771,
+      "strings": 2785,
+      "bytes": 370989,
+      "script_letter_fraction": 0.9772,
       "unchanged_english_labels": [
         "{{v0}} kg"
       ],
@@ -100,8 +100,8 @@
     },
     {
       "language": "ta",
-      "strings": 2784,
-      "bytes": 407358,
+      "strings": 2785,
+      "bytes": 407749,
       "script_letter_fraction": 0.9794,
       "unchanged_english_labels": [
         "{{v0}} kg"
@@ -112,9 +112,9 @@
     },
     {
       "language": "te",
-      "strings": 2784,
-      "bytes": 366737,
-      "script_letter_fraction": 0.9747,
+      "strings": 2785,
+      "bytes": 367045,
+      "script_letter_fraction": 0.9748,
       "unchanged_english_labels": [
         "{{v0}} kg"
       ],
@@ -124,8 +124,8 @@
     },
     {
       "language": "ml",
-      "strings": 2784,
-      "bytes": 396546,
+      "strings": 2785,
+      "bytes": 396914,
       "script_letter_fraction": 0.9774,
       "unchanged_english_labels": [
         "{{v0}} kg"
@@ -136,8 +136,8 @@
     },
     {
       "language": "pa",
-      "strings": 2784,
-      "bytes": 344365,
+      "strings": 2785,
+      "bytes": 344751,
       "script_letter_fraction": 0.9737,
       "unchanged_english_labels": [
         "{{v0}} kg"
@@ -148,9 +148,9 @@
     },
     {
       "language": "as",
-      "strings": 2784,
-      "bytes": 350065,
-      "script_letter_fraction": 0.9742,
+      "strings": 2785,
+      "bytes": 350417,
+      "script_letter_fraction": 0.9743,
       "unchanged_english_labels": [
         "{{v0}} kg",
         "Aphids (wheat)",
@@ -162,8 +162,8 @@
     },
     {
       "language": "brx",
-      "strings": 2784,
-      "bytes": 368986,
+      "strings": 2785,
+      "bytes": 369323,
       "script_letter_fraction": 0.9779,
       "unchanged_english_labels": [
         "{{v0}} kg"
@@ -174,8 +174,8 @@
     },
     {
       "language": "doi",
-      "strings": 2784,
-      "bytes": 352459,
+      "strings": 2785,
+      "bytes": 352815,
       "script_letter_fraction": 0.9784,
       "unchanged_english_labels": [
         "{{v0}} kg"
@@ -186,8 +186,8 @@
     },
     {
       "language": "ks",
-      "strings": 2784,
-      "bytes": 292692,
+      "strings": 2785,
+      "bytes": 292985,
       "script_letter_fraction": 0.9839,
       "unchanged_english_labels": [
         "{{v0}} kg"
@@ -198,8 +198,8 @@
     },
     {
       "language": "kok",
-      "strings": 2784,
-      "bytes": 340029,
+      "strings": 2785,
+      "bytes": 340291,
       "script_letter_fraction": 0.9777,
       "unchanged_english_labels": [
         "{{v0}} kg"
@@ -210,8 +210,8 @@
     },
     {
       "language": "mai",
-      "strings": 2784,
-      "bytes": 330906,
+      "strings": 2785,
+      "bytes": 331184,
       "script_letter_fraction": 0.9767,
       "unchanged_english_labels": [
         "{{v0}} kg"
@@ -222,8 +222,8 @@
     },
     {
       "language": "mni",
-      "strings": 2784,
-      "bytes": 354057,
+      "strings": 2785,
+      "bytes": 354360,
       "script_letter_fraction": 0.9804,
       "unchanged_english_labels": [
         "{{v0}} kg"
@@ -234,9 +234,9 @@
     },
     {
       "language": "ne",
-      "strings": 2784,
-      "bytes": 355547,
-      "script_letter_fraction": 0.9771,
+      "strings": 2785,
+      "bytes": 355849,
+      "script_letter_fraction": 0.9772,
       "unchanged_english_labels": [
         "{{v0}} kg"
       ],
@@ -246,9 +246,9 @@
     },
     {
       "language": "or",
-      "strings": 2784,
-      "bytes": 365421,
-      "script_letter_fraction": 0.9782,
+      "strings": 2785,
+      "bytes": 365944,
+      "script_letter_fraction": 0.9783,
       "unchanged_english_labels": [
         "{{v0}} kg"
       ],
@@ -258,8 +258,8 @@
     },
     {
       "language": "sa",
-      "strings": 2784,
-      "bytes": 361982,
+      "strings": 2785,
+      "bytes": 362364,
       "script_letter_fraction": 0.9745,
       "unchanged_english_labels": [
         "{{v0}} kg"
@@ -270,8 +270,8 @@
     },
     {
       "language": "sat",
-      "strings": 2784,
-      "bytes": 371804,
+      "strings": 2785,
+      "bytes": 372133,
       "script_letter_fraction": 0.988,
       "unchanged_english_labels": [
         "{{v0}} kg"
@@ -282,8 +282,8 @@
     },
     {
       "language": "sd",
-      "strings": 2784,
-      "bytes": 264333,
+      "strings": 2785,
+      "bytes": 264599,
       "script_letter_fraction": 0.9792,
       "unchanged_english_labels": [
         "{{v0}} kg",

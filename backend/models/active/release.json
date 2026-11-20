@@ -1,280 +1,393 @@
 {
-  "model_id": "krishyak-leaf-v2",
-  "architecture": "EfficientNetV2B2",
+  "model_id": "krishyak-leaf-v3",
+  "architecture": "2 x EfficientNetV2B2, predictions averaged",
   "input_size": 288,
   "classes": 85,
   "crops": 18,
   "activated_on": "2026-11-20",
-  "selection": "Backbone chosen by a frozen-feature comparison on field validation photographs; best epoch chosen by field-validation macro-F1; test and external photographs were not used for either choice.",
-  "model_sha256": "d835a5fa4807b49525e0cf60cf70532c1b7b08c38ae0aac3362ca1acc96ff8b2",
+  "selection": "Best epoch chosen by macro-F1 on field validation photographs; test, external and unseen-farm photographs were not used to choose the model.",
+  "model_sha256": "00130598948c61a1308ac1daed159f67731117316bd168db45c9b4cb72bb1a81",
   "class_indices_sha256": "36389fc0fc56fb491ba3e2f2565c954623580497dd9d074fc279b0fa26efe91d",
   "decision": {
     "crop_conditioned": true,
     "threshold": 0.75,
     "crop_mass_min": 0.3,
-    "note": "Kept at the previous release's 0.75. The validation rule (answers right at least 90 % of the time on field validation photographs) allowed 0.30, but on the external PlantDoc photographs that gave 14.5 confidently wrong answers per 100 against 3.4 at 0.75, so the stricter, already-established value is used."
+    "mirror_averaging": false,
+    "note": "Kept at 0.75, the value the earlier releases used. The validation rule (answers right at least 90 % of the time on field validation photographs) would allow a lower value, but lower values gave more confidently wrong answers on photographs from unfamiliar sources."
   },
   "metrics": {
     "basis": "Top-level figures are with the crop selected, as the app asks; all_classes lets every class compete.",
     "test": {
-      "samples": 7595,
-      "accuracy": 0.9076,
+      "samples": 7742,
+      "accuracy": 0.9169,
       "accuracy_wilson_95": [
-        0.9008,
-        0.9139
+        0.9106,
+        0.9229
       ],
-      "balanced_accuracy": 0.8809,
-      "macro_precision": 0.8873,
-      "macro_recall": 0.8809,
-      "macro_f1": 0.8817,
+      "balanced_accuracy": 0.8879,
+      "macro_precision": 0.8968,
+      "macro_recall": 0.8879,
+      "macro_f1": 0.8897,
       "all_classes": {
-        "samples": 7595,
-        "accuracy": 0.8762,
+        "samples": 7742,
+        "accuracy": 0.8893,
         "accuracy_wilson_95": [
-          0.8686,
-          0.8835
+          0.8821,
+          0.8961
         ],
-        "balanced_accuracy": 0.8208,
-        "macro_precision": 0.8178,
-        "macro_recall": 0.8208,
-        "macro_f1": 0.8154
+        "balanced_accuracy": 0.8357,
+        "macro_precision": 0.8312,
+        "macro_recall": 0.8357,
+        "macro_f1": 0.8303
+      }
+    },
+    "india_farm_test": {
+      "samples": 3659,
+      "accuracy": 0.9565,
+      "accuracy_wilson_95": [
+        0.9494,
+        0.9627
+      ],
+      "balanced_accuracy": 0.9318,
+      "macro_precision": 0.9483,
+      "macro_recall": 0.9318,
+      "macro_f1": 0.9361,
+      "all_classes": {
+        "samples": 3659,
+        "accuracy": 0.9563,
+        "accuracy_wilson_95": [
+          0.9492,
+          0.9624
+        ],
+        "balanced_accuracy": 0.9313,
+        "macro_precision": 0.9482,
+        "macro_recall": 0.9313,
+        "macro_f1": 0.9358
+      }
+    },
+    "india_unseen_farms": {
+      "samples": 300,
+      "accuracy": 0.47,
+      "accuracy_wilson_95": [
+        0.4143,
+        0.5265
+      ],
+      "balanced_accuracy": 0.5738,
+      "macro_precision": 0.7446,
+      "macro_recall": 0.5738,
+      "macro_f1": 0.4642,
+      "all_classes": {
+        "samples": 300,
+        "accuracy": 0.4367,
+        "accuracy_wilson_95": [
+          0.3817,
+          0.4932
+        ],
+        "balanced_accuracy": 0.5462,
+        "macro_precision": 0.7428,
+        "macro_recall": 0.5462,
+        "macro_f1": 0.438
       }
     },
     "studio_test": {
       "samples": 8727,
-      "accuracy": 0.9928,
+      "accuracy": 0.9943,
       "accuracy_wilson_95": [
-        0.9908,
-        0.9944
+        0.9925,
+        0.9957
       ],
-      "balanced_accuracy": 0.9924,
-      "macro_precision": 0.991,
-      "macro_recall": 0.9924,
-      "macro_f1": 0.9916,
+      "balanced_accuracy": 0.9936,
+      "macro_precision": 0.9931,
+      "macro_recall": 0.9936,
+      "macro_f1": 0.9932,
       "all_classes": {
         "samples": 8727,
-        "accuracy": 0.9922,
+        "accuracy": 0.9937,
         "accuracy_wilson_95": [
-          0.9901,
-          0.9938
+          0.9918,
+          0.9952
         ],
-        "balanced_accuracy": 0.9916,
-        "macro_precision": 0.9893,
-        "macro_recall": 0.9916,
-        "macro_f1": 0.9903
+        "balanced_accuracy": 0.9928,
+        "macro_precision": 0.9913,
+        "macro_recall": 0.9928,
+        "macro_f1": 0.9919
       }
     },
     "external_test": {
       "samples": 235,
-      "accuracy": 0.8511,
+      "accuracy": 0.834,
       "accuracy_wilson_95": [
-        0.7999,
-        0.8909
+        0.7812,
+        0.8762
       ],
-      "balanced_accuracy": 0.8257,
-      "macro_precision": 0.8538,
-      "macro_recall": 0.8257,
-      "macro_f1": 0.8298,
+      "balanced_accuracy": 0.8078,
+      "macro_precision": 0.837,
+      "macro_recall": 0.8078,
+      "macro_f1": 0.8104,
       "all_classes": {
         "samples": 235,
-        "accuracy": 0.7191,
+        "accuracy": 0.7106,
         "accuracy_wilson_95": [
-          0.6585,
-          0.7727
+          0.6496,
+          0.7649
         ],
-        "balanced_accuracy": 0.6979,
-        "macro_precision": 0.7851,
-        "macro_recall": 0.6979,
-        "macro_f1": 0.7217
+        "balanced_accuracy": 0.6855,
+        "macro_precision": 0.7663,
+        "macro_recall": 0.6855,
+        "macro_f1": 0.6995
       }
     },
     "answering": {
-      "field_test": {
+      "test": {
         "threshold": 0.75,
-        "coverage": 0.8437,
-        "accuracy_when_answering": 0.9655,
-        "confident_wrong_per_100_photos": 2.91
+        "coverage": 0.8475,
+        "accuracy_when_answering": 0.9707,
+        "confident_wrong_per_100_photos": 2.48
+      },
+      "india_farm_test": {
+        "threshold": 0.75,
+        "coverage": 0.921,
+        "accuracy_when_answering": 0.981,
+        "confident_wrong_per_100_photos": 1.75
+      },
+      "india_unseen_farms": {
+        "threshold": 0.75,
+        "coverage": 0.5733,
+        "accuracy_when_answering": 0.5698,
+        "confident_wrong_per_100_photos": 24.67
       },
       "studio_test": {
         "threshold": 0.75,
-        "coverage": 0.9852,
-        "accuracy_when_answering": 0.998,
-        "confident_wrong_per_100_photos": 0.19
+        "coverage": 0.9856,
+        "accuracy_when_answering": 0.9984,
+        "confident_wrong_per_100_photos": 0.16
       },
-      "external_plantdoc_test": {
+      "external_test": {
         "threshold": 0.75,
-        "coverage": 0.6638,
-        "accuracy_when_answering": 0.9487,
-        "confident_wrong_per_100_photos": 3.4
+        "coverage": 0.6596,
+        "accuracy_when_answering": 0.9419,
+        "confident_wrong_per_100_photos": 3.83
       }
     },
     "wrong_crop_answered_share": {
-      "field_test": 0.002,
+      "test": 0.0019,
+      "india_farm_test": 0.0,
+      "india_unseen_farms": 0.0,
       "studio_test": 0.0,
-      "external_plantdoc_test": 0.0
+      "external_test": 0.0043
     },
     "calibration_error": {
-      "field_test": 0.01,
-      "studio_test": 0.0135,
-      "external_plantdoc_test": 0.0619
+      "test": 0.0133,
+      "india_farm_test": 0.0221,
+      "india_unseen_farms": 0.2878,
+      "studio_test": 0.0134,
+      "external_test": 0.0463
     },
-    "per_crop_field_test": {
-      "Apple": {
-        "samples": 250,
-        "accuracy": 0.788,
-        "macro_recall": 0.7422,
-        "macro_f1": 0.7539,
-        "classes": 5
+    "per_crop": {
+      "test": {
+        "Apple": {
+          "samples": 250,
+          "accuracy": 0.8,
+          "macro_recall": 0.756,
+          "macro_f1": 0.7729,
+          "classes": 5
+        },
+        "Blueberry": {
+          "samples": 13,
+          "accuracy": 1.0,
+          "macro_recall": 1.0,
+          "macro_f1": 1.0,
+          "classes": 1
+        },
+        "Cherry_(including_sour)": {
+          "samples": 87,
+          "accuracy": 0.9425,
+          "macro_recall": 0.9286,
+          "macro_f1": 0.9205,
+          "classes": 3
+        },
+        "Corn_(maize)": {
+          "samples": 226,
+          "accuracy": 0.8717,
+          "macro_recall": 0.8825,
+          "macro_f1": 0.8695,
+          "classes": 5
+        },
+        "Cotton": {
+          "samples": 747,
+          "accuracy": 0.988,
+          "macro_recall": 0.9923,
+          "macro_f1": 0.9922,
+          "classes": 7
+        },
+        "Grape": {
+          "samples": 163,
+          "accuracy": 0.865,
+          "macro_recall": 0.8111,
+          "macro_f1": 0.828,
+          "classes": 4
+        },
+        "Orange": {
+          "samples": 120,
+          "accuracy": 0.9333,
+          "macro_recall": 0.9289,
+          "macro_f1": 0.9289,
+          "classes": 2
+        },
+        "Peach": {
+          "samples": 84,
+          "accuracy": 0.9643,
+          "macro_recall": 0.9583,
+          "macro_f1": 0.9739,
+          "classes": 2
+        },
+        "Pepper,_bell": {
+          "samples": 68,
+          "accuracy": 0.8824,
+          "macro_recall": 0.8681,
+          "macro_f1": 0.8735,
+          "classes": 2
+        },
+        "Potato": {
+          "samples": 122,
+          "accuracy": 0.8525,
+          "macro_recall": 0.8576,
+          "macro_f1": 0.8553,
+          "classes": 3
+        },
+        "Raspberry": {
+          "samples": 18,
+          "accuracy": 1.0,
+          "macro_recall": 1.0,
+          "macro_f1": 1.0,
+          "classes": 1
+        },
+        "Rice": {
+          "samples": 2411,
+          "accuracy": 0.9589,
+          "macro_recall": 0.9575,
+          "macro_f1": 0.9565,
+          "classes": 10
+        },
+        "Soybean": {
+          "samples": 4,
+          "accuracy": 1.0,
+          "macro_recall": 1.0,
+          "macro_f1": 1.0,
+          "classes": 1
+        },
+        "Squash": {
+          "samples": 103,
+          "accuracy": 0.9515,
+          "macro_recall": 0.9512,
+          "macro_f1": 0.9514,
+          "classes": 2
+        },
+        "Strawberry": {
+          "samples": 65,
+          "accuracy": 0.9692,
+          "macro_recall": 0.9091,
+          "macro_f1": 0.9409,
+          "classes": 2
+        },
+        "Sugarcane": {
+          "samples": 379,
+          "accuracy": 0.9947,
+          "macro_recall": 0.9937,
+          "macro_f1": 0.9943,
+          "classes": 5
+        },
+        "Tomato": {
+          "samples": 1143,
+          "accuracy": 0.846,
+          "macro_recall": 0.7721,
+          "macro_f1": 0.7746,
+          "classes": 11
+        },
+        "Wheat": {
+          "samples": 1739,
+          "accuracy": 0.881,
+          "macro_recall": 0.8607,
+          "macro_f1": 0.858,
+          "classes": 15
+        }
       },
-      "Blueberry": {
-        "samples": 13,
-        "accuracy": 1.0,
-        "macro_recall": 1.0,
-        "macro_f1": 1.0,
-        "classes": 1
+      "india_farm_test": {
+        "Cotton": {
+          "samples": 151,
+          "accuracy": 0.9669,
+          "macro_recall": 0.799,
+          "macro_f1": 0.8533,
+          "classes": 3
+        },
+        "Rice": {
+          "samples": 2402,
+          "accuracy": 0.9596,
+          "macro_recall": 0.958,
+          "macro_f1": 0.9572,
+          "classes": 10
+        },
+        "Sugarcane": {
+          "samples": 379,
+          "accuracy": 0.9947,
+          "macro_recall": 0.9937,
+          "macro_f1": 0.9943,
+          "classes": 5
+        },
+        "Tomato": {
+          "samples": 727,
+          "accuracy": 0.9243,
+          "macro_recall": 0.9031,
+          "macro_f1": 0.8939,
+          "classes": 6
+        }
       },
-      "Cherry_(including_sour)": {
-        "samples": 87,
-        "accuracy": 0.9425,
-        "macro_recall": 0.9286,
-        "macro_f1": 0.9205,
-        "classes": 3
-      },
-      "Corn_(maize)": {
-        "samples": 226,
-        "accuracy": 0.8717,
-        "macro_recall": 0.8814,
-        "macro_f1": 0.8695,
-        "classes": 5
-      },
-      "Cotton": {
-        "samples": 600,
-        "accuracy": 0.9933,
-        "macro_recall": 0.9954,
-        "macro_f1": 0.9941,
-        "classes": 7
-      },
-      "Grape": {
-        "samples": 163,
-        "accuracy": 0.8773,
-        "macro_recall": 0.8204,
-        "macro_f1": 0.841,
-        "classes": 4
-      },
-      "Orange": {
-        "samples": 120,
-        "accuracy": 0.925,
-        "macro_recall": 0.9133,
-        "macro_f1": 0.9189,
-        "classes": 2
-      },
-      "Peach": {
-        "samples": 84,
-        "accuracy": 0.9524,
-        "macro_recall": 0.9355,
-        "macro_f1": 0.9518,
-        "classes": 2
-      },
-      "Pepper,_bell": {
-        "samples": 68,
-        "accuracy": 0.8529,
-        "macro_recall": 0.8297,
-        "macro_f1": 0.839,
-        "classes": 2
-      },
-      "Potato": {
-        "samples": 122,
-        "accuracy": 0.8443,
-        "macro_recall": 0.8504,
-        "macro_f1": 0.846,
-        "classes": 3
-      },
-      "Raspberry": {
-        "samples": 18,
-        "accuracy": 1.0,
-        "macro_recall": 1.0,
-        "macro_f1": 1.0,
-        "classes": 1
-      },
-      "Rice": {
-        "samples": 2411,
-        "accuracy": 0.9511,
-        "macro_recall": 0.9537,
-        "macro_f1": 0.9498,
-        "classes": 10
-      },
-      "Soybean": {
-        "samples": 4,
-        "accuracy": 1.0,
-        "macro_recall": 1.0,
-        "macro_f1": 1.0,
-        "classes": 1
-      },
-      "Squash": {
-        "samples": 103,
-        "accuracy": 0.9417,
-        "macro_recall": 0.9415,
-        "macro_f1": 0.9417,
-        "classes": 2
-      },
-      "Strawberry": {
-        "samples": 65,
-        "accuracy": 0.9846,
-        "macro_recall": 0.9546,
-        "macro_f1": 0.9716,
-        "classes": 2
-      },
-      "Sugarcane": {
-        "samples": 379,
-        "accuracy": 0.9921,
-        "macro_recall": 0.9913,
-        "macro_f1": 0.9919,
-        "classes": 5
-      },
-      "Tomato": {
-        "samples": 1143,
-        "accuracy": 0.8311,
-        "macro_recall": 0.7541,
-        "macro_f1": 0.7546,
-        "classes": 11
-      },
-      "Wheat": {
-        "samples": 1739,
-        "accuracy": 0.8689,
-        "macro_recall": 0.8471,
-        "macro_f1": 0.8452,
-        "classes": 15
+      "india_unseen_farms": {
+        "Apple": {
+          "samples": 205,
+          "accuracy": 0.4244,
+          "macro_recall": 0.6135,
+          "macro_f1": 0.4753,
+          "classes": 2
+        },
+        "Cotton": {
+          "samples": 95,
+          "accuracy": 0.5684,
+          "macro_recall": 0.5341,
+          "macro_f1": 0.4531,
+          "classes": 2
+        }
       }
     },
     "per_class_field_test": {
       "Apple___Apple_scab": {
-        "precision": 0.75,
-        "recall": 0.75,
-        "f1": 0.75,
+        "precision": 0.7705,
+        "recall": 0.7833,
+        "f1": 0.7769,
         "support": 60
       },
       "Apple___Black_rot": {
-        "precision": 0.68,
-        "recall": 0.6071,
-        "f1": 0.6415,
+        "precision": 0.72,
+        "recall": 0.6429,
+        "f1": 0.6792,
         "support": 28
       },
       "Apple___Cedar_apple_rust": {
-        "precision": 0.8393,
+        "precision": 0.8246,
         "recall": 0.8246,
-        "f1": 0.8319,
+        "f1": 0.8246,
         "support": 57
       },
       "Apple___Mosaic_virus": {
-        "precision": 0.7727,
+        "precision": 0.8947,
         "recall": 0.6071,
-        "f1": 0.68,
+        "f1": 0.7234,
         "support": 28
       },
       "Apple___healthy": {
-        "precision": 0.8161,
+        "precision": 0.8068,
         "recall": 0.9221,
-        "f1": 0.8659,
+        "f1": 0.8606,
         "support": 77
       },
       "Blueberry___healthy": {
@@ -302,21 +415,21 @@
         "support": 45
       },
       "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot": {
-        "precision": 0.6316,
+        "precision": 0.6154,
         "recall": 0.7742,
-        "f1": 0.6957,
+        "f1": 0.6857,
         "support": 31
       },
       "Corn_(maize)___Common_rust_": {
-        "precision": 0.9057,
-        "recall": 0.9412,
-        "f1": 0.9231,
+        "precision": 0.9245,
+        "recall": 0.9608,
+        "f1": 0.9423,
         "support": 51
       },
       "Corn_(maize)___Northern_Leaf_Blight": {
-        "precision": 0.9,
-        "recall": 0.7606,
-        "f1": 0.8244,
+        "precision": 0.8983,
+        "recall": 0.7465,
+        "f1": 0.8154,
         "support": 71
       },
       "Corn_(maize)___Smut": {
@@ -332,10 +445,10 @@
         "support": 29
       },
       "Cotton___Bacterial_blight": {
-        "precision": 0.9932,
-        "recall": 0.9865,
-        "f1": 0.9898,
-        "support": 148
+        "precision": 0.9824,
+        "recall": 0.9766,
+        "f1": 0.9795,
+        "support": 171
       },
       "Cotton___Herbicide_damage": {
         "precision": 1.0,
@@ -344,21 +457,21 @@
         "support": 49
       },
       "Cotton___Jassid_damage": {
-        "precision": 0.975,
+        "precision": 1.0,
         "recall": 1.0,
-        "f1": 0.9873,
+        "f1": 1.0,
         "support": 39
       },
       "Cotton___Leaf_curl_virus": {
-        "precision": 0.9917,
-        "recall": 1.0,
+        "precision": 1.0,
+        "recall": 0.9917,
         "f1": 0.9958,
-        "support": 119
+        "support": 120
       },
       "Cotton___Leaf_reddening": {
-        "precision": 0.9895,
+        "precision": 0.9792,
         "recall": 0.9895,
-        "f1": 0.9895,
+        "f1": 0.9843,
         "support": 95
       },
       "Cotton___Leaf_variegation": {
@@ -368,21 +481,21 @@
         "support": 24
       },
       "Cotton___healthy": {
-        "precision": 1.0,
-        "recall": 0.9921,
-        "f1": 0.996,
-        "support": 126
+        "precision": 0.984,
+        "recall": 0.988,
+        "f1": 0.986,
+        "support": 249
       },
       "Grape___Black_rot": {
-        "precision": 0.8649,
-        "recall": 0.8421,
-        "f1": 0.8533,
+        "precision": 0.775,
+        "recall": 0.8158,
+        "f1": 0.7949,
         "support": 38
       },
       "Grape___Downy_mildew": {
-        "precision": 0.8615,
-        "recall": 0.8889,
-        "f1": 0.875,
+        "precision": 0.8852,
+        "recall": 0.8571,
+        "f1": 0.871,
         "support": 63
       },
       "Grape___Leaf_blight_(Isariopsis_Leaf_Spot)": {
@@ -392,63 +505,63 @@
         "support": 14
       },
       "Grape___healthy": {
-        "precision": 0.9038,
-        "recall": 0.9792,
-        "f1": 0.94,
+        "precision": 0.9057,
+        "recall": 1.0,
+        "f1": 0.9505,
         "support": 48
       },
       "Orange___Citrus_canker": {
-        "precision": 0.9231,
-        "recall": 0.96,
-        "f1": 0.9412,
+        "precision": 0.9467,
+        "recall": 0.9467,
+        "f1": 0.9467,
         "support": 75
       },
       "Orange___Haunglongbing_(Citrus_greening)": {
-        "precision": 0.9286,
-        "recall": 0.8667,
-        "f1": 0.8966,
+        "precision": 0.9111,
+        "recall": 0.9111,
+        "f1": 0.9111,
         "support": 45
       },
       "Peach___Leaf_curl": {
         "precision": 1.0,
-        "recall": 0.871,
-        "f1": 0.931,
+        "recall": 0.9355,
+        "f1": 0.9667,
         "support": 31
       },
       "Peach___healthy": {
-        "precision": 0.9464,
-        "recall": 1.0,
-        "f1": 0.9725,
+        "precision": 0.9811,
+        "recall": 0.9811,
+        "f1": 0.9811,
         "support": 53
       },
       "Pepper,_bell___Bacterial_spot": {
-        "precision": 0.8636,
-        "recall": 0.7308,
-        "f1": 0.7917,
+        "precision": 0.875,
+        "recall": 0.8077,
+        "f1": 0.84,
         "support": 26
       },
       "Pepper,_bell___healthy": {
-        "precision": 0.8478,
+        "precision": 0.8864,
         "recall": 0.9286,
-        "f1": 0.8864,
+        "f1": 0.907,
         "support": 42
       },
       "Potato___Early_blight": {
-        "precision": 0.8286,
+        "precision": 0.8056,
         "recall": 0.725,
-        "f1": 0.7733,
+        "f1": 0.7632,
         "support": 40
       },
       "Potato___Late_blight": {
-        "precision": 0.8085,
-        "recall": 0.8261,
-        "f1": 0.8172,
+        "precision": 0.8125,
+        "recall": 0.8478,
+        "f1": 0.8298,
         "support": 46
       },
       "Potato___healthy": {
-        "precision": 0.9,
+        "precision": 0.9474,
         "recall": 1.0,
-        "f1": 0.9474,
+        "f1": 0.973,
         "support": 36
       },
       "Raspberry___healthy": {
@@ -458,9 +571,9 @@
         "support": 18
       },
       "Rice___Bacterial_leaf_blight": {
-        "precision": 0.9865,
-        "recall": 0.9481,
-        "f1": 0.9669,
+        "precision": 0.9899,
+        "recall": 0.9545,
+        "f1": 0.9719,
         "support": 308
       },
       "Rice___Bacterial_leaf_streak": {
@@ -470,51 +583,51 @@
         "support": 62
       },
       "Rice___Bacterial_panicle_blight": {
-        "precision": 0.9841,
-        "recall": 1.0,
-        "f1": 0.992,
+        "precision": 0.9839,
+        "recall": 0.9839,
+        "f1": 0.9839,
         "support": 62
       },
       "Rice___Blast": {
-        "precision": 0.9677,
-        "recall": 0.942,
-        "f1": 0.9547,
+        "precision": 0.9704,
+        "recall": 0.9493,
+        "f1": 0.9597,
         "support": 414
       },
       "Rice___Brown_spot": {
-        "precision": 0.9871,
-        "recall": 0.9444,
-        "f1": 0.9653,
+        "precision": 0.9872,
+        "recall": 0.9506,
+        "f1": 0.9686,
         "support": 324
       },
       "Rice___Dead_heart": {
-        "precision": 0.9953,
+        "precision": 0.9906,
         "recall": 0.9906,
-        "f1": 0.9929,
+        "f1": 0.9906,
         "support": 212
       },
       "Rice___Downy_mildew": {
-        "precision": 0.822,
-        "recall": 0.9151,
-        "f1": 0.8661,
+        "precision": 0.8727,
+        "recall": 0.9057,
+        "f1": 0.8889,
         "support": 106
       },
       "Rice___Hispa": {
-        "precision": 0.88,
-        "recall": 0.9565,
-        "f1": 0.9167,
+        "precision": 0.9139,
+        "recall": 0.9644,
+        "f1": 0.9385,
         "support": 253
       },
       "Rice___Tungro": {
-        "precision": 0.9517,
-        "recall": 0.9293,
-        "f1": 0.9404,
+        "precision": 0.9577,
+        "recall": 0.9476,
+        "f1": 0.9526,
         "support": 382
       },
       "Rice___healthy": {
-        "precision": 0.9305,
-        "recall": 0.9757,
-        "f1": 0.9525,
+        "precision": 0.9286,
+        "recall": 0.9931,
+        "f1": 0.9597,
         "support": 288
       },
       "Soybean___healthy": {
@@ -524,27 +637,27 @@
         "support": 4
       },
       "Squash___Powdery_mildew": {
-        "precision": 0.9592,
+        "precision": 0.9792,
         "recall": 0.9216,
-        "f1": 0.94,
+        "f1": 0.9495,
         "support": 51
       },
       "Squash___healthy": {
-        "precision": 0.9259,
-        "recall": 0.9615,
-        "f1": 0.9434,
+        "precision": 0.9273,
+        "recall": 0.9808,
+        "f1": 0.9533,
         "support": 52
       },
       "Strawberry___Leaf_scorch": {
         "precision": 1.0,
-        "recall": 0.9091,
-        "f1": 0.9524,
+        "recall": 0.8182,
+        "f1": 0.9,
         "support": 11
       },
       "Strawberry___healthy": {
-        "precision": 0.9818,
+        "precision": 0.9643,
         "recall": 1.0,
-        "f1": 0.9908,
+        "f1": 0.9818,
         "support": 54
       },
       "Sugarcane___Mosaic": {
@@ -554,9 +667,9 @@
         "support": 63
       },
       "Sugarcane___Red_rot": {
-        "precision": 0.9873,
+        "precision": 1.0,
         "recall": 1.0,
-        "f1": 0.9936,
+        "f1": 1.0,
         "support": 78
       },
       "Sugarcane___Rust": {
@@ -567,8 +680,8 @@
       },
       "Sugarcane___Yellow_leaf": {
         "precision": 1.0,
-        "recall": 0.9881,
-        "f1": 0.994,
+        "recall": 1.0,
+        "f1": 1.0,
         "support": 84
       },
       "Sugarcane___healthy": {
@@ -578,246 +691,270 @@
         "support": 81
       },
       "Tomato___Bacterial_spot": {
-        "precision": 0.5833,
-        "recall": 0.3443,
-        "f1": 0.433,
+        "precision": 0.6571,
+        "recall": 0.377,
+        "f1": 0.4792,
         "support": 61
       },
       "Tomato___Early_blight": {
-        "precision": 0.7801,
-        "recall": 0.7692,
-        "f1": 0.7746,
+        "precision": 0.7867,
+        "recall": 0.8252,
+        "f1": 0.8055,
         "support": 143
       },
       "Tomato___Late_blight": {
-        "precision": 0.8762,
-        "recall": 0.9267,
-        "f1": 0.9008,
+        "precision": 0.9133,
+        "recall": 0.9372,
+        "f1": 0.9251,
         "support": 191
       },
       "Tomato___Leaf_Mold": {
-        "precision": 0.9318,
-        "recall": 0.7736,
-        "f1": 0.8454,
+        "precision": 0.9333,
+        "recall": 0.7925,
+        "f1": 0.8571,
         "support": 53
       },
       "Tomato___Leaf_miner": {
-        "precision": 0.9359,
+        "precision": 0.9542,
         "recall": 0.8795,
-        "f1": 0.9068,
+        "f1": 0.9154,
         "support": 166
       },
       "Tomato___Nutrient_deficiency": {
-        "precision": 0.9909,
-        "recall": 0.9909,
+        "precision": 0.9864,
+        "recall": 0.9954,
         "f1": 0.9909,
         "support": 219
       },
       "Tomato___Septoria_leaf_spot": {
-        "precision": 0.5758,
+        "precision": 0.5846,
         "recall": 0.6441,
-        "f1": 0.608,
+        "f1": 0.6129,
         "support": 59
       },
       "Tomato___Spotted_wilt_virus": {
-        "precision": 0.7843,
-        "recall": 0.8511,
-        "f1": 0.8163,
+        "precision": 0.7788,
+        "recall": 0.8617,
+        "f1": 0.8182,
         "support": 94
       },
       "Tomato___Tomato_Yellow_Leaf_Curl_Virus": {
-        "precision": 0.64,
-        "recall": 0.5161,
-        "f1": 0.5714,
+        "precision": 0.7037,
+        "recall": 0.6129,
+        "f1": 0.6552,
         "support": 31
       },
       "Tomato___Tomato_mosaic_virus": {
-        "precision": 0.6038,
-        "recall": 0.7111,
-        "f1": 0.6531,
+        "precision": 0.6522,
+        "recall": 0.6667,
+        "f1": 0.6593,
         "support": 45
       },
       "Tomato___healthy": {
-        "precision": 0.7273,
-        "recall": 0.8889,
-        "f1": 0.8,
+        "precision": 0.7228,
+        "recall": 0.9012,
+        "f1": 0.8022,
         "support": 81
       },
       "Wheat___Aphid": {
-        "precision": 0.8859,
-        "recall": 0.898,
-        "f1": 0.8919,
+        "precision": 0.871,
+        "recall": 0.9184,
+        "f1": 0.894,
         "support": 147
       },
       "Wheat___Black_rust": {
-        "precision": 0.6721,
-        "recall": 0.7593,
-        "f1": 0.713,
+        "precision": 0.7241,
+        "recall": 0.7778,
+        "f1": 0.75,
         "support": 54
       },
       "Wheat___Blast": {
-        "precision": 0.8182,
-        "recall": 0.9153,
-        "f1": 0.864,
+        "precision": 0.7914,
+        "recall": 0.9322,
+        "f1": 0.856,
         "support": 118
       },
       "Wheat___Brown_rust": {
-        "precision": 0.9236,
-        "recall": 0.9416,
-        "f1": 0.9325,
+        "precision": 0.9182,
+        "recall": 0.9481,
+        "f1": 0.9329,
         "support": 154
       },
       "Wheat___Common_root_rot": {
-        "precision": 0.8,
-        "recall": 0.8,
-        "f1": 0.8,
+        "precision": 0.8095,
+        "recall": 0.85,
+        "f1": 0.8293,
         "support": 80
       },
       "Wheat___Fusarium_head_blight": {
-        "precision": 0.9406,
+        "precision": 0.95,
         "recall": 0.9223,
-        "f1": 0.9314,
+        "f1": 0.936,
         "support": 103
       },
       "Wheat___Leaf_blight": {
-        "precision": 0.6769,
-        "recall": 0.4835,
-        "f1": 0.5641,
+        "precision": 0.7377,
+        "recall": 0.4945,
+        "f1": 0.5921,
         "support": 91
       },
       "Wheat___Loose_smut": {
-        "precision": 0.8736,
-        "recall": 0.8172,
-        "f1": 0.8444,
+        "precision": 0.9259,
+        "recall": 0.8065,
+        "f1": 0.8621,
         "support": 93
       },
       "Wheat___Mite": {
-        "precision": 0.844,
-        "recall": 0.8,
-        "f1": 0.8214,
+        "precision": 0.8692,
+        "recall": 0.8087,
+        "f1": 0.8378,
         "support": 115
       },
       "Wheat___Powdery_mildew": {
-        "precision": 0.9375,
-        "recall": 0.9626,
-        "f1": 0.9499,
+        "precision": 0.9427,
+        "recall": 0.9679,
+        "f1": 0.9551,
         "support": 187
       },
       "Wheat___Septoria": {
-        "precision": 0.9057,
-        "recall": 0.96,
-        "f1": 0.932,
+        "precision": 0.9074,
+        "recall": 0.98,
+        "f1": 0.9423,
         "support": 50
       },
       "Wheat___Stem_fly": {
-        "precision": 0.913,
+        "precision": 0.875,
         "recall": 0.913,
-        "f1": 0.913,
+        "f1": 0.8936,
         "support": 23
       },
       "Wheat___Tan_spot": {
-        "precision": 0.6,
-        "recall": 0.5948,
-        "f1": 0.5974,
+        "precision": 0.6522,
+        "recall": 0.6466,
+        "f1": 0.6494,
         "support": 116
       },
       "Wheat___Yellow_rust": {
-        "precision": 0.9724,
+        "precision": 0.986,
         "recall": 0.986,
-        "f1": 0.9791,
+        "f1": 0.986,
         "support": 214
       },
       "Wheat___healthy": {
-        "precision": 0.9343,
-        "recall": 0.9536,
-        "f1": 0.9439,
+        "precision": 0.949,
+        "recall": 0.9588,
+        "f1": 0.9538,
         "support": 194
       }
     },
     "by_source_test": {
+      "CottonPune": {
+        "samples": 151,
+        "accuracy": 0.9669,
+        "accuracy_wilson_95": [
+          0.9248,
+          0.9858
+        ],
+        "balanced_accuracy": 0.799,
+        "macro_precision": 0.9631,
+        "macro_recall": 0.799,
+        "macro_f1": 0.8533
+      },
       "PaddyDoctor": {
         "samples": 1628,
-        "accuracy": 0.9287,
+        "accuracy": 0.9404,
         "accuracy_wilson_95": [
-          0.9152,
-          0.9403
+          0.9278,
+          0.9509
         ],
-        "balanced_accuracy": 0.9209,
-        "macro_precision": 0.9329,
-        "macro_recall": 0.9209,
-        "macro_f1": 0.9256
+        "balanced_accuracy": 0.9303,
+        "macro_precision": 0.9445,
+        "macro_recall": 0.9303,
+        "macro_f1": 0.9366
       },
       "PlantDoc": {
         "samples": 354,
-        "accuracy": 0.8333,
+        "accuracy": 0.8418,
         "accuracy_wilson_95": [
-          0.791,
-          0.8685
+          0.8002,
+          0.8761
         ],
-        "balanced_accuracy": 0.8364,
-        "macro_precision": 0.8407,
-        "macro_recall": 0.8364,
-        "macro_f1": 0.8315
+        "balanced_accuracy": 0.8439,
+        "macro_precision": 0.8511,
+        "macro_recall": 0.8439,
+        "macro_f1": 0.8394
       },
       "PlantVillage": {
         "samples": 8727,
-        "accuracy": 0.9928,
+        "accuracy": 0.9943,
         "accuracy_wilson_95": [
-          0.9908,
-          0.9944
+          0.9925,
+          0.9957
         ],
-        "balanced_accuracy": 0.9924,
-        "macro_precision": 0.991,
-        "macro_recall": 0.9924,
-        "macro_f1": 0.9916
+        "balanced_accuracy": 0.9936,
+        "macro_precision": 0.9931,
+        "macro_recall": 0.9936,
+        "macro_f1": 0.9932
       },
       "PlantWild": {
         "samples": 1385,
-        "accuracy": 0.8339,
+        "accuracy": 0.8448,
         "accuracy_wilson_95": [
-          0.8134,
-          0.8526
+          0.8247,
+          0.8629
         ],
-        "balanced_accuracy": 0.8207,
-        "macro_precision": 0.8381,
-        "macro_recall": 0.8207,
-        "macro_f1": 0.8237
+        "balanced_accuracy": 0.8313,
+        "macro_precision": 0.851,
+        "macro_recall": 0.8313,
+        "macro_f1": 0.8354
+      },
+      "RiceOdisha": {
+        "samples": 774,
+        "accuracy": 1.0,
+        "accuracy_wilson_95": [
+          0.9951,
+          1.0
+        ],
+        "balanced_accuracy": 1.0,
+        "macro_precision": 1.0,
+        "macro_recall": 1.0,
+        "macro_f1": 1.0
       },
       "SAR-CLD-2024": {
         "samples": 334,
-        "accuracy": 0.988,
+        "accuracy": 0.991,
         "accuracy_wilson_95": [
-          0.9696,
-          0.9953
+          0.9739,
+          0.9969
         ],
-        "balanced_accuracy": 0.9855,
-        "macro_precision": 0.988,
-        "macro_recall": 0.9855,
-        "macro_f1": 0.9866
+        "balanced_accuracy": 0.9896,
+        "macro_precision": 0.9899,
+        "macro_recall": 0.9896,
+        "macro_f1": 0.9897
       },
       "SugarcaneLeaf": {
         "samples": 379,
-        "accuracy": 0.9921,
+        "accuracy": 0.9947,
         "accuracy_wilson_95": [
-          0.977,
-          0.9973
+          0.981,
+          0.9986
         ],
-        "balanced_accuracy": 0.9913,
-        "macro_precision": 0.9926,
-        "macro_recall": 0.9913,
-        "macro_f1": 0.9919
+        "balanced_accuracy": 0.9937,
+        "macro_precision": 0.9952,
+        "macro_recall": 0.9937,
+        "macro_f1": 0.9943
       },
       "TomatoVillage": {
         "samples": 727,
-        "accuracy": 0.9175,
+        "accuracy": 0.9243,
         "accuracy_wilson_95": [
-          0.8952,
-          0.9353
+          0.9028,
+          0.9414
         ],
-        "balanced_accuracy": 0.8881,
-        "macro_precision": 0.8784,
-        "macro_recall": 0.8881,
-        "macro_f1": 0.8826
+        "balanced_accuracy": 0.9031,
+        "macro_precision": 0.8873,
+        "macro_recall": 0.9031,
+        "macro_f1": 0.8939
       },
       "WheatLeaf": {
         "samples": 18,
@@ -833,159 +970,253 @@
       },
       "WheatPlantDiseases": {
         "samples": 1683,
-        "accuracy": 0.8675,
+        "accuracy": 0.8812,
         "accuracy_wilson_95": [
-          0.8505,
-          0.8829
+          0.8648,
+          0.8958
         ],
-        "balanced_accuracy": 0.8478,
-        "macro_precision": 0.8472,
-        "macro_recall": 0.8478,
-        "macro_f1": 0.8459
+        "balanced_accuracy": 0.8632,
+        "macro_precision": 0.8628,
+        "macro_recall": 0.8632,
+        "macro_f1": 0.8604
       },
       "legacy_unverified": {
-        "samples": 1087,
-        "accuracy": 0.9936,
+        "samples": 309,
+        "accuracy": 0.9676,
         "accuracy_wilson_95": [
-          0.9868,
-          0.9969
+          0.9415,
+          0.9823
         ],
-        "balanced_accuracy": 0.9791,
-        "macro_precision": 0.9995,
-        "macro_recall": 0.9791,
-        "macro_f1": 0.9882
+        "balanced_accuracy": 0.7811,
+        "macro_precision": 0.8594,
+        "macro_recall": 0.7811,
+        "macro_f1": 0.8072
       }
     },
-    "against_previous_release": {
+    "fit": {
+      "train_field_sample": {
+        "samples": 4000,
+        "accuracy": 0.9705,
+        "macro_f1": 0.9603
+      },
+      "validation_field": {
+        "samples": 5816,
+        "accuracy": 0.9133,
+        "macro_f1": 0.8817
+      },
       "field_test": {
-        "photographs_both_models_can_label": 1666,
+        "samples": 7742,
+        "accuracy": 0.9169,
+        "macro_f1": 0.8897
+      },
+      "train_studio_sample": {
+        "samples": 2000,
+        "accuracy": 0.9975,
+        "macro_f1": 0.9974
+      },
+      "studio_test": {
+        "samples": 8727,
+        "accuracy": 0.9943,
+        "macro_f1": 0.9932
+      },
+      "field_gap_train_minus_test_accuracy": 0.0536,
+      "field_gap_validation_minus_test_accuracy": -0.0036,
+      "studio_gap_train_minus_test_accuracy": 0.0032,
+      "note": "Crop selected; training photographs are scored without augmentation."
+    },
+    "against_previous_release": {
+      "test": {
+        "photographs_both_models_can_label": 7742,
         "previous": {
-          "samples": 1666,
-          "accuracy": 0.6441,
+          "samples": 7742,
+          "accuracy": 0.9084,
           "accuracy_wilson_95": [
-            0.6208,
-            0.6667
+            0.9018,
+            0.9146
           ],
-          "balanced_accuracy": 0.6536,
-          "macro_precision": 0.6951,
-          "macro_recall": 0.6536,
-          "macro_f1": 0.6395,
+          "balanced_accuracy": 0.8805,
+          "macro_precision": 0.8868,
+          "macro_recall": 0.8805,
+          "macro_f1": 0.8813,
           "all_classes": {
-            "samples": 1666,
-            "accuracy": 0.482,
+            "samples": 7742,
+            "accuracy": 0.8776,
             "accuracy_wilson_95": [
-              0.4581,
-              0.506
+              0.8701,
+              0.8847
             ],
-            "balanced_accuracy": 0.4798,
-            "macro_precision": 0.5041,
-            "macro_recall": 0.4798,
-            "macro_f1": 0.4222
+            "balanced_accuracy": 0.8206,
+            "macro_precision": 0.8171,
+            "macro_recall": 0.8206,
+            "macro_f1": 0.815
+          },
+          "answering": {
+            "threshold": 0.75,
+            "coverage": 0.8455,
+            "accuracy_when_answering": 0.9656,
+            "confident_wrong_per_100_photos": 2.91
           }
         },
         "new": {
-          "samples": 1666,
-          "accuracy": 0.8307,
+          "samples": 7742,
+          "accuracy": 0.9169,
           "accuracy_wilson_95": [
-            0.812,
-            0.848
+            0.9106,
+            0.9229
           ],
-          "balanced_accuracy": 0.8328,
-          "macro_precision": 0.8668,
-          "macro_recall": 0.8328,
-          "macro_f1": 0.8459,
+          "balanced_accuracy": 0.8879,
+          "macro_precision": 0.8968,
+          "macro_recall": 0.8879,
+          "macro_f1": 0.8897,
           "all_classes": {
-            "samples": 1666,
-            "accuracy": 0.7383,
+            "samples": 7742,
+            "accuracy": 0.8893,
             "accuracy_wilson_95": [
-              0.7167,
-              0.7588
+              0.8821,
+              0.8961
             ],
-            "balanced_accuracy": 0.7262,
-            "macro_precision": 0.7777,
-            "macro_recall": 0.7262,
-            "macro_f1": 0.7433
+            "balanced_accuracy": 0.8357,
+            "macro_precision": 0.8312,
+            "macro_recall": 0.8357,
+            "macro_f1": 0.8303
+          },
+          "answering": {
+            "threshold": 0.75,
+            "coverage": 0.8475,
+            "accuracy_when_answering": 0.9707,
+            "confident_wrong_per_100_photos": 2.48
           }
         }
       },
-      "external_plantdoc_test": {
-        "photographs_both_models_can_label": 234,
+      "india_farm_test": {
+        "photographs_both_models_can_label": 3659,
         "previous": {
-          "samples": 234,
-          "accuracy": 0.7564,
+          "samples": 3659,
+          "accuracy": 0.9492,
           "accuracy_wilson_95": [
-            0.6976,
-            0.807
+            0.9416,
+            0.9558
           ],
-          "balanced_accuracy": 0.7554,
-          "macro_precision": 0.7703,
-          "macro_recall": 0.7554,
-          "macro_f1": 0.7522,
+          "balanced_accuracy": 0.9253,
+          "macro_precision": 0.9193,
+          "macro_recall": 0.9253,
+          "macro_f1": 0.9219,
           "all_classes": {
-            "samples": 234,
-            "accuracy": 0.5513,
+            "samples": 3659,
+            "accuracy": 0.9473,
             "accuracy_wilson_95": [
-              0.4872,
-              0.6137
+              0.9395,
+              0.954
             ],
-            "balanced_accuracy": 0.5455,
-            "macro_precision": 0.5734,
-            "macro_recall": 0.5455,
-            "macro_f1": 0.5433
+            "balanced_accuracy": 0.9238,
+            "macro_precision": 0.9192,
+            "macro_recall": 0.9238,
+            "macro_f1": 0.921
+          },
+          "answering": {
+            "threshold": 0.75,
+            "coverage": 0.9161,
+            "accuracy_when_answering": 0.9758,
+            "confident_wrong_per_100_photos": 2.21
           }
         },
         "new": {
-          "samples": 234,
-          "accuracy": 0.8547,
+          "samples": 3659,
+          "accuracy": 0.9565,
           "accuracy_wilson_95": [
-            0.8038,
-            0.8941
+            0.9494,
+            0.9627
           ],
-          "balanced_accuracy": 0.8563,
-          "macro_precision": 0.8855,
-          "macro_recall": 0.8563,
-          "macro_f1": 0.8605,
+          "balanced_accuracy": 0.9318,
+          "macro_precision": 0.9483,
+          "macro_recall": 0.9318,
+          "macro_f1": 0.9361,
           "all_classes": {
-            "samples": 234,
-            "accuracy": 0.7222,
+            "samples": 3659,
+            "accuracy": 0.9563,
             "accuracy_wilson_95": [
-              0.6616,
-              0.7757
+              0.9492,
+              0.9624
             ],
-            "balanced_accuracy": 0.7237,
-            "macro_precision": 0.8158,
-            "macro_recall": 0.7237,
-            "macro_f1": 0.7493
+            "balanced_accuracy": 0.9313,
+            "macro_precision": 0.9482,
+            "macro_recall": 0.9313,
+            "macro_f1": 0.9358
+          },
+          "answering": {
+            "threshold": 0.75,
+            "coverage": 0.921,
+            "accuracy_when_answering": 0.981,
+            "confident_wrong_per_100_photos": 1.75
+          }
+        }
+      },
+      "india_unseen_farms": {
+        "photographs_both_models_can_label": 300,
+        "previous": {
+          "samples": 300,
+          "accuracy": 0.4833,
+          "accuracy_wilson_95": [
+            0.4274,
+            0.5397
+          ],
+          "balanced_accuracy": 0.5883,
+          "macro_precision": 0.7487,
+          "macro_recall": 0.5883,
+          "macro_f1": 0.4847,
+          "all_classes": {
+            "samples": 300,
+            "accuracy": 0.4367,
+            "accuracy_wilson_95": [
+              0.3817,
+              0.4932
+            ],
+            "balanced_accuracy": 0.5388,
+            "macro_precision": 0.7427,
+            "macro_recall": 0.5388,
+            "macro_f1": 0.4426
+          },
+          "answering": {
+            "threshold": 0.75,
+            "coverage": 0.63,
+            "accuracy_when_answering": 0.5344,
+            "confident_wrong_per_100_photos": 29.33
+          }
+        },
+        "new": {
+          "samples": 300,
+          "accuracy": 0.47,
+          "accuracy_wilson_95": [
+            0.4143,
+            0.5265
+          ],
+          "balanced_accuracy": 0.5738,
+          "macro_precision": 0.7446,
+          "macro_recall": 0.5738,
+          "macro_f1": 0.4642,
+          "all_classes": {
+            "samples": 300,
+            "accuracy": 0.4367,
+            "accuracy_wilson_95": [
+              0.3817,
+              0.4932
+            ],
+            "balanced_accuracy": 0.5462,
+            "macro_precision": 0.7428,
+            "macro_recall": 0.5462,
+            "macro_f1": 0.438
+          },
+          "answering": {
+            "threshold": 0.75,
+            "coverage": 0.5733,
+            "accuracy_when_answering": 0.5698,
+            "confident_wrong_per_100_photos": 24.67
           }
         }
       },
       "studio_test": {
         "photographs_both_models_can_label": 8727,
         "previous": {
-          "samples": 8727,
-          "accuracy": 0.9665,
-          "accuracy_wilson_95": [
-            0.9626,
-            0.9701
-          ],
-          "balanced_accuracy": 0.9585,
-          "macro_precision": 0.9631,
-          "macro_recall": 0.9585,
-          "macro_f1": 0.9594,
-          "all_classes": {
-            "samples": 8727,
-            "accuracy": 0.9615,
-            "accuracy_wilson_95": [
-              0.9573,
-              0.9653
-            ],
-            "balanced_accuracy": 0.9501,
-            "macro_precision": 0.956,
-            "macro_recall": 0.9501,
-            "macro_f1": 0.9516
-          }
-        },
-        "new": {
           "samples": 8727,
           "accuracy": 0.9928,
           "accuracy_wilson_95": [
@@ -1007,31 +1238,309 @@
             "macro_precision": 0.9893,
             "macro_recall": 0.9916,
             "macro_f1": 0.9903
+          },
+          "answering": {
+            "threshold": 0.75,
+            "coverage": 0.9852,
+            "accuracy_when_answering": 0.998,
+            "confident_wrong_per_100_photos": 0.19
+          }
+        },
+        "new": {
+          "samples": 8727,
+          "accuracy": 0.9943,
+          "accuracy_wilson_95": [
+            0.9925,
+            0.9957
+          ],
+          "balanced_accuracy": 0.9936,
+          "macro_precision": 0.9931,
+          "macro_recall": 0.9936,
+          "macro_f1": 0.9932,
+          "all_classes": {
+            "samples": 8727,
+            "accuracy": 0.9937,
+            "accuracy_wilson_95": [
+              0.9918,
+              0.9952
+            ],
+            "balanced_accuracy": 0.9928,
+            "macro_precision": 0.9913,
+            "macro_recall": 0.9928,
+            "macro_f1": 0.9919
+          },
+          "answering": {
+            "threshold": 0.75,
+            "coverage": 0.9856,
+            "accuracy_when_answering": 0.9984,
+            "confident_wrong_per_100_photos": 0.16
+          }
+        }
+      },
+      "external_test": {
+        "photographs_both_models_can_label": 235,
+        "previous": {
+          "samples": 235,
+          "accuracy": 0.8511,
+          "accuracy_wilson_95": [
+            0.7999,
+            0.8909
+          ],
+          "balanced_accuracy": 0.8257,
+          "macro_precision": 0.8538,
+          "macro_recall": 0.8257,
+          "macro_f1": 0.8298,
+          "all_classes": {
+            "samples": 235,
+            "accuracy": 0.7191,
+            "accuracy_wilson_95": [
+              0.6585,
+              0.7727
+            ],
+            "balanced_accuracy": 0.6979,
+            "macro_precision": 0.7851,
+            "macro_recall": 0.6979,
+            "macro_f1": 0.7217
+          },
+          "answering": {
+            "threshold": 0.75,
+            "coverage": 0.6638,
+            "accuracy_when_answering": 0.9487,
+            "confident_wrong_per_100_photos": 3.4
+          }
+        },
+        "new": {
+          "samples": 235,
+          "accuracy": 0.834,
+          "accuracy_wilson_95": [
+            0.7812,
+            0.8762
+          ],
+          "balanced_accuracy": 0.8078,
+          "macro_precision": 0.837,
+          "macro_recall": 0.8078,
+          "macro_f1": 0.8104,
+          "all_classes": {
+            "samples": 235,
+            "accuracy": 0.7106,
+            "accuracy_wilson_95": [
+              0.6496,
+              0.7649
+            ],
+            "balanced_accuracy": 0.6855,
+            "macro_precision": 0.7663,
+            "macro_recall": 0.6855,
+            "macro_f1": 0.6995
+          },
+          "answering": {
+            "threshold": 0.75,
+            "coverage": 0.6596,
+            "accuracy_when_answering": 0.9419,
+            "confident_wrong_per_100_photos": 3.83
           }
         }
       }
     }
   },
   "training": {
-    "train_images": 73537,
-    "batch": 32,
-    "steps_per_epoch": 1500,
-    "warmup_epochs": 2,
-    "epochs": 14,
-    "peak_learning_rate": 0.0003,
-    "selection": "best field-validation macro-F1",
-    "best_field_macro_f1": 0.8139,
-    "augmentation": "random crop 30-100%, flips, 90-degree turns, brightness, contrast, saturation, hue, JPEG 35-100, blur, mixup 0.2",
-    "sampling": "inverse square-root class frequency; field images weighted 3x studio images"
-  },
-  "data": {
-    "images": 102318,
+    "backbone": "2 x EfficientNetV2B2, predictions averaged",
+    "input_size": 288,
     "classes": 85,
-    "duplicates_removed": 5267,
+    "members": [
+      {
+        "backbone": "EfficientNetV2B2",
+        "input_size": 288,
+        "classes": 85,
+        "train_images": 73537,
+        "batch": 32,
+        "steps_per_epoch": 1500,
+        "warmup_epochs": 2,
+        "epochs": 14,
+        "peak_learning_rate": 0.0003,
+        "selection": "best field-validation macro-F1",
+        "best_field_macro_f1": 0.8139,
+        "augmentation": "random crop 30-100%, flips, 90-degree turns, brightness, contrast, saturation, hue, JPEG 35-100, blur, mixup 0.2",
+        "sampling": "inverse square-root class frequency; field images weighted 3x studio images",
+        "source": "/root/ml/run/EfficientNetV2B2-288/model.keras"
+      },
+      {
+        "backbone": "EfficientNetV2B2",
+        "input_size": 288,
+        "classes": 85,
+        "train_images": 74198,
+        "batch": 32,
+        "steps_per_epoch": 1500,
+        "warmup_epochs": 2,
+        "epochs": 18,
+        "peak_learning_rate": 0.0003,
+        "selection": "best field-validation macro-F1",
+        "best_field_macro_f1": 0.8246,
+        "dropout": 0.4,
+        "label_smoothing": 0.1,
+        "weight_decay": 0.0001,
+        "field_weight": 3.0,
+        "augmentation": "random crop 30-100%, flips, 90-degree turns, brightness, contrast, saturation, hue, JPEG 35-100, blur, mixup 0.2",
+        "sampling": "inverse square-root class frequency; field images weighted 3x studio images",
+        "source": "/root/ml/run3/EfficientNetV2B2-288/model.keras"
+      }
+    ],
+    "selection": "the averaged model has the best macro-F1 on field validation photographs of the candidates compared"
+  },
+  "learning_curve": [
+    {
+      "epoch": 1,
+      "loss": 2.7129318714141846,
+      "train_field": 0.5348,
+      "field": 0.5657,
+      "lab": 0.736
+    },
+    {
+      "epoch": 2,
+      "loss": 2.4057257175445557,
+      "train_field": 0.5752,
+      "field": 0.6039,
+      "lab": 0.8136
+    },
+    {
+      "epoch": 1,
+      "loss": 2.063075304031372,
+      "train_field": 0.6695,
+      "field": 0.7017,
+      "lab": 0.9183
+    },
+    {
+      "epoch": 2,
+      "loss": 1.8624876737594604,
+      "train_field": 0.7543,
+      "field": 0.7638,
+      "lab": 0.9541
+    },
+    {
+      "epoch": 3,
+      "loss": 1.7315317392349243,
+      "train_field": 0.7819,
+      "field": 0.7846,
+      "lab": 0.9419
+    },
+    {
+      "epoch": 4,
+      "loss": 1.6508290767669678,
+      "train_field": 0.7869,
+      "field": 0.8064,
+      "lab": 0.9649
+    },
+    {
+      "epoch": 5,
+      "loss": 1.59293794631958,
+      "train_field": 0.8081,
+      "field": 0.8012,
+      "lab": 0.9743
+    },
+    {
+      "epoch": 6,
+      "loss": 1.5443196296691895,
+      "train_field": 0.8199,
+      "field": 0.8153,
+      "lab": 0.9757
+    },
+    {
+      "epoch": 7,
+      "loss": 1.4914155006408691,
+      "train_field": 0.8308,
+      "field": 0.8165,
+      "lab": 0.975
+    },
+    {
+      "epoch": 8,
+      "loss": 1.4572089910507202,
+      "train_field": 0.8619,
+      "field": 0.8401,
+      "lab": 0.9892
+    },
+    {
+      "epoch": 9,
+      "loss": 1.4142184257507324,
+      "train_field": 0.8767,
+      "field": 0.8432,
+      "lab": 0.9791
+    },
+    {
+      "epoch": 10,
+      "loss": 1.3872859477996826,
+      "train_field": 0.8821,
+      "field": 0.838,
+      "lab": 0.9804
+    },
+    {
+      "epoch": 11,
+      "loss": 1.3523656129837036,
+      "train_field": 0.8816,
+      "field": 0.8475,
+      "lab": 0.9851
+    },
+    {
+      "epoch": 12,
+      "loss": 1.3250751495361328,
+      "train_field": 0.9048,
+      "field": 0.8587,
+      "lab": 0.9892
+    },
+    {
+      "epoch": 13,
+      "loss": 1.2959420680999756,
+      "train_field": 0.9087,
+      "field": 0.87,
+      "lab": 0.9885
+    },
+    {
+      "epoch": 14,
+      "loss": 1.2732583284378052,
+      "train_field": 0.926,
+      "field": 0.8774,
+      "lab": 0.9905
+    },
+    {
+      "epoch": 15,
+      "loss": 1.2512297630310059,
+      "train_field": 0.9285,
+      "field": 0.8738,
+      "lab": 0.9919
+    },
+    {
+      "epoch": 16,
+      "loss": 1.238076090812683,
+      "train_field": 0.9398,
+      "field": 0.8838,
+      "lab": 0.9912
+    },
+    {
+      "epoch": 17,
+      "loss": 1.2297656536102295,
+      "train_field": 0.9408,
+      "field": 0.8843,
+      "lab": 0.9905
+    },
+    {
+      "epoch": 18,
+      "loss": 1.2224009037017822,
+      "train_field": 0.9482,
+      "field": 0.8867,
+      "lab": 0.9932
+    }
+  ],
+  "data": {
+    "images": 103530,
+    "classes": 85,
+    "duplicates_removed": 11220,
     "conflicting_labels_quarantined": 1623,
     "unreadable_or_tiny": 58,
     "classes_dropped_for_too_few_images": [],
     "by_source_and_split": {
+      "AppleKashmir/external_india": 205,
+      "CottonPune/test": 151,
+      "CottonPune/train": 681,
+      "CottonPune/validation": 101,
+      "Jalgaon/external_india": 95,
       "PaddyDoctor/test": 1628,
       "PaddyDoctor/train": 7449,
       "PaddyDoctor/validation": 1256,
@@ -1046,6 +1555,9 @@
       "PlantWild/test": 1385,
       "PlantWild/train": 6373,
       "PlantWild/validation": 1024,
+      "RiceOdisha/test": 774,
+      "RiceOdisha/train": 3437,
+      "RiceOdisha/validation": 541,
       "SAR-CLD-2024/test": 334,
       "SAR-CLD-2024/train": 1528,
       "SAR-CLD-2024/validation": 265,
@@ -1061,16 +1573,46 @@
       "WheatPlantDiseases/test": 1683,
       "WheatPlantDiseases/train": 7660,
       "WheatPlantDiseases/validation": 1292,
-      "legacy_unverified/test": 1087,
-      "legacy_unverified/train": 4833,
-      "legacy_unverified/validation": 772
+      "legacy_unverified/external_india": 6,
+      "legacy_unverified/test": 309,
+      "legacy_unverified/train": 1376,
+      "legacy_unverified/validation": 228
+    },
+    "india_farm_sources": {
+      "PaddyDoctor": "Tirunelveli, Tamil Nadu",
+      "TomatoVillage": "Jodhpur and Jaipur, Rajasthan",
+      "SugarcaneLeaf": "Maharashtra",
+      "RiceOdisha": "western Odisha",
+      "CottonPune": "Pune, Maharashtra",
+      "Jalgaon": "Jalgaon, Maharashtra",
+      "AppleKashmir": "Kashmir valley"
+    },
+    "india_farm_images_by_split": {
+      "train": 16488,
+      "validation": 2707,
+      "test": 3659,
+      "external_india": 300
+    },
+    "same_photograph_in_two_sources": {
+      "legacy_unverified already in RiceOdisha": 5976,
+      "WheatPlantDiseases already in WheatLeaf": 632,
+      "legacy_unverified already in WheatPlantDiseases": 507,
+      "legacy_unverified already in WheatLeaf": 289,
+      "PlantWild already in PlantDoc": 140,
+      "legacy_unverified already in CottonPune": 16,
+      "legacy_unverified already in Jalgaon": 11,
+      "legacy_unverified already in PlantWild": 4,
+      "PlantWild already in WheatPlantDiseases": 3,
+      "PlantWild already in PlantVillage": 2,
+      "WheatPlantDiseases already in PlantDoc": 1
     },
     "by_label_and_split": {
       "Apple___Apple_scab": {
         "train": 701,
         "validation": 137,
         "test": 155,
-        "external_test": 10
+        "external_test": 10,
+        "external_india": 159
       },
       "Apple___Black_rot": {
         "train": 571,
@@ -1092,7 +1634,8 @@
         "train": 1540,
         "test": 355,
         "validation": 264,
-        "external_test": 9
+        "external_test": 9,
+        "external_india": 46
       },
       "Blueberry___healthy": {
         "train": 1134,
@@ -1146,9 +1689,10 @@
         "test": 214
       },
       "Cotton___Bacterial_blight": {
-        "train": 699,
-        "validation": 122,
-        "test": 148
+        "train": 778,
+        "validation": 139,
+        "test": 171,
+        "external_india": 44
       },
       "Cotton___Herbicide_damage": {
         "validation": 35,
@@ -1162,8 +1706,8 @@
       },
       "Cotton___Leaf_curl_virus": {
         "validation": 107,
-        "train": 579,
-        "test": 119
+        "train": 592,
+        "test": 120
       },
       "Cotton___Leaf_reddening": {
         "train": 405,
@@ -1176,9 +1720,10 @@
         "validation": 10
       },
       "Cotton___healthy": {
-        "train": 603,
-        "test": 126,
-        "validation": 83
+        "train": 1172,
+        "test": 249,
+        "validation": 164,
+        "external_india": 57
       },
       "Grape___Black_rot": {
         "test": 202,
@@ -1520,11 +2065,13 @@
         "validation": 137
       }
     },
-    "split_policy": "72/12/16 deterministic split of duplicate groups (exact pixels at 64 px and 64-bit difference hash); the published PlantDoc test partition is reserved as the external field test",
+    "split_policy": "72/12/16 deterministic split of duplicate groups (exact pixels at 64 px and 64-bit difference hash); the published PlantDoc test partition is reserved as the external field test, and the Jalgaon and Kashmir sets are reserved whole as Indian farm photographs the model never trains on",
     "limits": [
       "Hash grouping removes copies, not different photographs of the same plant or field.",
       "legacy_unverified images have no established source or licence and are reported separately.",
-      "Field sources come from India, Bangladesh, Ethiopia and web collections; none is a planned sample of Indian farms."
+      "Field sources come from India, Bangladesh, Ethiopia and web collections; none is a planned sample of Indian farms.",
+      "No public Indian farm set was found for wheat, potato or maize diseases beyond the small Jalgaon set.",
+      "The Odisha rice set is made of close crops; crops of the same leaf may fall on both sides of a split."
     ]
   },
   "backbone_comparison": {

@@ -27,6 +27,8 @@ def check(args):
     groups = {
         "external_plantdoc_test": [r for r in rows if r["split"] == "external_test"],
         "field_test_sample": [r for r in rows if r["split"] == "test" and r["domain"] != "lab"],
+        "india_farm_test": [r for r in rows if r["split"] == "test" and r.get("india_farm")],
+        "india_unseen_farms": [r for r in rows if r["split"] == "external_india" and r.get("india_farm")],
     }
     sample = groups["field_test_sample"]
     groups["field_test_sample"] = [sample[i] for i in rng.permutation(len(sample))[: args.sample]]

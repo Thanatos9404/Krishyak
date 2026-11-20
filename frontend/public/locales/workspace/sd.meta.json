@@ -3,10 +3,10 @@
   "model": "provider-managed-document-translation",
   "method": "document_translation_arabic_script_guidelines",
   "api": "/translate/document/jobs",
-  "generated_at": "2026-11-20T14:30:06.000593+00:00",
-  "source_sha256": "36bd64daea625becaa38ac9f8fe07b1030a0d788b441cfdc0870160ea53cfdae",
+  "generated_at": "2026-11-20T23:37:17.867886+00:00",
+  "source_sha256": "5655395ec36d6eb7234b89e841ff3475ac357278f94187d20a340de9bb91fbad",
   "glossary_sha256": "1cb7a8df2b9cfaa66adae2b4cdd96a6462644012dfbbe009628aab32ca4acbd1",
-  "pack_sha256": "a984aabf0c139886be42533484b3e2fa79016ccaa90ad294be3e11161e911a4a",
-  "strings": 2784,
+  "pack_sha256": "f828b2c6010a71112e79cba425be7366f4870c675d756836fb93a5f9994b8dcf",
+  "strings": 2785,
   "review_status": "machine_translated_needs_native_review"
 }

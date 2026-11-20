@@ -163,17 +163,22 @@ language model.
 
 ## Evidence boundaries
 
-The disease model is `krishyak-leaf-v2` (EfficientNetV2B2 at 288 pixels, 85
-classes, 18 crops including rice, wheat, cotton and sugarcane), trained on
-102,318 de-duplicated public photographs. With the crop selected it scores
-90.8% on 7,595 held-out field photographs (macro F1 0.88, macro recall 0.88)
-and 85.1% on the external PlantDoc set (n=235; the earlier model scored 75.6%
-like for like, and 57.2% with all classes competing against 71.9% now). It
-answers only at 0.75 confidence and only when the photograph looks like the
-selected crop: on PlantDoc it answers 67% of photographs and is right 94% of
-the time when it does, with 3.8 confident wrong answers per 100 photographs
-(8.1 before). The method, per-crop results and limits are in
-`docs/v2/MODEL_GOVERNANCE.md`. It has not been validated on Indian farm
+The disease model is `krishyak-leaf-v3`: two EfficientNetV2B2 networks at 288
+pixels whose predictions are averaged, 85 classes across 18 crops including
+rice, wheat, cotton and sugarcane, trained on 103,530 de-duplicated public
+photographs. 22,854 of those are documented Indian farm photographs (paddy
+from Tamil Nadu, tomato from Rajasthan, rice from Odisha, sugarcane and
+cotton from Maharashtra). With the crop selected it scores 95.7% on 3,659
+held-out photographs from those Indian sources (macro F1 0.94, macro recall
+0.93), 91.7% on all 7,742 held-out field photographs and 83.4% on the
+external PlantDoc set (n=235). On 300 photographs from two small Indian sets
+it never trained on it scores 47%: it does not yet carry over to unfamiliar
+farms. It answers only at 0.75 confidence and only when the photograph looks
+like the selected crop; on the Indian farm test it answers 92% of
+photographs and is right 98% of the time when it does. The method, the
+overfitting check, per-crop results and limits are in
+`docs/v2/MODEL_GOVERNANCE.md`, and the sources in
+`docs/v2/LEAF_DATASETS.md`. It has not been validated on Krishyak farmers' own
 photos, so results are presented as a first opinion with expert confirmation.
 Disease care steps and weather advice are conservative drafts without product
 names or doses and need agronomist review. Satellite indices cannot diagnose

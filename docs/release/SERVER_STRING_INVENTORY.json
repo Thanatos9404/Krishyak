@@ -32,42 +32,42 @@
   {
     "source": "The assistant returned an empty answer",
     "file": "backend/v2/assistant.py",
-    "line": 249
+    "line": 248
   },
   {
     "source": "The voice assistant is not configured on the server.",
     "file": "backend/v2/assistant.py",
-    "line": 256
+    "line": 255
   },
   {
     "source": "The voice assistant is busy. Please try again in a minute.",
     "file": "backend/v2/assistant.py",
-    "line": 274
+    "line": 273
   },
   {
     "source": "The voice assistant is unavailable. Please try again.",
     "file": "backend/v2/assistant.py",
-    "line": 276
+    "line": 275
   },
   {
     "source": "Select a supported language",
     "file": "backend/v2/assistant.py",
-    "line": 293
+    "line": 292
   },
   {
     "source": "Account changed during the question",
     "file": "backend/v2/assistant.py",
-    "line": 311
+    "line": 308
   },
   {
     "source": "The voice assistant is unavailable. Please try again.",
     "file": "backend/v2/assistant.py",
-    "line": 272
+    "line": 271
   },
   {
     "source": "The assistant returned an invalid answer",
     "file": "backend/v2/assistant.py",
-    "line": 280
+    "line": 279
   },
   {
     "source": "Untrusted request origin",
@@ -637,27 +637,27 @@
   {
     "source": "Partner-approved login configured; connection is checked only during an explicit login",
     "file": "backend/v2/farm_context/router.py",
-    "line": 51
+    "line": 49
   },
   {
     "source": "Scenario engine is unavailable",
     "file": "backend/v2/farm_context/router.py",
-    "line": 63
+    "line": 61
   },
   {
     "source": "Scenario engine is busy. Retry shortly.",
     "file": "backend/v2/farm_context/router.py",
-    "line": 80
+    "line": 78
   },
   {
     "source": "Check the scenario values and supported units",
     "file": "backend/v2/farm_context/router.py",
-    "line": 67
+    "line": 65
   },
   {
     "source": "Choose the same supported crop for context and scenario",
     "file": "backend/v2/farm_context/router.py",
-    "line": 74
+    "line": 72
   },
   {
     "source": "Coarse area name matched to LGD. Confirm it. Village codes and land ownership are not inferred.",
@@ -767,32 +767,32 @@
   {
     "source": "Krishyak could not understand that. Please try again or fill the form.",
     "file": "backend/v2/farm_setup.py",
-    "line": 77
+    "line": 76
   },
   {
     "source": "Account changed while finding your location",
     "file": "backend/v2/farm_setup.py",
-    "line": 325
+    "line": 323
   },
   {
     "source": "Select a supported language",
     "file": "backend/v2/farm_setup.py",
-    "line": 356
+    "line": 354
   },
   {
     "source": "Account changed while reading your details",
     "file": "backend/v2/farm_setup.py",
-    "line": 383
+    "line": 379
   },
   {
     "source": "This location is outside India. Choose your state and district instead.",
     "file": "backend/v2/farm_setup.py",
-    "line": 296
+    "line": 295
   },
   {
     "source": "Krishyak could not find this place on the map. Check the village name or use your location.",
     "file": "backend/v2/farm_setup.py",
-    "line": 306
+    "line": 305
   },
   {
     "source": "This is public program information, not eligibility approval",
@@ -1162,22 +1162,22 @@
   {
     "source": "Select a supported language",
     "file": "backend/v2/live.py",
-    "line": 66
+    "line": 65
   },
   {
     "source": "Account changed during the question",
     "file": "backend/v2/live.py",
-    "line": 106
+    "line": 103
   },
   {
     "source": "Conversation history is invalid",
     "file": "backend/v2/live.py",
-    "line": 70
+    "line": 69
   },
   {
     "source": "The camera picture could not be read. Please try again.",
     "file": "backend/v2/live.py",
-    "line": 77
+    "line": 76
   },
   {
     "source": "Reported wholesale mandi prices; your actual offer depends on quality, quantity and buyer.",
@@ -1385,114 +1385,119 @@
     "line": 137
   },
   {
+    "source": "Account changed during this request",
+    "file": "backend/v2/router.py",
+    "line": 59
+  },
+  {
     "source": "Farm accounts are not yet available",
     "file": "backend/v2/router.py",
-    "line": 41
+    "line": 42
   },
   {
     "source": "Consent required for ",
     "file": "backend/v2/router.py",
-    "line": 65
+    "line": 87
   },
   {
     "source": "Verification expired or invalid; request a new code",
     "file": "backend/v2/router.py",
-    "line": 151
+    "line": 173
   },
   {
     "source": "Verification expired or invalid; request a new code",
     "file": "backend/v2/router.py",
-    "line": 165
+    "line": 187
   },
   {
     "source": "Incorrect or expired verification code",
     "file": "backend/v2/router.py",
-    "line": 176
+    "line": 198
   },
   {
     "source": "Account unavailable",
     "file": "backend/v2/router.py",
-    "line": 185
+    "line": 207
   },
   {
     "source": "Use account deletion to end account processing",
     "file": "backend/v2/router.py",
-    "line": 258
+    "line": 280
   },
   {
     "source": "Maximum 100 farms per account reached",
     "file": "backend/v2/router.py",
-    "line": 330
+    "line": 352
   },
   {
     "source": "Farm changed on another device; refresh before saving",
     "file": "backend/v2/router.py",
-    "line": 343
+    "line": 365
   },
   {
     "source": "Field changed on another device; refresh before saving",
     "file": "backend/v2/router.py",
-    "line": 447
+    "line": 469
   },
   {
     "source": "Crop cycle not found",
     "file": "backend/v2/router.py",
-    "line": 526
+    "line": 548
   },
   {
     "source": "Crop cycle changed; refresh before saving",
     "file": "backend/v2/router.py",
-    "line": 528
+    "line": 550
   },
   {
     "source": "Crop cycle overlaps another active or planned cycle",
     "file": "backend/v2/router.py",
-    "line": 538
+    "line": 560
   },
   {
     "source": "Crop cycle not found",
     "file": "backend/v2/router.py",
-    "line": 552
+    "line": 574
   },
   {
     "source": "Operation ID already used for another farm",
     "file": "backend/v2/router.py",
-    "line": 327
+    "line": 349
   },
   {
     "source": "Operation ID already used for another crop cycle",
     "file": "backend/v2/router.py",
-    "line": 476
+    "line": 498
   },
   {
     "source": "Crop cycle overlaps an existing active or planned cycle",
     "file": "backend/v2/router.py",
-    "line": 488
+    "line": 510
   },
   {
     "source": "Operation ID already used with different evidence",
     "file": "backend/v2/router.py",
-    "line": 570
+    "line": 592
   },
   {
     "source": "Not independently verified",
     "file": "backend/v2/router.py",
-    "line": 581
+    "line": 603
   },
   {
     "source": "Farm storage unavailable; retry later",
     "file": "backend/v2/router.py",
-    "line": 48
+    "line": 49
   },
   {
     "source": "Field geometry exceeds supported limits",
     "file": "backend/v2/router.py",
-    "line": 386
+    "line": 408
   },
   {
     "source": "Operation ID already used for another field",
     "file": "backend/v2/router.py",
-    "line": 422
+    "line": 444
   },
   {
     "source": "Map a field boundary before requesting imagery",
@@ -1542,7 +1547,7 @@
   {
     "source": "Account changed during speech processing",
     "file": "backend/v2/speech.py",
-    "line": 94
+    "line": 87
   },
   {
     "source": "Invalid speech audio",
