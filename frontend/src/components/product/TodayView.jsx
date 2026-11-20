@@ -27,6 +27,12 @@ import { locationFromProfile } from "../../features/product/indiaLocations";
 import { MarketPrices, useMarketPrices } from "./MarketView";
 import { CalendarCard, RadarCard, usePestRadar } from "./FieldAlerts";
 import {
+  FieldNumbers,
+  WeekAhead,
+  useFieldReport,
+  useOutlook,
+} from "./FieldDashboard";
+import {
   SUGGESTIONS,
   useVoiceLauncher,
 } from "../../features/product/voiceLauncher";
@@ -95,13 +101,16 @@ const TILES = [
   ],
 ];
 
-function VoiceHero() {
+function VoiceHero({ compact = false }) {
   const { tx, info } = useProductLocale();
   const openVoice = useVoiceLauncher();
   const still = useReducedMotion();
   if (!openVoice) return null;
   return (
-    <section className="voice-hero" aria-labelledby="voice-hero-heading">
+    <section
+      className={`voice-hero ${compact ? "compact" : ""}`}
+      aria-labelledby="voice-hero-heading"
+    >
       <div className="voice-hero-copy">
         <h2 id="voice-hero-heading">{tx("Ask Krishyak anything")}</h2>
         <p>
@@ -137,6 +146,8 @@ export function TodayView({ workspace: w }) {
     [all, setAll] = useState(false);
   const actions = w.today?.actions || [];
   const radar = usePestRadar(w);
+  const report = useFieldReport(w);
+  const outlook = useOutlook(w);
   const cycle =
     w.cycles.find((item) => item.status === "active") || w.cycles[0];
   useEffect(() => {
@@ -171,16 +182,14 @@ export function TodayView({ workspace: w }) {
         <section className="setup-hero" aria-labelledby="setup-hero-heading">
           <Mic size={40} aria-hidden="true" />
           <div>
-            <h2 id="setup-hero-heading">
-              {tx("Tell Krishyak about your farm")}
-            </h2>
+            <h2 id="setup-hero-heading">{tx("Register your farm")}</h2>
             <p>
               {tx(
-                "Say your village, land, crop and soil in your language. Krishyak fills everything in and shows your expected harvest, profit, risks and the schemes for you.",
+                "Four short steps, or just speak. Krishyak finds your place, soil and rain record, then shows your expected harvest, profit, risks and schemes.",
               )}
             </p>
             <a className="button primary large" href="/app/setup">
-              {tx("Speak about my farm")} <ArrowRight size={18} />
+              {tx("Register my farm")} <ArrowRight size={18} />
             </a>
             <a className="text-link" href="/app/farm">
               {tx("Or add a field by hand")}
@@ -188,7 +197,15 @@ export function TodayView({ workspace: w }) {
           </div>
         </section>
       )}
-      <VoiceHero />
+      <VoiceHero compact={Boolean(w.plot)} />
+      {w.plot && (
+        <>
+          <FieldNumbers workspace={w} report={report} />
+          <WeekAhead workspace={w} outlook={outlook} />
+          <CalendarCard workspace={w} />
+          <RadarCard workspace={w} radar={radar} show="status" />
+        </>
+      )}
       <nav className="home-tiles" aria-label={tx("Quick actions")}>
         {TILES.filter(
           ([href]) =>
@@ -217,8 +234,6 @@ export function TodayView({ workspace: w }) {
       </nav>
       {w.plot && (
         <>
-          <RadarCard workspace={w} radar={radar} show="status" />
-          <CalendarCard workspace={w} />
           <div className="today-glance" id="weather">
             <WeatherStrip
               plotId={w.selected}

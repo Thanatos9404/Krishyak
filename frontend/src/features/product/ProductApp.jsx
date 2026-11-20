@@ -1,5 +1,5 @@
 "use client";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import { ProductLocaleProvider, useProductLocale } from "./ProductLocale";
 import { useWorkspace } from "./useWorkspace";
@@ -108,6 +108,8 @@ const OFFLINE_SCREENS = [
   loadSettingsView,
 ];
 
+const SETUP_SKIPPED = "krishyak_setup_skipped";
+
 function Workspace() {
   const w = useWorkspace(),
     { tx } = useProductLocale();
@@ -139,6 +141,23 @@ function Workspace() {
     }, 4000);
     return () => clearTimeout(timer);
   }, []);
+  // A farmer with no field yet starts with registration; they can skip it.
+  const [skippedSetup, setSkippedSetup] = useState(false);
+  useEffect(() => {
+    try {
+      setSkippedSetup(sessionStorage.getItem(SETUP_SKIPPED) === "1");
+    } catch {
+      /* Storage is unavailable: registration is simply offered again. */
+    }
+  }, []);
+  const skipSetup = () => {
+    try {
+      sessionStorage.setItem(SETUP_SKIPPED, "1");
+    } catch {
+      /* Not remembered across pages; nothing else depends on it. */
+    }
+    setSkippedSetup(true);
+  };
   let content;
   if (w.loading)
     content = (
@@ -221,6 +240,8 @@ function Workspace() {
       </>
     );
   else if (pathname === "/app/more") content = <MoreView workspace={w} />;
+  else if (!w.plots.length && !w.offline && !skippedSetup)
+    content = <FarmSetupView workspace={w} onSkip={skipSetup} />;
   else content = <TodayView workspace={w} />;
   return (
     <ProductShell
