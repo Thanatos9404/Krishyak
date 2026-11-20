@@ -163,12 +163,17 @@ language model.
 
 ## Evidence boundaries
 
-The disease model is `publisher-efficientnet-colab-v1` (EfficientNetV2B0,
-38 classes, 14 crops): 94.39% validation, 93.71% internal test and 57.21% on
-the external PlantDoc set (n=229). It abstains below 0.75 confidence or on a
-crop mismatch; on the internal test it answers 88.7% of photos at 98.5%
-accuracy, and on PlantDoc it cuts confident wrong answers from 42.8 to 5.2 per
-100 photos. It has not been validated on Indian farm
+The disease model is `krishyak-leaf-v2` (EfficientNetV2B2 at 288 pixels, 85
+classes, 18 crops including rice, wheat, cotton and sugarcane), trained on
+102,318 de-duplicated public photographs. With the crop selected it scores
+90.8% on 7,595 held-out field photographs (macro F1 0.88, macro recall 0.88)
+and 85.1% on the external PlantDoc set (n=235; the earlier model scored 75.6%
+like for like, and 57.2% with all classes competing against 71.9% now). It
+answers only at 0.75 confidence and only when the photograph looks like the
+selected crop: on PlantDoc it answers 67% of photographs and is right 94% of
+the time when it does, with 3.8 confident wrong answers per 100 photographs
+(8.1 before). The method, per-crop results and limits are in
+`docs/v2/MODEL_GOVERNANCE.md`. It has not been validated on Indian farm
 photos, so results are presented as a first opinion with expert confirmation.
 Disease care steps and weather advice are conservative drafts without product
 names or doses and need agronomist review. Satellite indices cannot diagnose

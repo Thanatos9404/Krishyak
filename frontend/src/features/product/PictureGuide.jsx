@@ -122,6 +122,32 @@ const P = {
       <path d="M40 56h20M50 56V46" />
     </>
   ),
+  no_fertilizer: (
+    <>
+      <path d="M22 18h20l4 30H18Z" />
+      <path d="M26 18c0-4 2-6 6-6s6 2 6 6" />
+      <path d="M26 30h12M26 38h12" />
+      <circle cx="32" cy="32" r="26" />
+      <path d="M14 14 50 50" />
+    </>
+  ),
+  water_level: (
+    <>
+      <path d="M20 40V20" />
+      <path d="M20 28c-6 0-9-3-9-8 6 0 9 3 9 8ZM20 24c6 0 9-3 9-8-6 0-9 3-9 8Z" />
+      <path d="M4 42c4-3 8-3 12 0s8 3 12 0 8-3 12 0 8 3 12 0 6-2 8-1" />
+      <path d="M4 52c4-3 8-3 12 0s8 3 12 0 8-3 12 0 8 3 12 0 6-2 8-1" />
+      <path d="M48 8v22m-6-6 6 6 6-6m-12-10 6-6 6 6" />
+    </>
+  ),
+  soil_test: (
+    <>
+      <path d="M6 50c6-10 14-14 22-14s14 4 20 14Z" />
+      <path d="M40 8h12M43 8v26a5 5 0 0 0 10 0V8" strokeLinejoin="round" />
+      <path d="M43 24h10" />
+      <path d="M18 44h2m6-3h2m4 5h2" />
+    </>
+  ),
   photo: (
     <>
       <path d="M8 20h10l4-6h20l4 6h10v32H8Z" />
@@ -136,8 +162,11 @@ const RULES = [
   [/officer|kisan call|expert|krishi vigyan/i, "call_expert"],
   [/another photo|clear photo/i, "photo"],
   [/act quickly|spread across/i, "act_fast"],
+  [/do not add more nitrogen/i, "no_fertilizer"],
+  [/drain |water standing|water that stands/i, "water_level"],
+  [/soil test/i, "soil_test"],
   [/rotate/i, "rotate"],
-  [/variety|seed|seedling/i, "healthy_seed"],
+  [/variety|seed|seedling|planting material|ratoon|sow at/i, "healthy_seed"],
   [/wash|clean/i, "clean_tools"],
   [/mulch/i, "mulch"],
   [/residue|plough/i, "residue"],

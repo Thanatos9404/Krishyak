@@ -40,7 +40,7 @@ export const FAQ = [
   ],
   [
     "Which crops can the photo model handle?",
-    "The current model covers 38 image labels across 14 crop categories: Apple, Blueberry, Cherry, Corn, Grape, Orange, Peach, Bell pepper, Potato, Raspberry, Soybean, Squash, Strawberry and Tomato. Supported labels are limited; unsupported crops are explicitly identified.",
+    "The current model covers 85 image labels across 18 crops: Rice, Wheat, Cotton, Sugarcane, Maize, Tomato, Potato, Bell pepper, Soybean, Squash, Apple, Blueberry, Cherry, Grape, Orange, Peach, Raspberry and Strawberry. Other crops are explicitly identified as not supported.",
   ],
   [
     "Is Krishyak free to use?",
@@ -210,26 +210,30 @@ function Technology() {
         </p>
         <details className="plain-panel">
           <summary>About the current model and its validation</summary>
-          <h3>38 labels across 14 crop categories</h3>
+          <h3>85 labels across 18 crops</h3>
           <p>
-            The active release is <code>publisher-efficientnet-colab-v1</code>,
-            using an EfficientNet classifier and a verified compact inference
-            artifact.
+            The active release is <code>krishyak-leaf-v2</code>, an
+            EfficientNetV2 classifier trained on 102,318 public leaf photographs
+            after duplicates were removed. It covers rice, wheat, cotton and
+            sugarcane as well as vegetables and fruit.
           </p>
           <p>
-            Recorded internal test accuracy is 93.71% on 8,566 examples.
-            External PlantDoc accuracy is 57.21% on 229 examples. That external
-            result is a material limitation for field photographs; neither
-            number establishes local field performance.
+            With the crop selected, it is right on 90.8% of 7,595 held-out field
+            photographs and on 85.1% of 235 photographs from PlantDoc, a
+            separate public collection it never saw in training. The earlier
+            release scored 75.6% on those PlantDoc photographs.
           </p>
           <p>
-            The 95% Wilson interval for the external result is approximately
-            50.73%–63.44%. Real field validation and label-by-label agronomic
-            review remain required.
+            It only answers when it is confident and the photograph looks like
+            the selected crop. On the PlantDoc photographs it answers about two
+            in three and is right 94% of the time when it does. Rice, wheat,
+            cotton and sugarcane have no separate collection to test against
+            yet, and no result has been checked on Indian farms, so every answer
+            is a first opinion to confirm with an expert.
           </p>
           <a
             className="text-link"
-            href="https://github.com/Thanatos9404/Krishyak/blob/feat/krishyak-v2-field-intelligence/docs/v2/MODEL_GOVERNANCE.md"
+            href="https://github.com/Thanatos9404/Krishyak/blob/main/docs/v2/MODEL_GOVERNANCE.md"
             target="_blank"
             rel="noopener noreferrer"
           >

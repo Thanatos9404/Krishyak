@@ -1,0 +1,31 @@
+{
+  "runtime": "litert",
+  "model_id": "krishyak-leaf-v2",
+  "sets": {
+    "external_plantdoc_test": {
+      "photos": 235,
+      "coverage": 0.6723,
+      "accuracy_when_answering": 0.943,
+      "confident_wrong_per_100_photos": 3.83,
+      "statuses": {
+        "healthy": 75,
+        "uncertain": 77,
+        "disease_detected": 83
+      },
+      "median_seconds_per_photo": 0.03
+    },
+    "field_test_sample": {
+      "photos": 1500,
+      "coverage": 0.854,
+      "accuracy_when_answering": 0.9672,
+      "confident_wrong_per_100_photos": 2.8,
+      "statuses": {
+        "healthy": 234,
+        "disease_detected": 1047,
+        "uncertain": 219
+      },
+      "median_seconds_per_photo": 0.025
+    }
+  },
+  "note": "Original photographs through predict_from_image with the LiteRT artifact, crop selected, release decision rule applied."
+}

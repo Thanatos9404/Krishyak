@@ -47,7 +47,7 @@ until the pull request is merged and migration v2_0011 is applied there.
 | SMS one-time codes | Passkeys need no SMS. SMS sign-in still requires a paid Twilio Verify (or similar) account, and Indian SMS sending needs telecom DLT registration. |
 | Government identity/records | MeriPehchaan login requires approved partner onboarding. No Aadhaar, land record, Farmer Registry, AgriStack, PM-KISAN or Soil Health Card API access exists; IMD point forecasts need IMD approval. Public scheme information only. |
 | Mandi data source | Depends on the data.gov.in API host being available (see above). |
-| ML field accuracy | External PlantDoc accuracy 57.2%; calibration and validation on Indian farm photographs require field data collection with farmers. |
+| ML field accuracy | Leaf model v2: 85.1 % on the external PlantDoc photographs with the crop selected (71.9 % with all classes competing; v1 was 57.2 %), and through the app's own path it answers 67 % of those photographs and is right 94 % of the time when it answers. Rice, wheat, cotton and sugarcane have no independent hold-out, and nothing has been validated on Indian farm photographs; that needs field data collection with farmers and agronomist-checked labels. See `MODEL_GOVERNANCE.md`. |
 | Advice review | Disease care steps (`backend/v2/disease_guidance.json`) and weather conclusions are conservative drafts without products or doses; agronomist review is required before claiming expert advice. |
 | Languages | All 23 languages pass automated script/placeholder/glossary checks; native-speaker semantic review is still required. |
 | Field validation | No consented farmer pilot, physical Android/iOS device testing, or human accessibility review has been performed. |
