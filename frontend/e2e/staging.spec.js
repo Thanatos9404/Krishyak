@@ -83,6 +83,11 @@ test("live passkey sign-up and profile", async () => {
     .getByRole("checkbox", { name: /written down my recovery code/ })
     .check();
   await page.getByRole("button", { name: /Open my farm/ }).click();
+  // A farmer with no field starts at registration; these journeys set fields up themselves.
+  await expect(
+    page.getByRole("heading", { level: 1, name: "Register your farm" }),
+  ).toBeVisible({ timeout: 30000 });
+  await page.getByRole("button", { name: "Skip for now" }).click();
   await expect(
     page.getByRole("heading", { level: 1, name: /^Namaste, / }),
   ).toBeVisible({ timeout: 30000 });
@@ -240,51 +245,71 @@ test("voice mode answers a farmer's question from their own records", async () =
   await expect(voice).not.toBeVisible();
 });
 
-test("a spoken farm description fills the form and opens a field report", async () => {
-  test.setTimeout(150000);
+test("registration fills the place from GPS, the rest from speech, and Home shows the numbers", async () => {
+  test.setTimeout(240000);
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/app/setup");
   await expect(
-    page.getByRole("heading", { name: "Tell Krishyak about your farm" }),
+    page.getByRole("heading", { name: "Register your farm" }),
   ).toBeVisible({ timeout: 30000 });
+  const allow = page.getByRole("button", { name: "Allow and continue" });
+  if (await allow.isVisible().catch(() => false)) await allow.click();
+  await page.getByRole("button", { name: /Where your farm is/ }).click();
+  await page.getByRole("button", { name: "Use my location" }).click();
+  const found = page.getByRole("region", {
+    name: "Krishyak found this for your farm",
+  });
+  await expect(found).toBeVisible({ timeout: 60000 });
+  await expect(found).toContainText("Jaipur");
+  await expect(found).toContainText(/Rain in a normal year: \d+ mm/);
+  await expect(found).toContainText(/Soil: /);
+  await page.screenshot({
+    path: "../output/product/screenshots/staging/register-place-390.png",
+    fullPage: true,
+  });
+  await page.getByRole("button", { name: /Speak instead of typing/ }).click();
   await page
     .getByLabel("Or type it")
     .fill(
       "main ek kisan hoon aur main ek chhote gaon Dhaulpur se hoon aur mere paas 5 bigha zameen hai, tubewell hai, aur main gehun ki kheti karta hoon. meri mitti sookhi hai.",
     );
   await page.getByRole("button", { name: /Fill the form/ }).click();
-  await expect(
-    page.getByRole("combobox", { name: "Crop", exact: true }),
-  ).toHaveValue("wheat", {
+  await expect(page.getByRole("heading", { name: /Step 4 of 4/ })).toBeVisible({
     timeout: 60000,
   });
-  await expect(page.getByText(/Dholpur/).first()).toBeVisible();
-  await expect(page.getByLabel("Land unit")).toHaveValue("bigha");
-  await expect(page.getByText(/= 1\.26 hectares/)).toBeVisible();
   await expect(
-    page.getByRole("combobox", { name: "Soil", exact: true }),
-  ).not.toHaveValue("");
+    page.getByRole("combobox", { name: "Crop", exact: true }),
+  ).toHaveValue("wheat");
+  const check = page.getByRole("region", { name: "Check your details" });
+  await expect(check).toContainText("Dholpur");
+  await expect(check).toContainText("1.26 hectares");
   await page.screenshot({
-    path: "../output/product/screenshots/staging/setup-390.png",
+    path: "../output/product/screenshots/staging/register-check-390.png",
     fullPage: true,
   });
-  await page
-    .getByRole("button", { name: /Save and see my field report/ })
-    .click();
+  await page.getByRole("button", { name: /Save my farm/ }).click();
+  const numbers = page.locator(".dash-kpis");
+  await expect(numbers).toBeVisible({ timeout: 60000 });
+  await expect(numbers).toContainText("quintals");
+  await expect(numbers).toContainText("Expected");
+  await expect(page.getByText(/From .+ records\./)).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Weather for the next 7 days" }),
+  ).toBeVisible({ timeout: 30000 });
+  await page.screenshot({
+    path: "../output/product/screenshots/staging/dashboard-390.png",
+    fullPage: true,
+  });
+  await page.goto("/app/assessment");
   await expect(
     page.getByRole("heading", { name: "Your field report" }),
   ).toBeVisible({ timeout: 45000 });
   await expect(page.getByRole("heading", { name: "Field score" })).toBeVisible({
     timeout: 45000,
   });
-  await expect(page.getByText(/quintals/).first()).toBeVisible();
   await expect(
     page.getByRole("heading", { name: /Government schemes/ }),
   ).toBeVisible();
-  await page.screenshot({
-    path: "../output/product/screenshots/staging/report-390.png",
-    fullPage: true,
-  });
 });
 
 test("the crop calendar, Pest Radar and a claim pack work on live data", async () => {

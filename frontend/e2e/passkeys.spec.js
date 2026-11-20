@@ -65,6 +65,11 @@ test("create an account with a passkey and keep the recovery code", async () => 
     .getByRole("checkbox", { name: /written down my recovery code/ })
     .check();
   await open.click();
+  // A farmer with no field starts at registration; these journeys set fields up themselves.
+  await expect(
+    page.getByRole("heading", { level: 1, name: "Register your farm" }),
+  ).toBeVisible({ timeout: 30000 });
+  await page.getByRole("button", { name: "Skip for now" }).click();
   await expect(
     page.getByRole("heading", { level: 1, name: /^Namaste, / }),
   ).toBeVisible();

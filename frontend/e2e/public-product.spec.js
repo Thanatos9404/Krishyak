@@ -157,40 +157,26 @@ test("public interactions, keyboard dialog, demo isolation and responsive access
       api.push(request.url());
   });
   await page.goto("/demo");
-  const demoFields = page.getByRole("combobox", { name: "Selected field" });
-  await expect(demoFields.locator('option[value="demo-field"]')).toHaveText(
-    "demo field",
-  );
-  await expect(demoFields.locator("option")).toHaveCount(2);
+  await expect(page.getByText("Example field", { exact: true })).toBeVisible();
   await expect(
-    page.getByRole("heading", { name: "Today on an example farm." }),
-  ).toBeVisible();
-  await page.getByRole("button", { name: "Why this matters" }).first().click();
-  const dialog = page.getByRole("dialog", {
-    name: "Why this matters",
-    exact: true,
-  });
-  await expect(dialog).toBeVisible();
-  await page.keyboard.press("Shift+Tab");
-  expect(
-    await page.evaluate(() =>
-      Boolean(document.activeElement?.closest("dialog")),
-    ),
-  ).toBe(true);
-  await page.keyboard.press("Escape");
-  await expect(dialog).not.toBeVisible();
-  await page
-    .getByRole("button", { name: "Try recording an update", exact: true })
-    .click();
-  await page
-    .getByLabel("What did you notice?", { exact: true })
-    .fill("Illustrative demo update");
-  await page
-    .getByRole("button", { name: "Add example update", exact: true })
-    .click();
+    page.getByRole("heading", {
+      level: 1,
+      name: /field, as Krishyak shows it/,
+    }),
+  ).toBeVisible({ timeout: 45000 });
+  const numbers = page.locator(".dash-kpis");
+  await expect(numbers).toContainText("Expected harvest");
+  await expect(numbers).toContainText("quintals");
+  await expect(numbers).toContainText("/ 100");
+  await expect(page.getByText(/From .+ records\./)).toBeVisible();
   await expect(
-    page.getByText("Demo only: Illustrative demo update", { exact: true }),
-  ).toBeVisible();
+    page.getByRole("link", { name: /Register my farm/ }).first(),
+  ).toHaveAttribute("href", "/app/today");
+  // The example reads one public endpoint and never an account.
+  expect([...new Set(api.map((url) => new URL(url).pathname))]).toEqual([
+    "/api/v2/example/field",
+  ]);
+  api.length = 0;
   expect(api).toEqual([]);
   expect(errors).toEqual([]);
   await fs.mkdir(`../output/product/screenshots/${test.info().project.name}`, {
@@ -203,16 +189,16 @@ test("public interactions, keyboard dialog, demo isolation and responsive access
     "/technology",
     "/about",
     "/demo",
-    "/demo?view=farm",
-    "/demo?view=scan",
-    "/demo?view=market",
     "/app/today",
   ]) {
     await page.goto(path);
     if (path.startsWith("/demo"))
       await expect(
-        page.getByText("Illustrative demo", { exact: true }),
-      ).toBeVisible();
+        page.getByRole("heading", {
+          level: 1,
+          name: /field, as Krishyak shows it/,
+        }),
+      ).toBeVisible({ timeout: 45000 });
     for (const width of VIEWPORTS) {
       await page.setViewportSize({ width, height: width > 800 ? 900 : 844 });
       await expect

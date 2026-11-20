@@ -86,6 +86,17 @@ test.beforeAll(async ({ browser }, info) => {
   await page
     .getByRole("button", { name: "Verify & continue", exact: true })
     .click();
+  // A farmer with no field starts at registration; these journeys set fields up
+  // themselves. The synthetic number keeps its fields between local runs.
+  const register = page.getByRole("heading", {
+    level: 1,
+    name: "Register your farm",
+  });
+  await expect(
+    register.or(page.getByRole("heading", { level: 1, name: /^Namaste, / })),
+  ).toBeVisible({ timeout: 30000 });
+  if (await register.isVisible())
+    await page.getByRole("button", { name: "Skip for now" }).click();
   await expect(
     page.getByRole("heading", { level: 1, name: /^Namaste, / }),
   ).toBeVisible();
