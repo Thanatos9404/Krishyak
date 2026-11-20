@@ -7,6 +7,9 @@ response lists them and says what would make the estimate better.
 """
 
 import asyncio
+import hashlib
+import json
+import logging
 from datetime import timedelta
 from uuid import UUID
 
@@ -17,9 +20,15 @@ from db.models import CropCycle, MarketPrice, utcnow
 from repositories.ownership import owned_plot
 
 from .agronomy import CROP_PLANS, SEASON_RAIN_MM, fertilizer_products, typical_soil
+from .climate import normals, plot_point
 from .crops import BY_ID
+from .farm_context.models import india_today
+from .farm_context.transport import Unavailable
+from .radar import has_consent
 from .router import current_farmer, database, require_consent
+from .yields import district_yield, model_card
 
+LOGGER = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/v2", tags=["Field assessment"])
 SEED_QUALITY = {"certified": 0.8, "hybrid": 0.85, "own_saved": 0.6}
 PEST_LIKELIHOOD = {"high": 0.35, "medium": 0.25, "low": 0.15}
@@ -77,10 +86,21 @@ def price_for(db, crop_id, state, district):
     return None
 
 
-def plan_inputs(crop_id, area, soil_type, soil, water, price, pest_level):
+def season_rain(season, climate):
+    """Normal rain for the season at this place, else a labelled regional assumption."""
+    if climate:
+        if season == "annual":
+            return climate["annual_rain_mm"], "ten_year_normal"
+        # Rabi crops also draw on moisture the monsoon left in the soil.
+        carry = min(120, climate["season_rain_mm"]["kharif"] * 0.15) if season == "rabi" else 0
+        return round(climate["season_rain_mm"][season] + carry), "ten_year_normal"
+    return SEASON_RAIN_MM[season], "regional_assumption"
+
+
+def plan_inputs(crop_id, area, soil_type, soil, water, price, pest_level, rain_mm=None):
     season, days, seed_rate, *_ = CROP_PLANS[crop_id]
     months = round(days / 30, 1)
-    rain = SEASON_RAIN_MM[season] * (0.7 if soil.get("condition") == "dry" else 1)
+    rain = (SEASON_RAIN_MM[season] if rain_mm is None else rain_mm) * (0.7 if soil.get("condition") == "dry" else 1)
     # Irrigations a season (about 60 mm each): winter crops depend on them,
     # monsoon crops need a few to bridge dry spells.
     waterings = {"irrigated": 6 if season == "rabi" else 3, "rainfed": 0}.get(water, 3)
@@ -102,6 +122,46 @@ def plan_inputs(crop_id, area, soil_type, soil, water, price, pest_level):
         "seed_quantity_kg": round(seed_rate * area, 1),
         "season_months": months,
     }
+
+
+def yield_modifier(simulator, params):
+    """The combined farm-practice factor the engine applies to a plan (1.0 is its neutral case)."""
+    result = simulator.yield_estimator.estimate_yield(
+        params["crop"],
+        params["soil_type"],
+        params["seed_quality"],
+        params["expected_rainfall"],
+        params["rainfall_delay"],
+        params["irrigation_frequency"],
+        params["fertilizer_mix"],
+        params["pest_probability"],
+        1.0,
+        baseline_record={"value": 1.0},
+    )
+    return result["modifiers"]["total"]
+
+
+def local_baseline(simulator, crop_id, season, state, district, params, reference):
+    """Anchor the estimate on the district forecast; farm practice moves it by at most 30 %.
+
+    The district figure already reflects typical local soil, rain and
+    management, so the plan is compared with a typical plan for the same place
+    instead of being multiplied on top of it.
+    """
+    record = district_yield(crop_id, season, state, district)
+    if record is None:
+        return None, None
+    typical, mine = yield_modifier(simulator, reference), yield_modifier(simulator, params)
+    ratio = min(1.3, max(0.7, mine / typical)) if typical > 0 and mine > 0 else 1.0
+    baseline = {
+        "value": record["kg_per_hectare"] * ratio / mine if mine > 0 else record["kg_per_hectare"],
+        "source": f"{record['level']} yield forecast ({record['model_id']})",
+        "record_year": record["last_record_year"],
+        "units": "kg/ha",
+        "region": record["level"],
+        "product_basis": "lint" if params["crop"] == "Cotton" else "crop_product",
+    }
+    return baseline, {**record, "farm_adjustment_percent": round((ratio - 1) * 100)}
 
 
 def improved_plan(params):
@@ -146,13 +206,39 @@ def schemes(crop_id, season, soil, water, price):
     return items
 
 
+REPORT_HOURS = 12
+
+
+async def stored_report(request, key):
+    """A report computed earlier today from exactly the same field records, if any."""
+    redis = request.app.state.v2_quotas.redis
+    if redis is None:
+        return None
+    try:
+        raw = await asyncio.to_thread(redis.get, key)
+        return json.loads(raw) if raw else None
+    except Exception as error:  # noqa: BLE001 - the report is recomputed instead
+        LOGGER.warning("Assessment cache read failed type=%s", type(error).__name__)
+        return None
+
+
+async def store_report(request, key, report):
+    redis = request.app.state.v2_quotas.redis
+    if redis is None:
+        return
+    try:
+        await asyncio.to_thread(redis.set, key, json.dumps(report), ex=REPORT_HOURS * 3600)
+    except Exception as error:  # noqa: BLE001
+        LOGGER.warning("Assessment cache write failed type=%s", type(error).__name__)
+
+
+@router.get("/plots/{plot_id}/assessment")
 @router.post("/plots/{plot_id}/assessment")
 async def assess(
     plot_id: UUID, request: Request, farmer=Depends(current_farmer), db=Depends(database, scope="function")
 ):
     plot = owned_plot(db, farmer.id, plot_id)
     require_consent(db, farmer, "agronomic_analysis")
-    request.app.state.v2_quotas.check("assessment", str(farmer.id), 20, 3600)
     cycle = db.scalar(
         select(CropCycle)
         .where(CropCycle.plot_id == plot.id, CropCycle.status.in_(["active", "planned"]))
@@ -176,7 +262,8 @@ async def assess(
 
     pests = PestAnalyzer().get_seasonal_risk(planning_name(cycle.crop_id))
     price = price_for(db, cycle.crop_id, farmer.state, farmer.district)
-    params = plan_inputs(cycle.crop_id, area, soil_type, soil, water, price, pests.get("risk_level"))
+    state, district = farmer.state, farmer.district
+    point = plot_point(plot) if has_consent(db, farmer.id, "location_processing") else None
     candidates = [
         crop_id
         for crop_id, plan in CROP_PLANS.items()
@@ -186,24 +273,77 @@ async def assess(
     for crop_id in candidates:
         alt_price = price_for(db, crop_id, farmer.state, farmer.district)
         if alt_price:
-            alternative_inputs.append(
-                (crop_id, alt_price, plan_inputs(crop_id, area, soil_type, soil, water, alt_price, None))
-            )
+            alternative_inputs.append((crop_id, alt_price))
+    # The same field records give the same report for the rest of the day, so
+    # Home can show it on every visit without recomputing or using up the limit.
+    fingerprint = json.dumps(
+        [
+            str(plot.id),
+            plot.revision,
+            plot.updated_at.isoformat(),
+            str(cycle.id),
+            cycle.revision,
+            cycle.sowing_date.isoformat(),
+            cycle.crop_id,
+            area,
+            soil,
+            water,
+            state,
+            district,
+            price,
+            [x[1] for x in alternative_inputs],
+            point is not None,
+            india_today().isoformat(),
+            (model_card() or {}).get("model_id"),
+        ],
+        sort_keys=True,
+        default=str,
+    )
+    cache_key = "krishyak:assessment:v2:" + hashlib.sha256(fingerprint.encode()).hexdigest()
     db.commit()
+    cached = await stored_report(request, cache_key)
+    if cached:
+        return cached
+    request.app.state.v2_quotas.check("assessment", str(farmer.id), 20, 3600)
+    normal = None
+    if point is not None:
+        try:
+            normal = await normals(request.app.state.v2_farm_context.gateway, *point)
+        except (Unavailable, KeyError, TypeError, ValueError):
+            normal = None
+    rain_mm, rain_source = season_rain(season, normal)
+    params = plan_inputs(cycle.crop_id, area, soil_type, soil, water, price, pests.get("risk_level"), rain_mm)
+    reference = plan_inputs(
+        cycle.crop_id, area, typical_soil(state, district) or soil_type, {}, None, price, "medium", rain_mm
+    )
+    alternative_inputs = [
+        (crop_id, alt_price, plan_inputs(crop_id, area, soil_type, soil, water, alt_price, None, rain_mm))
+        for crop_id, alt_price in alternative_inputs
+    ]
     slots = request.app.state.v2_planning_slots
     if slots.locked():
         raise HTTPException(429, "Many farmers are checking right now. Please retry in a minute.")
     simulator = engine(request)
 
     better_inputs, changes = improved_plan(params)
+    baseline, local = local_baseline(simulator, cycle.crop_id, season, state, district, params, reference)
+
+    def scenario(inputs, kind, record):
+        context = simulator._prepare_context(inputs["crop"])
+        if record is not None:
+            context["baseline"] = record
+        return simulator._simulate_scenario(inputs, kind, context=context)
 
     def run():
-        result = simulator.run_whatif_simulation(params, 300)
-        result["ai_optimal_plan"] = simulator._simulate_scenario(better_inputs, "optimal")
-        others = [
-            (crop_id, alt_price, simulator._simulate_scenario(inputs, "alternative"))
-            for crop_id, alt_price, inputs in alternative_inputs
-        ]
+        result = simulator.run_whatif_simulation(params, 300, baseline_record=baseline)
+        result["ai_optimal_plan"] = scenario(better_inputs, "optimal", baseline)
+        others = []
+        for crop_id, alt_price, inputs in alternative_inputs:
+            other_baseline, other_local = local_baseline(simulator, crop_id, season, state, district, inputs, inputs)
+            # Only compare with crops this district is recorded as growing.
+            if local and local["level"] == "district" and (other_local or {}).get("level") != "district":
+                continue
+            others.append((crop_id, alt_price, scenario(inputs, "alternative", other_baseline)))
         return result, others
 
     async with slots:
@@ -238,7 +378,7 @@ async def assess(
     stats = result["micro_simulations_summary"]
     if soil.get("source") != "soil_test":
         changes.append({"kind": "soil_test"})
-    return {
+    report = {
         "crop_id": cycle.crop_id,
         "season": season,
         "area_hectares": round(area, 3),
@@ -254,6 +394,7 @@ async def assess(
                 round(stats["profit_stats"]["percentile_75"]),
             ],
             "chance_of_profit_percent": round(stats["probability_of_profit"]),
+            "basis": local,
         },
         "price": price,
         "inputs": {
@@ -284,9 +425,15 @@ async def assess(
         "schemes": schemes(cycle.crop_id, season, soil, water, price),
         "assumptions": {
             "water_mm": params["expected_rainfall"],
+            "season_rain_mm": rain_mm,
+            "season_rain_source": rain_source,
             "seed_quality": params["seed_quality"],
             "pest_likelihood": params["pest_probability"],
-            "method": "heuristic_estimate_not_validated_prediction",
+            "method": "district_yield_model_with_farm_adjustments"
+            if local
+            else "heuristic_estimate_not_validated_prediction",
         },
         "generated_at": utcnow().isoformat(),
     }
+    await store_report(request, cache_key, report)
+    return report

@@ -18,6 +18,7 @@ ENDPOINTS = {
     "nominatim": "https://nominatim.openstreetmap.org/reverse",
     "nominatim_search": "https://nominatim.openstreetmap.org/search",
     "open_meteo": "https://api.open-meteo.com/v1/forecast",
+    "open_meteo_archive": "https://archive-api.open-meteo.com/v1/archive",
     "imd": "https://api.imd.gov.in/api/v1/cityforecastloc",
     "soilgrids": "https://rest.isric.org/soilgrids/v2.0/properties/query",
     "bhuvan": "https://bhuvan-vec2.nrsc.gov.in/bhuvan/wms",

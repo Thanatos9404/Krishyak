@@ -52,6 +52,9 @@ class Farmer(Record, Base):
     district_code: Mapped[int | None] = mapped_column(Integer)
     subdistrict: Mapped[str | None] = mapped_column(String(100))
     pin_code: Mapped[str | None] = mapped_column(String(6))
+    # Asked once at registration; shapes advice (for example organic farmers).
+    farming_kind: Mapped[str | None] = mapped_column(String(30))
+    farming_method: Mapped[str | None] = mapped_column(String(30))
     timezone: Mapped[str] = mapped_column(String(50), default="Asia/Kolkata")
     status: Mapped[str] = mapped_column(String(20), default="active")
     role: Mapped[str] = mapped_column(String(30), default="farmer")
