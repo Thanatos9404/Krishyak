@@ -74,8 +74,9 @@ class ModelLoadingTests(unittest.TestCase):
                 return inference.release_decision()
         self.assertEqual(rule(None), inference.DEFAULT_DECISION)
         self.assertEqual(rule({'threshold':.62,'crop_conditioned':True,'crop_mass_min':.3}),
-                         {'threshold':.62,'crop_conditioned':True,'crop_mass_min':.3})
+                         {'threshold':.62,'crop_conditioned':True,'crop_mass_min':.3,'mirror_averaging':False})
+        self.assertTrue(rule({'threshold':.7,'mirror_averaging':True})['mirror_averaging'])
         for bad in [{'threshold':.1}, {'threshold':'high'}, {'threshold':.7,'crop_mass_min':2},
-                    {'threshold':.7,'crop_conditioned':'yes'}]:
+                    {'threshold':.7,'crop_conditioned':'yes'}, {'threshold':.7,'mirror_averaging':1}]:
             with self.subTest(bad=bad), self.assertRaises(ValueError):
                 rule(bad)

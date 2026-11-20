@@ -29,7 +29,8 @@ CLASS_INDICES_PATH = str(bundle / 'class_indices.json')
 IMG_SIZE = (224, 224)  # default; the loaded model's own input size is used at run time
 # How a release turns scores into an answer. A release may override these in release.json
 # under "decision"; the values there are chosen on validation photographs only.
-DEFAULT_DECISION = {'threshold': 0.75, 'crop_conditioned': False, 'crop_mass_min': 0.0}
+DEFAULT_DECISION = {'threshold': 0.75, 'crop_conditioned': False, 'crop_mass_min': 0.0,
+                    'mirror_averaging': False}
 
 # Global model cache
 _model = None
@@ -361,10 +362,12 @@ def release_decision() -> dict:
         threshold, mass = stated.get('threshold'), stated.get('crop_mass_min', 0.0)
         if (not isinstance(threshold, (int, float)) or not 0.3 <= threshold <= 0.99
                 or not isinstance(mass, (int, float)) or not 0 <= mass <= 0.9
-                or not isinstance(stated.get('crop_conditioned', False), bool)):
+                or not isinstance(stated.get('crop_conditioned', False), bool)
+                or not isinstance(stated.get('mirror_averaging', False), bool)):
             raise ValueError('Release decision rule is not valid')
         decision.update(threshold=float(threshold), crop_mass_min=float(mass),
-                        crop_conditioned=stated.get('crop_conditioned', False))
+                        crop_conditioned=stated.get('crop_conditioned', False),
+                        mirror_averaging=stated.get('mirror_averaging', False))
     return decision
 
 
@@ -444,6 +447,11 @@ def predict_from_image(image_data: bytes, crop_type: str = None) -> dict:
 
     try:
         predictions = np.asarray(model.predict(img_array, verbose=0))
+        if (_decision or DEFAULT_DECISION).get('mirror_averaging'):
+            # A leaf and its mirror image show the same condition; averaging the two answers
+            # steadies the result. The release was evaluated with the same rule.
+            mirrored = np.ascontiguousarray(img_array[:, :, ::-1, :])
+            predictions = (predictions + np.asarray(model.predict(mirrored, verbose=0))) / 2
         if (predictions.shape != (1, len(class_indices))
                 or not np.all(np.isfinite(predictions))
                 or np.any(predictions < 0) or np.any(predictions > 1)

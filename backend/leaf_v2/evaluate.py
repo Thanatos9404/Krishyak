@@ -159,28 +159,66 @@ def choose_threshold(truth, probabilities, mass=None):
     return 0.99
 
 
-def predict(model, rows, cache, size):
+def predict(model, rows, cache, size, tta=False):
     if not rows:
         return np.zeros((0, model.output_shape[-1]), np.float32)
-    return model.predict(eval_dataset(rows, cache, size, 48), verbose=0)
+    scores = model.predict(eval_dataset(rows, cache, size, 48), verbose=0)
+    if tta:
+        # The same photograph mirrored; the two answers are averaged, as the API does.
+        mirrored = eval_dataset(rows, cache, size, 48).map(tf.image.flip_left_right)
+        scores = (scores + model.predict(mirrored, verbose=0)) / 2
+    return scores
+
+
+def sample(rows, count, seed=5):
+    order = np.random.default_rng(seed).permutation(len(rows))[:count]
+    return [rows[i] for i in order]
+
+
+def block(truth, raw, labels, threshold, detail=False):
+    conditioned, mass = condition(raw, truth, labels, with_mass=True)
+    return {
+        "all_classes": summary(truth, raw, labels),
+        "crop_conditioned": summary(truth, conditioned, labels, detail=detail),
+        "per_crop_conditioned": per_crop(truth, conditioned.argmax(axis=1), labels),
+        "calibration_error_conditioned": calibration_error(truth, conditioned),
+        "answering_at_threshold": selective(truth, conditioned, threshold, mass),
+        "answering_at_0.75": selective(truth, conditioned, 0.75, mass),
+        "offered_under_another_crop": wrong_crop(raw, truth, labels, threshold),
+    }
+
+
+REPORTED = ("field_test", "india_farm_test", "india_unseen_farms", "studio_test", "external_plantdoc_test")
+FIT = ("train_field_sample", "validation_field", "field_test", "train_studio_sample", "studio_test")
 
 
 def evaluate(args):
     rows, labels = load_manifest(args.run)
     model = tf.keras.models.load_model(args.model, compile=False)
     size = model.input_shape[1]
+    field = [r for r in rows if r["domain"] != "lab"]
     groups = {
-        "validation_field": [r for r in rows if r["split"] == "validation" and r["domain"] != "lab"],
-        "field_test": [r for r in rows if r["split"] == "test" and r["domain"] != "lab"],
+        "validation_field": [r for r in field if r["split"] == "validation"],
+        "field_test": [r for r in field if r["split"] == "test"],
         "studio_test": [r for r in rows if r["split"] == "test" and r["domain"] == "lab"],
         "external_plantdoc_test": [r for r in rows if r["split"] == "external_test"],
+        # Photographs taken on Indian farms: held-out photographs of sources the model trains on,
+        # and whole sources it never sees.
+        "india_farm_test": [r for r in rows if r["split"] == "test" and r.get("india_farm")],
+        "india_unseen_farms": [r for r in rows if r["split"] == "external_india" and r.get("india_farm")],
+        # Unaugmented training photographs, to compare with held-out ones.
+        "train_field_sample": sample([r for r in field if r["split"] == "train"], 4000),
+        "train_studio_sample": sample([r for r in rows if r["split"] == "train" and r["domain"] == "lab"], 2000),
     }
+    for source in args.unseen_sources or []:
+        # Every photograph of a source this model was never trained on, whatever split it now has.
+        groups[f"unseen_source_{source}"] = [r for r in rows if r["source"] == source]
     by_source = defaultdict(list)
     for row in rows:
         if row["split"] == "test":
             by_source[row["source"]].append(row)
-    outputs = {name: predict(model, members, args.cache, size) for name, members in groups.items()}
-    truths = {name: np.array([r["y"] for r in members]) for name, members in groups.items()}
+    outputs = {name: predict(model, members, args.cache, size, args.tta) for name, members in groups.items()}
+    truths = {name: np.array([r["y"] for r in members], dtype=int) for name, members in groups.items()}
 
     validation, validation_mass = condition(
         outputs["validation_field"], truths["validation_field"], labels, with_mass=True
@@ -189,6 +227,7 @@ def evaluate(args):
     report = {
         "model": str(args.model),
         "input_size": size,
+        "mirror_averaging": bool(args.tta),
         "classes": len(labels),
         "crops": sorted({crop_of(name) for name in labels}),
         "threshold": {
@@ -199,24 +238,31 @@ def evaluate(args):
         },
         "sets": {},
     }
-    for name in ("field_test", "studio_test", "external_plantdoc_test"):
-        truth, raw = truths[name], outputs[name]
-        if not len(truth):
-            continue
-        conditioned, mass = condition(raw, truth, labels, with_mass=True)
-        report["sets"][name] = {
-            "all_classes": summary(truth, raw, labels),
-            "crop_conditioned": summary(truth, conditioned, labels, detail=name != "studio_test"),
-            "per_crop_conditioned": per_crop(truth, conditioned.argmax(axis=1), labels),
-            "calibration_error_conditioned": calibration_error(truth, conditioned),
-            "answering_at_threshold": selective(truth, conditioned, threshold, mass),
-            "answering_at_0.75": selective(truth, conditioned, 0.75, mass),
-            "offered_under_another_crop": wrong_crop(raw, truth, labels, threshold),
-        }
+    reported = [*REPORTED, *(name for name in groups if name.startswith("unseen_source_"))]
+    for name in reported:
+        if len(truths[name]):
+            report["sets"][name] = block(truths[name], outputs[name], labels, threshold, detail=name != "studio_test")
+    # Does the model do much better on photographs it trained on than on ones it did not?
+    fit = {}
+    for name in FIT:
+        entry = summary(truths[name], condition(outputs[name], truths[name], labels), labels)
+        fit[name] = {k: entry[k] for k in ("samples", "accuracy", "macro_f1")}
+    report["fit"] = fit | {
+        "field_gap_train_minus_test_accuracy": round(
+            fit["train_field_sample"]["accuracy"] - fit["field_test"]["accuracy"], 4
+        ),
+        "field_gap_validation_minus_test_accuracy": round(
+            fit["validation_field"]["accuracy"] - fit["field_test"]["accuracy"], 4
+        ),
+        "studio_gap_train_minus_test_accuracy": round(
+            fit["train_studio_sample"]["accuracy"] - fit["studio_test"]["accuracy"], 4
+        ),
+        "note": "Crop selected; training photographs are scored without augmentation.",
+    }
     report["by_source_test"] = {}
     for source, members in sorted(by_source.items()):
         truth = np.array([r["y"] for r in members])
-        raw = predict(model, members, args.cache, size)
+        raw = predict(model, members, args.cache, size, args.tta)
         report["by_source_test"][source] = {
             "all_classes": summary(truth, raw, labels),
             "crop_conditioned": summary(truth, condition(raw, truth, labels), labels),
@@ -228,42 +274,50 @@ def evaluate(args):
         old_labels = [old_labels_map[str(i)] for i in range(len(old_labels_map))]
         shared = [name for name in old_labels if name in labels]
         report["previous_release"] = {"model": str(args.baseline), "classes": len(old_labels), "sets": {}}
-        for name in ("field_test", "external_plantdoc_test", "studio_test"):
+        for name in reported:
             members = [r for r in groups[name] if r["label"] in shared]
             if not members:
                 continue
             truth_old = np.array([old_labels.index(r["label"]) for r in members])
             truth_new = np.array([r["y"] for r in members])
             old_raw = predict(old, members, args.cache, old.input_shape[1])
-            new_raw = predict(model, members, args.cache, size)
+            new_raw = predict(model, members, args.cache, size, args.tta)
+            old_conditioned, old_mass = condition(old_raw, truth_old, old_labels, with_mass=True)
+            new_conditioned, new_mass = condition(new_raw, truth_new, labels, with_mass=True)
             report["previous_release"]["sets"][name] = {
                 "photographs_both_models_can_label": len(members),
                 "previous": {
                     "all_classes": summary(truth_old, old_raw, old_labels),
-                    "crop_conditioned": summary(truth_old, condition(old_raw, truth_old, old_labels), old_labels),
-                    "answering_at_0.75": selective(truth_old, condition(old_raw, truth_old, old_labels), 0.75),
+                    "crop_conditioned": summary(truth_old, old_conditioned, old_labels),
+                    "answering_at_0.75": selective(truth_old, old_conditioned, 0.75, old_mass),
                 },
                 "new": {
                     "all_classes": summary(truth_new, new_raw, labels),
-                    "crop_conditioned": summary(truth_new, condition(new_raw, truth_new, labels), labels),
-                    "answering_at_threshold": selective(
-                        truth_new, *condition(new_raw, truth_new, labels, with_mass=True)[:1], threshold,
-                        condition(new_raw, truth_new, labels, with_mass=True)[1],
-                    ),
+                    "crop_conditioned": summary(truth_new, new_conditioned, labels),
+                    "answering_at_0.75": selective(truth_new, new_conditioned, 0.75, new_mass),
                 },
             }
     output = Path(args.output or Path(args.model).parent / "evaluation.json")
     output.write_text(json.dumps(report, indent=2))
-    brief = {name: {mode: {k: entry[mode][k] for k in ("samples", "accuracy", "macro_f1", "macro_recall")}
-                    for mode in ("all_classes", "crop_conditioned")} for name, entry in report["sets"].items()}
-    print(json.dumps({"threshold": threshold, **brief}, indent=1))
     for name, entry in report["sets"].items():
-        print(name, "answers:", entry["answering_at_threshold"], "other crop:", entry["offered_under_another_crop"])
+        cond, every = entry["crop_conditioned"], entry["all_classes"]
+        print(
+            f"{name}: n={cond['samples']} crop-selected acc={cond['accuracy']} P={cond['macro_precision']} "
+            f"R={cond['macro_recall']} F1={cond['macro_f1']} | all-classes acc={every['accuracy']} | "
+            f"at 0.75: {entry['answering_at_0.75']}"
+        )
+    print("fit:", json.dumps(report["fit"]))
+    for source, entry in report["by_source_test"].items():
+        cond = entry["crop_conditioned"]
+        print("  source", source, cond["samples"], cond["accuracy"], cond["macro_f1"])
     if args.baseline:
         for name, entry in report["previous_release"]["sets"].items():
-            print("like-for-like", name, entry["photographs_both_models_can_label"],
-                  "previous", entry["previous"]["crop_conditioned"]["accuracy"], entry["previous"]["crop_conditioned"]["macro_f1"],
-                  "new", entry["new"]["crop_conditioned"]["accuracy"], entry["new"]["crop_conditioned"]["macro_f1"])
+            print(
+                "like-for-like", name, entry["photographs_both_models_can_label"],
+                "previous", entry["previous"]["crop_conditioned"]["accuracy"],
+                entry["previous"]["crop_conditioned"]["macro_f1"],
+                "new", entry["new"]["crop_conditioned"]["accuracy"], entry["new"]["crop_conditioned"]["macro_f1"],
+            )
     print("EVALUATION_DONE", output)
 
 
@@ -275,6 +329,8 @@ if __name__ == "__main__":
     parser.add_argument("--baseline", type=Path)
     parser.add_argument("--baseline-labels", type=Path)
     parser.add_argument("--output", type=Path)
+    parser.add_argument("--tta", action="store_true", help="average each photograph with its mirror image")
+    parser.add_argument("--unseen-sources", nargs="*", help="sources this model never trained on; scored in full")
     for gpu in tf.config.list_physical_devices("GPU"):
         tf.config.experimental.set_memory_growth(gpu, True)
     evaluate(parser.parse_args())

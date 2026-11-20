@@ -127,17 +127,18 @@ def eval_dataset(rows, cache, size, batch):
     return data.map(lambda p: decode(p, size, False), AUTOTUNE).batch(batch).prefetch(AUTOTUNE)
 
 
-def sampling_weights(rows):
-    """Balance classes (square-root damped) and give field photographs three times the pull of studio ones."""
+def sampling_weights(rows, field_weight=3.0):
+    """Balance classes (square-root damped) and give field photographs more pull than studio ones."""
     counts = Counter(row["y"] for row in rows)
     weights = np.array(
-        [(1.0 / math.sqrt(counts[row["y"]])) * (3.0 if row["domain"] == "field" else 1.0) for row in rows], np.float64
+        [(1.0 / math.sqrt(counts[row["y"]])) * (field_weight if row["domain"] == "field" else 1.0) for row in rows],
+        np.float64,
     )
     return weights / weights.sum()
 
 
-def train_dataset(rows, cache, size, batch, classes, seed=7):
-    weights = sampling_weights(rows)
+def train_dataset(rows, cache, size, batch, classes, seed=7, field_weight=3.0):
+    weights = sampling_weights(rows, field_weight)
     paths = np.array([str(cache / row["cache"]) for row in rows])
     targets = np.array([row["y"] for row in rows], np.int32)
     rng = np.random.default_rng(seed)
@@ -217,9 +218,12 @@ def probe(args):
 class FieldValidation(tf.keras.callbacks.Callback):
     """Scores field and studio validation photographs each epoch; keeps the best weights by field macro-F1."""
 
-    def __init__(self, field, lab, cache, size, classes, path, history):
+    def __init__(self, field, lab, cache, size, classes, path, history, train_field=None):
         super().__init__()
         self.sets = {"field": field, "lab": lab}
+        if train_field:
+            # Not used to choose anything: it only shows how far training runs ahead of validation.
+            self.sets["train_field"] = train_field
         self.data = {k: eval_dataset(v, cache, size, 64) for k, v in self.sets.items()}
         self.truth = {k: np.array([r["y"] for r in v]) for k, v in self.sets.items()}
         self.classes, self.path, self.history, self.best = classes, path, history, -1.0
@@ -249,15 +253,16 @@ def finetune(args):
     print(f"finetune {args.backbone}@{args.size}: {len(train)} train, {len(field_valid)} field-val, {classes} classes", flush=True)
 
     inputs, pooled, base = backbone(args.backbone, args.size)
-    x = tf.keras.layers.Dropout(0.3)(pooled)
+    x = tf.keras.layers.Dropout(args.dropout)(pooled)
     logits = tf.keras.layers.Dense(classes, name="logits")(x)
     outputs = tf.keras.layers.Activation("softmax", dtype="float32", name="probabilities")(logits)
     model = tf.keras.Model(inputs, outputs)
-    data = train_dataset(train, args.cache, args.size, args.batch, classes)
-    loss = tf.keras.losses.CategoricalCrossentropy(label_smoothing=0.1)
+    data = train_dataset(train, args.cache, args.size, args.batch, classes, field_weight=args.field_weight)
+    loss = tf.keras.losses.CategoricalCrossentropy(label_smoothing=args.smoothing)
     history = []
     weights = str(out / "best.weights.h5")
-    monitor = FieldValidation(field_valid, lab_valid, args.cache, args.size, classes, weights, history)
+    train_field = subset(rows, "train", 25, "field", seed=9)
+    monitor = FieldValidation(field_valid, lab_valid, args.cache, args.size, classes, weights, history, train_field)
 
     # Stage 1: only the new classifier learns, so random gradients do not wreck the pretrained features.
     base.trainable = False
@@ -274,14 +279,16 @@ def finetune(args):
             layer.trainable = False
     total = args.steps * args.epochs
     schedule = tf.keras.optimizers.schedules.CosineDecay(1e-5, total, alpha=0.02, warmup_target=args.lr, warmup_steps=args.steps)
-    model.compile(tf.keras.optimizers.AdamW(schedule, weight_decay=5e-5, clipnorm=1.0), loss, jit_compile=False)
+    model.compile(
+        tf.keras.optimizers.AdamW(schedule, weight_decay=args.weight_decay, clipnorm=1.0), loss, jit_compile=False
+    )
     model.fit(data, steps_per_epoch=args.steps, epochs=args.epochs, callbacks=[stop, monitor], verbose=2)
 
     model.load_weights(weights)
     tf.keras.mixed_precision.set_global_policy("float32")
     # Rebuild in float32 for export and copy the trained weights across.
     inputs, pooled, base = backbone(args.backbone, args.size)
-    logits = tf.keras.layers.Dense(classes, name="logits")(tf.keras.layers.Dropout(0.3)(pooled))
+    logits = tf.keras.layers.Dense(classes, name="logits")(tf.keras.layers.Dropout(args.dropout)(pooled))
     final = tf.keras.Model(inputs, tf.keras.layers.Activation("softmax", name="probabilities")(logits))
     final.set_weights(model.get_weights())
     final.save(out / "model.keras")
@@ -290,8 +297,10 @@ def finetune(args):
         "backbone": args.backbone, "input_size": args.size, "classes": classes, "train_images": len(train),
         "batch": args.batch, "steps_per_epoch": args.steps, "warmup_epochs": args.warmup, "epochs": args.epochs,
         "peak_learning_rate": args.lr, "selection": "best field-validation macro-F1", "best_field_macro_f1": monitor.best,
+        "dropout": args.dropout, "label_smoothing": args.smoothing, "weight_decay": args.weight_decay,
+        "field_weight": args.field_weight,
         "augmentation": "random crop 30-100%, flips, 90-degree turns, brightness, contrast, saturation, hue, JPEG 35-100, blur, mixup 0.2",
-        "sampling": "inverse square-root class frequency; field images weighted 3x studio images",
+        "sampling": f"inverse square-root class frequency; field images weighted {args.field_weight:g}x studio images",
         "history": history,
     }, indent=2))
     print("FINETUNE_DONE", monitor.best, flush=True)
@@ -310,6 +319,10 @@ if __name__ == "__main__":
     parser.add_argument("--warmup", type=int, default=2)
     parser.add_argument("--epochs", type=int, default=14)
     parser.add_argument("--lr", type=float, default=3e-4)
+    parser.add_argument("--dropout", type=float, default=0.3)
+    parser.add_argument("--smoothing", type=float, default=0.1)
+    parser.add_argument("--weight-decay", type=float, default=5e-5)
+    parser.add_argument("--field-weight", type=float, default=3.0)
     arguments = parser.parse_args()
     for gpu in tf.config.list_physical_devices("GPU"):
         tf.config.experimental.set_memory_growth(gpu, True)

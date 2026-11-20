@@ -173,6 +173,42 @@ PLANTWILD = {
     "tomato yellow leaf curl virus": "Tomato___Tomato_Yellow_Leaf_Curl_Virus",
 }
 
+# Photographs taken on Indian farms, with a documented place of collection.
+RICE_ODISHA = {  # Sethy et al. 2020, Sambalpur University, western Odisha (Mendeley fwcj7stb8r, CC BY 4.0)
+    "Bacterialblight": "Rice___Bacterial_leaf_blight",
+    "Blast": "Rice___Blast",
+    "Brownspot": "Rice___Brown_spot",
+    "Tungro": "Rice___Tungro",
+}
+COTTON_PUNE = {  # Cotton Leaf Disease Dataset with Severity Levels, Pune (Mendeley 74jsdxtmx2, CC BY 4.0)
+    "bacterial blight": "Cotton___Bacterial_blight",
+    "curl virus": "Cotton___Leaf_curl_virus",
+    "healthy": "Cotton___healthy",
+}
+# Crop Leaf Disease Image Dataset (Jalgaon Region), Maharashtra (Kaggle krishnx09). Only its cotton
+# photographs are used: its 100 maize images are copies of PlantVillage studio images.
+JALGAON = {
+    "Cotton_Bacterial_Blight": "Cotton___Bacterial_blight",
+    "Cotton_Healthy": "Cotton___healthy",
+}
+APPLE_KASHMIR = {  # D-KAP, orchards of the Kashmir valley (Kaggle hsmcaju/d-kap, DbCL 1.0)
+    "SCAB LEAVES": "Apple___Apple_scab",
+    "HEALTHY LEAVES": "Apple___healthy",
+}
+# Where each Indian farm source was photographed. PlantDoc was assembled in India from web
+# images of unknown origin, so it is not counted as Indian farm photographs.
+INDIA_FARM_SOURCES = {
+    "PaddyDoctor": "Tirunelveli, Tamil Nadu",
+    "TomatoVillage": "Jodhpur and Jaipur, Rajasthan",
+    "SugarcaneLeaf": "Maharashtra",
+    "RiceOdisha": "western Odisha",
+    "CottonPune": "Pune, Maharashtra",
+    "Jalgaon": "Jalgaon, Maharashtra",
+    "AppleKashmir": "Kashmir valley",
+}
+# Small Indian sets kept entirely out of training, validation and model selection.
+UNSEEN_INDIA = "external_india"
+
 
 def canonical(text):
     return re.sub(r"[^a-z0-9]+", " ", text.lower()).strip()
@@ -213,6 +249,21 @@ def candidates(root):
         label = WHEAT_PLANT.get(name)
         if label:
             yield path, label, "WheatPlantDiseases", "field", None
+    india = root / "india"
+    for path in images(india / "rice-odisha-sethy"):
+        if path.parent.name in RICE_ODISHA:
+            yield path, RICE_ODISHA[path.parent.name], "RiceOdisha", "field", None
+    for path in images(india / "cotton-pune-severity"):
+        # Folders are condition/severity for diseases and a single folder for healthy leaves.
+        condition = path.parent.name if path.parent.name in COTTON_PUNE else path.parent.parent.name
+        if condition in COTTON_PUNE:
+            yield path, COTTON_PUNE[condition], "CottonPune", "field", None
+    for path in images(india / "jalgaon-region"):
+        if path.parent.name in JALGAON:
+            yield path, JALGAON[path.parent.name], "Jalgaon", "field", UNSEEN_INDIA
+    for path in images(india / "apple-kashmir-dkap"):
+        if path.parent.name in APPLE_KASHMIR:
+            yield path, APPLE_KASHMIR[path.parent.name], "AppleKashmir", "field", UNSEEN_INDIA
     wild = {canonical(name): label for name, label in PLANTWILD.items()}
     for path in images(root / "field/plantwild-dataset-ready-for-preprocessing"):
         label = wild.get(canonical(path.parent.name))
@@ -308,13 +359,30 @@ def build(datasets, cache, output, workers):
     labels_of = defaultdict(set)
     for row in records:
         labels_of[row["pixel_hash"]].add(row["label"])
+    # How many photographs of each source were already present under another source name.
+    first_source = {}
+    for row in records:
+        first_source.setdefault(row["pixel_hash"], row["source"])
+    overlap = Counter(
+        f"{row['source']} already in {first_source[row['pixel_hash']]}"
+        for row in records
+        if first_source[row["pixel_hash"]] != row["source"]
+    )
     kept, duplicates, conflicts = [], 0, 0
     for group, members in groups.items():
         clean = [r for r in members if len(labels_of[r["pixel_hash"]]) == 1]
         conflicts += len(members) - len(clean)
         if not clean:
             continue
-        split = "external_test" if any(r["forced"] == "external_test" for r in clean) else stable_split(group)
+        # A reserved photograph pulls every copy of itself out of training.
+        forced = {r["forced"] for r in clean} - {None}
+        split = (
+            "external_test"
+            if "external_test" in forced
+            else UNSEEN_INDIA
+            if UNSEEN_INDIA in forced
+            else stable_split(group)
+        )
         unique = set()
         for row in clean:
             if row["pixel_hash"] in unique:
@@ -322,6 +390,7 @@ def build(datasets, cache, output, workers):
                 continue
             unique.add(row["pixel_hash"])
             row["split"] = split
+            row["india_farm"] = row["source"] in INDIA_FARM_SOURCES
             row.pop("forced")
             row.pop("pixel_hash")
             kept.append(row)
@@ -338,15 +407,21 @@ def build(datasets, cache, output, workers):
         "unreadable_or_tiny": len(rejected),
         "classes_dropped_for_too_few_images": dropped,
         "by_source_and_split": dict(sorted(Counter(f"{r['source']}/{r['split']}" for r in kept).items())),
+        "india_farm_sources": INDIA_FARM_SOURCES,
+        "india_farm_images_by_split": dict(Counter(r["split"] for r in kept if r["india_farm"])),
+        "same_photograph_in_two_sources": dict(overlap.most_common(20)),
         "by_label_and_split": {
             label: dict(Counter(r["split"] for r in kept if r["label"] == label)) for label in labels
         },
         "split_policy": "72/12/16 deterministic split of duplicate groups (exact pixels at 64 px and 64-bit difference hash); "
-        "the published PlantDoc test partition is reserved as the external field test",
+        "the published PlantDoc test partition is reserved as the external field test, and the Jalgaon and "
+        "Kashmir sets are reserved whole as Indian farm photographs the model never trains on",
         "limits": [
             "Hash grouping removes copies, not different photographs of the same plant or field.",
             "legacy_unverified images have no established source or licence and are reported separately.",
             "Field sources come from India, Bangladesh, Ethiopia and web collections; none is a planned sample of Indian farms.",
+            "No public Indian farm set was found for wheat, potato or maize diseases beyond the small Jalgaon set.",
+            "The Odisha rice set is made of close crops; crops of the same leaf may fall on both sides of a split.",
         ],
     }
     output.mkdir(parents=True, exist_ok=True)

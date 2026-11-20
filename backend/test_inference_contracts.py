@@ -143,3 +143,21 @@ class CropConditionedDecision(unittest.TestCase):
         result, _ = self.run_model([.35, .05, .6], 'banana')
         self.assertEqual(result['status'], 'uncertain')
         self.assertIn('not supported', result['message'])
+
+    def test_mirror_averaging_scores_the_photograph_and_its_mirror(self):
+        rule = {'threshold': 0.6, 'crop_conditioned': True, 'crop_mass_min': 0.3, 'mirror_averaging': True}
+        stream = io.BytesIO()
+        with Image.new('RGB', (8, 8), 'green') as image:
+            image.paste('red', (0, 0, 4, 8))
+            image.save(stream, format='PNG')
+        model = Mock(input_shape=(None, 8, 8, 3))
+        model.predict.side_effect = [np.array([[.9, .05, .05]]), np.array([[.5, .45, .05]])]
+        with patch('model_inference._decision', rule), \
+                patch('model_inference.load_model', return_value=(model, self.labels)):
+            result = predict_from_image(stream.getvalue(), 'apple')
+        self.assertEqual(model.predict.call_count, 2)
+        first, second = (call.args[0] for call in model.predict.call_args_list)
+        np.testing.assert_array_equal(second, first[:, :, ::-1, :])
+        self.assertFalse(np.array_equal(first, second))
+        # (0.9 + 0.5) / 2 = 0.7 of 0.95 on apple classes.
+        self.assertAlmostEqual(result['disease']['confidence'], .7 / .95, places=5)
