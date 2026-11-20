@@ -92,3 +92,54 @@ class InferenceOutputContracts(unittest.TestCase):
         values = model.predict.call_args.args[0]
         self.assertEqual(values.dtype, np.float32)
         self.assertEqual(values.shape, (1, 224, 224, 3))
+
+
+class CropConditionedDecision(unittest.TestCase):
+    """A release may answer only among the selected crop's conditions, with its own threshold."""
+
+    def setUp(self):
+        stream = io.BytesIO()
+        Image.new('RGB', (8, 8), 'green').save(stream, format='PNG')
+        self.image = stream.getvalue()
+        self.labels = {'0': 'Apple___Apple_scab', '1': 'Apple___healthy', '2': 'Rice___Blast'}
+        rule = {'threshold': 0.6, 'crop_conditioned': True, 'crop_mass_min': 0.3}
+        patcher = patch('model_inference._decision', rule)
+        patcher.start()
+        self.addCleanup(patcher.stop)
+
+    def run_model(self, scores, crop, shape=(None, 288, 288, 3)):
+        model = Mock(input_shape=shape)
+        model.predict.return_value = np.array([scores])
+        with patch('model_inference.load_model', return_value=(model, self.labels)):
+            return predict_from_image(self.image, crop), model
+
+    def test_only_the_selected_crops_conditions_compete(self):
+        result, model = self.run_model([.35, .05, .6], 'apple')
+        self.assertEqual(result['status'], 'disease_detected')
+        self.assertEqual(result['disease']['name'], 'Apple___Apple_scab')
+        self.assertAlmostEqual(result['disease']['confidence'], .875, places=5)
+        self.assertEqual([row['class'] for row in result['top_predictions']],
+                         ['Apple___Apple_scab', 'Apple___healthy'])
+        # The photograph is resized to the model's own input size.
+        self.assertEqual(model.predict.call_args.args[0].shape, (1, 288, 288, 3))
+
+    def test_a_photograph_that_is_mostly_another_crop_gets_no_answer(self):
+        result, _ = self.run_model([.1, .1, .8], 'apple')
+        self.assertEqual(result['status'], 'uncertain')
+        self.assertIn('does not match the selected crop', result['message'])
+        self.assertIsNone(result['disease'])
+
+    def test_a_close_call_inside_the_crop_gets_no_answer(self):
+        result, _ = self.run_model([.3, .3, .4], 'apple')
+        self.assertEqual(result['status'], 'uncertain')
+        self.assertIn('uncertain', result['message'])
+
+    def test_without_a_selected_crop_every_class_competes(self):
+        result, _ = self.run_model([.35, .05, .6], None)
+        self.assertEqual(result['status'], 'disease_detected')
+        self.assertEqual(result['disease']['name'], 'Rice___Blast')
+
+    def test_an_unsupported_crop_is_refused_before_any_class_is_named(self):
+        result, _ = self.run_model([.35, .05, .6], 'banana')
+        self.assertEqual(result['status'], 'uncertain')
+        self.assertIn('not supported', result['message'])

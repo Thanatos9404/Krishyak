@@ -26,11 +26,15 @@ _use_litert = _runtime == 'litert' or (_runtime == 'auto' and (
     os.getenv('VERCEL') == '1' or importlib.util.find_spec('tensorflow') is None))
 MODEL_PATH = str(bundle / ('model.tflite' if _use_litert else 'model.keras'))
 CLASS_INDICES_PATH = str(bundle / 'class_indices.json')
-IMG_SIZE = (224, 224)
+IMG_SIZE = (224, 224)  # default; the loaded model's own input size is used at run time
+# How a release turns scores into an answer. A release may override these in release.json
+# under "decision"; the values there are chosen on validation photographs only.
+DEFAULT_DECISION = {'threshold': 0.75, 'crop_conditioned': False, 'crop_mass_min': 0.0}
 
 # Global model cache
 _model = None
 _class_indices = None
+_decision = None
 _load_lock = Lock()
 
 # Disease metadata for treatment recommendations
@@ -290,24 +294,24 @@ class LiteRTClassifier:
 
 def load_model():
     """Load the trained model and class indices"""
-    global _model, _class_indices, tf, keras
-    
+    global _model, _class_indices, _decision, tf, keras
+
     if _model is not None:
         return _model, _class_indices
-    
+
     # Check if model exists
     if not os.path.exists(MODEL_PATH):
         raise FileNotFoundError(
             f"Model not found at {MODEL_PATH}. "
             "Please train the model first using: python train_model.py"
         )
-    
+
     if not os.path.exists(CLASS_INDICES_PATH):
         raise FileNotFoundError(
             f"Class indices not found at {CLASS_INDICES_PATH}. "
             "Please train the model first."
         )
-    
+
     print("Loading plant disease detection model...")
     with _load_lock:
         if _model is None:
@@ -334,13 +338,41 @@ def load_model():
             if (not isinstance(candidate.output_shape, tuple) or len(candidate.output_shape) != 2
                     or candidate.output_shape[-1] != len(labels)):
                 raise ValueError('Model output and class map do not match')
-            if not isinstance(candidate.input_shape, tuple) or len(candidate.input_shape) != 4 or candidate.input_shape[1:] != (224, 224, 3):
-                raise ValueError('Expected a 224x224 RGB image model')
+            shape = candidate.input_shape
+            if (not isinstance(shape, tuple) or len(shape) != 4 or shape[3] != 3 or shape[1] != shape[2]
+                    or not isinstance(shape[1], (int, np.integer)) or not 96 <= shape[1] <= 640):
+                raise ValueError('Expected a square RGB image model')
+            _decision = release_decision()
             _class_indices = labels
             _model = candidate
-    
+
     print(f"Model loaded successfully. {len(_class_indices)} classes available.")
     return _model, _class_indices
+
+
+def release_decision() -> dict:
+    """Decision rule of the selected release, validated; older releases use the defaults."""
+    decision = dict(DEFAULT_DECISION)
+    try:
+        stated = json.loads((Path(MODEL_PATH).parent / 'release.json').read_text(encoding='utf-8')).get('decision') or {}
+    except (OSError, ValueError, AttributeError):
+        stated = {}
+    if stated:
+        threshold, mass = stated.get('threshold'), stated.get('crop_mass_min', 0.0)
+        if (not isinstance(threshold, (int, float)) or not 0.3 <= threshold <= 0.99
+                or not isinstance(mass, (int, float)) or not 0 <= mass <= 0.9
+                or not isinstance(stated.get('crop_conditioned', False), bool)):
+            raise ValueError('Release decision rule is not valid')
+        decision.update(threshold=float(threshold), crop_mass_min=float(mass),
+                        crop_conditioned=stated.get('crop_conditioned', False))
+    return decision
+
+
+def image_size(model) -> tuple:
+    shape = getattr(model, 'input_shape', None)
+    if isinstance(shape, tuple) and len(shape) == 4 and isinstance(shape[1], (int, np.integer)):
+        return (int(shape[1]), int(shape[2]))
+    return IMG_SIZE
 
 
 def class_crop(label: str):
@@ -363,15 +395,15 @@ def class_crop(label: str):
 def predict_from_image(image_data: bytes, crop_type: str = None) -> dict:
     """
     Predict disease from image bytes
-    
+
     Args:
         image_data: Image file as bytes
-        
+
     Returns:
         dict with prediction results
     """
     global tf, keras
-    
+
     try:
         model, class_indices = load_model()
     except (FileNotFoundError, ImportError, OSError, ValueError, RuntimeError, KeyError):
@@ -380,12 +412,12 @@ def predict_from_image(image_data: bytes, crop_type: str = None) -> dict:
             "message": "Image classifier could not be loaded. Install the ML dependencies and a compatible model bundle.",
             "model_available": False
         }
-    
+
     try:
         # Load and preprocess image
         from PIL import Image, ImageOps
         import io
-        
+
         with Image.open(io.BytesIO(image_data)) as original:
             if original.width * original.height > 25_000_000:
                 raise ValueError("Image exceeds 25 megapixels")
@@ -396,11 +428,11 @@ def predict_from_image(image_data: bytes, crop_type: str = None) -> dict:
                     with Image.new('RGBA', rgba.size, (255, 255, 255, 255)) as background:
                         with Image.alpha_composite(background, rgba) as composited:
                             with composited.convert('RGB') as rgb:
-                                with rgb.resize(IMG_SIZE) as resized:
+                                with rgb.resize(image_size(model)) as resized:
                                     img_array = np.asarray(resized, dtype=np.float32) / np.float32(255.0)
             else:
                 with original.convert('RGB') as rgb:
-                    with rgb.resize(IMG_SIZE) as resized:
+                    with rgb.resize(image_size(model)) as resized:
                         img_array = np.asarray(resized, dtype=np.float32) / np.float32(255.0)
         img_array = np.expand_dims(img_array, axis=0)
     except (OSError, ValueError, Image.DecompressionBombError):
@@ -417,39 +449,52 @@ def predict_from_image(image_data: bytes, crop_type: str = None) -> dict:
                 or np.any(predictions < 0) or np.any(predictions > 1)
                 or not np.isclose(predictions.sum(), 1.0, atol=1e-4)):
             raise ValueError("Classifier returned an invalid probability distribution")
-        predicted_idx = np.argmax(predictions[0])
-        confidence = float(predictions[0][predicted_idx])
-        
-        # Get class name
-        class_name = class_indices.get(str(predicted_idx), "Unknown")
-        
-        # Get top 3 predictions
-        top_indices = np.argsort(predictions[0])[-3:][::-1]
-        top_predictions = [
-            {
-                "class": class_indices.get(str(idx), "Unknown"),
-                "confidence": float(predictions[0][idx])
-            }
-            for idx in top_indices
-        ]
+        decision = _decision or DEFAULT_DECISION
+        scores = predictions[0]
         requested_crop = (crop_type or '').casefold().strip()
         requested_crop = {'corn': 'maize', 'grapes': 'grape', 'citrus': 'orange'}.get(requested_crop, requested_crop)
         supported = set(filter(None, map(class_crop, class_indices.values())))
         reason = None
         if requested_crop and requested_crop not in supported:
             reason = "This crop is not supported by the installed classifier."
+        elif requested_crop and decision['crop_conditioned']:
+            # The farmer has told us the crop, so only that crop's conditions compete.
+            # If the model sees little of that crop in the photograph, it does not answer.
+            inside = np.array([class_crop(class_indices[str(i)]) == requested_crop for i in range(len(class_indices))])
+            mass = float(scores[inside].sum())
+            if mass < decision['crop_mass_min']:
+                reason = "The predicted crop does not match the selected crop. Please verify the crop and photograph."
+            else:
+                scores = np.where(inside, scores, 0.0) / max(mass, 1e-12)
+        predicted_idx = np.argmax(scores)
+        confidence = float(scores[predicted_idx])
+
+        # Get class name
+        class_name = class_indices.get(str(predicted_idx), "Unknown")
+
+        # Get top 3 predictions
+        top_indices = [idx for idx in np.argsort(scores)[-3:][::-1] if scores[idx] > 0]
+        top_predictions = [
+            {
+                "class": class_indices.get(str(idx), "Unknown"),
+                "confidence": float(scores[idx])
+            }
+            for idx in top_indices
+        ]
+        if reason:
+            pass
         elif requested_crop and class_crop(class_name) != requested_crop:
             reason = "The predicted crop does not match the selected crop. Please verify the crop and photograph."
-        elif confidence < 0.75:
+        elif confidence < decision['threshold']:
             reason = "The classifier is uncertain. Obtain a clearer photograph and expert confirmation."
         if reason:
             return {"status": "uncertain", "message": reason, "disease": None,
                     "confidence": confidence, "top_predictions": top_predictions,
                     "model_available": True, "treatment": None}
-        
+
         # Check if it's a healthy class
         is_healthy = "healthy" in class_name.lower()
-        
+
         # Get treatment info
         if is_healthy:
             return {
@@ -470,7 +515,7 @@ def predict_from_image(image_data: bytes, crop_type: str = None) -> dict:
         else:
             # Get disease metadata
             metadata = DISEASE_METADATA.get(class_name, DEFAULT_TREATMENT)
-            
+
             return {
                 "status": "disease_detected",
                 "disease": {
@@ -490,7 +535,7 @@ def predict_from_image(image_data: bytes, crop_type: str = None) -> dict:
                 "message": f"Detected: {class_name}",
                 "model_available": True
             }
-            
+
     except Exception:
         return {
             "status": "unavailable",
@@ -511,10 +556,10 @@ def get_available_classes() -> list:
     """Get list of classes the model can detect"""
     if not os.path.exists(CLASS_INDICES_PATH):
         return []
-    
+
     with open(CLASS_INDICES_PATH, 'r') as f:
         class_indices = json.load(f)
-    
+
     return list(class_indices.values())
 
 
@@ -533,7 +578,7 @@ def get_model_identity() -> str:
 if __name__ == "__main__":
     # Test the inference
     print("Testing inference module...")
-    
+
     if is_model_available():
         print("✅ Model is available")
         classes = get_available_classes()

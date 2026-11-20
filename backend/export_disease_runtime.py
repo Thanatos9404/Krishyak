@@ -19,6 +19,8 @@ def export(bundle, photos, reference):
     if release['model_sha256'] != source_digest or release['class_indices_sha256'] != labels_digest:
         raise ValueError('Source model or labels do not match the selected release')
     model=tf.keras.models.load_model(source,compile=False)
+    size=int(model.input_shape[1])
+    threshold=float((release.get('decision') or {}).get('threshold',.75))
     converter=tf.lite.TFLiteConverter.from_keras_model(model)
     converter.optimizations=[]
     converter.target_spec.supported_ops=[tf.lite.OpsSet.TFLITE_BUILTINS]
@@ -26,14 +28,14 @@ def export(bundle, photos, reference):
     interpreter=tf.lite.Interpreter(model_content=artifact,num_threads=2)
     interpreter.allocate_tensors()
     rng=np.random.default_rng(731)
-    tensors=[np.zeros((1,224,224,3),np.float32),np.ones((1,224,224,3),np.float32)]
-    tensors.extend(rng.random((1,224,224,3),dtype=np.float32) for _ in range(8))
+    tensors=[np.zeros((1,size,size,3),np.float32),np.ones((1,size,size,3),np.float32)]
+    tensors.extend(rng.random((1,size,size,3),dtype=np.float32) for _ in range(8))
     for path in photos:
         with Image.open(path) as image:
             image=ImageOps.exif_transpose(image)
             if image.mode in ('RGBA','LA') or 'transparency' in image.info:
                 image=Image.alpha_composite(Image.new('RGBA',image.size,'white'),image.convert('RGBA'))
-            tensors.append(np.asarray(image.convert('RGB').resize((224,224)),dtype=np.float32)[None]/np.float32(255))
+            tensors.append(np.asarray(image.convert('RGB').resize((size,size)),dtype=np.float32)[None]/np.float32(255))
     errors=[]
     expected=[]
     for x in tensors:
@@ -43,10 +45,10 @@ def export(bundle, photos, reference):
         got=interpreter.get_tensor(interpreter.get_output_details()[0]['index'])
         np.testing.assert_allclose(got,y,rtol=1e-4,atol=1e-5)
         assert np.argmax(got)==np.argmax(y), 'Top prediction changed'
-        assert bool(got.max() < .75)==bool(y.max() < .75), 'Abstention threshold changed'
+        assert bool(got.max() < threshold)==bool(y.max() < threshold), 'Abstention threshold changed'
         errors.append(float(np.max(np.abs(got-y))))
         expected.append(y)
-    report={'format':'TFLite float32, built-in operators only; no quantization','source_sha256':source_digest,'artifact_sha256':hashlib.sha256(artifact).hexdigest(),'class_indices_sha256':labels_digest,'artifact_bytes':len(artifact),'samples':len(tensors),'photo_samples':len(photos),'top1_matches':len(tensors),'abstention_threshold_matches':len(tensors),'max_absolute_probability_error':max(errors),'rtol':1e-4,'atol':1e-5,'coverage':'Ten deterministic synthetic tensors, bundled demo photograph, and locally available PlantDoc-export test photographs. Numerical equivalence check, not a new disease accuracy evaluation.'}
+    report={'format':'TFLite float32, built-in operators only; no quantization','source_sha256':source_digest,'artifact_sha256':hashlib.sha256(artifact).hexdigest(),'class_indices_sha256':labels_digest,'artifact_bytes':len(artifact),'input_size':size,'samples':len(tensors),'photo_samples':len(photos),'top1_matches':len(tensors),'abstention_threshold_matches':len(tensors),'max_absolute_probability_error':max(errors),'rtol':1e-4,'atol':1e-5,'coverage':'Ten deterministic synthetic tensors, bundled demo photograph, and locally available PlantDoc-export test photographs. Numerical equivalence check, not a new disease accuracy evaluation.'}
     (bundle/'model.tflite').write_bytes(artifact)
     (bundle/'runtime-verification.json').write_text(json.dumps(report,indent=2)+'\n')
     if reference:
