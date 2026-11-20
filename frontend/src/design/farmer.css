@@ -1755,6 +1755,25 @@
 .report-table tr.current {
   background: var(--k-leaf-soft);
 }
+/* Large farms give long numbers: tighten the table on a phone, and let it
+   scroll sideways inside its own box rather than push the page wide. */
+.report-table-wrap {
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+}
+.report-table td {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+@media (max-width: 480px) {
+  .report-table {
+    font-size: 14px;
+  }
+  .report-table th,
+  .report-table td {
+    padding: 9px 5px;
+  }
+}
 .report-plan {
   padding: 16px;
   border-radius: 16px;
@@ -2807,6 +2826,9 @@
   flex-direction: column;
   gap: 4px;
   min-inline-size: 0;
+  /* The big number scales with its own card, so a six-digit amount fits on a
+     narrow phone without breaking in the middle. */
+  container-type: inline-size;
   padding: 16px 16px 18px;
   border-radius: 22px;
   background: #fff;
@@ -2842,11 +2864,11 @@
 .workspace-content .dash-value {
   margin: 4px 0 0;
   font-size: clamp(28px, 7.6vw, 40px);
+  font-size: clamp(18px, 17cqi, 40px);
   line-height: 1.05;
   font-weight: 650;
   font-variant-numeric: tabular-nums;
   color: var(--k-green-950);
-  overflow-wrap: anywhere;
 }
 .dash-value small {
   font-size: 0.45em;
@@ -3354,7 +3376,7 @@
   color: var(--k-green-950);
 }
 .workspace-content .dash-value.dash-value-text {
-  font-size: clamp(20px, 5.4vw, 26px);
+  font-size: clamp(18px, 13cqi, 26px);
   line-height: 1.2;
 }
 .usage-table {

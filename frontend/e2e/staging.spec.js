@@ -179,10 +179,12 @@ test("a live Copernicus job is drained by the serverless worker", async () => {
   expect(job.status()).toBe(202);
   let latest;
   for (let attempt = 0; attempt < 30; attempt++) {
-    latest = await (
-      await page.request.get(`/api/v2/plots/${id}/remote-sensing`)
-    ).json();
-    if (["completed", "failed"].includes(latest.latest_job?.status)) break;
+    // A status poll is safe to repeat: one dropped connection is not a failure.
+    latest = await page.request
+      .get(`/api/v2/plots/${id}/remote-sensing`)
+      .then((response) => response.json())
+      .catch(() => latest);
+    if (["completed", "failed"].includes(latest?.latest_job?.status)) break;
     await page.waitForTimeout(5000);
   }
   expect(latest.latest_job.status).toBe("completed");

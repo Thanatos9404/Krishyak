@@ -142,7 +142,7 @@ are recorded separately once this branch is deployed there.
 
 | Gate | Recorded result | Scope |
 |---|---|---|
-| Backend | 365 run, 363 passed, 2 skipped | Whole suite on real PostGIS: district yield table, rainfall normals, registration lookup, example field, price fallbacks, usage statement, leaf decision rule and input size |
+| Backend | 367 run, 365 passed, 2 skipped | Whole suite on real PostGIS: district yield table, rainfall normals, registration lookup, example field, price fallbacks, usage statement, leaf decision rule and input size |
 | Frontend unit | 402 passed, 65 suites | Dashboard cards, four-step registration, usage card, picture guides for the new crops |
 | Browser, production build | 21 of 21 (Chromium): public pages, field services including the offline journey, product flows, passkeys | A real leaf photo is checked by leaf model v2 through the API, online and after an offline save |
 | Layout | No horizontal overflow, no console errors | Home, field report, example field and institution screens at 1440, 1024, 768, 390 and 320 px; emulated viewports, not physical phones |
@@ -160,3 +160,34 @@ rejected until that exact host was added.
 
 Translation used existing Sarvam credits (an estimated 745 across the two
 runs, including Sindhi); nothing was purchased.
+
+### Staging, 20 November 2026
+
+Staging database migrated to `v2_0012` through the HTTP migration step;
+the switch was set back to `false` and the endpoint answers 404 again.
+
+| Check | Result |
+|---|---|
+| `scripts/smoke_staging.py` | 12 of 12, including live mandi data |
+| `e2e/staging.spec.js` | 9 of 9 on the final API build: passkey sign-up, GPS field with live weather, a real leaf photo checked by leaf model v2 in the LiteRT runtime and stored privately, a Copernicus job drained by the worker, market, voice answer, registration from GPS and speech ending on the dashboard, calendar with Pest Radar and a claim pack, Krishyak Live with the picture guides |
+
+Two defects were found by the staging runs and fixed before the final pass:
+
+- **Instance stall.** One run returned 503 from the location lookup and the
+  voice read-aloud at the same instant, 30 seconds after they started, while
+  three ordinary reads hung with them. The request log showed the cause:
+  async endpoints re-read the session on the event loop after a provider
+  call, and when the three-connection serverless pool was full the loop
+  blocked until the pool timeout. The re-read now runs in a worker thread,
+  the pool per instance is larger and its wait is 8 seconds. This had been
+  latent since the voice endpoints were added.
+- **Empty crop comparison.** The field report never listed other crops
+  because a loop variable shadowed the crop being assessed. It now compares
+  the other crops of the season that the district is recorded as growing,
+  with a test that the list is not empty.
+
+A status poll in the staging journey now retries once on a dropped
+connection; the drop happened seconds after the staging address was moved
+to a new build. Layout was re-checked with a 14-hectare field so that
+seven-digit amounts fit the dashboard cards and the comparison table at
+320 px.

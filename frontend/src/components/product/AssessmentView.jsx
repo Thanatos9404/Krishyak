@@ -461,45 +461,54 @@ export function AssessmentView({ workspace: w }) {
               </p>
             )}
             {report.alternatives.length > 0 && (
-              <table className="report-table">
-                <caption className="sr-only">
-                  {tx("Crops compared for this field")}
-                </caption>
-                <thead>
-                  <tr>
-                    <th scope="col">{tx("Crop")}</th>
-                    <th scope="col">{tx("Harvest")}</th>
-                    <th scope="col">{tx("Profit")}</th>
-                    <th scope="col">{tx("Risk")}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr className="current">
-                    <th scope="row">
-                      {crop} ({tx("yours")})
-                    </th>
-                    <td>
-                      {tx("{{v0}} qtl", { v0: report.harvest.total_quintals })}
-                    </td>
-                    <td>
-                      {report.price
-                        ? rupees(report.harvest.profit, language)
-                        : tx("No price")}
-                    </td>
-                    <td>{report.risk.overall}</td>
-                  </tr>
-                  {report.alternatives.map((row) => (
-                    <tr key={row.crop_id}>
-                      <th scope="row">
-                        {cropLabel(findCrop(row.crop_id), tx)}
-                      </th>
-                      <td>{tx("{{v0}} qtl", { v0: row.total_quintals })}</td>
-                      <td>{rupees(row.profit, language)}</td>
-                      <td>{row.risk}</td>
+              <div
+                className="report-table-wrap"
+                tabIndex={0}
+                role="region"
+                aria-label={tx("Crops compared for this field")}
+              >
+                <table className="report-table">
+                  <caption className="sr-only">
+                    {tx("Crops compared for this field")}
+                  </caption>
+                  <thead>
+                    <tr>
+                      <th scope="col">{tx("Crop")}</th>
+                      <th scope="col">{tx("Harvest")}</th>
+                      <th scope="col">{tx("Profit")}</th>
+                      <th scope="col">{tx("Risk")}</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    <tr className="current">
+                      <th scope="row">
+                        {crop} ({tx("yours")})
+                      </th>
+                      <td>
+                        {tx("{{v0}} qtl", {
+                          v0: report.harvest.total_quintals,
+                        })}
+                      </td>
+                      <td>
+                        {report.price
+                          ? rupees(report.harvest.profit, language)
+                          : tx("No price")}
+                      </td>
+                      <td>{report.risk.overall}</td>
+                    </tr>
+                    {report.alternatives.map((row) => (
+                      <tr key={row.crop_id}>
+                        <th scope="row">
+                          {cropLabel(findCrop(row.crop_id), tx)}
+                        </th>
+                        <td>{tx("{{v0}} qtl", { v0: row.total_quintals })}</td>
+                        <td>{rupees(row.profit, language)}</td>
+                        <td>{row.risk}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             )}
             {report.ai_plan.changes.length > 0 && (
               <div className="report-plan">
