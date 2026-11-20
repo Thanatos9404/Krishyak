@@ -116,6 +116,23 @@ test("a loss is called a loss", () => {
   ).toHaveTextContent("₹12,000");
 });
 
+test("with no price at all, profit is withheld instead of invented", () => {
+  const report = {
+    ...REPORT,
+    price: null,
+    harvest: { ...REPORT.harvest, profit: null, profit_range: null },
+  };
+  render(
+    <FieldNumbers workspace={w} report={{ status: "ready", data: report }} />,
+  );
+  const card = screen
+    .getByRole("heading", { name: "Expected profit" })
+    .closest("article");
+  expect(card).toHaveTextContent("No price yet");
+  expect(card).toHaveTextContent(/profit is not estimated/);
+  expect(card).not.toHaveTextContent("₹");
+});
+
 test("a field without a crop says what to add instead of showing numbers", () => {
   render(
     <FieldNumbers

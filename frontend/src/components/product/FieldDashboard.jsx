@@ -100,7 +100,11 @@ function Meter({ value, tone, label }) {
 }
 
 // The four numbers a farmer asks first: how much, how much money, how risky, how good.
-export function FieldNumbers({ workspace: w, report }) {
+export function FieldNumbers({
+  workspace: w,
+  report,
+  reportHref = "/app/assessment",
+}) {
   const { tx } = useProductLocale();
   if (!w.consents.includes("agronomic_analysis"))
     return (
@@ -159,9 +163,11 @@ export function FieldNumbers({ workspace: w, report }) {
         <h2 id="dash-numbers-heading">
           {tx("Your {{v0}} field at a glance", { v0: crop })}
         </h2>
-        <a className="text-link" href="/app/assessment">
-          {tx("Full field report")} <ArrowRight size={16} />
-        </a>
+        {reportHref && (
+          <a className="text-link" href={reportHref}>
+            {tx("Full field report")} <ArrowRight size={16} />
+          </a>
+        )}
       </div>
       <div className="dash-kpis">
         <article className="dash-kpi tone-leaf">
@@ -177,21 +183,36 @@ export function FieldNumbers({ workspace: w, report }) {
             })}
           </p>
         </article>
-        <article
-          className={`dash-kpi ${profit >= 0 ? "tone-leaf" : "tone-brick"}`}
-        >
-          <h3>
-            <IndianRupee size={20} aria-hidden="true" />{" "}
-            {profit >= 0 ? tx("Expected profit") : tx("Expected loss")}
-          </h3>
-          <p className="dash-value">{rupees(Math.abs(profit))}</p>
-          <p className="dash-note">
-            {tx("Likely between {{v0}} and {{v1}}", {
-              v0: rupees(r.harvest.profit_range[0]),
-              v1: rupees(r.harvest.profit_range[1]),
-            })}
-          </p>
-        </article>
+        {profit == null ? (
+          <article className="dash-kpi tone-amber">
+            <h3>
+              <IndianRupee size={20} aria-hidden="true" />{" "}
+              {tx("Expected profit")}
+            </h3>
+            <p className="dash-value dash-value-text">{tx("No price yet")}</p>
+            <p className="dash-note">
+              {tx(
+                "No mandi or support price is available for this crop near you today, so profit is not estimated.",
+              )}
+            </p>
+          </article>
+        ) : (
+          <article
+            className={`dash-kpi ${profit >= 0 ? "tone-leaf" : "tone-brick"}`}
+          >
+            <h3>
+              <IndianRupee size={20} aria-hidden="true" />{" "}
+              {profit >= 0 ? tx("Expected profit") : tx("Expected loss")}
+            </h3>
+            <p className="dash-value">{rupees(Math.abs(profit))}</p>
+            <p className="dash-note">
+              {tx("Likely between {{v0}} and {{v1}}", {
+                v0: rupees(r.harvest.profit_range[0]),
+                v1: rupees(r.harvest.profit_range[1]),
+              })}
+            </p>
+          </article>
+        )}
         <article className={`dash-kpi tone-${riskTone}`}>
           <h3>
             <ShieldCheck size={20} aria-hidden="true" /> {tx("Risk")}

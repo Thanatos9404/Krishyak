@@ -141,12 +141,14 @@ const KINDS = {
 };
 
 // Crop calendar: what the crop usually needs this week, counted from sowing.
-export function CalendarCard({ workspace: w }) {
+// ``plan`` can be handed in ready-made (the public example field).
+export function CalendarCard({ workspace: w, plan: given }) {
   const { tx, formatDate } = useProductLocale();
-  const plan = useFieldRecord(
-    w.selected && !w.offline ? `/plots/${w.selected}/calendar` : null,
-    [w.selected, w.offline, w.cycles?.[0]?.id],
+  const fetched = useFieldRecord(
+    !given && w.selected && !w.offline ? `/plots/${w.selected}/calendar` : null,
+    [w.selected, w.offline, w.cycles?.[0]?.id, Boolean(given)],
   );
+  const plan = given || fetched;
   if (!plan || plan.status !== "available") return null;
   const crop = cropLabel(findCrop(plan.crop_id), tx);
   const row = (item, when) => {

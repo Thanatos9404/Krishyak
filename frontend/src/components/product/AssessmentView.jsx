@@ -484,7 +484,7 @@ export function AssessmentView({ workspace: w }) {
                     <td>
                       {report.price
                         ? rupees(report.harvest.profit, language)
-                        : "—"}
+                        : tx("No price")}
                     </td>
                     <td>{report.risk.overall}</td>
                   </tr>

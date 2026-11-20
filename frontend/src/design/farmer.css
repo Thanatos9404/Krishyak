@@ -3171,11 +3171,6 @@
   inline-size: 100%;
   justify-content: center;
 }
-.workspace-content .setup-or {
-  margin: 8px 0 0;
-  font-size: 17px;
-  font-weight: 600;
-}
 .setup-found {
   padding: 16px 18px;
   border-radius: 20px;
@@ -3310,4 +3305,55 @@
 .home-greeting .button.text {
   margin-block-start: 6px;
   padding-inline: 0;
+}
+
+/* ---------- Public example field ---------- */
+.demo-notice {
+  display: grid;
+  gap: 8px;
+  padding: 18px 20px;
+  border-radius: 22px;
+  background: var(--k-sun-soft);
+  color: #4a3208;
+}
+.demo-notice strong {
+  font-size: 18px;
+}
+.workspace-content .demo-notice p {
+  margin: 0;
+  color: inherit;
+}
+.demo-notice .button {
+  justify-self: start;
+}
+.home-date svg {
+  vertical-align: -2px;
+}
+.workspace-content .demo-price h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 6px;
+}
+.demo-close {
+  display: grid;
+  gap: 10px;
+  justify-items: start;
+  padding: 24px;
+  border-radius: 26px;
+  background: linear-gradient(135deg, var(--k-green-700), var(--k-green-950));
+  color: #fff;
+}
+.workspace-content .demo-close h2,
+.workspace-content .demo-close p {
+  margin: 0;
+  color: #fff;
+}
+.demo-close .button.primary {
+  background: #fff;
+  color: var(--k-green-950);
+}
+.workspace-content .dash-value.dash-value-text {
+  font-size: clamp(20px, 5.4vw, 26px);
+  line-height: 1.2;
 }

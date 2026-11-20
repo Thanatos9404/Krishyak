@@ -26,7 +26,7 @@ const FormVoiceInput = deferredFeature(() =>
 const VoiceMode = deferredFeature(() =>
   import("./VoiceMode").then((module) => ({ default: module.VoiceMode })),
 );
-// [path, icon, label, demo view]
+// [path, icon, label]
 const NAV = [
   ["/app/today", House, "Home", "today"],
   ["/app/health", Leaf, "Plant check", "scan"],
@@ -38,14 +38,13 @@ export function ProductShell({
   workspace: w,
   pathname,
   children,
-  demo = false,
   institution = false,
 }) {
   const { tx, info } = useProductLocale();
   const [voiceTarget, setVoiceTarget] = useState(null),
     [voiceOpen, setVoiceOpen] = useState(false);
-  const signedOut = !w.farmer && !demo;
-  const voiceReady = Boolean(w.farmer) && !demo && !institution;
+  const signedOut = !w.farmer;
+  const voiceReady = Boolean(w.farmer) && !institution;
   const openVoice = useCallback(() => setVoiceOpen(true), []);
   useEffect(() => {
     if (voiceReady && location.hash === "#voice") {
@@ -53,7 +52,7 @@ export function ProductShell({
       setVoiceOpen(true);
     }
   }, [voiceReady]);
-  const link = (href, view) => (demo ? `/demo?view=${view}` : href);
+  const link = (href) => href;
   const current = (href) =>
     href === "/app/today"
       ? pathname === href || pathname === "/app"
@@ -74,7 +73,7 @@ export function ProductShell({
   return (
     <VoiceLauncher.Provider value={voiceReady ? openVoice : null}>
       <div
-        className={`product-shell ${demo ? "demo-shell" : ""} ${institution ? "institution-shell" : ""} ${signedOut ? "signed-out-shell" : ""}`}
+        className={`product-shell ${institution ? "institution-shell" : ""} ${signedOut ? "signed-out-shell" : ""}`}
       >
         <a href="#workspace-content" className="skip-link">
           {tx("Skip to workspace")}
@@ -154,7 +153,7 @@ export function ProductShell({
                   <span>{tx("More")}</span>
                 </a>
               )}
-              {!demo && <ProductLanguageChooser />}
+              <ProductLanguageChooser />
               {w.farmer && (
                 <a
                   className="account-link"
@@ -167,18 +166,7 @@ export function ProductShell({
               )}
             </div>
           </header>
-          {demo && (
-            <div className="demo-banner" role="status">
-              <span>
-                <strong>{tx("Illustrative demo")}</strong>{" "}
-                {tx(
-                  "\xB7 Synthetic records. Nothing here is your farm or a live recommendation.",
-                )}
-              </span>
-              <a href="/app/today">{tx("Start my farm")}</a>
-            </div>
-          )}
-          {w.farmer && !demo && (w.offline || w.pending > 0) && (
+          {w.farmer && (w.offline || w.pending > 0) && (
             <div
               className={`connection-status ${w.offline ? "disconnected" : ""}`}
               role="status"
@@ -236,7 +224,7 @@ export function ProductShell({
               </p>
             )}
             {children}
-            {!demo && !institution && w.farmer && voiceTarget && (
+            {!institution && w.farmer && voiceTarget && (
               <FormVoiceInput target={voiceTarget} workspace={w} />
             )}
           </main>
