@@ -3357,3 +3357,16 @@
   font-size: clamp(20px, 5.4vw, 26px);
   line-height: 1.2;
 }
+.usage-table {
+  min-width: 640px;
+}
+.usage-table td:nth-child(4) {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.usage-table a.button.text {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+}

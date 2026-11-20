@@ -61,6 +61,8 @@ class Settings(BaseModel):
     # inside API invocations plus an authenticated scheduled trigger (serverless).
     worker_mode: Literal["dedicated", "request"] = "dedicated"
     cron_secret: SecretStr = SecretStr("")
+    # False while institutions use Krishyak under a pilot: usage is counted, nothing is invoiced.
+    billing_live: bool = False
 
     @property
     def deployed(self) -> bool:
@@ -151,4 +153,5 @@ class Settings(BaseModel):
             worker_stale_seconds=os.getenv("V2_WORKER_STALE_SECONDS") or 600,
             worker_mode=os.getenv("V2_WORKER_MODE") or ("request" if os.getenv("VERCEL") == "1" else "dedicated"),
             cron_secret=os.getenv("CRON_SECRET", ""),
+            billing_live=os.getenv("V2_BILLING_LIVE", "false").lower() == "true",
         )

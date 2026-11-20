@@ -13,6 +13,7 @@ from security import client_ip, normalize_request_id
 
 from .assessment import router as assessment_router
 from .assistant import router as assistant_router
+from .billing import router as billing_router
 from .claims import router as claims_router
 from .climate import router as climate_router
 from .context import router as context_router
@@ -85,6 +86,7 @@ def install_v2(app, settings=None):
     app.include_router(live_router)
     app.include_router(groups_router)
     app.include_router(verify_router)
+    app.include_router(billing_router)
     app.include_router(pilots_router)
     app.include_router(notifications_router)
 

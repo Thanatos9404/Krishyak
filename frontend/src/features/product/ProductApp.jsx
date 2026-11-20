@@ -81,6 +81,11 @@ const VerifyDesk = deferredFeature(() =>
     default: module.VerifyDesk,
   })),
 );
+const UsageDesk = deferredFeature(() =>
+  import("../farms/InstitutionDesk").then((module) => ({
+    default: module.UsageDesk,
+  })),
+);
 const loadSettingsView = () =>
   import("../../components/product/SettingsView").then((module) => ({
     default: module.SettingsView,
@@ -195,6 +200,7 @@ function Workspace() {
           <>
             <CommandCentre act={w.act} busy={w.busy} />
             <VerifyDesk act={w.act} busy={w.busy} />
+            <UsageDesk />
           </>
         )}
         <InstitutionConsole farmer={w.farmer} act={w.act} busy={w.busy} />
