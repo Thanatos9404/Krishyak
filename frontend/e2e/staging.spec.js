@@ -383,7 +383,10 @@ test("Krishyak Live answers a typed question and the picture guides open", async
     path: "../output/product/screenshots/staging/live-390.png",
   });
   await page.goto("/app/guides");
+  // The library opens on the farmer's own crop (wheat here) or on rice.
   await expect(
-    page.getByRole("region", { name: "Late blight (tomato)" }),
+    page.getByRole("region", {
+      name: /Yellow \(stripe\) rust|Bacterial leaf blight \(rice\)/,
+    }),
   ).toBeVisible({ timeout: 30000 });
 });

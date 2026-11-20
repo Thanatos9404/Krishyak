@@ -18,11 +18,10 @@ from security import client_ip
 from speech_limits import positive_env
 
 from .assistant import CAMERA, Turn, complete, gather_facts, parse_reply, system_prompt
-from .auth import authenticate
 from .images import classify, scan_slot
 from .providers import sanitize_image
 from .radar import field_crop
-from .router import current_farmer, database, require_consent
+from .router import current_farmer, database, recheck, require_consent
 
 router = APIRouter(prefix="/api/v2/live", tags=["Krishyak Live"])
 HISTORY = TypeAdapter(list[Turn])
@@ -101,10 +100,7 @@ async def turn(
         messages.append({"role": "user" if item.role == "farmer" else "assistant", "content": item.text})
     messages.append({"role": "user", "content": question})
     answer, action = parse_reply(await complete(messages))
-    current, _ = authenticate(db, request)
-    if current.id != owner:
-        raise HTTPException(403, "Account changed during the question")
-    require_consent(db, current, "speech_processing")
+    await recheck(db, request, "speech_processing", owner=owner, changed="Account changed during the question")
     return {
         "answer": answer,
         "action": action,

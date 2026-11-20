@@ -6,6 +6,7 @@ from datetime import timedelta
 from uuid import UUID
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query, Request, Response
+from fastapi.concurrency import run_in_threadpool
 from geoalchemy2.shape import from_shape, to_shape
 from shapely.geometry import Point, mapping, shape
 from sqlalchemy import func, select, text, update
@@ -53,6 +54,27 @@ def database(request: Request):
 
 def current_farmer(request: Request, db=Depends(database, scope="function")):
     return authenticate(db, request)[0]
+
+
+async def recheck(db, request, *purposes, owner=None, changed="Account changed during this request"):
+    """After provider work, confirm the session and permissions again, off the event loop.
+
+    Async endpoints release their connection before a slow provider call. Taking
+    one again may have to wait for the pool. Waiting on the event loop would
+    also stall the requests whose completion frees a connection, so every
+    request on the instance would hang until the pool timeout. In a worker
+    thread the wait is harmless.
+    """
+
+    def run():
+        current, _ = authenticate(db, request)
+        if owner is not None and current.id != owner:
+            raise HTTPException(403, changed)
+        for purpose in purposes:
+            require_consent(db, current, purpose)
+        return current
+
+    return await run_in_threadpool(run)
 
 
 def require_consent(db, farmer, purpose):

@@ -16,8 +16,12 @@ def make_database(settings):
         # server-side prepared statements, which transaction poolers cannot pin.
         options = {
             "pool_pre_ping": True,
-            "pool_size": 1,
-            "max_overflow": 2,
+            # One instance serves several requests at once. Connections go to a
+            # transaction pooler, so a few more per instance are cheap; a request
+            # that still cannot get one fails in seconds rather than half a minute.
+            "pool_size": 2,
+            "max_overflow": 6,
+            "pool_timeout": 8,
             "pool_recycle": 240,
             "connect_args": {"prepare_threshold": None, "connect_timeout": 10},
         }

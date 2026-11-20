@@ -14,6 +14,7 @@ from datetime import timedelta
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi.concurrency import run_in_threadpool
 from sqlalchemy import select
 
 from db.models import CropCycle, MarketPrice, utcnow
@@ -252,17 +253,16 @@ async def build_report(request, db, *, crop_id, area, soil, soil_type, water, st
     from pest_intelligence import PestAnalyzer
 
     pests = PestAnalyzer().get_seasonal_risk(planning_name(crop_id))
-    price = price_for(db, crop_id, state, district)
     candidates = [
-        crop_id
-        for crop_id, plan in CROP_PLANS.items()
-        if plan[0] == season and crop_id != crop_id and planning_name(crop_id)
+        other for other, plan in CROP_PLANS.items() if plan[0] == season and other != crop_id and planning_name(other)
     ]
-    alternative_inputs = []
-    for crop_id in candidates:
-        alt_price = price_for(db, crop_id, state, district)
-        if alt_price:
-            alternative_inputs.append((crop_id, alt_price))
+
+    def prices():
+        # Off the event loop: the first query may wait for a pooled connection.
+        found = [(other, price_for(db, other, state, district)) for other in candidates]
+        return price_for(db, crop_id, state, district), [(other, quote) for other, quote in found if quote]
+
+    price, alternative_inputs = await run_in_threadpool(prices)
     # The same field records give the same report for the rest of the day, so
     # Home can show it on every visit without recomputing or using up the limit.
     fingerprint = json.dumps(
@@ -301,8 +301,8 @@ async def build_report(request, db, *, crop_id, area, soil, soil_type, water, st
         crop_id, area, typical_soil(state, district) or soil_type, {}, None, price, "medium", rain_mm
     )
     alternative_inputs = [
-        (crop_id, alt_price, plan_inputs(crop_id, area, soil_type, soil, water, alt_price, None, rain_mm))
-        for crop_id, alt_price in alternative_inputs
+        (other, alt_price, plan_inputs(other, area, soil_type, soil, water, alt_price, None, rain_mm))
+        for other, alt_price in alternative_inputs
     ]
     slots = request.app.state.v2_planning_slots
     if slots.locked():
@@ -322,12 +322,12 @@ async def build_report(request, db, *, crop_id, area, soil, soil_type, water, st
         result = simulator.run_whatif_simulation(params, 300, baseline_record=baseline)
         result["ai_optimal_plan"] = scenario(better_inputs, "optimal", baseline)
         others = []
-        for crop_id, alt_price, inputs in alternative_inputs:
-            other_baseline, other_local = local_baseline(simulator, crop_id, season, state, district, inputs, inputs)
+        for other, alt_price, inputs in alternative_inputs:
+            other_baseline, other_local = local_baseline(simulator, other, season, state, district, inputs, inputs)
             # Only compare with crops this district is recorded as growing.
             if local and local["level"] == "district" and (other_local or {}).get("level") != "district":
                 continue
-            others.append((crop_id, alt_price, scenario(inputs, "alternative", other_baseline)))
+            others.append((other, alt_price, scenario(inputs, "alternative", other_baseline)))
         return result, others
 
     async with slots:

@@ -31,14 +31,13 @@ from .agronomy import (
     typical_soil,
 )
 from .assistant import complete
-from .auth import authenticate
 from .climate import outlook
 from .crops import BY_ID, BY_NAME
 from .farm_context.models import india_today
 from .farm_context.providers import normalize_soil, soil_map
 from .farm_context.transport import Unavailable
 from .locations import normalized_name, resolve_location
-from .router import current_farmer, database, require_consent
+from .router import current_farmer, database, recheck, require_consent
 from .schemas import Input
 from .yields import common_crops
 
@@ -320,10 +319,9 @@ async def locate_field(
             None,
         )
         soil_source = soil_source if soil_type else None
-    current, _ = authenticate(db, request)
-    if current.id != owner:
-        raise HTTPException(403, "Account changed while finding your location")
-    require_consent(db, current, "location_processing")
+    await recheck(
+        db, request, "location_processing", owner=owner, changed="Account changed while finding your location"
+    )
     season = season_now()
     grown = common_crops(place["state"], place["district"]) if place["district"] else {}
     return {
@@ -378,10 +376,7 @@ async def understand(
         draft["soil_type"], draft["soil_source"], draft["soil_measurements"] = await estimate_soil(
             gateway, draft if may_locate else {**draft, "location": None}
         )
-    current, _ = authenticate(db, request)
-    if current.id != owner:
-        raise HTTPException(403, "Account changed while reading your details")
-    require_consent(db, current, "speech_processing")
+    await recheck(db, request, "speech_processing", owner=owner, changed="Account changed while reading your details")
     draft["missing"] = [
         key
         for key, present in {

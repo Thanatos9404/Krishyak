@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, File, Form, HTTPException, Request, Uplo
 from sarvam_service import LANGUAGES, api_key, capabilities, transcribe_audio
 from security import client_ip
 
-from .router import current_farmer, database, require_consent
+from .router import current_farmer, database, recheck, require_consent
 from .tts import ReadRequest, bounded_post
 
 router = APIRouter(prefix="/api/v2/speech", tags=["Private form dictation"])
@@ -65,10 +65,7 @@ async def form_dictation(
     # before returning the transcript. No audio or transcript is persisted.
     db.commit()
     result = await transcribe(request, file, language)
-    from .auth import authenticate
-
-    farmer, _ = authenticate(db, request)
-    require_consent(db, farmer, "speech_processing")
+    await recheck(db, request, "speech_processing")
     return result
 
 
@@ -87,10 +84,5 @@ async def private_read_aloud(
     quotas.check("tts_global", "all", 100, 86400)
     db.commit()
     result = await request.app.state.v2_read_aloud.synthesize(payload, request, owner)
-    from .auth import authenticate
-
-    current, _ = authenticate(db, request)
-    if current.id != owner:
-        raise HTTPException(403, "Account changed during speech processing")
-    require_consent(db, current, "speech_processing")
+    await recheck(db, request, "speech_processing", owner=owner, changed="Account changed during speech processing")
     return result

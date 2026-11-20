@@ -2,13 +2,14 @@
 
 import asyncio
 import os
+import threading
 import unittest
 from datetime import date, timedelta
 from types import SimpleNamespace
 from unittest.mock import patch
 from uuid import uuid4
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from fastapi.testclient import TestClient
 from sqlalchemy import delete
 
@@ -18,6 +19,7 @@ from v2.application import install_v2
 from v2.farm_context.models import india_today
 from v2.farm_context.transport import Unavailable
 from v2.farm_setup import season_now
+from v2.router import recheck
 from v2.settings import Settings
 
 ORIGIN = "http://localhost:3000"
@@ -106,6 +108,42 @@ class FakeGateway:
                 "properties": {"layers": [layer("clay", "%", 255), layer("sand", "%", 466), layer("silt", "%", 278)]}
             }
         raise AssertionError(provider)
+
+
+class EventLoopTests(unittest.TestCase):
+    """Async endpoints must not wait for a database connection on the event loop."""
+
+    def test_the_recheck_after_provider_work_runs_in_a_worker_thread(self):
+        seen = {}
+
+        def session(db, request):
+            seen["thread"] = threading.get_ident()
+            return SimpleNamespace(id="farmer-1"), None
+
+        async def main(owner):
+            with patch("v2.router.authenticate", session), patch("v2.router.require_consent") as consent:
+                current = await recheck(object(), object(), "speech_processing", owner=owner, changed="Changed")
+            return threading.get_ident(), current, consent
+
+        loop_thread, current, consent = asyncio.run(main("farmer-1"))
+        self.assertNotEqual(seen["thread"], loop_thread)
+        self.assertEqual(current.id, "farmer-1")
+        consent.assert_called_once()
+        with self.assertRaises(HTTPException) as refused:
+            asyncio.run(main("someone-else"))
+        self.assertEqual((refused.exception.status_code, refused.exception.detail), (403, "Changed"))
+
+    def test_a_serverless_instance_has_room_for_concurrent_requests_and_fails_fast(self):
+        from db.session import make_database
+
+        settings = SimpleNamespace(
+            database_url=SimpleNamespace(
+                get_secret_value=lambda: "postgresql+psycopg://u:p@ep-example-pooler.example.test/db"
+            )
+        )
+        engine, _ = make_database(settings)
+        self.assertEqual((engine.pool.size(), engine.pool._max_overflow, engine.pool._timeout), (2, 6, 8))
+        engine.dispose()
 
 
 class YieldTableTests(unittest.TestCase):
@@ -340,7 +378,9 @@ class RegistrationAndReportTests(unittest.TestCase):
         self.assertEqual(
             report["assumptions"]["season_rain_mm"], round(31 + 310 * 0.15)
         )  # rabi rain + carried moisture
-        # Other crops are only suggested if this district is recorded as growing them.
+        # Other rabi crops are compared, and only those this district is recorded as growing.
+        self.assertTrue(report["alternatives"], "the report should compare other crops of the season")
+        self.assertNotIn("wheat", [row["crop_id"] for row in report["alternatives"]])
         for row in report["alternatives"]:
             self.assertEqual(yields.district_yield(row["crop_id"], "rabi", "Rajasthan", "Jaipur")["level"], "district")
         self.assertEqual(self.client.post(f"/api/v2/plots/{plot['id']}/assessment").status_code, 200)
