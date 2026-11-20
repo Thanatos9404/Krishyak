@@ -3,6 +3,28 @@ import React, { useEffect, useState } from "react";
 import { farmApi } from "./api";
 import { IndiaLocationPicker } from "../../components/product/IndiaLocationPicker";
 import { locationFromProfile } from "../product/indiaLocations";
+// Same choices and wording as registration, so the answers can be changed here.
+const FARMING = [
+  [
+    "farming_kind",
+    "What kind of farming do you do?",
+    [
+      ["crops", "Field crops"],
+      ["crops_and_animals", "Crops and animals"],
+      ["vegetables_and_fruit", "Vegetables and fruit"],
+      ["mixed", "A bit of everything"],
+    ],
+  ],
+  [
+    "farming_method",
+    "How do you farm?",
+    [
+      ["conventional", "With fertilizer and sprays"],
+      ["organic", "Organic"],
+      ["natural", "Natural farming"],
+    ],
+  ],
+];
 export default function AccountDetails({
   farmer,
   language,
@@ -20,6 +42,8 @@ export default function AccountDetails({
     village: farmer.village || "",
     subdistrict: farmer.subdistrict || "",
     pin_code: farmer.pin_code || "",
+    farming_kind: farmer.farming_kind || "",
+    farming_method: farmer.farming_method || "",
   });
   const [locationChanged, setLocationChanged] = useState(false);
   const [enrollments, setEnrollments] = useState([]),
@@ -59,6 +83,8 @@ export default function AccountDetails({
                 village: profile.village,
                 subdistrict: profile.subdistrict,
                 pin_code: profile.pin_code || null,
+                farming_kind: profile.farming_kind || null,
+                farming_method: profile.farming_method || null,
                 ...(locationChanged
                   ? {
                       state_code: profile.state_code,
@@ -116,6 +142,27 @@ export default function AccountDetails({
                 }))
               }
             />
+          </label>
+        ))}
+        {FARMING.map(([key, label, options]) => (
+          <label className="v2-label" key={key}>
+            {tx(label)}
+            <select
+              value={profile[key]}
+              onChange={(event) =>
+                setProfile((previous) => ({
+                  ...previous,
+                  [key]: event.target.value,
+                }))
+              }
+            >
+              <option value="">{tx("Not answered")}</option>
+              {options.map(([value, name]) => (
+                <option key={value} value={value}>
+                  {tx(name)}
+                </option>
+              ))}
+            </select>
           </label>
         ))}
         <button disabled={busy || offline}>{tx("Save account details")}</button>
