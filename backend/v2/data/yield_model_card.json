@@ -1,0 +1,4952 @@
+{
+  "model_id": "district-yield-hgb-2026-11-20",
+  "algorithm": "scikit-learn HistGradientBoostingRegressor (absolute-error loss), target = yield / district 5-year mean",
+  "features": [
+    "lag1",
+    "lag2",
+    "lag3",
+    "mean3",
+    "mean5",
+    "std5",
+    "slope5",
+    "best5",
+    "worst5",
+    "n_hist",
+    "gap",
+    "state_mean3",
+    "nation_mean3",
+    "nation_slope5",
+    "log_area",
+    "horizon",
+    "target_year",
+    "crop_code",
+    "season_code"
+  ],
+  "data": {
+    "source": "Directorate of Economics and Statistics, district-wise area, production and yield (1997-98 to 2022-23; 2024-25)",
+    "rows_after_cleaning": 175232,
+    "series": 14123,
+    "cleaning": "reported area >= 200 ha, positive yield, yield <= 4x the crop's 99th percentile"
+  },
+  "splits": {
+    "train": "harvest years 2003-04 to 2019-20 (395,250 examples)",
+    "validation": "2020-21 and 2021-22 (52,879)",
+    "test": "2022-23 (26,677)",
+    "out_of_time": "2024-25 district file, forecast from records up to 2022-23 (two years ahead)",
+    "leakage_control": "every feature is computed only from years before the forecast cutoff"
+  },
+  "served_forecast": {
+    "rule": "per crop, the candidate (model, model/5-year-mean blend, district 5-year mean) with the lowest median error on validation at the two-year horizon",
+    "method_by_crop": {
+      "bajra": "model",
+      "barley": "model",
+      "chickpea": "model",
+      "cotton": "model",
+      "groundnut": "model",
+      "jowar": "model",
+      "lentil": "mean5",
+      "maize": "model",
+      "moong": "model",
+      "mustard": "blend",
+      "onion": "blend",
+      "pigeon_pea": "model",
+      "potato": "model",
+      "rice": "model",
+      "sesame": "model",
+      "soybean": "blend",
+      "sugarcane": "model",
+      "urad": "model",
+      "wheat": "blend"
+    }
+  },
+  "validation": {
+    "horizon_1_years": {
+      "served_per_crop_selection": {
+        "n": 13879,
+        "mae_kg_ha": 860.8,
+        "median_ape_pct": 11.84,
+        "mean_ape_pct": 21.59,
+        "within_20pct": 67.5,
+        "r2": 0.9459
+      },
+      "model": {
+        "n": 13879,
+        "mae_kg_ha": 867.5,
+        "median_ape_pct": 11.99,
+        "mean_ape_pct": 21.77,
+        "within_20pct": 67.2,
+        "r2": 0.9459
+      },
+      "blend_model_and_5_year_mean": {
+        "n": 13879,
+        "mae_kg_ha": 871.5,
+        "median_ape_pct": 12.11,
+        "mean_ape_pct": 21.47,
+        "within_20pct": 66.9,
+        "r2": 0.9449
+      },
+      "district_last_year": {
+        "n": 13879,
+        "mae_kg_ha": 930.8,
+        "median_ape_pct": 12.11,
+        "mean_ape_pct": 23.15,
+        "within_20pct": 64.8,
+        "r2": 0.9371
+      },
+      "district_5_year_mean": {
+        "n": 13879,
+        "mae_kg_ha": 950.4,
+        "median_ape_pct": 13.32,
+        "mean_ape_pct": 22.36,
+        "within_20pct": 64.2,
+        "r2": 0.9399
+      },
+      "national_average_previous_engine": {
+        "n": 13879,
+        "mae_kg_ha": 1995.0,
+        "median_ape_pct": 29.44,
+        "mean_ape_pct": 50.08,
+        "within_20pct": 35.0,
+        "r2": 0.8336
+      },
+      "by_crop": {
+        "bajra": {
+          "served": {
+            "n": 423,
+            "mae_kg_ha": 287.7,
+            "median_ape_pct": 12.97,
+            "mean_ape_pct": 20.29,
+            "within_20pct": 66.0,
+            "r2": 0.7632
+          },
+          "served_method": "model",
+          "model": {
+            "n": 423,
+            "mae_kg_ha": 287.7,
+            "median_ape_pct": 12.97,
+            "mean_ape_pct": 20.29,
+            "within_20pct": 66.0,
+            "r2": 0.7632
+          },
+          "district_5_year_mean": {
+            "n": 423,
+            "mae_kg_ha": 296.7,
+            "median_ape_pct": 13.25,
+            "mean_ape_pct": 19.61,
+            "within_20pct": 63.8,
+            "r2": 0.7352
+          }
+        },
+        "barley": {
+          "served": {
+            "n": 297,
+            "mae_kg_ha": 331.5,
+            "median_ape_pct": 10.17,
+            "mean_ape_pct": 15.4,
+            "within_20pct": 73.7,
+            "r2": 0.7821
+          },
+          "served_method": "model",
+          "model": {
+            "n": 297,
+            "mae_kg_ha": 331.5,
+            "median_ape_pct": 10.17,
+            "mean_ape_pct": 15.4,
+            "within_20pct": 73.7,
+            "r2": 0.7821
+          },
+          "district_5_year_mean": {
+            "n": 297,
+            "mae_kg_ha": 315.2,
+            "median_ape_pct": 9.75,
+            "mean_ape_pct": 13.34,
+            "within_20pct": 78.8,
+            "r2": 0.7941
+          }
+        },
+        "chickpea": {
+          "served": {
+            "n": 652,
+            "mae_kg_ha": 193.3,
+            "median_ape_pct": 11.78,
+            "mean_ape_pct": 16.79,
+            "within_20pct": 69.9,
+            "r2": 0.637
+          },
+          "served_method": "model",
+          "model": {
+            "n": 652,
+            "mae_kg_ha": 193.3,
+            "median_ape_pct": 11.78,
+            "mean_ape_pct": 16.79,
+            "within_20pct": 69.9,
+            "r2": 0.637
+          },
+          "district_5_year_mean": {
+            "n": 652,
+            "mae_kg_ha": 222.0,
+            "median_ape_pct": 13.87,
+            "mean_ape_pct": 17.36,
+            "within_20pct": 64.9,
+            "r2": 0.5205
+          }
+        },
+        "cotton": {
+          "served": {
+            "n": 468,
+            "mae_kg_ha": 883.6,
+            "median_ape_pct": 17.46,
+            "mean_ape_pct": 53.0,
+            "within_20pct": 53.8,
+            "r2": -0.0993
+          },
+          "served_method": "model",
+          "model": {
+            "n": 468,
+            "mae_kg_ha": 883.6,
+            "median_ape_pct": 17.46,
+            "mean_ape_pct": 53.0,
+            "within_20pct": 53.8,
+            "r2": -0.0993
+          },
+          "district_5_year_mean": {
+            "n": 468,
+            "mae_kg_ha": 937.5,
+            "median_ape_pct": 21.05,
+            "mean_ape_pct": 54.98,
+            "within_20pct": 47.6,
+            "r2": -0.1352
+          }
+        },
+        "groundnut": {
+          "served": {
+            "n": 822,
+            "mae_kg_ha": 334.6,
+            "median_ape_pct": 14.38,
+            "mean_ape_pct": 19.88,
+            "within_20pct": 62.9,
+            "r2": 0.6999
+          },
+          "served_method": "model",
+          "model": {
+            "n": 822,
+            "mae_kg_ha": 334.6,
+            "median_ape_pct": 14.38,
+            "mean_ape_pct": 19.88,
+            "within_20pct": 62.9,
+            "r2": 0.6999
+          },
+          "district_5_year_mean": {
+            "n": 822,
+            "mae_kg_ha": 351.1,
+            "median_ape_pct": 14.37,
+            "mean_ape_pct": 19.7,
+            "within_20pct": 63.0,
+            "r2": 0.6576
+          }
+        },
+        "jowar": {
+          "served": {
+            "n": 539,
+            "mae_kg_ha": 317.5,
+            "median_ape_pct": 19.09,
+            "mean_ape_pct": 28.21,
+            "within_20pct": 51.6,
+            "r2": 0.541
+          },
+          "served_method": "model",
+          "model": {
+            "n": 539,
+            "mae_kg_ha": 317.5,
+            "median_ape_pct": 19.09,
+            "mean_ape_pct": 28.21,
+            "within_20pct": 51.6,
+            "r2": 0.541
+          },
+          "district_5_year_mean": {
+            "n": 539,
+            "mae_kg_ha": 341.7,
+            "median_ape_pct": 21.61,
+            "mean_ape_pct": 29.9,
+            "within_20pct": 46.9,
+            "r2": 0.4984
+          }
+        },
+        "lentil": {
+          "served": {
+            "n": 449,
+            "mae_kg_ha": 148.6,
+            "median_ape_pct": 12.34,
+            "mean_ape_pct": 16.82,
+            "within_20pct": 66.4,
+            "r2": 0.4718
+          },
+          "served_method": "mean5",
+          "model": {
+            "n": 449,
+            "mae_kg_ha": 144.3,
+            "median_ape_pct": 11.91,
+            "mean_ape_pct": 16.3,
+            "within_20pct": 70.4,
+            "r2": 0.4869
+          },
+          "district_5_year_mean": {
+            "n": 449,
+            "mae_kg_ha": 148.6,
+            "median_ape_pct": 12.34,
+            "mean_ape_pct": 16.82,
+            "within_20pct": 66.4,
+            "r2": 0.4718
+          }
+        },
+        "maize": {
+          "served": {
+            "n": 1550,
+            "mae_kg_ha": 550.3,
+            "median_ape_pct": 12.26,
+            "mean_ape_pct": 19.91,
+            "within_20pct": 68.6,
+            "r2": 0.8142
+          },
+          "served_method": "model",
+          "model": {
+            "n": 1550,
+            "mae_kg_ha": 550.3,
+            "median_ape_pct": 12.26,
+            "mean_ape_pct": 19.91,
+            "within_20pct": 68.6,
+            "r2": 0.8142
+          },
+          "district_5_year_mean": {
+            "n": 1550,
+            "mae_kg_ha": 619.8,
+            "median_ape_pct": 15.11,
+            "mean_ape_pct": 21.14,
+            "within_20pct": 60.8,
+            "r2": 0.7887
+          }
+        },
+        "moong": {
+          "served": {
+            "n": 826,
+            "mae_kg_ha": 154.4,
+            "median_ape_pct": 18.79,
+            "mean_ape_pct": 32.62,
+            "within_20pct": 53.1,
+            "r2": 0.514
+          },
+          "served_method": "model",
+          "model": {
+            "n": 826,
+            "mae_kg_ha": 154.4,
+            "median_ape_pct": 18.79,
+            "mean_ape_pct": 32.62,
+            "within_20pct": 53.1,
+            "r2": 0.514
+          },
+          "district_5_year_mean": {
+            "n": 826,
+            "mae_kg_ha": 165.5,
+            "median_ape_pct": 20.48,
+            "mean_ape_pct": 33.05,
+            "within_20pct": 48.8,
+            "r2": 0.4514
+          }
+        },
+        "mustard": {
+          "served": {
+            "n": 824,
+            "mae_kg_ha": 155.4,
+            "median_ape_pct": 9.26,
+            "mean_ape_pct": 15.18,
+            "within_20pct": 74.5,
+            "r2": 0.7649
+          },
+          "served_method": "blend",
+          "model": {
+            "n": 824,
+            "mae_kg_ha": 157.5,
+            "median_ape_pct": 9.38,
+            "mean_ape_pct": 16.26,
+            "within_20pct": 73.2,
+            "r2": 0.7626
+          },
+          "district_5_year_mean": {
+            "n": 824,
+            "mae_kg_ha": 168.3,
+            "median_ape_pct": 11.23,
+            "mean_ape_pct": 15.5,
+            "within_20pct": 74.2,
+            "r2": 0.739
+          }
+        },
+        "onion": {
+          "served": {
+            "n": 371,
+            "mae_kg_ha": 2497.8,
+            "median_ape_pct": 13.35,
+            "mean_ape_pct": 23.69,
+            "within_20pct": 64.2,
+            "r2": 0.7239
+          },
+          "served_method": "blend",
+          "model": {
+            "n": 371,
+            "mae_kg_ha": 2661.0,
+            "median_ape_pct": 14.47,
+            "mean_ape_pct": 26.0,
+            "within_20pct": 59.0,
+            "r2": 0.7266
+          },
+          "district_5_year_mean": {
+            "n": 371,
+            "mae_kg_ha": 2662.9,
+            "median_ape_pct": 15.26,
+            "mean_ape_pct": 23.97,
+            "within_20pct": 61.7,
+            "r2": 0.6845
+          }
+        },
+        "pigeon_pea": {
+          "served": {
+            "n": 677,
+            "mae_kg_ha": 201.1,
+            "median_ape_pct": 15.13,
+            "mean_ape_pct": 24.71,
+            "within_20pct": 58.8,
+            "r2": 0.5364
+          },
+          "served_method": "model",
+          "model": {
+            "n": 677,
+            "mae_kg_ha": 201.1,
+            "median_ape_pct": 15.13,
+            "mean_ape_pct": 24.71,
+            "within_20pct": 58.8,
+            "r2": 0.5364
+          },
+          "district_5_year_mean": {
+            "n": 677,
+            "mae_kg_ha": 212.1,
+            "median_ape_pct": 15.94,
+            "mean_ape_pct": 24.5,
+            "within_20pct": 57.5,
+            "r2": 0.4701
+          }
+        },
+        "potato": {
+          "served": {
+            "n": 636,
+            "mae_kg_ha": 3084.0,
+            "median_ape_pct": 12.15,
+            "mean_ape_pct": 19.13,
+            "within_20pct": 67.1,
+            "r2": 0.7635
+          },
+          "served_method": "model",
+          "model": {
+            "n": 636,
+            "mae_kg_ha": 3084.0,
+            "median_ape_pct": 12.15,
+            "mean_ape_pct": 19.13,
+            "within_20pct": 67.1,
+            "r2": 0.7635
+          },
+          "district_5_year_mean": {
+            "n": 636,
+            "mae_kg_ha": 3467.3,
+            "median_ape_pct": 14.86,
+            "mean_ape_pct": 20.36,
+            "within_20pct": 60.1,
+            "r2": 0.7209
+          }
+        },
+        "rice": {
+          "served": {
+            "n": 1967,
+            "mae_kg_ha": 322.5,
+            "median_ape_pct": 8.24,
+            "mean_ape_pct": 13.45,
+            "within_20pct": 80.7,
+            "r2": 0.6173
+          },
+          "served_method": "model",
+          "model": {
+            "n": 1967,
+            "mae_kg_ha": 322.5,
+            "median_ape_pct": 8.24,
+            "mean_ape_pct": 13.45,
+            "within_20pct": 80.7,
+            "r2": 0.6173
+          },
+          "district_5_year_mean": {
+            "n": 1967,
+            "mae_kg_ha": 361.4,
+            "median_ape_pct": 9.49,
+            "mean_ape_pct": 14.61,
+            "within_20pct": 77.0,
+            "r2": 0.5626
+          }
+        },
+        "sesame": {
+          "served": {
+            "n": 650,
+            "mae_kg_ha": 104.0,
+            "median_ape_pct": 17.94,
+            "mean_ape_pct": 31.75,
+            "within_20pct": 54.6,
+            "r2": 0.6973
+          },
+          "served_method": "model",
+          "model": {
+            "n": 650,
+            "mae_kg_ha": 104.0,
+            "median_ape_pct": 17.94,
+            "mean_ape_pct": 31.75,
+            "within_20pct": 54.6,
+            "r2": 0.6973
+          },
+          "district_5_year_mean": {
+            "n": 650,
+            "mae_kg_ha": 112.9,
+            "median_ape_pct": 19.49,
+            "mean_ape_pct": 32.75,
+            "within_20pct": 50.6,
+            "r2": 0.6407
+          }
+        },
+        "soybean": {
+          "served": {
+            "n": 314,
+            "mae_kg_ha": 260.2,
+            "median_ape_pct": 17.68,
+            "mean_ape_pct": 29.34,
+            "within_20pct": 52.2,
+            "r2": 0.3824
+          },
+          "served_method": "blend",
+          "model": {
+            "n": 314,
+            "mae_kg_ha": 262.0,
+            "median_ape_pct": 19.49,
+            "mean_ape_pct": 28.91,
+            "within_20pct": 51.3,
+            "r2": 0.3789
+          },
+          "district_5_year_mean": {
+            "n": 314,
+            "mae_kg_ha": 268.3,
+            "median_ape_pct": 17.19,
+            "mean_ape_pct": 30.75,
+            "within_20pct": 54.8,
+            "r2": 0.334
+          }
+        },
+        "sugarcane": {
+          "served": {
+            "n": 546,
+            "mae_kg_ha": 9822.2,
+            "median_ape_pct": 7.55,
+            "mean_ape_pct": 19.57,
+            "within_20pct": 79.9,
+            "r2": 0.6425
+          },
+          "served_method": "model",
+          "model": {
+            "n": 546,
+            "mae_kg_ha": 9822.2,
+            "median_ape_pct": 7.55,
+            "mean_ape_pct": 19.57,
+            "within_20pct": 79.9,
+            "r2": 0.6425
+          },
+          "district_5_year_mean": {
+            "n": 546,
+            "mae_kg_ha": 10948.4,
+            "median_ape_pct": 8.55,
+            "mean_ape_pct": 21.94,
+            "within_20pct": 73.3,
+            "r2": 0.6063
+          }
+        },
+        "urad": {
+          "served": {
+            "n": 978,
+            "mae_kg_ha": 131.4,
+            "median_ape_pct": 13.4,
+            "mean_ape_pct": 26.87,
+            "within_20pct": 61.2,
+            "r2": 0.5802
+          },
+          "served_method": "model",
+          "model": {
+            "n": 978,
+            "mae_kg_ha": 131.4,
+            "median_ape_pct": 13.4,
+            "mean_ape_pct": 26.87,
+            "within_20pct": 61.2,
+            "r2": 0.5802
+          },
+          "district_5_year_mean": {
+            "n": 978,
+            "mae_kg_ha": 140.4,
+            "median_ape_pct": 15.4,
+            "mean_ape_pct": 27.84,
+            "within_20pct": 60.7,
+            "r2": 0.5288
+          }
+        },
+        "wheat": {
+          "served": {
+            "n": 890,
+            "mae_kg_ha": 299.8,
+            "median_ape_pct": 6.86,
+            "mean_ape_pct": 11.67,
+            "within_20pct": 83.4,
+            "r2": 0.8298
+          },
+          "served_method": "blend",
+          "model": {
+            "n": 890,
+            "mae_kg_ha": 335.6,
+            "median_ape_pct": 8.31,
+            "mean_ape_pct": 13.0,
+            "within_20pct": 81.0,
+            "r2": 0.8141
+          },
+          "district_5_year_mean": {
+            "n": 890,
+            "mae_kg_ha": 328.8,
+            "median_ape_pct": 7.96,
+            "mean_ape_pct": 12.43,
+            "within_20pct": 81.7,
+            "r2": 0.8092
+          }
+        }
+      }
+    },
+    "horizon_2_years": {
+      "served_per_crop_selection": {
+        "n": 13561,
+        "mae_kg_ha": 946.2,
+        "median_ape_pct": 13.67,
+        "mean_ape_pct": 23.49,
+        "within_20pct": 63.4,
+        "r2": 0.9389
+      },
+      "model": {
+        "n": 13561,
+        "mae_kg_ha": 949.5,
+        "median_ape_pct": 13.75,
+        "mean_ape_pct": 23.61,
+        "within_20pct": 63.2,
+        "r2": 0.9389
+      },
+      "blend_model_and_5_year_mean": {
+        "n": 13561,
+        "mae_kg_ha": 974.1,
+        "median_ape_pct": 14.03,
+        "mean_ape_pct": 23.5,
+        "within_20pct": 62.3,
+        "r2": 0.9374
+      },
+      "district_last_year": {
+        "n": 13561,
+        "mae_kg_ha": 1075.9,
+        "median_ape_pct": 15.56,
+        "mean_ape_pct": 26.13,
+        "within_20pct": 58.4,
+        "r2": 0.9193
+      },
+      "district_5_year_mean": {
+        "n": 13561,
+        "mae_kg_ha": 1071.7,
+        "median_ape_pct": 15.72,
+        "mean_ape_pct": 24.65,
+        "within_20pct": 58.9,
+        "r2": 0.9319
+      },
+      "national_average_previous_engine": {
+        "n": 13561,
+        "mae_kg_ha": 2008.9,
+        "median_ape_pct": 29.4,
+        "mean_ape_pct": 50.21,
+        "within_20pct": 35.1,
+        "r2": 0.8317
+      },
+      "by_crop": {
+        "bajra": {
+          "served": {
+            "n": 421,
+            "mae_kg_ha": 305.3,
+            "median_ape_pct": 13.92,
+            "mean_ape_pct": 20.63,
+            "within_20pct": 62.7,
+            "r2": 0.7254
+          },
+          "served_method": "model",
+          "model": {
+            "n": 421,
+            "mae_kg_ha": 305.3,
+            "median_ape_pct": 13.92,
+            "mean_ape_pct": 20.63,
+            "within_20pct": 62.7,
+            "r2": 0.7254
+          },
+          "district_5_year_mean": {
+            "n": 421,
+            "mae_kg_ha": 333.2,
+            "median_ape_pct": 16.01,
+            "mean_ape_pct": 21.2,
+            "within_20pct": 59.9,
+            "r2": 0.6746
+          }
+        },
+        "barley": {
+          "served": {
+            "n": 294,
+            "mae_kg_ha": 328.0,
+            "median_ape_pct": 9.09,
+            "mean_ape_pct": 15.46,
+            "within_20pct": 72.8,
+            "r2": 0.772
+          },
+          "served_method": "model",
+          "model": {
+            "n": 294,
+            "mae_kg_ha": 328.0,
+            "median_ape_pct": 9.09,
+            "mean_ape_pct": 15.46,
+            "within_20pct": 72.8,
+            "r2": 0.772
+          },
+          "district_5_year_mean": {
+            "n": 294,
+            "mae_kg_ha": 403.0,
+            "median_ape_pct": 11.5,
+            "mean_ape_pct": 16.24,
+            "within_20pct": 70.4,
+            "r2": 0.6954
+          }
+        },
+        "chickpea": {
+          "served": {
+            "n": 645,
+            "mae_kg_ha": 217.2,
+            "median_ape_pct": 13.22,
+            "mean_ape_pct": 18.68,
+            "within_20pct": 65.9,
+            "r2": 0.5339
+          },
+          "served_method": "model",
+          "model": {
+            "n": 645,
+            "mae_kg_ha": 217.2,
+            "median_ape_pct": 13.22,
+            "mean_ape_pct": 18.68,
+            "within_20pct": 65.9,
+            "r2": 0.5339
+          },
+          "district_5_year_mean": {
+            "n": 645,
+            "mae_kg_ha": 276.0,
+            "median_ape_pct": 18.57,
+            "mean_ape_pct": 21.23,
+            "within_20pct": 53.5,
+            "r2": 0.3038
+          }
+        },
+        "cotton": {
+          "served": {
+            "n": 460,
+            "mae_kg_ha": 929.6,
+            "median_ape_pct": 19.45,
+            "mean_ape_pct": 55.42,
+            "within_20pct": 50.2,
+            "r2": -0.1257
+          },
+          "served_method": "model",
+          "model": {
+            "n": 460,
+            "mae_kg_ha": 929.6,
+            "median_ape_pct": 19.45,
+            "mean_ape_pct": 55.42,
+            "within_20pct": 50.2,
+            "r2": -0.1257
+          },
+          "district_5_year_mean": {
+            "n": 460,
+            "mae_kg_ha": 953.0,
+            "median_ape_pct": 21.82,
+            "mean_ape_pct": 54.73,
+            "within_20pct": 47.8,
+            "r2": -0.1527
+          }
+        },
+        "groundnut": {
+          "served": {
+            "n": 797,
+            "mae_kg_ha": 352.0,
+            "median_ape_pct": 14.89,
+            "mean_ape_pct": 20.4,
+            "within_20pct": 63.0,
+            "r2": 0.6691
+          },
+          "served_method": "model",
+          "model": {
+            "n": 797,
+            "mae_kg_ha": 352.0,
+            "median_ape_pct": 14.89,
+            "mean_ape_pct": 20.4,
+            "within_20pct": 63.0,
+            "r2": 0.6691
+          },
+          "district_5_year_mean": {
+            "n": 797,
+            "mae_kg_ha": 387.4,
+            "median_ape_pct": 16.39,
+            "mean_ape_pct": 21.41,
+            "within_20pct": 57.6,
+            "r2": 0.6156
+          }
+        },
+        "jowar": {
+          "served": {
+            "n": 531,
+            "mae_kg_ha": 364.2,
+            "median_ape_pct": 22.99,
+            "mean_ape_pct": 31.05,
+            "within_20pct": 44.8,
+            "r2": 0.4559
+          },
+          "served_method": "model",
+          "model": {
+            "n": 531,
+            "mae_kg_ha": 364.2,
+            "median_ape_pct": 22.99,
+            "mean_ape_pct": 31.05,
+            "within_20pct": 44.8,
+            "r2": 0.4559
+          },
+          "district_5_year_mean": {
+            "n": 531,
+            "mae_kg_ha": 384.2,
+            "median_ape_pct": 25.02,
+            "mean_ape_pct": 32.64,
+            "within_20pct": 41.2,
+            "r2": 0.4078
+          }
+        },
+        "lentil": {
+          "served": {
+            "n": 432,
+            "mae_kg_ha": 161.0,
+            "median_ape_pct": 13.06,
+            "mean_ape_pct": 17.95,
+            "within_20pct": 66.2,
+            "r2": 0.3804
+          },
+          "served_method": "mean5",
+          "model": {
+            "n": 432,
+            "mae_kg_ha": 161.1,
+            "median_ape_pct": 14.63,
+            "mean_ape_pct": 18.17,
+            "within_20pct": 63.9,
+            "r2": 0.4001
+          },
+          "district_5_year_mean": {
+            "n": 432,
+            "mae_kg_ha": 161.0,
+            "median_ape_pct": 13.06,
+            "mean_ape_pct": 17.95,
+            "within_20pct": 66.2,
+            "r2": 0.3804
+          }
+        },
+        "maize": {
+          "served": {
+            "n": 1519,
+            "mae_kg_ha": 628.6,
+            "median_ape_pct": 14.66,
+            "mean_ape_pct": 22.42,
+            "within_20pct": 63.1,
+            "r2": 0.7737
+          },
+          "served_method": "model",
+          "model": {
+            "n": 1519,
+            "mae_kg_ha": 628.6,
+            "median_ape_pct": 14.66,
+            "mean_ape_pct": 22.42,
+            "within_20pct": 63.1,
+            "r2": 0.7737
+          },
+          "district_5_year_mean": {
+            "n": 1519,
+            "mae_kg_ha": 716.3,
+            "median_ape_pct": 18.64,
+            "mean_ape_pct": 24.15,
+            "within_20pct": 52.8,
+            "r2": 0.7275
+          }
+        },
+        "moong": {
+          "served": {
+            "n": 790,
+            "mae_kg_ha": 169.0,
+            "median_ape_pct": 22.1,
+            "mean_ape_pct": 36.63,
+            "within_20pct": 44.7,
+            "r2": 0.4607
+          },
+          "served_method": "model",
+          "model": {
+            "n": 790,
+            "mae_kg_ha": 169.0,
+            "median_ape_pct": 22.1,
+            "mean_ape_pct": 36.63,
+            "within_20pct": 44.7,
+            "r2": 0.4607
+          },
+          "district_5_year_mean": {
+            "n": 790,
+            "mae_kg_ha": 182.7,
+            "median_ape_pct": 23.13,
+            "mean_ape_pct": 36.56,
+            "within_20pct": 44.3,
+            "r2": 0.3623
+          }
+        },
+        "mustard": {
+          "served": {
+            "n": 815,
+            "mae_kg_ha": 179.3,
+            "median_ape_pct": 11.24,
+            "mean_ape_pct": 17.05,
+            "within_20pct": 71.2,
+            "r2": 0.7175
+          },
+          "served_method": "blend",
+          "model": {
+            "n": 815,
+            "mae_kg_ha": 174.2,
+            "median_ape_pct": 11.39,
+            "mean_ape_pct": 17.77,
+            "within_20pct": 71.5,
+            "r2": 0.7329
+          },
+          "district_5_year_mean": {
+            "n": 815,
+            "mae_kg_ha": 199.9,
+            "median_ape_pct": 13.83,
+            "mean_ape_pct": 17.86,
+            "within_20pct": 66.1,
+            "r2": 0.6707
+          }
+        },
+        "onion": {
+          "served": {
+            "n": 365,
+            "mae_kg_ha": 2755.6,
+            "median_ape_pct": 15.35,
+            "mean_ape_pct": 25.15,
+            "within_20pct": 60.0,
+            "r2": 0.6577
+          },
+          "served_method": "blend",
+          "model": {
+            "n": 365,
+            "mae_kg_ha": 2863.6,
+            "median_ape_pct": 16.81,
+            "mean_ape_pct": 27.26,
+            "within_20pct": 57.8,
+            "r2": 0.6607
+          },
+          "district_5_year_mean": {
+            "n": 365,
+            "mae_kg_ha": 3017.0,
+            "median_ape_pct": 17.49,
+            "mean_ape_pct": 25.89,
+            "within_20pct": 56.4,
+            "r2": 0.6139
+          }
+        },
+        "pigeon_pea": {
+          "served": {
+            "n": 667,
+            "mae_kg_ha": 215.0,
+            "median_ape_pct": 16.79,
+            "mean_ape_pct": 25.68,
+            "within_20pct": 55.5,
+            "r2": 0.4735
+          },
+          "served_method": "model",
+          "model": {
+            "n": 667,
+            "mae_kg_ha": 215.0,
+            "median_ape_pct": 16.79,
+            "mean_ape_pct": 25.68,
+            "within_20pct": 55.5,
+            "r2": 0.4735
+          },
+          "district_5_year_mean": {
+            "n": 667,
+            "mae_kg_ha": 234.0,
+            "median_ape_pct": 18.73,
+            "mean_ape_pct": 26.39,
+            "within_20pct": 52.8,
+            "r2": 0.3794
+          }
+        },
+        "potato": {
+          "served": {
+            "n": 630,
+            "mae_kg_ha": 3229.0,
+            "median_ape_pct": 13.74,
+            "mean_ape_pct": 20.74,
+            "within_20pct": 63.5,
+            "r2": 0.7546
+          },
+          "served_method": "model",
+          "model": {
+            "n": 630,
+            "mae_kg_ha": 3229.0,
+            "median_ape_pct": 13.74,
+            "mean_ape_pct": 20.74,
+            "within_20pct": 63.5,
+            "r2": 0.7546
+          },
+          "district_5_year_mean": {
+            "n": 630,
+            "mae_kg_ha": 3752.1,
+            "median_ape_pct": 16.13,
+            "mean_ape_pct": 21.8,
+            "within_20pct": 57.5,
+            "r2": 0.6908
+          }
+        },
+        "rice": {
+          "served": {
+            "n": 1872,
+            "mae_kg_ha": 346.0,
+            "median_ape_pct": 9.49,
+            "mean_ape_pct": 14.57,
+            "within_20pct": 77.2,
+            "r2": 0.5612
+          },
+          "served_method": "model",
+          "model": {
+            "n": 1872,
+            "mae_kg_ha": 346.0,
+            "median_ape_pct": 9.49,
+            "mean_ape_pct": 14.57,
+            "within_20pct": 77.2,
+            "r2": 0.5612
+          },
+          "district_5_year_mean": {
+            "n": 1872,
+            "mae_kg_ha": 396.8,
+            "median_ape_pct": 11.26,
+            "mean_ape_pct": 16.16,
+            "within_20pct": 72.9,
+            "r2": 0.4895
+          }
+        },
+        "sesame": {
+          "served": {
+            "n": 639,
+            "mae_kg_ha": 111.9,
+            "median_ape_pct": 19.87,
+            "mean_ape_pct": 32.79,
+            "within_20pct": 50.4,
+            "r2": 0.6633
+          },
+          "served_method": "model",
+          "model": {
+            "n": 639,
+            "mae_kg_ha": 111.9,
+            "median_ape_pct": 19.87,
+            "mean_ape_pct": 32.79,
+            "within_20pct": 50.4,
+            "r2": 0.6633
+          },
+          "district_5_year_mean": {
+            "n": 639,
+            "mae_kg_ha": 124.0,
+            "median_ape_pct": 21.23,
+            "mean_ape_pct": 34.0,
+            "within_20pct": 46.8,
+            "r2": 0.5716
+          }
+        },
+        "soybean": {
+          "served": {
+            "n": 311,
+            "mae_kg_ha": 297.3,
+            "median_ape_pct": 21.02,
+            "mean_ape_pct": 33.55,
+            "within_20pct": 49.2,
+            "r2": 0.2332
+          },
+          "served_method": "blend",
+          "model": {
+            "n": 311,
+            "mae_kg_ha": 296.7,
+            "median_ape_pct": 22.48,
+            "mean_ape_pct": 32.26,
+            "within_20pct": 45.0,
+            "r2": 0.2332
+          },
+          "district_5_year_mean": {
+            "n": 311,
+            "mae_kg_ha": 305.6,
+            "median_ape_pct": 21.29,
+            "mean_ape_pct": 35.52,
+            "within_20pct": 48.2,
+            "r2": 0.1805
+          }
+        },
+        "sugarcane": {
+          "served": {
+            "n": 538,
+            "mae_kg_ha": 10811.7,
+            "median_ape_pct": 7.89,
+            "mean_ape_pct": 22.62,
+            "within_20pct": 74.9,
+            "r2": 0.6
+          },
+          "served_method": "model",
+          "model": {
+            "n": 538,
+            "mae_kg_ha": 10811.7,
+            "median_ape_pct": 7.89,
+            "mean_ape_pct": 22.62,
+            "within_20pct": 74.9,
+            "r2": 0.6
+          },
+          "district_5_year_mean": {
+            "n": 538,
+            "mae_kg_ha": 12330.5,
+            "median_ape_pct": 10.36,
+            "mean_ape_pct": 24.9,
+            "within_20pct": 70.8,
+            "r2": 0.5602
+          }
+        },
+        "urad": {
+          "served": {
+            "n": 948,
+            "mae_kg_ha": 146.7,
+            "median_ape_pct": 15.61,
+            "mean_ape_pct": 30.08,
+            "within_20pct": 56.3,
+            "r2": 0.5062
+          },
+          "served_method": "model",
+          "model": {
+            "n": 948,
+            "mae_kg_ha": 146.7,
+            "median_ape_pct": 15.61,
+            "mean_ape_pct": 30.08,
+            "within_20pct": 56.3,
+            "r2": 0.5062
+          },
+          "district_5_year_mean": {
+            "n": 948,
+            "mae_kg_ha": 155.0,
+            "median_ape_pct": 17.07,
+            "mean_ape_pct": 30.75,
+            "within_20pct": 55.5,
+            "r2": 0.4438
+          }
+        },
+        "wheat": {
+          "served": {
+            "n": 887,
+            "mae_kg_ha": 349.3,
+            "median_ape_pct": 8.44,
+            "mean_ape_pct": 13.16,
+            "within_20pct": 79.6,
+            "r2": 0.7895
+          },
+          "served_method": "blend",
+          "model": {
+            "n": 887,
+            "mae_kg_ha": 360.3,
+            "median_ape_pct": 8.67,
+            "mean_ape_pct": 13.82,
+            "within_20pct": 78.5,
+            "r2": 0.7797
+          },
+          "district_5_year_mean": {
+            "n": 887,
+            "mae_kg_ha": 408.1,
+            "median_ape_pct": 11.09,
+            "mean_ape_pct": 14.79,
+            "within_20pct": 75.5,
+            "r2": 0.745
+          }
+        }
+      }
+    },
+    "horizon_3_years": {
+      "served_per_crop_selection": {
+        "n": 12955,
+        "mae_kg_ha": 975.4,
+        "median_ape_pct": 14.63,
+        "mean_ape_pct": 24.92,
+        "within_20pct": 61.2,
+        "r2": 0.9393
+      },
+      "model": {
+        "n": 12955,
+        "mae_kg_ha": 970.6,
+        "median_ape_pct": 14.46,
+        "mean_ape_pct": 24.85,
+        "within_20pct": 61.5,
+        "r2": 0.9394
+      },
+      "blend_model_and_5_year_mean": {
+        "n": 12955,
+        "mae_kg_ha": 1027.3,
+        "median_ape_pct": 15.42,
+        "mean_ape_pct": 25.05,
+        "within_20pct": 59.5,
+        "r2": 0.936
+      },
+      "district_last_year": {
+        "n": 12955,
+        "mae_kg_ha": 1133.8,
+        "median_ape_pct": 16.75,
+        "mean_ape_pct": 27.85,
+        "within_20pct": 55.9,
+        "r2": 0.9161
+      },
+      "district_5_year_mean": {
+        "n": 12955,
+        "mae_kg_ha": 1149.5,
+        "median_ape_pct": 17.9,
+        "mean_ape_pct": 26.56,
+        "within_20pct": 54.5,
+        "r2": 0.9281
+      },
+      "national_average_previous_engine": {
+        "n": 12955,
+        "mae_kg_ha": 2022.5,
+        "median_ape_pct": 29.49,
+        "mean_ape_pct": 50.78,
+        "within_20pct": 35.0,
+        "r2": 0.8275
+      },
+      "by_crop": {
+        "bajra": {
+          "served": {
+            "n": 417,
+            "mae_kg_ha": 308.3,
+            "median_ape_pct": 14.28,
+            "mean_ape_pct": 20.79,
+            "within_20pct": 68.1,
+            "r2": 0.7285
+          },
+          "served_method": "model",
+          "model": {
+            "n": 417,
+            "mae_kg_ha": 308.3,
+            "median_ape_pct": 14.28,
+            "mean_ape_pct": 20.79,
+            "within_20pct": 68.1,
+            "r2": 0.7285
+          },
+          "district_5_year_mean": {
+            "n": 417,
+            "mae_kg_ha": 355.7,
+            "median_ape_pct": 18.09,
+            "mean_ape_pct": 22.19,
+            "within_20pct": 55.4,
+            "r2": 0.6403
+          }
+        },
+        "barley": {
+          "served": {
+            "n": 290,
+            "mae_kg_ha": 315.4,
+            "median_ape_pct": 8.5,
+            "mean_ape_pct": 14.75,
+            "within_20pct": 76.9,
+            "r2": 0.7731
+          },
+          "served_method": "model",
+          "model": {
+            "n": 290,
+            "mae_kg_ha": 315.4,
+            "median_ape_pct": 8.5,
+            "mean_ape_pct": 14.75,
+            "within_20pct": 76.9,
+            "r2": 0.7731
+          },
+          "district_5_year_mean": {
+            "n": 290,
+            "mae_kg_ha": 468.7,
+            "median_ape_pct": 14.94,
+            "mean_ape_pct": 18.35,
+            "within_20pct": 63.8,
+            "r2": 0.6203
+          }
+        },
+        "chickpea": {
+          "served": {
+            "n": 626,
+            "mae_kg_ha": 244.6,
+            "median_ape_pct": 14.92,
+            "mean_ape_pct": 21.08,
+            "within_20pct": 60.9,
+            "r2": 0.4449
+          },
+          "served_method": "model",
+          "model": {
+            "n": 626,
+            "mae_kg_ha": 244.6,
+            "median_ape_pct": 14.92,
+            "mean_ape_pct": 21.08,
+            "within_20pct": 60.9,
+            "r2": 0.4449
+          },
+          "district_5_year_mean": {
+            "n": 626,
+            "mae_kg_ha": 327.0,
+            "median_ape_pct": 22.62,
+            "mean_ape_pct": 24.75,
+            "within_20pct": 44.7,
+            "r2": 0.0886
+          }
+        },
+        "cotton": {
+          "served": {
+            "n": 436,
+            "mae_kg_ha": 957.2,
+            "median_ape_pct": 20.22,
+            "mean_ape_pct": 57.41,
+            "within_20pct": 49.8,
+            "r2": -0.1356
+          },
+          "served_method": "model",
+          "model": {
+            "n": 436,
+            "mae_kg_ha": 957.2,
+            "median_ape_pct": 20.22,
+            "mean_ape_pct": 57.41,
+            "within_20pct": 49.8,
+            "r2": -0.1356
+          },
+          "district_5_year_mean": {
+            "n": 436,
+            "mae_kg_ha": 1010.3,
+            "median_ape_pct": 22.54,
+            "mean_ape_pct": 57.65,
+            "within_20pct": 45.9,
+            "r2": -0.2054
+          }
+        },
+        "groundnut": {
+          "served": {
+            "n": 760,
+            "mae_kg_ha": 362.6,
+            "median_ape_pct": 15.14,
+            "mean_ape_pct": 21.33,
+            "within_20pct": 62.0,
+            "r2": 0.6673
+          },
+          "served_method": "model",
+          "model": {
+            "n": 760,
+            "mae_kg_ha": 362.6,
+            "median_ape_pct": 15.14,
+            "mean_ape_pct": 21.33,
+            "within_20pct": 62.0,
+            "r2": 0.6673
+          },
+          "district_5_year_mean": {
+            "n": 760,
+            "mae_kg_ha": 411.3,
+            "median_ape_pct": 18.8,
+            "mean_ape_pct": 22.71,
+            "within_20pct": 52.9,
+            "r2": 0.5925
+          }
+        },
+        "jowar": {
+          "served": {
+            "n": 514,
+            "mae_kg_ha": 379.1,
+            "median_ape_pct": 23.67,
+            "mean_ape_pct": 33.49,
+            "within_20pct": 43.4,
+            "r2": 0.4023
+          },
+          "served_method": "model",
+          "model": {
+            "n": 514,
+            "mae_kg_ha": 379.1,
+            "median_ape_pct": 23.67,
+            "mean_ape_pct": 33.49,
+            "within_20pct": 43.4,
+            "r2": 0.4023
+          },
+          "district_5_year_mean": {
+            "n": 514,
+            "mae_kg_ha": 403.3,
+            "median_ape_pct": 25.91,
+            "mean_ape_pct": 35.16,
+            "within_20pct": 37.7,
+            "r2": 0.3304
+          }
+        },
+        "lentil": {
+          "served": {
+            "n": 416,
+            "mae_kg_ha": 181.9,
+            "median_ape_pct": 15.65,
+            "mean_ape_pct": 20.14,
+            "within_20pct": 59.4,
+            "r2": 0.2828
+          },
+          "served_method": "mean5",
+          "model": {
+            "n": 416,
+            "mae_kg_ha": 167.8,
+            "median_ape_pct": 15.67,
+            "mean_ape_pct": 19.1,
+            "within_20pct": 61.1,
+            "r2": 0.3668
+          },
+          "district_5_year_mean": {
+            "n": 416,
+            "mae_kg_ha": 181.9,
+            "median_ape_pct": 15.65,
+            "mean_ape_pct": 20.14,
+            "within_20pct": 59.4,
+            "r2": 0.2828
+          }
+        },
+        "maize": {
+          "served": {
+            "n": 1462,
+            "mae_kg_ha": 661.9,
+            "median_ape_pct": 16.31,
+            "mean_ape_pct": 23.76,
+            "within_20pct": 58.3,
+            "r2": 0.7379
+          },
+          "served_method": "model",
+          "model": {
+            "n": 1462,
+            "mae_kg_ha": 661.9,
+            "median_ape_pct": 16.31,
+            "mean_ape_pct": 23.76,
+            "within_20pct": 58.3,
+            "r2": 0.7379
+          },
+          "district_5_year_mean": {
+            "n": 1462,
+            "mae_kg_ha": 759.5,
+            "median_ape_pct": 20.11,
+            "mean_ape_pct": 25.75,
+            "within_20pct": 49.9,
+            "r2": 0.6746
+          }
+        },
+        "moong": {
+          "served": {
+            "n": 740,
+            "mae_kg_ha": 175.9,
+            "median_ape_pct": 24.48,
+            "mean_ape_pct": 37.68,
+            "within_20pct": 44.1,
+            "r2": 0.4264
+          },
+          "served_method": "model",
+          "model": {
+            "n": 740,
+            "mae_kg_ha": 175.9,
+            "median_ape_pct": 24.48,
+            "mean_ape_pct": 37.68,
+            "within_20pct": 44.1,
+            "r2": 0.4264
+          },
+          "district_5_year_mean": {
+            "n": 740,
+            "mae_kg_ha": 195.4,
+            "median_ape_pct": 24.8,
+            "mean_ape_pct": 38.35,
+            "within_20pct": 39.5,
+            "r2": 0.2907
+          }
+        },
+        "mustard": {
+          "served": {
+            "n": 801,
+            "mae_kg_ha": 198.4,
+            "median_ape_pct": 13.6,
+            "mean_ape_pct": 18.45,
+            "within_20pct": 65.8,
+            "r2": 0.6813
+          },
+          "served_method": "blend",
+          "model": {
+            "n": 801,
+            "mae_kg_ha": 183.7,
+            "median_ape_pct": 12.18,
+            "mean_ape_pct": 18.44,
+            "within_20pct": 69.0,
+            "r2": 0.7188
+          },
+          "district_5_year_mean": {
+            "n": 801,
+            "mae_kg_ha": 228.8,
+            "median_ape_pct": 16.36,
+            "mean_ape_pct": 19.97,
+            "within_20pct": 59.3,
+            "r2": 0.6077
+          }
+        },
+        "onion": {
+          "served": {
+            "n": 338,
+            "mae_kg_ha": 2704.6,
+            "median_ape_pct": 16.66,
+            "mean_ape_pct": 26.2,
+            "within_20pct": 56.2,
+            "r2": 0.6985
+          },
+          "served_method": "blend",
+          "model": {
+            "n": 338,
+            "mae_kg_ha": 2656.4,
+            "median_ape_pct": 14.8,
+            "mean_ape_pct": 27.25,
+            "within_20pct": 58.6,
+            "r2": 0.7212
+          },
+          "district_5_year_mean": {
+            "n": 338,
+            "mae_kg_ha": 3079.2,
+            "median_ape_pct": 19.95,
+            "mean_ape_pct": 27.75,
+            "within_20pct": 50.6,
+            "r2": 0.6311
+          }
+        },
+        "pigeon_pea": {
+          "served": {
+            "n": 635,
+            "mae_kg_ha": 226.4,
+            "median_ape_pct": 17.93,
+            "mean_ape_pct": 27.22,
+            "within_20pct": 52.6,
+            "r2": 0.4323
+          },
+          "served_method": "model",
+          "model": {
+            "n": 635,
+            "mae_kg_ha": 226.4,
+            "median_ape_pct": 17.93,
+            "mean_ape_pct": 27.22,
+            "within_20pct": 52.6,
+            "r2": 0.4323
+          },
+          "district_5_year_mean": {
+            "n": 635,
+            "mae_kg_ha": 253.2,
+            "median_ape_pct": 19.8,
+            "mean_ape_pct": 28.39,
+            "within_20pct": 50.2,
+            "r2": 0.3012
+          }
+        },
+        "potato": {
+          "served": {
+            "n": 588,
+            "mae_kg_ha": 3374.5,
+            "median_ape_pct": 14.13,
+            "mean_ape_pct": 21.82,
+            "within_20pct": 62.4,
+            "r2": 0.7547
+          },
+          "served_method": "model",
+          "model": {
+            "n": 588,
+            "mae_kg_ha": 3374.5,
+            "median_ape_pct": 14.13,
+            "mean_ape_pct": 21.82,
+            "within_20pct": 62.4,
+            "r2": 0.7547
+          },
+          "district_5_year_mean": {
+            "n": 588,
+            "mae_kg_ha": 4126.4,
+            "median_ape_pct": 19.7,
+            "mean_ape_pct": 23.54,
+            "within_20pct": 50.7,
+            "r2": 0.661
+          }
+        },
+        "rice": {
+          "served": {
+            "n": 1701,
+            "mae_kg_ha": 355.0,
+            "median_ape_pct": 10.36,
+            "mean_ape_pct": 15.62,
+            "within_20pct": 75.5,
+            "r2": 0.5299
+          },
+          "served_method": "model",
+          "model": {
+            "n": 1701,
+            "mae_kg_ha": 355.0,
+            "median_ape_pct": 10.36,
+            "mean_ape_pct": 15.62,
+            "within_20pct": 75.5,
+            "r2": 0.5299
+          },
+          "district_5_year_mean": {
+            "n": 1701,
+            "mae_kg_ha": 409.5,
+            "median_ape_pct": 12.41,
+            "mean_ape_pct": 17.22,
+            "within_20pct": 69.6,
+            "r2": 0.4449
+          }
+        },
+        "sesame": {
+          "served": {
+            "n": 628,
+            "mae_kg_ha": 116.9,
+            "median_ape_pct": 19.96,
+            "mean_ape_pct": 34.46,
+            "within_20pct": 50.3,
+            "r2": 0.6208
+          },
+          "served_method": "model",
+          "model": {
+            "n": 628,
+            "mae_kg_ha": 116.9,
+            "median_ape_pct": 19.96,
+            "mean_ape_pct": 34.46,
+            "within_20pct": 50.3,
+            "r2": 0.6208
+          },
+          "district_5_year_mean": {
+            "n": 628,
+            "mae_kg_ha": 131.5,
+            "median_ape_pct": 23.29,
+            "mean_ape_pct": 35.82,
+            "within_20pct": 44.7,
+            "r2": 0.5173
+          }
+        },
+        "soybean": {
+          "served": {
+            "n": 300,
+            "mae_kg_ha": 311.4,
+            "median_ape_pct": 23.53,
+            "mean_ape_pct": 35.7,
+            "within_20pct": 44.3,
+            "r2": 0.2099
+          },
+          "served_method": "blend",
+          "model": {
+            "n": 300,
+            "mae_kg_ha": 309.8,
+            "median_ape_pct": 23.23,
+            "mean_ape_pct": 34.57,
+            "within_20pct": 43.0,
+            "r2": 0.2099
+          },
+          "district_5_year_mean": {
+            "n": 300,
+            "mae_kg_ha": 319.2,
+            "median_ape_pct": 22.61,
+            "mean_ape_pct": 37.45,
+            "within_20pct": 44.0,
+            "r2": 0.1677
+          }
+        },
+        "sugarcane": {
+          "served": {
+            "n": 521,
+            "mae_kg_ha": 11046.9,
+            "median_ape_pct": 8.78,
+            "mean_ape_pct": 23.97,
+            "within_20pct": 74.3,
+            "r2": 0.6104
+          },
+          "served_method": "model",
+          "model": {
+            "n": 521,
+            "mae_kg_ha": 11046.9,
+            "median_ape_pct": 8.78,
+            "mean_ape_pct": 23.97,
+            "within_20pct": 74.3,
+            "r2": 0.6104
+          },
+          "district_5_year_mean": {
+            "n": 521,
+            "mae_kg_ha": 13163.9,
+            "median_ape_pct": 12.19,
+            "mean_ape_pct": 26.79,
+            "within_20pct": 68.7,
+            "r2": 0.5462
+          }
+        },
+        "urad": {
+          "served": {
+            "n": 903,
+            "mae_kg_ha": 156.6,
+            "median_ape_pct": 17.77,
+            "mean_ape_pct": 32.88,
+            "within_20pct": 53.6,
+            "r2": 0.4259
+          },
+          "served_method": "model",
+          "model": {
+            "n": 903,
+            "mae_kg_ha": 156.6,
+            "median_ape_pct": 17.77,
+            "mean_ape_pct": 32.88,
+            "within_20pct": 53.6,
+            "r2": 0.4259
+          },
+          "district_5_year_mean": {
+            "n": 903,
+            "mae_kg_ha": 165.0,
+            "median_ape_pct": 19.0,
+            "mean_ape_pct": 33.32,
+            "within_20pct": 52.3,
+            "r2": 0.3613
+          }
+        },
+        "wheat": {
+          "served": {
+            "n": 879,
+            "mae_kg_ha": 378.7,
+            "median_ape_pct": 9.79,
+            "mean_ape_pct": 14.1,
+            "within_20pct": 78.0,
+            "r2": 0.7716
+          },
+          "served_method": "blend",
+          "model": {
+            "n": 879,
+            "mae_kg_ha": 347.7,
+            "median_ape_pct": 8.08,
+            "mean_ape_pct": 13.59,
+            "within_20pct": 78.0,
+            "r2": 0.7928
+          },
+          "district_5_year_mean": {
+            "n": 879,
+            "mae_kg_ha": 476.1,
+            "median_ape_pct": 14.1,
+            "mean_ape_pct": 16.88,
+            "within_20pct": 68.7,
+            "r2": 0.6862
+          }
+        }
+      }
+    },
+    "horizon_4_years": {
+      "served_per_crop_selection": {
+        "n": 12484,
+        "mae_kg_ha": 994.8,
+        "median_ape_pct": 15.62,
+        "mean_ape_pct": 26.16,
+        "within_20pct": 58.6,
+        "r2": 0.9375
+      },
+      "model": {
+        "n": 12484,
+        "mae_kg_ha": 985.1,
+        "median_ape_pct": 15.25,
+        "mean_ape_pct": 25.96,
+        "within_20pct": 59.5,
+        "r2": 0.9377
+      },
+      "blend_model_and_5_year_mean": {
+        "n": 12484,
+        "mae_kg_ha": 1063.6,
+        "median_ape_pct": 16.44,
+        "mean_ape_pct": 26.28,
+        "within_20pct": 56.9,
+        "r2": 0.9331
+      },
+      "district_last_year": {
+        "n": 12484,
+        "mae_kg_ha": 1217.1,
+        "median_ape_pct": 18.28,
+        "mean_ape_pct": 30.27,
+        "within_20pct": 53.2,
+        "r2": 0.9056
+      },
+      "district_5_year_mean": {
+        "n": 12484,
+        "mae_kg_ha": 1206.6,
+        "median_ape_pct": 19.22,
+        "mean_ape_pct": 27.99,
+        "within_20pct": 51.6,
+        "r2": 0.9231
+      },
+      "national_average_previous_engine": {
+        "n": 12484,
+        "mae_kg_ha": 1990.2,
+        "median_ape_pct": 29.62,
+        "mean_ape_pct": 50.89,
+        "within_20pct": 35.1,
+        "r2": 0.8276
+      },
+      "by_crop": {
+        "bajra": {
+          "served": {
+            "n": 416,
+            "mae_kg_ha": 323.5,
+            "median_ape_pct": 14.63,
+            "mean_ape_pct": 22.0,
+            "within_20pct": 62.5,
+            "r2": 0.7029
+          },
+          "served_method": "model",
+          "model": {
+            "n": 416,
+            "mae_kg_ha": 323.5,
+            "median_ape_pct": 14.63,
+            "mean_ape_pct": 22.0,
+            "within_20pct": 62.5,
+            "r2": 0.7029
+          },
+          "district_5_year_mean": {
+            "n": 416,
+            "mae_kg_ha": 373.6,
+            "median_ape_pct": 18.11,
+            "mean_ape_pct": 23.08,
+            "within_20pct": 53.4,
+            "r2": 0.6096
+          }
+        },
+        "barley": {
+          "served": {
+            "n": 288,
+            "mae_kg_ha": 321.2,
+            "median_ape_pct": 8.25,
+            "mean_ape_pct": 14.75,
+            "within_20pct": 74.3,
+            "r2": 0.7607
+          },
+          "served_method": "model",
+          "model": {
+            "n": 288,
+            "mae_kg_ha": 321.2,
+            "median_ape_pct": 8.25,
+            "mean_ape_pct": 14.75,
+            "within_20pct": 74.3,
+            "r2": 0.7607
+          },
+          "district_5_year_mean": {
+            "n": 288,
+            "mae_kg_ha": 503.6,
+            "median_ape_pct": 17.29,
+            "mean_ape_pct": 19.35,
+            "within_20pct": 63.2,
+            "r2": 0.5752
+          }
+        },
+        "chickpea": {
+          "served": {
+            "n": 609,
+            "mae_kg_ha": 259.6,
+            "median_ape_pct": 16.59,
+            "mean_ape_pct": 22.32,
+            "within_20pct": 57.0,
+            "r2": 0.3793
+          },
+          "served_method": "model",
+          "model": {
+            "n": 609,
+            "mae_kg_ha": 259.6,
+            "median_ape_pct": 16.59,
+            "mean_ape_pct": 22.32,
+            "within_20pct": 57.0,
+            "r2": 0.3793
+          },
+          "district_5_year_mean": {
+            "n": 609,
+            "mae_kg_ha": 358.5,
+            "median_ape_pct": 24.39,
+            "mean_ape_pct": 27.03,
+            "within_20pct": 38.1,
+            "r2": -0.0738
+          }
+        },
+        "cotton": {
+          "served": {
+            "n": 413,
+            "mae_kg_ha": 1046.3,
+            "median_ape_pct": 23.39,
+            "mean_ape_pct": 61.61,
+            "within_20pct": 45.8,
+            "r2": -0.2141
+          },
+          "served_method": "model",
+          "model": {
+            "n": 413,
+            "mae_kg_ha": 1046.3,
+            "median_ape_pct": 23.39,
+            "mean_ape_pct": 61.61,
+            "within_20pct": 45.8,
+            "r2": -0.2141
+          },
+          "district_5_year_mean": {
+            "n": 413,
+            "mae_kg_ha": 1083.4,
+            "median_ape_pct": 25.06,
+            "mean_ape_pct": 61.19,
+            "within_20pct": 41.6,
+            "r2": -0.2577
+          }
+        },
+        "groundnut": {
+          "served": {
+            "n": 731,
+            "mae_kg_ha": 365.1,
+            "median_ape_pct": 15.64,
+            "mean_ape_pct": 21.83,
+            "within_20pct": 58.4,
+            "r2": 0.6685
+          },
+          "served_method": "model",
+          "model": {
+            "n": 731,
+            "mae_kg_ha": 365.1,
+            "median_ape_pct": 15.64,
+            "mean_ape_pct": 21.83,
+            "within_20pct": 58.4,
+            "r2": 0.6685
+          },
+          "district_5_year_mean": {
+            "n": 731,
+            "mae_kg_ha": 437.4,
+            "median_ape_pct": 19.59,
+            "mean_ape_pct": 24.29,
+            "within_20pct": 50.9,
+            "r2": 0.5668
+          }
+        },
+        "jowar": {
+          "served": {
+            "n": 497,
+            "mae_kg_ha": 390.1,
+            "median_ape_pct": 24.81,
+            "mean_ape_pct": 34.2,
+            "within_20pct": 43.5,
+            "r2": 0.3582
+          },
+          "served_method": "model",
+          "model": {
+            "n": 497,
+            "mae_kg_ha": 390.1,
+            "median_ape_pct": 24.81,
+            "mean_ape_pct": 34.2,
+            "within_20pct": 43.5,
+            "r2": 0.3582
+          },
+          "district_5_year_mean": {
+            "n": 497,
+            "mae_kg_ha": 417.7,
+            "median_ape_pct": 27.13,
+            "mean_ape_pct": 36.25,
+            "within_20pct": 37.8,
+            "r2": 0.2812
+          }
+        },
+        "lentil": {
+          "served": {
+            "n": 413,
+            "mae_kg_ha": 201.5,
+            "median_ape_pct": 17.23,
+            "mean_ape_pct": 22.36,
+            "within_20pct": 55.7,
+            "r2": 0.1461
+          },
+          "served_method": "mean5",
+          "model": {
+            "n": 413,
+            "mae_kg_ha": 171.4,
+            "median_ape_pct": 15.3,
+            "mean_ape_pct": 19.84,
+            "within_20pct": 61.0,
+            "r2": 0.361
+          },
+          "district_5_year_mean": {
+            "n": 413,
+            "mae_kg_ha": 201.5,
+            "median_ape_pct": 17.23,
+            "mean_ape_pct": 22.36,
+            "within_20pct": 55.7,
+            "r2": 0.1461
+          }
+        },
+        "maize": {
+          "served": {
+            "n": 1405,
+            "mae_kg_ha": 703.0,
+            "median_ape_pct": 17.11,
+            "mean_ape_pct": 25.41,
+            "within_20pct": 56.2,
+            "r2": 0.6963
+          },
+          "served_method": "model",
+          "model": {
+            "n": 1405,
+            "mae_kg_ha": 703.0,
+            "median_ape_pct": 17.11,
+            "mean_ape_pct": 25.41,
+            "within_20pct": 56.2,
+            "r2": 0.6963
+          },
+          "district_5_year_mean": {
+            "n": 1405,
+            "mae_kg_ha": 817.0,
+            "median_ape_pct": 22.05,
+            "mean_ape_pct": 27.72,
+            "within_20pct": 46.0,
+            "r2": 0.6106
+          }
+        },
+        "moong": {
+          "served": {
+            "n": 713,
+            "mae_kg_ha": 187.9,
+            "median_ape_pct": 24.97,
+            "mean_ape_pct": 39.42,
+            "within_20pct": 40.8,
+            "r2": 0.3774
+          },
+          "served_method": "model",
+          "model": {
+            "n": 713,
+            "mae_kg_ha": 187.9,
+            "median_ape_pct": 24.97,
+            "mean_ape_pct": 39.42,
+            "within_20pct": 40.8,
+            "r2": 0.3774
+          },
+          "district_5_year_mean": {
+            "n": 713,
+            "mae_kg_ha": 207.4,
+            "median_ape_pct": 27.64,
+            "mean_ape_pct": 39.81,
+            "within_20pct": 37.2,
+            "r2": 0.235
+          }
+        },
+        "mustard": {
+          "served": {
+            "n": 791,
+            "mae_kg_ha": 216.4,
+            "median_ape_pct": 15.05,
+            "mean_ape_pct": 19.85,
+            "within_20pct": 60.6,
+            "r2": 0.6449
+          },
+          "served_method": "blend",
+          "model": {
+            "n": 791,
+            "mae_kg_ha": 196.4,
+            "median_ape_pct": 12.99,
+            "mean_ape_pct": 19.46,
+            "within_20pct": 66.5,
+            "r2": 0.6955
+          },
+          "district_5_year_mean": {
+            "n": 791,
+            "mae_kg_ha": 251.0,
+            "median_ape_pct": 18.28,
+            "mean_ape_pct": 21.78,
+            "within_20pct": 54.6,
+            "r2": 0.553
+          }
+        },
+        "onion": {
+          "served": {
+            "n": 312,
+            "mae_kg_ha": 2832.1,
+            "median_ape_pct": 19.07,
+            "mean_ape_pct": 28.05,
+            "within_20pct": 51.0,
+            "r2": 0.6964
+          },
+          "served_method": "blend",
+          "model": {
+            "n": 312,
+            "mae_kg_ha": 2671.9,
+            "median_ape_pct": 16.23,
+            "mean_ape_pct": 28.26,
+            "within_20pct": 56.7,
+            "r2": 0.727
+          },
+          "district_5_year_mean": {
+            "n": 312,
+            "mae_kg_ha": 3152.8,
+            "median_ape_pct": 21.41,
+            "mean_ape_pct": 29.17,
+            "within_20pct": 47.1,
+            "r2": 0.6306
+          }
+        },
+        "pigeon_pea": {
+          "served": {
+            "n": 607,
+            "mae_kg_ha": 254.5,
+            "median_ape_pct": 20.79,
+            "mean_ape_pct": 30.71,
+            "within_20pct": 48.6,
+            "r2": 0.3454
+          },
+          "served_method": "model",
+          "model": {
+            "n": 607,
+            "mae_kg_ha": 254.5,
+            "median_ape_pct": 20.79,
+            "mean_ape_pct": 30.71,
+            "within_20pct": 48.6,
+            "r2": 0.3454
+          },
+          "district_5_year_mean": {
+            "n": 607,
+            "mae_kg_ha": 284.1,
+            "median_ape_pct": 23.33,
+            "mean_ape_pct": 31.64,
+            "within_20pct": 45.3,
+            "r2": 0.1901
+          }
+        },
+        "potato": {
+          "served": {
+            "n": 514,
+            "mae_kg_ha": 3297.7,
+            "median_ape_pct": 13.44,
+            "mean_ape_pct": 21.1,
+            "within_20pct": 64.0,
+            "r2": 0.7867
+          },
+          "served_method": "model",
+          "model": {
+            "n": 514,
+            "mae_kg_ha": 3297.7,
+            "median_ape_pct": 13.44,
+            "mean_ape_pct": 21.1,
+            "within_20pct": 64.0,
+            "r2": 0.7867
+          },
+          "district_5_year_mean": {
+            "n": 514,
+            "mae_kg_ha": 4315.0,
+            "median_ape_pct": 20.68,
+            "mean_ape_pct": 24.16,
+            "within_20pct": 48.4,
+            "r2": 0.6585
+          }
+        },
+        "rice": {
+          "served": {
+            "n": 1605,
+            "mae_kg_ha": 364.3,
+            "median_ape_pct": 10.78,
+            "mean_ape_pct": 16.84,
+            "within_20pct": 73.6,
+            "r2": 0.5154
+          },
+          "served_method": "model",
+          "model": {
+            "n": 1605,
+            "mae_kg_ha": 364.3,
+            "median_ape_pct": 10.78,
+            "mean_ape_pct": 16.84,
+            "within_20pct": 73.6,
+            "r2": 0.5154
+          },
+          "district_5_year_mean": {
+            "n": 1605,
+            "mae_kg_ha": 430.4,
+            "median_ape_pct": 13.32,
+            "mean_ape_pct": 18.54,
+            "within_20pct": 67.2,
+            "r2": 0.4212
+          }
+        },
+        "sesame": {
+          "served": {
+            "n": 614,
+            "mae_kg_ha": 119.5,
+            "median_ape_pct": 21.3,
+            "mean_ape_pct": 34.96,
+            "within_20pct": 46.6,
+            "r2": 0.5915
+          },
+          "served_method": "model",
+          "model": {
+            "n": 614,
+            "mae_kg_ha": 119.5,
+            "median_ape_pct": 21.3,
+            "mean_ape_pct": 34.96,
+            "within_20pct": 46.6,
+            "r2": 0.5915
+          },
+          "district_5_year_mean": {
+            "n": 614,
+            "mae_kg_ha": 134.8,
+            "median_ape_pct": 25.89,
+            "mean_ape_pct": 35.8,
+            "within_20pct": 44.3,
+            "r2": 0.4728
+          }
+        },
+        "soybean": {
+          "served": {
+            "n": 289,
+            "mae_kg_ha": 317.2,
+            "median_ape_pct": 25.23,
+            "mean_ape_pct": 37.36,
+            "within_20pct": 43.6,
+            "r2": 0.19
+          },
+          "served_method": "blend",
+          "model": {
+            "n": 289,
+            "mae_kg_ha": 314.2,
+            "median_ape_pct": 25.2,
+            "mean_ape_pct": 36.33,
+            "within_20pct": 43.3,
+            "r2": 0.2134
+          },
+          "district_5_year_mean": {
+            "n": 289,
+            "mae_kg_ha": 324.8,
+            "median_ape_pct": 25.5,
+            "mean_ape_pct": 38.86,
+            "within_20pct": 41.9,
+            "r2": 0.1294
+          }
+        },
+        "sugarcane": {
+          "served": {
+            "n": 511,
+            "mae_kg_ha": 11343.5,
+            "median_ape_pct": 8.97,
+            "mean_ape_pct": 24.99,
+            "within_20pct": 73.2,
+            "r2": 0.5948
+          },
+          "served_method": "model",
+          "model": {
+            "n": 511,
+            "mae_kg_ha": 11343.5,
+            "median_ape_pct": 8.97,
+            "mean_ape_pct": 24.99,
+            "within_20pct": 73.2,
+            "r2": 0.5948
+          },
+          "district_5_year_mean": {
+            "n": 511,
+            "mae_kg_ha": 13985.1,
+            "median_ape_pct": 14.12,
+            "mean_ape_pct": 28.16,
+            "within_20pct": 66.3,
+            "r2": 0.512
+          }
+        },
+        "urad": {
+          "served": {
+            "n": 883,
+            "mae_kg_ha": 159.6,
+            "median_ape_pct": 19.41,
+            "mean_ape_pct": 33.48,
+            "within_20pct": 51.5,
+            "r2": 0.3964
+          },
+          "served_method": "model",
+          "model": {
+            "n": 883,
+            "mae_kg_ha": 159.6,
+            "median_ape_pct": 19.41,
+            "mean_ape_pct": 33.48,
+            "within_20pct": 51.5,
+            "r2": 0.3964
+          },
+          "district_5_year_mean": {
+            "n": 883,
+            "mae_kg_ha": 166.8,
+            "median_ape_pct": 19.09,
+            "mean_ape_pct": 32.91,
+            "within_20pct": 51.4,
+            "r2": 0.3342
+          }
+        },
+        "wheat": {
+          "served": {
+            "n": 873,
+            "mae_kg_ha": 394.5,
+            "median_ape_pct": 10.42,
+            "mean_ape_pct": 14.43,
+            "within_20pct": 75.8,
+            "r2": 0.7579
+          },
+          "served_method": "blend",
+          "model": {
+            "n": 873,
+            "mae_kg_ha": 346.1,
+            "median_ape_pct": 8.35,
+            "mean_ape_pct": 13.31,
+            "within_20pct": 79.6,
+            "r2": 0.7955
+          },
+          "district_5_year_mean": {
+            "n": 873,
+            "mae_kg_ha": 522.7,
+            "median_ape_pct": 15.58,
+            "mean_ape_pct": 18.15,
+            "within_20pct": 64.0,
+            "r2": 0.6408
+          }
+        }
+      }
+    }
+  },
+  "test": {
+    "horizon_1_years": {
+      "served_per_crop_selection": {
+        "n": 6832,
+        "mae_kg_ha": 818.3,
+        "median_ape_pct": 10.58,
+        "mean_ape_pct": 18.65,
+        "within_20pct": 71.7,
+        "r2": 0.949
+      },
+      "model": {
+        "n": 6832,
+        "mae_kg_ha": 824.1,
+        "median_ape_pct": 10.87,
+        "mean_ape_pct": 18.8,
+        "within_20pct": 71.8,
+        "r2": 0.9491
+      },
+      "blend_model_and_5_year_mean": {
+        "n": 6832,
+        "mae_kg_ha": 791.2,
+        "median_ape_pct": 10.69,
+        "mean_ape_pct": 18.56,
+        "within_20pct": 71.0,
+        "r2": 0.9572
+      },
+      "district_last_year": {
+        "n": 6832,
+        "mae_kg_ha": 890.4,
+        "median_ape_pct": 10.01,
+        "mean_ape_pct": 19.67,
+        "within_20pct": 69.5,
+        "r2": 0.9194
+      },
+      "district_5_year_mean": {
+        "n": 6832,
+        "mae_kg_ha": 822.5,
+        "median_ape_pct": 11.72,
+        "mean_ape_pct": 19.2,
+        "within_20pct": 68.1,
+        "r2": 0.96
+      },
+      "national_average_previous_engine": {
+        "n": 6832,
+        "mae_kg_ha": 1928.7,
+        "median_ape_pct": 27.48,
+        "mean_ape_pct": 43.9,
+        "within_20pct": 37.8,
+        "r2": 0.8016
+      },
+      "by_crop": {
+        "bajra": {
+          "served": {
+            "n": 207,
+            "mae_kg_ha": 236.1,
+            "median_ape_pct": 8.8,
+            "mean_ape_pct": 15.89,
+            "within_20pct": 78.7,
+            "r2": 0.7795
+          },
+          "served_method": "model",
+          "model": {
+            "n": 207,
+            "mae_kg_ha": 236.1,
+            "median_ape_pct": 8.8,
+            "mean_ape_pct": 15.89,
+            "within_20pct": 78.7,
+            "r2": 0.7795
+          },
+          "district_5_year_mean": {
+            "n": 207,
+            "mae_kg_ha": 260.1,
+            "median_ape_pct": 10.02,
+            "mean_ape_pct": 16.1,
+            "within_20pct": 74.4,
+            "r2": 0.7346
+          }
+        },
+        "barley": {
+          "served": {
+            "n": 155,
+            "mae_kg_ha": 350.0,
+            "median_ape_pct": 10.75,
+            "mean_ape_pct": 15.94,
+            "within_20pct": 79.4,
+            "r2": 0.7665
+          },
+          "served_method": "model",
+          "model": {
+            "n": 155,
+            "mae_kg_ha": 350.0,
+            "median_ape_pct": 10.75,
+            "mean_ape_pct": 15.94,
+            "within_20pct": 79.4,
+            "r2": 0.7665
+          },
+          "district_5_year_mean": {
+            "n": 155,
+            "mae_kg_ha": 266.9,
+            "median_ape_pct": 5.39,
+            "mean_ape_pct": 11.58,
+            "within_20pct": 80.6,
+            "r2": 0.8268
+          }
+        },
+        "chickpea": {
+          "served": {
+            "n": 329,
+            "mae_kg_ha": 175.9,
+            "median_ape_pct": 9.79,
+            "mean_ape_pct": 16.99,
+            "within_20pct": 72.6,
+            "r2": 0.63
+          },
+          "served_method": "model",
+          "model": {
+            "n": 329,
+            "mae_kg_ha": 175.9,
+            "median_ape_pct": 9.79,
+            "mean_ape_pct": 16.99,
+            "within_20pct": 72.6,
+            "r2": 0.63
+          },
+          "district_5_year_mean": {
+            "n": 329,
+            "mae_kg_ha": 168.3,
+            "median_ape_pct": 9.3,
+            "mean_ape_pct": 14.57,
+            "within_20pct": 77.2,
+            "r2": 0.6553
+          }
+        },
+        "cotton": {
+          "served": {
+            "n": 241,
+            "mae_kg_ha": 611.8,
+            "median_ape_pct": 16.76,
+            "mean_ape_pct": 35.66,
+            "within_20pct": 57.3,
+            "r2": 0.3906
+          },
+          "served_method": "model",
+          "model": {
+            "n": 241,
+            "mae_kg_ha": 611.8,
+            "median_ape_pct": 16.76,
+            "mean_ape_pct": 35.66,
+            "within_20pct": 57.3,
+            "r2": 0.3906
+          },
+          "district_5_year_mean": {
+            "n": 241,
+            "mae_kg_ha": 644.2,
+            "median_ape_pct": 19.78,
+            "mean_ape_pct": 34.26,
+            "within_20pct": 51.0,
+            "r2": 0.3571
+          }
+        },
+        "groundnut": {
+          "served": {
+            "n": 409,
+            "mae_kg_ha": 310.3,
+            "median_ape_pct": 12.38,
+            "mean_ape_pct": 19.06,
+            "within_20pct": 69.2,
+            "r2": 0.7317
+          },
+          "served_method": "model",
+          "model": {
+            "n": 409,
+            "mae_kg_ha": 310.3,
+            "median_ape_pct": 12.38,
+            "mean_ape_pct": 19.06,
+            "within_20pct": 69.2,
+            "r2": 0.7317
+          },
+          "district_5_year_mean": {
+            "n": 409,
+            "mae_kg_ha": 347.1,
+            "median_ape_pct": 14.37,
+            "mean_ape_pct": 19.88,
+            "within_20pct": 62.6,
+            "r2": 0.6623
+          }
+        },
+        "jowar": {
+          "served": {
+            "n": 256,
+            "mae_kg_ha": 306.4,
+            "median_ape_pct": 16.58,
+            "mean_ape_pct": 26.23,
+            "within_20pct": 57.0,
+            "r2": 0.5902
+          },
+          "served_method": "model",
+          "model": {
+            "n": 256,
+            "mae_kg_ha": 306.4,
+            "median_ape_pct": 16.58,
+            "mean_ape_pct": 26.23,
+            "within_20pct": 57.0,
+            "r2": 0.5902
+          },
+          "district_5_year_mean": {
+            "n": 256,
+            "mae_kg_ha": 335.9,
+            "median_ape_pct": 17.21,
+            "mean_ape_pct": 28.47,
+            "within_20pct": 55.1,
+            "r2": 0.5449
+          }
+        },
+        "lentil": {
+          "served": {
+            "n": 226,
+            "mae_kg_ha": 163.3,
+            "median_ape_pct": 12.8,
+            "mean_ape_pct": 17.4,
+            "within_20pct": 65.5,
+            "r2": 0.4174
+          },
+          "served_method": "mean5",
+          "model": {
+            "n": 226,
+            "mae_kg_ha": 155.5,
+            "median_ape_pct": 12.92,
+            "mean_ape_pct": 16.95,
+            "within_20pct": 68.6,
+            "r2": 0.4773
+          },
+          "district_5_year_mean": {
+            "n": 226,
+            "mae_kg_ha": 163.3,
+            "median_ape_pct": 12.8,
+            "mean_ape_pct": 17.4,
+            "within_20pct": 65.5,
+            "r2": 0.4174
+          }
+        },
+        "maize": {
+          "served": {
+            "n": 793,
+            "mae_kg_ha": 558.3,
+            "median_ape_pct": 10.17,
+            "mean_ape_pct": 17.61,
+            "within_20pct": 71.8,
+            "r2": 0.7853
+          },
+          "served_method": "model",
+          "model": {
+            "n": 793,
+            "mae_kg_ha": 558.3,
+            "median_ape_pct": 10.17,
+            "mean_ape_pct": 17.61,
+            "within_20pct": 71.8,
+            "r2": 0.7853
+          },
+          "district_5_year_mean": {
+            "n": 793,
+            "mae_kg_ha": 640.3,
+            "median_ape_pct": 14.07,
+            "mean_ape_pct": 19.43,
+            "within_20pct": 64.7,
+            "r2": 0.7385
+          }
+        },
+        "moong": {
+          "served": {
+            "n": 417,
+            "mae_kg_ha": 117.0,
+            "median_ape_pct": 13.37,
+            "mean_ape_pct": 19.18,
+            "within_20pct": 65.5,
+            "r2": 0.7009
+          },
+          "served_method": "model",
+          "model": {
+            "n": 417,
+            "mae_kg_ha": 117.0,
+            "median_ape_pct": 13.37,
+            "mean_ape_pct": 19.18,
+            "within_20pct": 65.5,
+            "r2": 0.7009
+          },
+          "district_5_year_mean": {
+            "n": 417,
+            "mae_kg_ha": 137.1,
+            "median_ape_pct": 16.41,
+            "mean_ape_pct": 21.62,
+            "within_20pct": 59.0,
+            "r2": 0.6226
+          }
+        },
+        "mustard": {
+          "served": {
+            "n": 427,
+            "mae_kg_ha": 157.2,
+            "median_ape_pct": 9.45,
+            "mean_ape_pct": 14.88,
+            "within_20pct": 74.5,
+            "r2": 0.7682
+          },
+          "served_method": "blend",
+          "model": {
+            "n": 427,
+            "mae_kg_ha": 158.2,
+            "median_ape_pct": 9.21,
+            "mean_ape_pct": 15.28,
+            "within_20pct": 74.7,
+            "r2": 0.7653
+          },
+          "district_5_year_mean": {
+            "n": 427,
+            "mae_kg_ha": 165.2,
+            "median_ape_pct": 10.32,
+            "mean_ape_pct": 15.29,
+            "within_20pct": 74.2,
+            "r2": 0.7439
+          }
+        },
+        "onion": {
+          "served": {
+            "n": 167,
+            "mae_kg_ha": 2289.3,
+            "median_ape_pct": 10.07,
+            "mean_ape_pct": 20.38,
+            "within_20pct": 68.9,
+            "r2": 0.7468
+          },
+          "served_method": "blend",
+          "model": {
+            "n": 167,
+            "mae_kg_ha": 2407.8,
+            "median_ape_pct": 13.07,
+            "mean_ape_pct": 21.92,
+            "within_20pct": 69.5,
+            "r2": 0.7534
+          },
+          "district_5_year_mean": {
+            "n": 167,
+            "mae_kg_ha": 2494.6,
+            "median_ape_pct": 12.4,
+            "mean_ape_pct": 21.54,
+            "within_20pct": 63.5,
+            "r2": 0.7055
+          }
+        },
+        "pigeon_pea": {
+          "served": {
+            "n": 317,
+            "mae_kg_ha": 169.1,
+            "median_ape_pct": 12.83,
+            "mean_ape_pct": 19.94,
+            "within_20pct": 64.4,
+            "r2": 0.6599
+          },
+          "served_method": "model",
+          "model": {
+            "n": 317,
+            "mae_kg_ha": 169.1,
+            "median_ape_pct": 12.83,
+            "mean_ape_pct": 19.94,
+            "within_20pct": 64.4,
+            "r2": 0.6599
+          },
+          "district_5_year_mean": {
+            "n": 317,
+            "mae_kg_ha": 191.4,
+            "median_ape_pct": 16.84,
+            "mean_ape_pct": 22.44,
+            "within_20pct": 59.0,
+            "r2": 0.5836
+          }
+        },
+        "potato": {
+          "served": {
+            "n": 290,
+            "mae_kg_ha": 2579.3,
+            "median_ape_pct": 10.41,
+            "mean_ape_pct": 15.96,
+            "within_20pct": 70.7,
+            "r2": 0.8552
+          },
+          "served_method": "model",
+          "model": {
+            "n": 290,
+            "mae_kg_ha": 2579.3,
+            "median_ape_pct": 10.41,
+            "mean_ape_pct": 15.96,
+            "within_20pct": 70.7,
+            "r2": 0.8552
+          },
+          "district_5_year_mean": {
+            "n": 290,
+            "mae_kg_ha": 3367.8,
+            "median_ape_pct": 14.18,
+            "mean_ape_pct": 19.39,
+            "within_20pct": 64.1,
+            "r2": 0.7595
+          }
+        },
+        "rice": {
+          "served": {
+            "n": 972,
+            "mae_kg_ha": 350.2,
+            "median_ape_pct": 8.51,
+            "mean_ape_pct": 14.48,
+            "within_20pct": 77.4,
+            "r2": 0.6715
+          },
+          "served_method": "model",
+          "model": {
+            "n": 972,
+            "mae_kg_ha": 350.2,
+            "median_ape_pct": 8.51,
+            "mean_ape_pct": 14.48,
+            "within_20pct": 77.4,
+            "r2": 0.6715
+          },
+          "district_5_year_mean": {
+            "n": 972,
+            "mae_kg_ha": 394.7,
+            "median_ape_pct": 9.86,
+            "mean_ape_pct": 15.59,
+            "within_20pct": 73.6,
+            "r2": 0.5866
+          }
+        },
+        "sesame": {
+          "served": {
+            "n": 298,
+            "mae_kg_ha": 80.5,
+            "median_ape_pct": 13.26,
+            "mean_ape_pct": 18.7,
+            "within_20pct": 70.1,
+            "r2": 0.8167
+          },
+          "served_method": "model",
+          "model": {
+            "n": 298,
+            "mae_kg_ha": 80.5,
+            "median_ape_pct": 13.26,
+            "mean_ape_pct": 18.7,
+            "within_20pct": 70.1,
+            "r2": 0.8167
+          },
+          "district_5_year_mean": {
+            "n": 298,
+            "mae_kg_ha": 81.9,
+            "median_ape_pct": 12.26,
+            "mean_ape_pct": 18.57,
+            "within_20pct": 69.5,
+            "r2": 0.8059
+          }
+        },
+        "soybean": {
+          "served": {
+            "n": 160,
+            "mae_kg_ha": 204.0,
+            "median_ape_pct": 12.71,
+            "mean_ape_pct": 17.06,
+            "within_20pct": 64.4,
+            "r2": 0.395
+          },
+          "served_method": "blend",
+          "model": {
+            "n": 160,
+            "mae_kg_ha": 208.4,
+            "median_ape_pct": 14.83,
+            "mean_ape_pct": 17.35,
+            "within_20pct": 66.2,
+            "r2": 0.3729
+          },
+          "district_5_year_mean": {
+            "n": 160,
+            "mae_kg_ha": 208.6,
+            "median_ape_pct": 11.9,
+            "mean_ape_pct": 17.6,
+            "within_20pct": 63.7,
+            "r2": 0.3529
+          }
+        },
+        "sugarcane": {
+          "served": {
+            "n": 257,
+            "mae_kg_ha": 10686.4,
+            "median_ape_pct": 8.23,
+            "mean_ape_pct": 41.07,
+            "within_20pct": 74.3,
+            "r2": 0.7215
+          },
+          "served_method": "model",
+          "model": {
+            "n": 257,
+            "mae_kg_ha": 10686.4,
+            "median_ape_pct": 8.23,
+            "mean_ape_pct": 41.07,
+            "within_20pct": 74.3,
+            "r2": 0.7215
+          },
+          "district_5_year_mean": {
+            "n": 257,
+            "mae_kg_ha": 9177.2,
+            "median_ape_pct": 8.64,
+            "mean_ape_pct": 34.64,
+            "within_20pct": 72.4,
+            "r2": 0.8013
+          }
+        },
+        "urad": {
+          "served": {
+            "n": 476,
+            "mae_kg_ha": 112.1,
+            "median_ape_pct": 12.32,
+            "mean_ape_pct": 19.77,
+            "within_20pct": 69.3,
+            "r2": 0.6461
+          },
+          "served_method": "model",
+          "model": {
+            "n": 476,
+            "mae_kg_ha": 112.1,
+            "median_ape_pct": 12.32,
+            "mean_ape_pct": 19.77,
+            "within_20pct": 69.3,
+            "r2": 0.6461
+          },
+          "district_5_year_mean": {
+            "n": 476,
+            "mae_kg_ha": 119.9,
+            "median_ape_pct": 12.94,
+            "mean_ape_pct": 20.84,
+            "within_20pct": 64.5,
+            "r2": 0.6102
+          }
+        },
+        "wheat": {
+          "served": {
+            "n": 435,
+            "mae_kg_ha": 231.8,
+            "median_ape_pct": 6.17,
+            "mean_ape_pct": 9.2,
+            "within_20pct": 89.4,
+            "r2": 0.9191
+          },
+          "served_method": "blend",
+          "model": {
+            "n": 435,
+            "mae_kg_ha": 277.6,
+            "median_ape_pct": 7.6,
+            "mean_ape_pct": 10.75,
+            "within_20pct": 87.8,
+            "r2": 0.8935
+          },
+          "district_5_year_mean": {
+            "n": 435,
+            "mae_kg_ha": 234.3,
+            "median_ape_pct": 5.9,
+            "mean_ape_pct": 9.26,
+            "within_20pct": 87.6,
+            "r2": 0.9158
+          }
+        }
+      }
+    },
+    "horizon_2_years": {
+      "served_per_crop_selection": {
+        "n": 6751,
+        "mae_kg_ha": 876.0,
+        "median_ape_pct": 12.07,
+        "mean_ape_pct": 19.89,
+        "within_20pct": 68.4,
+        "r2": 0.951
+      },
+      "model": {
+        "n": 6751,
+        "mae_kg_ha": 886.1,
+        "median_ape_pct": 12.41,
+        "mean_ape_pct": 20.15,
+        "within_20pct": 68.1,
+        "r2": 0.9509
+      },
+      "blend_model_and_5_year_mean": {
+        "n": 6751,
+        "mae_kg_ha": 860.0,
+        "median_ape_pct": 12.08,
+        "mean_ape_pct": 19.52,
+        "within_20pct": 68.0,
+        "r2": 0.953
+      },
+      "district_last_year": {
+        "n": 6751,
+        "mae_kg_ha": 959.9,
+        "median_ape_pct": 13.4,
+        "mean_ape_pct": 22.82,
+        "within_20pct": 62.8,
+        "r2": 0.9436
+      },
+      "district_5_year_mean": {
+        "n": 6751,
+        "mae_kg_ha": 914.8,
+        "median_ape_pct": 13.22,
+        "mean_ape_pct": 20.17,
+        "within_20pct": 65.2,
+        "r2": 0.9508
+      },
+      "national_average_previous_engine": {
+        "n": 6751,
+        "mae_kg_ha": 1937.4,
+        "median_ape_pct": 27.34,
+        "mean_ape_pct": 43.66,
+        "within_20pct": 37.8,
+        "r2": 0.8007
+      },
+      "by_crop": {
+        "bajra": {
+          "served": {
+            "n": 203,
+            "mae_kg_ha": 277.4,
+            "median_ape_pct": 10.2,
+            "mean_ape_pct": 18.6,
+            "within_20pct": 72.4,
+            "r2": 0.7144
+          },
+          "served_method": "model",
+          "model": {
+            "n": 203,
+            "mae_kg_ha": 277.4,
+            "median_ape_pct": 10.2,
+            "mean_ape_pct": 18.6,
+            "within_20pct": 72.4,
+            "r2": 0.7144
+          },
+          "district_5_year_mean": {
+            "n": 203,
+            "mae_kg_ha": 291.2,
+            "median_ape_pct": 11.9,
+            "mean_ape_pct": 17.78,
+            "within_20pct": 70.9,
+            "r2": 0.6808
+          }
+        },
+        "barley": {
+          "served": {
+            "n": 154,
+            "mae_kg_ha": 376.2,
+            "median_ape_pct": 11.74,
+            "mean_ape_pct": 16.39,
+            "within_20pct": 79.2,
+            "r2": 0.7349
+          },
+          "served_method": "model",
+          "model": {
+            "n": 154,
+            "mae_kg_ha": 376.2,
+            "median_ape_pct": 11.74,
+            "mean_ape_pct": 16.39,
+            "within_20pct": 79.2,
+            "r2": 0.7349
+          },
+          "district_5_year_mean": {
+            "n": 154,
+            "mae_kg_ha": 280.5,
+            "median_ape_pct": 5.83,
+            "mean_ape_pct": 11.91,
+            "within_20pct": 81.2,
+            "r2": 0.8007
+          }
+        },
+        "chickpea": {
+          "served": {
+            "n": 325,
+            "mae_kg_ha": 185.1,
+            "median_ape_pct": 11.09,
+            "mean_ape_pct": 17.97,
+            "within_20pct": 68.9,
+            "r2": 0.6131
+          },
+          "served_method": "model",
+          "model": {
+            "n": 325,
+            "mae_kg_ha": 185.1,
+            "median_ape_pct": 11.09,
+            "mean_ape_pct": 17.97,
+            "within_20pct": 68.9,
+            "r2": 0.6131
+          },
+          "district_5_year_mean": {
+            "n": 325,
+            "mae_kg_ha": 185.7,
+            "median_ape_pct": 11.96,
+            "mean_ape_pct": 15.97,
+            "within_20pct": 74.2,
+            "r2": 0.6056
+          }
+        },
+        "cotton": {
+          "served": {
+            "n": 237,
+            "mae_kg_ha": 549.5,
+            "median_ape_pct": 16.89,
+            "mean_ape_pct": 30.54,
+            "within_20pct": 56.1,
+            "r2": 0.5134
+          },
+          "served_method": "model",
+          "model": {
+            "n": 237,
+            "mae_kg_ha": 549.5,
+            "median_ape_pct": 16.89,
+            "mean_ape_pct": 30.54,
+            "within_20pct": 56.1,
+            "r2": 0.5134
+          },
+          "district_5_year_mean": {
+            "n": 237,
+            "mae_kg_ha": 565.1,
+            "median_ape_pct": 17.66,
+            "mean_ape_pct": 29.58,
+            "within_20pct": 56.1,
+            "r2": 0.4378
+          }
+        },
+        "groundnut": {
+          "served": {
+            "n": 406,
+            "mae_kg_ha": 338.3,
+            "median_ape_pct": 14.3,
+            "mean_ape_pct": 20.47,
+            "within_20pct": 64.3,
+            "r2": 0.6981
+          },
+          "served_method": "model",
+          "model": {
+            "n": 406,
+            "mae_kg_ha": 338.3,
+            "median_ape_pct": 14.3,
+            "mean_ape_pct": 20.47,
+            "within_20pct": 64.3,
+            "r2": 0.6981
+          },
+          "district_5_year_mean": {
+            "n": 406,
+            "mae_kg_ha": 380.2,
+            "median_ape_pct": 15.5,
+            "mean_ape_pct": 21.39,
+            "within_20pct": 59.9,
+            "r2": 0.614
+          }
+        },
+        "jowar": {
+          "served": {
+            "n": 252,
+            "mae_kg_ha": 348.2,
+            "median_ape_pct": 18.16,
+            "mean_ape_pct": 28.87,
+            "within_20pct": 52.8,
+            "r2": 0.4514
+          },
+          "served_method": "model",
+          "model": {
+            "n": 252,
+            "mae_kg_ha": 348.2,
+            "median_ape_pct": 18.16,
+            "mean_ape_pct": 28.87,
+            "within_20pct": 52.8,
+            "r2": 0.4514
+          },
+          "district_5_year_mean": {
+            "n": 252,
+            "mae_kg_ha": 362.6,
+            "median_ape_pct": 18.54,
+            "mean_ape_pct": 30.62,
+            "within_20pct": 52.0,
+            "r2": 0.458
+          }
+        },
+        "lentil": {
+          "served": {
+            "n": 224,
+            "mae_kg_ha": 175.1,
+            "median_ape_pct": 15.12,
+            "mean_ape_pct": 18.77,
+            "within_20pct": 62.5,
+            "r2": 0.3318
+          },
+          "served_method": "mean5",
+          "model": {
+            "n": 224,
+            "mae_kg_ha": 168.9,
+            "median_ape_pct": 14.53,
+            "mean_ape_pct": 18.48,
+            "within_20pct": 62.9,
+            "r2": 0.3971
+          },
+          "district_5_year_mean": {
+            "n": 224,
+            "mae_kg_ha": 175.1,
+            "median_ape_pct": 15.12,
+            "mean_ape_pct": 18.77,
+            "within_20pct": 62.5,
+            "r2": 0.3318
+          }
+        },
+        "maize": {
+          "served": {
+            "n": 778,
+            "mae_kg_ha": 644.9,
+            "median_ape_pct": 13.11,
+            "mean_ape_pct": 20.1,
+            "within_20pct": 66.3,
+            "r2": 0.7469
+          },
+          "served_method": "model",
+          "model": {
+            "n": 778,
+            "mae_kg_ha": 644.9,
+            "median_ape_pct": 13.11,
+            "mean_ape_pct": 20.1,
+            "within_20pct": 66.3,
+            "r2": 0.7469
+          },
+          "district_5_year_mean": {
+            "n": 778,
+            "mae_kg_ha": 719.9,
+            "median_ape_pct": 15.92,
+            "mean_ape_pct": 21.37,
+            "within_20pct": 57.1,
+            "r2": 0.6984
+          }
+        },
+        "moong": {
+          "served": {
+            "n": 414,
+            "mae_kg_ha": 135.2,
+            "median_ape_pct": 14.48,
+            "mean_ape_pct": 21.94,
+            "within_20pct": 60.9,
+            "r2": 0.6318
+          },
+          "served_method": "model",
+          "model": {
+            "n": 414,
+            "mae_kg_ha": 135.2,
+            "median_ape_pct": 14.48,
+            "mean_ape_pct": 21.94,
+            "within_20pct": 60.9,
+            "r2": 0.6318
+          },
+          "district_5_year_mean": {
+            "n": 414,
+            "mae_kg_ha": 150.9,
+            "median_ape_pct": 17.28,
+            "mean_ape_pct": 23.41,
+            "within_20pct": 56.5,
+            "r2": 0.5647
+          }
+        },
+        "mustard": {
+          "served": {
+            "n": 420,
+            "mae_kg_ha": 164.0,
+            "median_ape_pct": 10.51,
+            "mean_ape_pct": 15.82,
+            "within_20pct": 74.5,
+            "r2": 0.7561
+          },
+          "served_method": "blend",
+          "model": {
+            "n": 420,
+            "mae_kg_ha": 167.6,
+            "median_ape_pct": 11.54,
+            "mean_ape_pct": 16.68,
+            "within_20pct": 71.9,
+            "r2": 0.748
+          },
+          "district_5_year_mean": {
+            "n": 420,
+            "mae_kg_ha": 174.9,
+            "median_ape_pct": 10.1,
+            "mean_ape_pct": 16.18,
+            "within_20pct": 70.7,
+            "r2": 0.7247
+          }
+        },
+        "onion": {
+          "served": {
+            "n": 165,
+            "mae_kg_ha": 2644.0,
+            "median_ape_pct": 12.24,
+            "mean_ape_pct": 23.47,
+            "within_20pct": 62.4,
+            "r2": 0.6494
+          },
+          "served_method": "blend",
+          "model": {
+            "n": 165,
+            "mae_kg_ha": 2880.2,
+            "median_ape_pct": 13.74,
+            "mean_ape_pct": 26.15,
+            "within_20pct": 61.2,
+            "r2": 0.6357
+          },
+          "district_5_year_mean": {
+            "n": 165,
+            "mae_kg_ha": 2865.8,
+            "median_ape_pct": 16.35,
+            "mean_ape_pct": 24.09,
+            "within_20pct": 60.6,
+            "r2": 0.614
+          }
+        },
+        "pigeon_pea": {
+          "served": {
+            "n": 312,
+            "mae_kg_ha": 202.2,
+            "median_ape_pct": 16.9,
+            "mean_ape_pct": 25.45,
+            "within_20pct": 56.7,
+            "r2": 0.548
+          },
+          "served_method": "model",
+          "model": {
+            "n": 312,
+            "mae_kg_ha": 202.2,
+            "median_ape_pct": 16.9,
+            "mean_ape_pct": 25.45,
+            "within_20pct": 56.7,
+            "r2": 0.548
+          },
+          "district_5_year_mean": {
+            "n": 312,
+            "mae_kg_ha": 212.5,
+            "median_ape_pct": 17.56,
+            "mean_ape_pct": 25.25,
+            "within_20pct": 56.4,
+            "r2": 0.4709
+          }
+        },
+        "potato": {
+          "served": {
+            "n": 288,
+            "mae_kg_ha": 3630.4,
+            "median_ape_pct": 14.35,
+            "mean_ape_pct": 20.85,
+            "within_20pct": 62.5,
+            "r2": 0.7144
+          },
+          "served_method": "model",
+          "model": {
+            "n": 288,
+            "mae_kg_ha": 3630.4,
+            "median_ape_pct": 14.35,
+            "mean_ape_pct": 20.85,
+            "within_20pct": 62.5,
+            "r2": 0.7144
+          },
+          "district_5_year_mean": {
+            "n": 288,
+            "mae_kg_ha": 3989.3,
+            "median_ape_pct": 17.82,
+            "mean_ape_pct": 22.39,
+            "within_20pct": 54.9,
+            "r2": 0.674
+          }
+        },
+        "rice": {
+          "served": {
+            "n": 968,
+            "mae_kg_ha": 358.4,
+            "median_ape_pct": 9.02,
+            "mean_ape_pct": 14.75,
+            "within_20pct": 77.9,
+            "r2": 0.6637
+          },
+          "served_method": "model",
+          "model": {
+            "n": 968,
+            "mae_kg_ha": 358.4,
+            "median_ape_pct": 9.02,
+            "mean_ape_pct": 14.75,
+            "within_20pct": 77.9,
+            "r2": 0.6637
+          },
+          "district_5_year_mean": {
+            "n": 968,
+            "mae_kg_ha": 407.9,
+            "median_ape_pct": 10.24,
+            "mean_ape_pct": 15.9,
+            "within_20pct": 72.9,
+            "r2": 0.5707
+          }
+        },
+        "sesame": {
+          "served": {
+            "n": 292,
+            "mae_kg_ha": 84.6,
+            "median_ape_pct": 14.25,
+            "mean_ape_pct": 19.25,
+            "within_20pct": 65.8,
+            "r2": 0.8013
+          },
+          "served_method": "model",
+          "model": {
+            "n": 292,
+            "mae_kg_ha": 84.6,
+            "median_ape_pct": 14.25,
+            "mean_ape_pct": 19.25,
+            "within_20pct": 65.8,
+            "r2": 0.8013
+          },
+          "district_5_year_mean": {
+            "n": 292,
+            "mae_kg_ha": 87.8,
+            "median_ape_pct": 13.68,
+            "mean_ape_pct": 19.35,
+            "within_20pct": 63.4,
+            "r2": 0.7791
+          }
+        },
+        "soybean": {
+          "served": {
+            "n": 157,
+            "mae_kg_ha": 208.1,
+            "median_ape_pct": 14.11,
+            "mean_ape_pct": 17.79,
+            "within_20pct": 65.0,
+            "r2": 0.3691
+          },
+          "served_method": "blend",
+          "model": {
+            "n": 157,
+            "mae_kg_ha": 214.8,
+            "median_ape_pct": 14.18,
+            "mean_ape_pct": 18.2,
+            "within_20pct": 62.4,
+            "r2": 0.3356
+          },
+          "district_5_year_mean": {
+            "n": 157,
+            "mae_kg_ha": 213.6,
+            "median_ape_pct": 14.23,
+            "mean_ape_pct": 18.31,
+            "within_20pct": 64.3,
+            "r2": 0.3234
+          }
+        },
+        "sugarcane": {
+          "served": {
+            "n": 256,
+            "mae_kg_ha": 10122.3,
+            "median_ape_pct": 10.3,
+            "mean_ape_pct": 33.78,
+            "within_20pct": 75.0,
+            "r2": 0.7537
+          },
+          "served_method": "model",
+          "model": {
+            "n": 256,
+            "mae_kg_ha": 10122.3,
+            "median_ape_pct": 10.3,
+            "mean_ape_pct": 33.78,
+            "within_20pct": 75.0,
+            "r2": 0.7537
+          },
+          "district_5_year_mean": {
+            "n": 256,
+            "mae_kg_ha": 10069.5,
+            "median_ape_pct": 9.73,
+            "mean_ape_pct": 30.0,
+            "within_20pct": 71.1,
+            "r2": 0.7593
+          }
+        },
+        "urad": {
+          "served": {
+            "n": 467,
+            "mae_kg_ha": 120.1,
+            "median_ape_pct": 12.77,
+            "mean_ape_pct": 21.4,
+            "within_20pct": 67.2,
+            "r2": 0.5973
+          },
+          "served_method": "model",
+          "model": {
+            "n": 467,
+            "mae_kg_ha": 120.1,
+            "median_ape_pct": 12.77,
+            "mean_ape_pct": 21.4,
+            "within_20pct": 67.2,
+            "r2": 0.5973
+          },
+          "district_5_year_mean": {
+            "n": 467,
+            "mae_kg_ha": 128.5,
+            "median_ape_pct": 13.27,
+            "mean_ape_pct": 22.12,
+            "within_20pct": 63.6,
+            "r2": 0.551
+          }
+        },
+        "wheat": {
+          "served": {
+            "n": 433,
+            "mae_kg_ha": 280.8,
+            "median_ape_pct": 7.53,
+            "mean_ape_pct": 10.7,
+            "within_20pct": 84.1,
+            "r2": 0.8883
+          },
+          "served_method": "blend",
+          "model": {
+            "n": 433,
+            "mae_kg_ha": 345.6,
+            "median_ape_pct": 10.24,
+            "mean_ape_pct": 12.77,
+            "within_20pct": 82.2,
+            "r2": 0.8426
+          },
+          "district_5_year_mean": {
+            "n": 433,
+            "mae_kg_ha": 273.4,
+            "median_ape_pct": 7.01,
+            "mean_ape_pct": 10.56,
+            "within_20pct": 84.5,
+            "r2": 0.8892
+          }
+        }
+      }
+    },
+    "horizon_3_years": {
+      "served_per_crop_selection": {
+        "n": 6660,
+        "mae_kg_ha": 890.6,
+        "median_ape_pct": 13.23,
+        "mean_ape_pct": 20.78,
+        "within_20pct": 64.7,
+        "r2": 0.9514
+      },
+      "model": {
+        "n": 6660,
+        "mae_kg_ha": 900.0,
+        "median_ape_pct": 13.64,
+        "mean_ape_pct": 21.04,
+        "within_20pct": 64.5,
+        "r2": 0.9513
+      },
+      "blend_model_and_5_year_mean": {
+        "n": 6660,
+        "mae_kg_ha": 932.4,
+        "median_ape_pct": 13.8,
+        "mean_ape_pct": 20.73,
+        "within_20pct": 63.3,
+        "r2": 0.9473
+      },
+      "district_last_year": {
+        "n": 6660,
+        "mae_kg_ha": 969.7,
+        "median_ape_pct": 15.68,
+        "mean_ape_pct": 24.08,
+        "within_20pct": 58.7,
+        "r2": 0.9461
+      },
+      "district_5_year_mean": {
+        "n": 6660,
+        "mae_kg_ha": 1037.5,
+        "median_ape_pct": 15.55,
+        "mean_ape_pct": 21.97,
+        "within_20pct": 59.1,
+        "r2": 0.9392
+      },
+      "national_average_previous_engine": {
+        "n": 6660,
+        "mae_kg_ha": 1952.4,
+        "median_ape_pct": 27.31,
+        "mean_ape_pct": 43.74,
+        "within_20pct": 37.8,
+        "r2": 0.8008
+      },
+      "by_crop": {
+        "bajra": {
+          "served": {
+            "n": 203,
+            "mae_kg_ha": 295.8,
+            "median_ape_pct": 11.52,
+            "mean_ape_pct": 19.81,
+            "within_20pct": 66.0,
+            "r2": 0.6857
+          },
+          "served_method": "model",
+          "model": {
+            "n": 203,
+            "mae_kg_ha": 295.8,
+            "median_ape_pct": 11.52,
+            "mean_ape_pct": 19.81,
+            "within_20pct": 66.0,
+            "r2": 0.6857
+          },
+          "district_5_year_mean": {
+            "n": 203,
+            "mae_kg_ha": 332.8,
+            "median_ape_pct": 14.09,
+            "mean_ape_pct": 20.56,
+            "within_20pct": 61.6,
+            "r2": 0.6186
+          }
+        },
+        "barley": {
+          "served": {
+            "n": 153,
+            "mae_kg_ha": 355.9,
+            "median_ape_pct": 9.5,
+            "mean_ape_pct": 15.74,
+            "within_20pct": 74.5,
+            "r2": 0.745
+          },
+          "served_method": "model",
+          "model": {
+            "n": 153,
+            "mae_kg_ha": 355.9,
+            "median_ape_pct": 9.5,
+            "mean_ape_pct": 15.74,
+            "within_20pct": 74.5,
+            "r2": 0.745
+          },
+          "district_5_year_mean": {
+            "n": 153,
+            "mae_kg_ha": 344.9,
+            "median_ape_pct": 8.53,
+            "mean_ape_pct": 14.28,
+            "within_20pct": 75.2,
+            "r2": 0.7355
+          }
+        },
+        "chickpea": {
+          "served": {
+            "n": 324,
+            "mae_kg_ha": 195.3,
+            "median_ape_pct": 12.59,
+            "mean_ape_pct": 18.46,
+            "within_20pct": 69.4,
+            "r2": 0.5973
+          },
+          "served_method": "model",
+          "model": {
+            "n": 324,
+            "mae_kg_ha": 195.3,
+            "median_ape_pct": 12.59,
+            "mean_ape_pct": 18.46,
+            "within_20pct": 69.4,
+            "r2": 0.5973
+          },
+          "district_5_year_mean": {
+            "n": 324,
+            "mae_kg_ha": 220.5,
+            "median_ape_pct": 14.88,
+            "mean_ape_pct": 18.24,
+            "within_20pct": 62.3,
+            "r2": 0.4735
+          }
+        },
+        "cotton": {
+          "served": {
+            "n": 233,
+            "mae_kg_ha": 626.2,
+            "median_ape_pct": 19.46,
+            "mean_ape_pct": 33.89,
+            "within_20pct": 51.1,
+            "r2": 0.3925
+          },
+          "served_method": "model",
+          "model": {
+            "n": 233,
+            "mae_kg_ha": 626.2,
+            "median_ape_pct": 19.46,
+            "mean_ape_pct": 33.89,
+            "within_20pct": 51.1,
+            "r2": 0.3925
+          },
+          "district_5_year_mean": {
+            "n": 233,
+            "mae_kg_ha": 598.5,
+            "median_ape_pct": 19.79,
+            "mean_ape_pct": 29.46,
+            "within_20pct": 51.1,
+            "r2": 0.4357
+          }
+        },
+        "groundnut": {
+          "served": {
+            "n": 398,
+            "mae_kg_ha": 380.9,
+            "median_ape_pct": 16.19,
+            "mean_ape_pct": 22.4,
+            "within_20pct": 56.8,
+            "r2": 0.6227
+          },
+          "served_method": "model",
+          "model": {
+            "n": 398,
+            "mae_kg_ha": 380.9,
+            "median_ape_pct": 16.19,
+            "mean_ape_pct": 22.4,
+            "within_20pct": 56.8,
+            "r2": 0.6227
+          },
+          "district_5_year_mean": {
+            "n": 398,
+            "mae_kg_ha": 436.9,
+            "median_ape_pct": 19.58,
+            "mean_ape_pct": 24.04,
+            "within_20pct": 51.3,
+            "r2": 0.5192
+          }
+        },
+        "jowar": {
+          "served": {
+            "n": 246,
+            "mae_kg_ha": 402.4,
+            "median_ape_pct": 22.6,
+            "mean_ape_pct": 32.52,
+            "within_20pct": 44.7,
+            "r2": 0.4045
+          },
+          "served_method": "model",
+          "model": {
+            "n": 246,
+            "mae_kg_ha": 402.4,
+            "median_ape_pct": 22.6,
+            "mean_ape_pct": 32.52,
+            "within_20pct": 44.7,
+            "r2": 0.4045
+          },
+          "district_5_year_mean": {
+            "n": 246,
+            "mae_kg_ha": 417.4,
+            "median_ape_pct": 24.33,
+            "mean_ape_pct": 34.58,
+            "within_20pct": 37.8,
+            "r2": 0.4127
+          }
+        },
+        "lentil": {
+          "served": {
+            "n": 222,
+            "mae_kg_ha": 181.2,
+            "median_ape_pct": 15.36,
+            "mean_ape_pct": 19.07,
+            "within_20pct": 58.6,
+            "r2": 0.283
+          },
+          "served_method": "mean5",
+          "model": {
+            "n": 222,
+            "mae_kg_ha": 181.8,
+            "median_ape_pct": 16.58,
+            "mean_ape_pct": 19.54,
+            "within_20pct": 58.6,
+            "r2": 0.3098
+          },
+          "district_5_year_mean": {
+            "n": 222,
+            "mae_kg_ha": 181.2,
+            "median_ape_pct": 15.36,
+            "mean_ape_pct": 19.07,
+            "within_20pct": 58.6,
+            "r2": 0.283
+          }
+        },
+        "maize": {
+          "served": {
+            "n": 767,
+            "mae_kg_ha": 690.5,
+            "median_ape_pct": 14.62,
+            "mean_ape_pct": 21.55,
+            "within_20pct": 63.1,
+            "r2": 0.7216
+          },
+          "served_method": "model",
+          "model": {
+            "n": 767,
+            "mae_kg_ha": 690.5,
+            "median_ape_pct": 14.62,
+            "mean_ape_pct": 21.55,
+            "within_20pct": 63.1,
+            "r2": 0.7216
+          },
+          "district_5_year_mean": {
+            "n": 767,
+            "mae_kg_ha": 797.9,
+            "median_ape_pct": 19.26,
+            "mean_ape_pct": 23.77,
+            "within_20pct": 51.5,
+            "r2": 0.6512
+          }
+        },
+        "moong": {
+          "served": {
+            "n": 384,
+            "mae_kg_ha": 153.3,
+            "median_ape_pct": 17.4,
+            "mean_ape_pct": 25.04,
+            "within_20pct": 54.9,
+            "r2": 0.4798
+          },
+          "served_method": "model",
+          "model": {
+            "n": 384,
+            "mae_kg_ha": 153.3,
+            "median_ape_pct": 17.4,
+            "mean_ape_pct": 25.04,
+            "within_20pct": 54.9,
+            "r2": 0.4798
+          },
+          "district_5_year_mean": {
+            "n": 384,
+            "mae_kg_ha": 172.4,
+            "median_ape_pct": 22.99,
+            "mean_ape_pct": 26.65,
+            "within_20pct": 46.1,
+            "r2": 0.3817
+          }
+        },
+        "mustard": {
+          "served": {
+            "n": 416,
+            "mae_kg_ha": 180.4,
+            "median_ape_pct": 11.5,
+            "mean_ape_pct": 17.16,
+            "within_20pct": 68.8,
+            "r2": 0.7183
+          },
+          "served_method": "blend",
+          "model": {
+            "n": 416,
+            "mae_kg_ha": 175.5,
+            "median_ape_pct": 12.1,
+            "mean_ape_pct": 17.66,
+            "within_20pct": 71.4,
+            "r2": 0.7325
+          },
+          "district_5_year_mean": {
+            "n": 416,
+            "mae_kg_ha": 200.6,
+            "median_ape_pct": 14.0,
+            "mean_ape_pct": 18.1,
+            "within_20pct": 65.1,
+            "r2": 0.6586
+          }
+        },
+        "onion": {
+          "served": {
+            "n": 164,
+            "mae_kg_ha": 2794.6,
+            "median_ape_pct": 12.41,
+            "mean_ape_pct": 24.68,
+            "within_20pct": 58.5,
+            "r2": 0.5942
+          },
+          "served_method": "blend",
+          "model": {
+            "n": 164,
+            "mae_kg_ha": 3023.5,
+            "median_ape_pct": 15.81,
+            "mean_ape_pct": 27.72,
+            "within_20pct": 57.9,
+            "r2": 0.5789
+          },
+          "district_5_year_mean": {
+            "n": 164,
+            "mae_kg_ha": 3051.6,
+            "median_ape_pct": 16.61,
+            "mean_ape_pct": 25.03,
+            "within_20pct": 56.1,
+            "r2": 0.5494
+          }
+        },
+        "pigeon_pea": {
+          "served": {
+            "n": 311,
+            "mae_kg_ha": 206.3,
+            "median_ape_pct": 17.38,
+            "mean_ape_pct": 25.18,
+            "within_20pct": 55.6,
+            "r2": 0.5226
+          },
+          "served_method": "model",
+          "model": {
+            "n": 311,
+            "mae_kg_ha": 206.3,
+            "median_ape_pct": 17.38,
+            "mean_ape_pct": 25.18,
+            "within_20pct": 55.6,
+            "r2": 0.5226
+          },
+          "district_5_year_mean": {
+            "n": 311,
+            "mae_kg_ha": 227.8,
+            "median_ape_pct": 17.85,
+            "mean_ape_pct": 26.68,
+            "within_20pct": 53.7,
+            "r2": 0.4151
+          }
+        },
+        "potato": {
+          "served": {
+            "n": 287,
+            "mae_kg_ha": 3721.1,
+            "median_ape_pct": 15.18,
+            "mean_ape_pct": 21.54,
+            "within_20pct": 59.6,
+            "r2": 0.7161
+          },
+          "served_method": "model",
+          "model": {
+            "n": 287,
+            "mae_kg_ha": 3721.1,
+            "median_ape_pct": 15.18,
+            "mean_ape_pct": 21.54,
+            "within_20pct": 59.6,
+            "r2": 0.7161
+          },
+          "district_5_year_mean": {
+            "n": 287,
+            "mae_kg_ha": 4403.6,
+            "median_ape_pct": 19.65,
+            "mean_ape_pct": 24.13,
+            "within_20pct": 51.2,
+            "r2": 0.6162
+          }
+        },
+        "rice": {
+          "served": {
+            "n": 956,
+            "mae_kg_ha": 380.3,
+            "median_ape_pct": 10.13,
+            "mean_ape_pct": 15.2,
+            "within_20pct": 76.3,
+            "r2": 0.6374
+          },
+          "served_method": "model",
+          "model": {
+            "n": 956,
+            "mae_kg_ha": 380.3,
+            "median_ape_pct": 10.13,
+            "mean_ape_pct": 15.2,
+            "within_20pct": 76.3,
+            "r2": 0.6374
+          },
+          "district_5_year_mean": {
+            "n": 956,
+            "mae_kg_ha": 450.7,
+            "median_ape_pct": 12.35,
+            "mean_ape_pct": 17.32,
+            "within_20pct": 67.1,
+            "r2": 0.5002
+          }
+        },
+        "sesame": {
+          "served": {
+            "n": 288,
+            "mae_kg_ha": 91.4,
+            "median_ape_pct": 15.82,
+            "mean_ape_pct": 20.77,
+            "within_20pct": 59.4,
+            "r2": 0.7688
+          },
+          "served_method": "model",
+          "model": {
+            "n": 288,
+            "mae_kg_ha": 91.4,
+            "median_ape_pct": 15.82,
+            "mean_ape_pct": 20.77,
+            "within_20pct": 59.4,
+            "r2": 0.7688
+          },
+          "district_5_year_mean": {
+            "n": 288,
+            "mae_kg_ha": 99.1,
+            "median_ape_pct": 16.21,
+            "mean_ape_pct": 21.45,
+            "within_20pct": 57.6,
+            "r2": 0.7192
+          }
+        },
+        "soybean": {
+          "served": {
+            "n": 156,
+            "mae_kg_ha": 249.4,
+            "median_ape_pct": 17.69,
+            "mean_ape_pct": 20.47,
+            "within_20pct": 57.7,
+            "r2": 0.1118
+          },
+          "served_method": "blend",
+          "model": {
+            "n": 156,
+            "mae_kg_ha": 263.0,
+            "median_ape_pct": 16.97,
+            "mean_ape_pct": 21.26,
+            "within_20pct": 54.5,
+            "r2": 0.0232
+          },
+          "district_5_year_mean": {
+            "n": 156,
+            "mae_kg_ha": 248.4,
+            "median_ape_pct": 18.25,
+            "mean_ape_pct": 20.72,
+            "within_20pct": 56.4,
+            "r2": 0.1008
+          }
+        },
+        "sugarcane": {
+          "served": {
+            "n": 256,
+            "mae_kg_ha": 9539.3,
+            "median_ape_pct": 9.41,
+            "mean_ape_pct": 23.76,
+            "within_20pct": 72.3,
+            "r2": 0.7588
+          },
+          "served_method": "model",
+          "model": {
+            "n": 256,
+            "mae_kg_ha": 9539.3,
+            "median_ape_pct": 9.41,
+            "mean_ape_pct": 23.76,
+            "within_20pct": 72.3,
+            "r2": 0.7588
+          },
+          "district_5_year_mean": {
+            "n": 256,
+            "mae_kg_ha": 11565.1,
+            "median_ape_pct": 11.65,
+            "mean_ape_pct": 29.13,
+            "within_20pct": 65.6,
+            "r2": 0.6988
+          }
+        },
+        "urad": {
+          "served": {
+            "n": 464,
+            "mae_kg_ha": 128.8,
+            "median_ape_pct": 12.57,
+            "mean_ape_pct": 23.15,
+            "within_20pct": 63.8,
+            "r2": 0.5575
+          },
+          "served_method": "model",
+          "model": {
+            "n": 464,
+            "mae_kg_ha": 128.8,
+            "median_ape_pct": 12.57,
+            "mean_ape_pct": 23.15,
+            "within_20pct": 63.8,
+            "r2": 0.5575
+          },
+          "district_5_year_mean": {
+            "n": 464,
+            "mae_kg_ha": 137.0,
+            "median_ape_pct": 13.99,
+            "mean_ape_pct": 23.23,
+            "within_20pct": 62.7,
+            "r2": 0.4985
+          }
+        },
+        "wheat": {
+          "served": {
+            "n": 432,
+            "mae_kg_ha": 306.9,
+            "median_ape_pct": 7.89,
+            "mean_ape_pct": 11.67,
+            "within_20pct": 82.6,
+            "r2": 0.8626
+          },
+          "served_method": "blend",
+          "model": {
+            "n": 432,
+            "mae_kg_ha": 364.1,
+            "median_ape_pct": 10.8,
+            "mean_ape_pct": 13.61,
+            "within_20pct": 78.5,
+            "r2": 0.8202
+          },
+          "district_5_year_mean": {
+            "n": 432,
+            "mae_kg_ha": 330.8,
+            "median_ape_pct": 8.87,
+            "mean_ape_pct": 12.36,
+            "within_20pct": 80.1,
+            "r2": 0.8413
+          }
+        }
+      }
+    },
+    "horizon_4_years": {
+      "served_per_crop_selection": {
+        "n": 6434,
+        "mae_kg_ha": 959.2,
+        "median_ape_pct": 14.24,
+        "mean_ape_pct": 21.86,
+        "within_20pct": 62.8,
+        "r2": 0.9453
+      },
+      "model": {
+        "n": 6434,
+        "mae_kg_ha": 956.4,
+        "median_ape_pct": 14.27,
+        "mean_ape_pct": 21.88,
+        "within_20pct": 63.1,
+        "r2": 0.9456
+      },
+      "blend_model_and_5_year_mean": {
+        "n": 6434,
+        "mae_kg_ha": 1032.3,
+        "median_ape_pct": 15.2,
+        "mean_ape_pct": 22.17,
+        "within_20pct": 60.6,
+        "r2": 0.9385
+      },
+      "district_last_year": {
+        "n": 6434,
+        "mae_kg_ha": 1075.4,
+        "median_ape_pct": 17.14,
+        "mean_ape_pct": 25.42,
+        "within_20pct": 55.1,
+        "r2": 0.9376
+      },
+      "district_5_year_mean": {
+        "n": 6434,
+        "mae_kg_ha": 1173.2,
+        "median_ape_pct": 17.85,
+        "mean_ape_pct": 23.95,
+        "within_20pct": 54.7,
+        "r2": 0.927
+      },
+      "national_average_previous_engine": {
+        "n": 6434,
+        "mae_kg_ha": 1975.8,
+        "median_ape_pct": 27.05,
+        "mean_ape_pct": 43.78,
+        "within_20pct": 38.2,
+        "r2": 0.7967
+      },
+      "by_crop": {
+        "bajra": {
+          "served": {
+            "n": 201,
+            "mae_kg_ha": 303.7,
+            "median_ape_pct": 12.58,
+            "mean_ape_pct": 20.08,
+            "within_20pct": 66.7,
+            "r2": 0.6761
+          },
+          "served_method": "model",
+          "model": {
+            "n": 201,
+            "mae_kg_ha": 303.7,
+            "median_ape_pct": 12.58,
+            "mean_ape_pct": 20.08,
+            "within_20pct": 66.7,
+            "r2": 0.6761
+          },
+          "district_5_year_mean": {
+            "n": 201,
+            "mae_kg_ha": 360.3,
+            "median_ape_pct": 16.08,
+            "mean_ape_pct": 22.08,
+            "within_20pct": 58.7,
+            "r2": 0.5707
+          }
+        },
+        "barley": {
+          "served": {
+            "n": 151,
+            "mae_kg_ha": 349.5,
+            "median_ape_pct": 8.13,
+            "mean_ape_pct": 16.04,
+            "within_20pct": 73.5,
+            "r2": 0.7222
+          },
+          "served_method": "model",
+          "model": {
+            "n": 151,
+            "mae_kg_ha": 349.5,
+            "median_ape_pct": 8.13,
+            "mean_ape_pct": 16.04,
+            "within_20pct": 73.5,
+            "r2": 0.7222
+          },
+          "district_5_year_mean": {
+            "n": 151,
+            "mae_kg_ha": 450.4,
+            "median_ape_pct": 14.04,
+            "mean_ape_pct": 18.03,
+            "within_20pct": 70.9,
+            "r2": 0.6112
+          }
+        },
+        "chickpea": {
+          "served": {
+            "n": 318,
+            "mae_kg_ha": 215.8,
+            "median_ape_pct": 13.65,
+            "mean_ape_pct": 19.88,
+            "within_20pct": 65.1,
+            "r2": 0.5213
+          },
+          "served_method": "model",
+          "model": {
+            "n": 318,
+            "mae_kg_ha": 215.8,
+            "median_ape_pct": 13.65,
+            "mean_ape_pct": 19.88,
+            "within_20pct": 65.1,
+            "r2": 0.5213
+          },
+          "district_5_year_mean": {
+            "n": 318,
+            "mae_kg_ha": 271.9,
+            "median_ape_pct": 19.72,
+            "mean_ape_pct": 21.97,
+            "within_20pct": 50.6,
+            "r2": 0.2483
+          }
+        },
+        "cotton": {
+          "served": {
+            "n": 229,
+            "mae_kg_ha": 664.6,
+            "median_ape_pct": 19.77,
+            "mean_ape_pct": 34.08,
+            "within_20pct": 50.2,
+            "r2": 0.3399
+          },
+          "served_method": "model",
+          "model": {
+            "n": 229,
+            "mae_kg_ha": 664.6,
+            "median_ape_pct": 19.77,
+            "mean_ape_pct": 34.08,
+            "within_20pct": 50.2,
+            "r2": 0.3399
+          },
+          "district_5_year_mean": {
+            "n": 229,
+            "mae_kg_ha": 645.8,
+            "median_ape_pct": 21.16,
+            "mean_ape_pct": 30.32,
+            "within_20pct": 46.7,
+            "r2": 0.3739
+          }
+        },
+        "groundnut": {
+          "served": {
+            "n": 385,
+            "mae_kg_ha": 398.5,
+            "median_ape_pct": 16.15,
+            "mean_ape_pct": 22.88,
+            "within_20pct": 59.2,
+            "r2": 0.5904
+          },
+          "served_method": "model",
+          "model": {
+            "n": 385,
+            "mae_kg_ha": 398.5,
+            "median_ape_pct": 16.15,
+            "mean_ape_pct": 22.88,
+            "within_20pct": 59.2,
+            "r2": 0.5904
+          },
+          "district_5_year_mean": {
+            "n": 385,
+            "mae_kg_ha": 478.6,
+            "median_ape_pct": 22.07,
+            "mean_ape_pct": 26.1,
+            "within_20pct": 45.5,
+            "r2": 0.4649
+          }
+        },
+        "jowar": {
+          "served": {
+            "n": 246,
+            "mae_kg_ha": 429.5,
+            "median_ape_pct": 26.04,
+            "mean_ape_pct": 35.65,
+            "within_20pct": 38.2,
+            "r2": 0.3581
+          },
+          "served_method": "model",
+          "model": {
+            "n": 246,
+            "mae_kg_ha": 429.5,
+            "median_ape_pct": 26.04,
+            "mean_ape_pct": 35.65,
+            "within_20pct": 38.2,
+            "r2": 0.3581
+          },
+          "district_5_year_mean": {
+            "n": 246,
+            "mae_kg_ha": 448.4,
+            "median_ape_pct": 27.62,
+            "mean_ape_pct": 37.88,
+            "within_20pct": 35.8,
+            "r2": 0.3622
+          }
+        },
+        "lentil": {
+          "served": {
+            "n": 207,
+            "mae_kg_ha": 195.5,
+            "median_ape_pct": 17.0,
+            "mean_ape_pct": 20.37,
+            "within_20pct": 56.5,
+            "r2": 0.1919
+          },
+          "served_method": "mean5",
+          "model": {
+            "n": 207,
+            "mae_kg_ha": 189.9,
+            "median_ape_pct": 17.6,
+            "mean_ape_pct": 20.42,
+            "within_20pct": 56.5,
+            "r2": 0.2868
+          },
+          "district_5_year_mean": {
+            "n": 207,
+            "mae_kg_ha": 195.5,
+            "median_ape_pct": 17.0,
+            "mean_ape_pct": 20.37,
+            "within_20pct": 56.5,
+            "r2": 0.1919
+          }
+        },
+        "maize": {
+          "served": {
+            "n": 746,
+            "mae_kg_ha": 687.4,
+            "median_ape_pct": 14.53,
+            "mean_ape_pct": 21.64,
+            "within_20pct": 62.3,
+            "r2": 0.721
+          },
+          "served_method": "model",
+          "model": {
+            "n": 746,
+            "mae_kg_ha": 687.4,
+            "median_ape_pct": 14.53,
+            "mean_ape_pct": 21.64,
+            "within_20pct": 62.3,
+            "r2": 0.721
+          },
+          "district_5_year_mean": {
+            "n": 746,
+            "mae_kg_ha": 834.1,
+            "median_ape_pct": 21.05,
+            "mean_ape_pct": 24.76,
+            "within_20pct": 47.6,
+            "r2": 0.6337
+          }
+        },
+        "moong": {
+          "served": {
+            "n": 365,
+            "mae_kg_ha": 152.1,
+            "median_ape_pct": 18.5,
+            "mean_ape_pct": 25.61,
+            "within_20pct": 53.2,
+            "r2": 0.5116
+          },
+          "served_method": "model",
+          "model": {
+            "n": 365,
+            "mae_kg_ha": 152.1,
+            "median_ape_pct": 18.5,
+            "mean_ape_pct": 25.61,
+            "within_20pct": 53.2,
+            "r2": 0.5116
+          },
+          "district_5_year_mean": {
+            "n": 365,
+            "mae_kg_ha": 178.8,
+            "median_ape_pct": 21.72,
+            "mean_ape_pct": 27.92,
+            "within_20pct": 46.0,
+            "r2": 0.3488
+          }
+        },
+        "mustard": {
+          "served": {
+            "n": 410,
+            "mae_kg_ha": 198.0,
+            "median_ape_pct": 13.78,
+            "mean_ape_pct": 18.14,
+            "within_20pct": 67.6,
+            "r2": 0.6784
+          },
+          "served_method": "blend",
+          "model": {
+            "n": 410,
+            "mae_kg_ha": 180.0,
+            "median_ape_pct": 11.63,
+            "mean_ape_pct": 17.62,
+            "within_20pct": 71.5,
+            "r2": 0.7252
+          },
+          "district_5_year_mean": {
+            "n": 410,
+            "mae_kg_ha": 232.8,
+            "median_ape_pct": 17.03,
+            "mean_ape_pct": 20.2,
+            "within_20pct": 57.6,
+            "r2": 0.5786
+          }
+        },
+        "onion": {
+          "served": {
+            "n": 162,
+            "mae_kg_ha": 2874.8,
+            "median_ape_pct": 14.12,
+            "mean_ape_pct": 24.43,
+            "within_20pct": 63.0,
+            "r2": 0.5737
+          },
+          "served_method": "blend",
+          "model": {
+            "n": 162,
+            "mae_kg_ha": 2807.5,
+            "median_ape_pct": 14.23,
+            "mean_ape_pct": 25.36,
+            "within_20pct": 61.1,
+            "r2": 0.6133
+          },
+          "district_5_year_mean": {
+            "n": 162,
+            "mae_kg_ha": 3264.8,
+            "median_ape_pct": 18.98,
+            "mean_ape_pct": 26.09,
+            "within_20pct": 51.2,
+            "r2": 0.4767
+          }
+        },
+        "pigeon_pea": {
+          "served": {
+            "n": 302,
+            "mae_kg_ha": 217.4,
+            "median_ape_pct": 18.79,
+            "mean_ape_pct": 26.21,
+            "within_20pct": 53.3,
+            "r2": 0.4778
+          },
+          "served_method": "model",
+          "model": {
+            "n": 302,
+            "mae_kg_ha": 217.4,
+            "median_ape_pct": 18.79,
+            "mean_ape_pct": 26.21,
+            "within_20pct": 53.3,
+            "r2": 0.4778
+          },
+          "district_5_year_mean": {
+            "n": 302,
+            "mae_kg_ha": 250.4,
+            "median_ape_pct": 21.43,
+            "mean_ape_pct": 28.86,
+            "within_20pct": 46.7,
+            "r2": 0.3212
+          }
+        },
+        "potato": {
+          "served": {
+            "n": 284,
+            "mae_kg_ha": 3924.1,
+            "median_ape_pct": 15.66,
+            "mean_ape_pct": 23.02,
+            "within_20pct": 59.9,
+            "r2": 0.6975
+          },
+          "served_method": "model",
+          "model": {
+            "n": 284,
+            "mae_kg_ha": 3924.1,
+            "median_ape_pct": 15.66,
+            "mean_ape_pct": 23.02,
+            "within_20pct": 59.9,
+            "r2": 0.6975
+          },
+          "district_5_year_mean": {
+            "n": 284,
+            "mae_kg_ha": 4762.3,
+            "median_ape_pct": 21.62,
+            "mean_ape_pct": 25.69,
+            "within_20pct": 45.4,
+            "r2": 0.5739
+          }
+        },
+        "rice": {
+          "served": {
+            "n": 871,
+            "mae_kg_ha": 397.4,
+            "median_ape_pct": 11.3,
+            "mean_ape_pct": 16.01,
+            "within_20pct": 71.1,
+            "r2": 0.5579
+          },
+          "served_method": "model",
+          "model": {
+            "n": 871,
+            "mae_kg_ha": 397.4,
+            "median_ape_pct": 11.3,
+            "mean_ape_pct": 16.01,
+            "within_20pct": 71.1,
+            "r2": 0.5579
+          },
+          "district_5_year_mean": {
+            "n": 871,
+            "mae_kg_ha": 480.2,
+            "median_ape_pct": 12.85,
+            "mean_ape_pct": 18.64,
+            "within_20pct": 65.1,
+            "r2": 0.3734
+          }
+        },
+        "sesame": {
+          "served": {
+            "n": 283,
+            "mae_kg_ha": 92.0,
+            "median_ape_pct": 14.4,
+            "mean_ape_pct": 20.77,
+            "within_20pct": 61.5,
+            "r2": 0.7508
+          },
+          "served_method": "model",
+          "model": {
+            "n": 283,
+            "mae_kg_ha": 92.0,
+            "median_ape_pct": 14.4,
+            "mean_ape_pct": 20.77,
+            "within_20pct": 61.5,
+            "r2": 0.7508
+          },
+          "district_5_year_mean": {
+            "n": 283,
+            "mae_kg_ha": 105.7,
+            "median_ape_pct": 16.75,
+            "mean_ape_pct": 22.63,
+            "within_20pct": 55.8,
+            "r2": 0.6644
+          }
+        },
+        "soybean": {
+          "served": {
+            "n": 155,
+            "mae_kg_ha": 262.4,
+            "median_ape_pct": 18.82,
+            "mean_ape_pct": 22.35,
+            "within_20pct": 51.0,
+            "r2": -0.0105
+          },
+          "served_method": "blend",
+          "model": {
+            "n": 155,
+            "mae_kg_ha": 267.9,
+            "median_ape_pct": 17.67,
+            "mean_ape_pct": 22.6,
+            "within_20pct": 55.5,
+            "r2": -0.0256
+          },
+          "district_5_year_mean": {
+            "n": 155,
+            "mae_kg_ha": 266.3,
+            "median_ape_pct": 18.01,
+            "mean_ape_pct": 22.95,
+            "within_20pct": 57.4,
+            "r2": -0.0636
+          }
+        },
+        "sugarcane": {
+          "served": {
+            "n": 251,
+            "mae_kg_ha": 10456.4,
+            "median_ape_pct": 9.98,
+            "mean_ape_pct": 29.47,
+            "within_20pct": 72.1,
+            "r2": 0.7301
+          },
+          "served_method": "model",
+          "model": {
+            "n": 251,
+            "mae_kg_ha": 10456.4,
+            "median_ape_pct": 9.98,
+            "mean_ape_pct": 29.47,
+            "within_20pct": 72.1,
+            "r2": 0.7301
+          },
+          "district_5_year_mean": {
+            "n": 251,
+            "mae_kg_ha": 13421.5,
+            "median_ape_pct": 14.62,
+            "mean_ape_pct": 34.91,
+            "within_20pct": 64.9,
+            "r2": 0.6401
+          }
+        },
+        "urad": {
+          "served": {
+            "n": 438,
+            "mae_kg_ha": 141.7,
+            "median_ape_pct": 15.25,
+            "mean_ape_pct": 25.13,
+            "within_20pct": 59.8,
+            "r2": 0.4841
+          },
+          "served_method": "model",
+          "model": {
+            "n": 438,
+            "mae_kg_ha": 141.7,
+            "median_ape_pct": 15.25,
+            "mean_ape_pct": 25.13,
+            "within_20pct": 59.8,
+            "r2": 0.4841
+          },
+          "district_5_year_mean": {
+            "n": 438,
+            "mae_kg_ha": 149.3,
+            "median_ape_pct": 16.93,
+            "mean_ape_pct": 25.29,
+            "within_20pct": 56.6,
+            "r2": 0.4133
+          }
+        },
+        "wheat": {
+          "served": {
+            "n": 430,
+            "mae_kg_ha": 331.8,
+            "median_ape_pct": 9.13,
+            "mean_ape_pct": 12.17,
+            "within_20pct": 82.1,
+            "r2": 0.8427
+          },
+          "served_method": "blend",
+          "model": {
+            "n": 430,
+            "mae_kg_ha": 333.4,
+            "median_ape_pct": 9.5,
+            "mean_ape_pct": 12.54,
+            "within_20pct": 80.9,
+            "r2": 0.8437
+          },
+          "district_5_year_mean": {
+            "n": 430,
+            "mae_kg_ha": 406.6,
+            "median_ape_pct": 11.77,
+            "mean_ape_pct": 14.39,
+            "within_20pct": 71.9,
+            "r2": 0.7697
+          }
+        }
+      }
+    }
+  },
+  "out_of_time_2024_25": {
+    "horizon_2_years": {
+      "served_per_crop_selection": {
+        "n": 3425,
+        "mae_kg_ha": 352.4,
+        "median_ape_pct": 13.33,
+        "mean_ape_pct": 20.62,
+        "within_20pct": 65.6,
+        "r2": 0.8532
+      },
+      "model": {
+        "n": 3425,
+        "mae_kg_ha": 360.5,
+        "median_ape_pct": 13.74,
+        "mean_ape_pct": 20.92,
+        "within_20pct": 64.6,
+        "r2": 0.8487
+      },
+      "blend_model_and_5_year_mean": {
+        "n": 3425,
+        "mae_kg_ha": 349.1,
+        "median_ape_pct": 12.69,
+        "mean_ape_pct": 20.0,
+        "within_20pct": 66.5,
+        "r2": 0.8524
+      },
+      "district_last_year": {
+        "n": 3425,
+        "mae_kg_ha": 384.5,
+        "median_ape_pct": 13.26,
+        "mean_ape_pct": 22.1,
+        "within_20pct": 63.6,
+        "r2": 0.8175
+      },
+      "district_5_year_mean": {
+        "n": 3425,
+        "mae_kg_ha": 362.1,
+        "median_ape_pct": 12.63,
+        "mean_ape_pct": 20.3,
+        "within_20pct": 65.8,
+        "r2": 0.8377
+      },
+      "national_average_previous_engine": {
+        "n": 3425,
+        "mae_kg_ha": 679.1,
+        "median_ape_pct": 25.85,
+        "mean_ape_pct": 39.8,
+        "within_20pct": 40.0,
+        "r2": 0.4986
+      },
+      "by_crop": {
+        "bajra": {
+          "served": {
+            "n": 167,
+            "mae_kg_ha": 309.0,
+            "median_ape_pct": 14.08,
+            "mean_ape_pct": 22.55,
+            "within_20pct": 67.7,
+            "r2": 0.7076
+          },
+          "served_method": "model",
+          "model": {
+            "n": 167,
+            "mae_kg_ha": 309.0,
+            "median_ape_pct": 14.08,
+            "mean_ape_pct": 22.55,
+            "within_20pct": 67.7,
+            "r2": 0.7076
+          },
+          "district_5_year_mean": {
+            "n": 167,
+            "mae_kg_ha": 287.9,
+            "median_ape_pct": 12.46,
+            "mean_ape_pct": 21.28,
+            "within_20pct": 65.9,
+            "r2": 0.7308
+          }
+        },
+        "barley": {
+          "served": {
+            "n": 117,
+            "mae_kg_ha": 421.9,
+            "median_ape_pct": 13.83,
+            "mean_ape_pct": 17.32,
+            "within_20pct": 62.4,
+            "r2": 0.6303
+          },
+          "served_method": "model",
+          "model": {
+            "n": 117,
+            "mae_kg_ha": 421.9,
+            "median_ape_pct": 13.83,
+            "mean_ape_pct": 17.32,
+            "within_20pct": 62.4,
+            "r2": 0.6303
+          },
+          "district_5_year_mean": {
+            "n": 117,
+            "mae_kg_ha": 315.5,
+            "median_ape_pct": 9.23,
+            "mean_ape_pct": 12.13,
+            "within_20pct": 83.8,
+            "r2": 0.7741
+          }
+        },
+        "chickpea": {
+          "served": {
+            "n": 259,
+            "mae_kg_ha": 200.1,
+            "median_ape_pct": 13.25,
+            "mean_ape_pct": 17.37,
+            "within_20pct": 67.6,
+            "r2": 0.5759
+          },
+          "served_method": "model",
+          "model": {
+            "n": 259,
+            "mae_kg_ha": 200.1,
+            "median_ape_pct": 13.25,
+            "mean_ape_pct": 17.37,
+            "within_20pct": 67.6,
+            "r2": 0.5759
+          },
+          "district_5_year_mean": {
+            "n": 259,
+            "mae_kg_ha": 163.5,
+            "median_ape_pct": 10.29,
+            "mean_ape_pct": 12.88,
+            "within_20pct": 80.3,
+            "r2": 0.6686
+          }
+        },
+        "jowar": {
+          "served": {
+            "n": 224,
+            "mae_kg_ha": 329.9,
+            "median_ape_pct": 19.29,
+            "mean_ape_pct": 26.49,
+            "within_20pct": 51.8,
+            "r2": 0.6484
+          },
+          "served_method": "model",
+          "model": {
+            "n": 224,
+            "mae_kg_ha": 329.9,
+            "median_ape_pct": 19.29,
+            "mean_ape_pct": 26.49,
+            "within_20pct": 51.8,
+            "r2": 0.6484
+          },
+          "district_5_year_mean": {
+            "n": 224,
+            "mae_kg_ha": 329.5,
+            "median_ape_pct": 17.49,
+            "mean_ape_pct": 26.91,
+            "within_20pct": 54.0,
+            "r2": 0.6658
+          }
+        },
+        "lentil": {
+          "served": {
+            "n": 163,
+            "mae_kg_ha": 142.1,
+            "median_ape_pct": 9.97,
+            "mean_ape_pct": 15.22,
+            "within_20pct": 76.1,
+            "r2": 0.2122
+          },
+          "served_method": "mean5",
+          "model": {
+            "n": 163,
+            "mae_kg_ha": 140.9,
+            "median_ape_pct": 10.57,
+            "mean_ape_pct": 15.15,
+            "within_20pct": 76.1,
+            "r2": 0.2531
+          },
+          "district_5_year_mean": {
+            "n": 163,
+            "mae_kg_ha": 142.1,
+            "median_ape_pct": 9.97,
+            "mean_ape_pct": 15.22,
+            "within_20pct": 76.1,
+            "r2": 0.2122
+          }
+        },
+        "maize": {
+          "served": {
+            "n": 623,
+            "mae_kg_ha": 662.5,
+            "median_ape_pct": 15.21,
+            "mean_ape_pct": 22.85,
+            "within_20pct": 62.0,
+            "r2": 0.7168
+          },
+          "served_method": "model",
+          "model": {
+            "n": 623,
+            "mae_kg_ha": 662.5,
+            "median_ape_pct": 15.21,
+            "mean_ape_pct": 22.85,
+            "within_20pct": 62.0,
+            "r2": 0.7168
+          },
+          "district_5_year_mean": {
+            "n": 623,
+            "mae_kg_ha": 735.5,
+            "median_ape_pct": 17.43,
+            "mean_ape_pct": 23.23,
+            "within_20pct": 55.2,
+            "r2": 0.6652
+          }
+        },
+        "moong": {
+          "served": {
+            "n": 279,
+            "mae_kg_ha": 146.6,
+            "median_ape_pct": 16.98,
+            "mean_ape_pct": 27.56,
+            "within_20pct": 55.9,
+            "r2": 0.5856
+          },
+          "served_method": "model",
+          "model": {
+            "n": 279,
+            "mae_kg_ha": 146.6,
+            "median_ape_pct": 16.98,
+            "mean_ape_pct": 27.56,
+            "within_20pct": 55.9,
+            "r2": 0.5856
+          },
+          "district_5_year_mean": {
+            "n": 279,
+            "mae_kg_ha": 152.3,
+            "median_ape_pct": 16.04,
+            "mean_ape_pct": 27.97,
+            "within_20pct": 57.3,
+            "r2": 0.5412
+          }
+        },
+        "pigeon_pea": {
+          "served": {
+            "n": 225,
+            "mae_kg_ha": 210.3,
+            "median_ape_pct": 15.99,
+            "mean_ape_pct": 23.95,
+            "within_20pct": 57.8,
+            "r2": 0.4267
+          },
+          "served_method": "model",
+          "model": {
+            "n": 225,
+            "mae_kg_ha": 210.3,
+            "median_ape_pct": 15.99,
+            "mean_ape_pct": 23.95,
+            "within_20pct": 57.8,
+            "r2": 0.4267
+          },
+          "district_5_year_mean": {
+            "n": 225,
+            "mae_kg_ha": 228.8,
+            "median_ape_pct": 17.97,
+            "mean_ape_pct": 25.95,
+            "within_20pct": 54.7,
+            "r2": 0.3219
+          }
+        },
+        "rice": {
+          "served": {
+            "n": 674,
+            "mae_kg_ha": 385.5,
+            "median_ape_pct": 9.25,
+            "mean_ape_pct": 16.3,
+            "within_20pct": 73.3,
+            "r2": 0.5873
+          },
+          "served_method": "model",
+          "model": {
+            "n": 674,
+            "mae_kg_ha": 385.5,
+            "median_ape_pct": 9.25,
+            "mean_ape_pct": 16.3,
+            "within_20pct": 73.3,
+            "r2": 0.5873
+          },
+          "district_5_year_mean": {
+            "n": 674,
+            "mae_kg_ha": 412.9,
+            "median_ape_pct": 9.63,
+            "mean_ape_pct": 16.82,
+            "within_20pct": 73.0,
+            "r2": 0.5
+          }
+        },
+        "urad": {
+          "served": {
+            "n": 315,
+            "mae_kg_ha": 161.9,
+            "median_ape_pct": 17.54,
+            "mean_ape_pct": 25.41,
+            "within_20pct": 55.6,
+            "r2": 0.5107
+          },
+          "served_method": "model",
+          "model": {
+            "n": 315,
+            "mae_kg_ha": 161.9,
+            "median_ape_pct": 17.54,
+            "mean_ape_pct": 25.41,
+            "within_20pct": 55.6,
+            "r2": 0.5107
+          },
+          "district_5_year_mean": {
+            "n": 315,
+            "mae_kg_ha": 165.4,
+            "median_ape_pct": 19.04,
+            "mean_ape_pct": 25.99,
+            "within_20pct": 52.7,
+            "r2": 0.5171
+          }
+        },
+        "wheat": {
+          "served": {
+            "n": 379,
+            "mae_kg_ha": 383.4,
+            "median_ape_pct": 9.96,
+            "mean_ape_pct": 14.77,
+            "within_20pct": 80.2,
+            "r2": 0.754
+          },
+          "served_method": "blend",
+          "model": {
+            "n": 379,
+            "mae_kg_ha": 457.7,
+            "median_ape_pct": 12.66,
+            "mean_ape_pct": 17.57,
+            "within_20pct": 71.5,
+            "r2": 0.6793
+          },
+          "district_5_year_mean": {
+            "n": 379,
+            "mae_kg_ha": 352.2,
+            "median_ape_pct": 8.3,
+            "mean_ape_pct": 13.35,
+            "within_20pct": 80.7,
+            "r2": 0.7856
+          }
+        }
+      }
+    }
+  },
+  "interval_80pct_coverage": {
+    "test_2022_23": 79.4,
+    "out_of_time_2024_25": 77.4
+  },
+  "served": {
+    "district_series": 8667,
+    "state_series": 568,
+    "forecast_crop_year": "2026-27"
+  },
+  "limits": [
+    "District averages across all farms; an individual field can differ widely with water, variety and management.",
+    "No in-season weather: the forecast is made before the season from past yields.",
+    "2023-24 district records are missing from the source files, so recent forecasts look two or more years ahead.",
+    "Districts that changed name or were split are matched by name; unmatched fields fall back to the state average."
+  ]
+}

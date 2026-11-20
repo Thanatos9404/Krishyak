@@ -37,12 +37,9 @@ print("Path to dataset files:", path1, path2, path3)
 2. Download crop yield and market price datasets
 3. Place CSV files in this directory
 
-## API Key
+## API key
 
-For external data sources, use the API key:
-```
-API_KEY=579b464db66ec23bdd0000019e4dba64f69842d1547080c5536593c7
-```
+Set `DATA_GOV_IN_API_KEY` in the ignored `backend/.env` (get a free key at https://data.gov.in). Never commit a key.
 
 ## Note
 
