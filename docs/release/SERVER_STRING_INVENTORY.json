@@ -2,27 +2,32 @@
   {
     "source": "Core storage or usage controls unavailable",
     "file": "backend/v2/application.py",
-    "line": 209
-  },
-  {
-    "source": "Add a field crop that Krishyak can assess, such as wheat, rice or mustard",
-    "file": "backend/v2/assessment.py",
-    "line": 163
-  },
-  {
-    "source": "Add your field's area first",
-    "file": "backend/v2/assessment.py",
-    "line": 166
-  },
-  {
-    "source": "Tell Krishyak your soil type or your state first",
-    "file": "backend/v2/assessment.py",
-    "line": 170
+    "line": 213
   },
   {
     "source": "Many farmers are checking right now. Please retry in a minute.",
     "file": "backend/v2/assessment.py",
-    "line": 195
+    "line": 309
+  },
+  {
+    "source": "Add a field crop that Krishyak can assess, such as wheat, rice or mustard",
+    "file": "backend/v2/assessment.py",
+    "line": 445
+  },
+  {
+    "source": "Add your field's area first",
+    "file": "backend/v2/assessment.py",
+    "line": 448
+  },
+  {
+    "source": "Tell Krishyak your soil type or your state first",
+    "file": "backend/v2/assessment.py",
+    "line": 452
+  },
+  {
+    "source": "The example field is not available in this deployment",
+    "file": "backend/v2/assessment.py",
+    "line": 501
   },
   {
     "source": "The assistant returned an empty answer",
@@ -93,6 +98,16 @@
     "source": "Session expired",
     "file": "backend/v2/auth.py",
     "line": 60
+  },
+  {
+    "source": "Use a month such as 2026-11",
+    "file": "backend/v2/billing.py",
+    "line": 145
+  },
+  {
+    "source": "That month has not started",
+    "file": "backend/v2/billing.py",
+    "line": 147
   },
   {
     "source": "Crop greenness also falls at harvest and ripening",
@@ -168,6 +183,16 @@
     "source": "Photo storage unavailable; retry later",
     "file": "backend/v2/claims.py",
     "line": 233
+  },
+  {
+    "source": "Add your field's location to see the weather outlook",
+    "file": "backend/v2/climate.py",
+    "line": 275
+  },
+  {
+    "source": "The weather service is not answering. Please try again shortly.",
+    "file": "backend/v2/climate.py",
+    "line": 279
   },
   {
     "source": "Weather provider unavailable or incomplete. Saved evidence remains available.",
@@ -732,27 +757,42 @@
   {
     "source": "Cached evidence has expired; refresh before acting",
     "file": "backend/v2/farm_context/transport.py",
-    "line": 171
+    "line": 172
   },
   {
     "source": "This source is unavailable. Other sections remain usable.",
     "file": "backend/v2/farm_context/transport.py",
-    "line": 185
+    "line": 186
   },
   {
     "source": "Krishyak could not understand that. Please try again or fill the form.",
     "file": "backend/v2/farm_setup.py",
-    "line": 74
+    "line": 77
+  },
+  {
+    "source": "Account changed while finding your location",
+    "file": "backend/v2/farm_setup.py",
+    "line": 325
   },
   {
     "source": "Select a supported language",
     "file": "backend/v2/farm_setup.py",
-    "line": 228
+    "line": 356
   },
   {
     "source": "Account changed while reading your details",
     "file": "backend/v2/farm_setup.py",
-    "line": 255
+    "line": 383
+  },
+  {
+    "source": "This location is outside India. Choose your state and district instead.",
+    "file": "backend/v2/farm_setup.py",
+    "line": 296
+  },
+  {
+    "source": "Krishyak could not find this place on the map. Check the village name or use your location.",
+    "file": "backend/v2/farm_setup.py",
+    "line": 306
   },
   {
     "source": "This is public program information, not eligibility approval",
@@ -1592,82 +1632,82 @@
   {
     "source": "Your name, village and district",
     "file": "backend/v2/verify.py",
-    "line": 32
+    "line": 33
   },
   {
     "source": "The field you pick: crop, sowing date, area and rounded location (about 1 km)",
     "file": "backend/v2/verify.py",
-    "line": 33
+    "line": 34
   },
   {
     "source": "Satellite greenness of that field since sowing, and how many leaf photos you checked there",
     "file": "backend/v2/verify.py",
-    "line": 34
+    "line": 35
   },
   {
     "source": "Phone number",
     "file": "backend/v2/verify.py",
-    "line": 36
+    "line": 37
   },
   {
     "source": "Field outline",
     "file": "backend/v2/verify.py",
-    "line": 36
+    "line": 37
   },
   {
     "source": "Your photographs",
     "file": "backend/v2/verify.py",
-    "line": 36
+    "line": 37
   },
   {
     "source": "Other fields, notes, costs and sales",
     "file": "backend/v2/verify.py",
-    "line": 36
+    "line": 37
   },
   {
     "source": "Sentinel-2 greenness shows that plants grew, not which crop they are",
     "file": "backend/v2/verify.py",
-    "line": 38
+    "line": 39
   },
   {
     "source": "Cloud can hide the field for weeks; missing views are not evidence against the farmer",
     "file": "backend/v2/verify.py",
-    "line": 39
+    "line": 40
   },
   {
     "source": "This report supports a decision by a person; it is not an approval or a rejection",
     "file": "backend/v2/verify.py",
-    "line": 40
+    "line": 41
   },
   {
     "source": "Verification not found",
     "file": "backend/v2/verify.py",
-    "line": 247
+    "line": 255
   },
   {
     "source": "This code is not valid or has already been used.",
     "file": "backend/v2/verify.py",
-    "line": 259
+    "line": 267
   },
   {
     "source": "You cannot answer your own request",
     "file": "backend/v2/verify.py",
-    "line": 292
+    "line": 300
   },
   {
     "source": "Draw this field's outline in My fields first, so the satellite can find it",
     "file": "backend/v2/verify.py",
-    "line": 295
+    "line": 303
   },
   {
     "source": "Add the crop and sowing date for this field first",
     "file": "backend/v2/verify.py",
-    "line": 303
+    "line": 311
   },
   {
     "source": "Verification not found",
     "file": "backend/v2/verify.py",
-    "line": 368
+    "line": 376
   },
   {
     "source": "Satellite processing completed",
@@ -1780,6 +1820,56 @@
     "line": 1
   },
   {
+    "source": "Apple mosaic virus",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "virus",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "There is no cure for an infected tree; mark affected trees.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Use healthy planting material from a trusted nursery for new trees.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Wash and clean pruning tools between trees.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Cherry leaf spot",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "fungus",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Collect and destroy fallen leaves.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Prune to let air and sunlight into the tree.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Avoid wetting the leaves when irrigating.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
     "source": "Powdery mildew (cherry)",
     "file": "backend/v2/disease_guidance.json",
     "line": 1
@@ -1860,6 +1950,186 @@
     "line": 1
   },
   {
+    "source": "Maize smut",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "fungus",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Remove and destroy the swollen galls before they burst open.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Rotate away from maize for two seasons.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Use healthy seed of a tolerant variety next season.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Bacterial blight (cotton)",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "bacteria",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Remove badly affected plants and destroy crop residue after picking.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Avoid overhead watering and working in the field when leaves are wet.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Use healthy seed of a tolerant variety next season.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Herbicide damage (cotton)",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "weedkiller drift or residue, not a disease",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Check whether a weedkiller was sprayed on or near this field in the last two weeks.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Keep the crop well fed and avoid water stress so new growth can recover.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Wash and clean the sprayer fully before using it on cotton.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Jassid (leafhopper) damage",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "small sap-sucking insects under the leaves",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Look under the leaves for small green hopping insects.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Check several plants across the field before deciding how widespread it is.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Keep the crop well fed and avoid water stress.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Cotton leaf curl virus",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "virus spread by whiteflies",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Act quickly: it can spread across a field through whiteflies.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Pull out and destroy badly affected plants early.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Remove weeds around the field that shelter whiteflies.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Use a tolerant variety next season.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Leaf reddening (cotton)",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "nutrient shortage or stress, not an infection",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Check for waterlogging, drought or a sudden cold spell in the last weeks.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Keep the crop well fed and avoid water stress.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Ask for a soil test to find which nutrient is short.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Leaf variegation (cotton)",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "usually a harmless leaf colour change",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Check whether only a few plants show the pattern; that is usually harmless.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Keep checking new leaves over the next week.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Take another photo if the patches grow or the leaves curl.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
     "source": "Black rot (grape)",
     "file": "backend/v2/disease_guidance.json",
     "line": 1
@@ -1876,6 +2146,36 @@
   },
   {
     "source": "Keep the canopy open for air flow.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Grape downy mildew",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "fungus-like organism; spreads fast in wet, humid weather",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Act quickly: it can spread across a vineyard in days in humid weather.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Remove badly affected leaves and bunches.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Prune crowded shoots to improve air flow.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Avoid overhead watering.",
     "file": "backend/v2/disease_guidance.json",
     "line": 1
   },
@@ -1920,6 +2220,31 @@
     "line": 1
   },
   {
+    "source": "Citrus canker",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "bacteria",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Cut out twigs with canker spots and destroy them.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Wash and clean pruning tools between trees.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Avoid overhead watering and working among wet trees.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
     "source": "Citrus greening",
     "file": "backend/v2/disease_guidance.json",
     "line": 1
@@ -1956,6 +2281,31 @@
   },
   {
     "source": "Avoid overhead irrigation.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Peach leaf curl",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "fungus",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Remove and destroy curled, thickened leaves.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Keep the tree well fed and avoid water stress so it regrows healthy leaves.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Collect fallen leaves under the tree.",
     "file": "backend/v2/disease_guidance.json",
     "line": 1
   },
@@ -2030,6 +2380,246 @@
     "line": 1
   },
   {
+    "source": "Bacterial leaf blight (rice)",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "bacteria",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Drain the field for a few days if water is standing deep.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Do not add more nitrogen fertilizer now; it makes the blight worse.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Remove weeds and old rice stubble around the field.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Use healthy seed of a tolerant variety next season.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Bacterial leaf streak (rice)",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "bacteria",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Do not add more nitrogen fertilizer now.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Avoid working in the field when leaves are wet.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Destroy crop residue after harvest and use healthy seed next season.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Bacterial panicle blight (rice)",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "bacteria; worse in hot nights at flowering",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Check several plants across the field for upright, empty, discoloured grains.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Do not save seed from this field.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Use healthy, certified seed next season.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Rice blast",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "fungus",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Act quickly: it can spread across a field in a few humid days.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Do not add more nitrogen fertilizer now.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Keep water standing in the field; blast is worse when the soil dries.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Destroy infected crop residue after harvest.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Brown spot (rice)",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "fungus; common on poor or dry soils",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Keep the crop well fed and avoid water stress; brown spot marks a hungry crop.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Ask for a soil test to check potash and other nutrients.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Use healthy seed next season.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Dead heart (stem borer)",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "stem borer caterpillars inside the stem",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Pull out the dried central shoots and destroy them.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Look for egg masses near the leaf tips and remove them.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Cut the stubble low and plough the residue in after harvest.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Downy mildew (rice)",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "fungus-like organism",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Pull out and destroy badly affected plants.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Drain water that stands too long in the nursery or field.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Use healthy seed next season.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Rice hispa",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "small spiny beetles that scrape the leaves",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Look for small blue-black spiny beetles and white streaks on leaves.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Remove badly affected leaf tips and destroy them.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Remove grassy weeds on the bunds where the beetles shelter.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Rice tungro",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "virus spread by green leafhoppers",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Act quickly: it can spread across a field through leafhoppers.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Pull out and destroy badly affected plants early.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Plough in the stubble after harvest so the virus does not carry over.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Use a tolerant variety and plant at the same time as your neighbours.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
     "source": "Powdery mildew (gourds)",
     "file": "backend/v2/disease_guidance.json",
     "line": 1
@@ -2066,6 +2656,111 @@
   },
   {
     "source": "Avoid overhead irrigation.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Sugarcane mosaic",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "virus",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Pull out and destroy badly affected clumps.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Use healthy seed cane from a disease-free field.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Wash and clean cutting knives between fields.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Red rot (sugarcane)",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "fungus",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Act quickly: it can spread across a field and ruin the cane.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Pull out and destroy infected clumps with their roots.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Do not keep a ratoon crop from this field.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Use healthy seed cane of a resistant variety and rotate the field.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Sugarcane rust",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "fungus",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Remove badly rusted lower leaves.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Keep the crop well fed and avoid water stress.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Use a tolerant variety next planting.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Yellow leaf (sugarcane)",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "virus spread by aphids",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Check several clumps across the field for a yellow midrib.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Use healthy seed cane from a disease-free field.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Keep the crop well fed and avoid water stress.",
     "file": "backend/v2/disease_guidance.json",
     "line": 1
   },
@@ -2165,6 +2860,56 @@
     "line": 1
   },
   {
+    "source": "Leaf miner (tomato)",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "tiny larvae tunnelling inside the leaves",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Remove leaves with many winding tunnels and destroy them.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Check new leaves every few days.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Remove weeds around the field.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Nutrient shortage (tomato)",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "a nutrient is short in the soil, not an infection",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Check which leaves are yellow: old lower leaves or young top leaves.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Ask for a soil test to find which nutrient is short.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Keep the crop well fed and avoid water stress.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
     "source": "Septoria leaf spot (tomato)",
     "file": "backend/v2/disease_guidance.json",
     "line": 1
@@ -2201,6 +2946,31 @@
   },
   {
     "source": "Remove badly infested leaves; mites increase in hot, dry weather.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Spotted wilt virus (tomato)",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "virus spread by thrips",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "There is no cure for infected plants; pull out and destroy them early.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Remove weeds around the field that shelter thrips.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Use healthy seedlings next season.",
     "file": "backend/v2/disease_guidance.json",
     "line": 1
   },
@@ -2261,6 +3031,356 @@
   },
   {
     "source": "Wash hands and tools after handling infected plants; avoid tobacco use near plants.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Aphids (wheat)",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "small sap-sucking insects",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Look for clusters of small green or black insects on leaves and ears.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Check several plants across the field before deciding how widespread it is.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Look for ladybird beetles; they eat aphids and often control them.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Black (stem) rust",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "fungus",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Act quickly: rust can spread across a field and to neighbours on the wind.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Contact your agriculture officer or the Kisan Call Centre today.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Use a rust-resistant variety next season.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Wheat blast",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "fungus",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Act quickly: this disease can spread across a field within days.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Contact your agriculture officer or the Kisan Call Centre today; this disease must be reported.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Do not save seed from this field.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Brown (leaf) rust",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "fungus",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Act quickly: rust can spread across a field and to neighbours on the wind.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Contact your agriculture officer or the Kisan Call Centre today.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Use a rust-resistant variety next season.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Common root rot (wheat)",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "soil fungus",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Pull out a few weak plants and look for dark brown roots and stem bases.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Rotate away from wheat and barley for a season.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Use healthy seed and avoid water stress early in the season.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Head blight (wheat scab)",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "fungus; worse with rain at flowering",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Check the ears for bleached spikelets with pink colour at the base.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Harvest affected patches separately and do not save that grain as seed.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Plough in crop residue and rotate away from wheat and maize.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Leaf blight (wheat)",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "fungus",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Keep the crop well fed and avoid water stress.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Avoid overhead watering late in the day.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Destroy infected crop residue and use healthy seed next season.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Loose smut (wheat)",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "fungus carried inside the seed",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Pull out black, powdery ears carefully into a bag and destroy them.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Do not save seed from this field.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Use certified seed next season.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Mites (wheat)",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "tiny mites; worse in dry weather",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Look under leaves for tiny moving dots and silvery or yellow speckling.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Avoid water stress; mites increase on a dry crop.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Check several plants across the field before deciding how widespread it is.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Powdery mildew (wheat)",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "fungus",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Check the lower leaves for white powdery patches.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Do not add more nitrogen fertilizer now; a very thick crop gets more mildew.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Use a tolerant variety and wider spacing next season.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Septoria leaf blotch (wheat)",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "fungus",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Check the lower leaves for brown blotches with tiny black dots.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Destroy infected crop residue after harvest.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Rotate away from wheat and use healthy seed next season.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Stem fly (wheat)",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "maggots feeding inside the young shoot",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Pull out dried central shoots and look for a small maggot inside.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Check several plants across the field before deciding how widespread it is.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Sow at the recommended time next season; very early sowing gets more stem fly.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Tan spot (wheat)",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "fungus that survives on old wheat straw",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Check leaves for tan spots with a yellow ring.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Plough in or remove old wheat residue.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Rotate away from wheat for a season.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Yellow (stripe) rust",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "fungus",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Act quickly: rust can spread across a field and to neighbours on the wind.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Contact your agriculture officer or the Kisan Call Centre today.",
+    "file": "backend/v2/disease_guidance.json",
+    "line": 1
+  },
+  {
+    "source": "Use a rust-resistant variety next season.",
     "file": "backend/v2/disease_guidance.json",
     "line": 1
   }

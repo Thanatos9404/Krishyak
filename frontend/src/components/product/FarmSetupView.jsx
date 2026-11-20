@@ -195,15 +195,15 @@ function FoundPanel({ found, place, village }) {
             <Thermometer size={20} aria-hidden="true" />
             <span>
               <strong>
-                {tx("Hottest in {{v0}}, about {{v1}}°C by day", {
+                {tx("Hottest in {{v0}}, about {{v1}} by day", {
                   v0: month(hottest),
-                  v1: Math.round(climate.monthly_high_c[hottest]),
+                  v1: `${Math.round(climate.monthly_high_c[hottest])}°C`,
                 })}
               </strong>
               <small>
-                {tx("Coldest in {{v0}}, about {{v1}}°C at night", {
+                {tx("Coldest in {{v0}}, about {{v1}} at night", {
                   v0: month(coldest),
-                  v1: Math.round(climate.monthly_low_c[coldest]),
+                  v1: `${Math.round(climate.monthly_low_c[coldest])}°C`,
                 })}
               </small>
             </span>

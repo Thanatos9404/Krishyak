@@ -266,9 +266,11 @@ test("revision-aware field edits, completed cycle and reported soil evidence", a
 test("crop photo check, plain result, feedback, private download, deletion and official-benefit limits", async () => {
   await navigation("Plant check").click();
   const cropChoice = page.getByRole("combobox", { name: "Crop", exact: true });
-  // Only crops the photo model supports are offered; wheat is not one of them.
-  await expect(cropChoice.locator('option[value="tomato"]')).toHaveCount(1);
-  await expect(cropChoice.locator('option[value="wheat"]')).toHaveCount(0);
+  // Only crops the photo model supports are offered: wheat and rice are among
+  // them since leaf model v2; mustard is not.
+  for (const crop of ["tomato", "wheat", "rice", "cotton", "sugarcane"])
+    await expect(cropChoice.locator(`option[value="${crop}"]`)).toHaveCount(1);
+  await expect(cropChoice.locator('option[value="mustard"]')).toHaveCount(0);
   await cropChoice.selectOption("tomato");
   await page.getByLabel("Choose crop photo", { exact: true }).setInputFiles({
     name: "synthetic-pixel.png",

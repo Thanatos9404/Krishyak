@@ -324,8 +324,10 @@ test("with no signal the picture guides open and a leaf photo waits on the phone
   await page.waitForTimeout(6000);
   await context.setOffline(true);
   await page.goto("/app/guides");
+  // With no signal there is no field to read, so the library opens on its
+  // first crop.
   await expect(
-    page.getByRole("region", { name: "Late blight (tomato)" }),
+    page.getByRole("region", { name: "Bacterial leaf blight (rice)" }),
   ).toBeVisible({ timeout: 30000 });
 
   await page.goto("/app/health");

@@ -133,3 +133,30 @@ Through the frontend proxy, 1 of 30 HTTP/1.1 requests from a script dropped
 its connection once; repeat runs of 40 requests over HTTP/1.1 and HTTP/2 had
 no drops, and requests sent straight to the API never dropped. Browsers use
 HTTP/2 and retry such drops, and no browser journey has hit one.
+
+## Accuracy and onboarding release, 20 November 2026
+
+Branch `feat/accuracy-onboarding`. Local results on Windows with PostGIS and
+Redis in WSL; accounts were synthetic and deleted afterwards. Staging results
+are recorded separately once this branch is deployed there.
+
+| Gate | Recorded result | Scope |
+|---|---|---|
+| Backend | 365 run, 363 passed, 2 skipped | Whole suite on real PostGIS: district yield table, rainfall normals, registration lookup, example field, price fallbacks, usage statement, leaf decision rule and input size |
+| Frontend unit | 402 passed, 65 suites | Dashboard cards, four-step registration, usage card, picture guides for the new crops |
+| Browser, production build | 21 of 21 (Chromium): public pages, field services including the offline journey, product flows, passkeys | A real leaf photo is checked by leaf model v2 through the API, online and after an offline save |
+| Layout | No horizontal overflow, no console errors | Home, field report, example field and institution screens at 1440, 1024, 768, 390 and 320 px; emulated viewports, not physical phones |
+| Leaf model v2 | See `MODEL_GOVERNANCE.md` | Evaluation on 16,557 held-out photographs; export equivalence on 247 inputs; serving-path check on 1,735 original photographs |
+| District yield model | See `YIELD_MODEL.md` | Time-split test on 2022-23 and an out-of-time check on 2024-25 |
+| Translations | 22 packs, 2,784 strings each, 0 structural failures | Script, placeholder and glossary checks only; native review still required |
+| Static checks | Ruff, Bandit, ESLint and Prettier pass; npm audit reports nothing after Next.js 16.4.6 | |
+
+Found and fixed during this round: the first fine-tune of the leaf model
+returned a non-finite loss because the mixup coefficient was computed from
+three independent draws instead of two; that run was discarded and the
+corrected run is the one released. Sarvam's document translation moved its
+upload storage to another host, which the Sindhi script's allow-list
+rejected until that exact host was added.
+
+Translation used existing Sarvam credits (an estimated 745 across the two
+runs, including Sindhi); nothing was purchased.
