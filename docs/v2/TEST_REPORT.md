@@ -207,3 +207,4 @@ seven-digit amounts fit the dashboard cards and the comparison table at
 | Backend | 368 run, 366 passed, 2 skipped | Adds mirror-averaging and decision-rule tests |
 | Frontend unit | 402 passed, 65 suites | |
 | Translations | 22 packs, 2,785 strings each, 0 structural failures | Four account-change messages that the refactor of 20 November had hidden from the extractor were restored |
+| Staging | `e2e/staging.spec.js` 9 of 9 with `krishyak-leaf-v3` deployed | The 70 MB artifact builds and serves on Vercel; a real leaf photo is checked in about the same time as with v2 |
