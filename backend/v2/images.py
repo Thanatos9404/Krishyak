@@ -139,7 +139,7 @@ def classify(clean, crop):
     result = {
         "status": status,
         "model_id": metadata["model_id"],
-        "preprocessing_version": "rgb-exif-white-alpha-max2048-jpeg92-224-v2",
+        "preprocessing_version": f"rgb-exif-white-alpha-max2048-jpeg92-{metadata.get('input_size', 224)}-v2",
         "predicted_class": predicted if predicted in labels and status == "detected" else None,
         "model_score": raw.get("confidence", (raw.get("disease") or {}).get("confidence")),
         "alternatives": alternatives,

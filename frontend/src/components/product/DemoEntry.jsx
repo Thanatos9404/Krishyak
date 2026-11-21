@@ -4,8 +4,8 @@ const DemoApp = dynamic(() => import("../../features/product/DemoApp"), {
   ssr: false,
   loading: () => (
     <main className="workspace-loading">
-      <h1>Explore the farm experience</h1>
-      <p role="status">Opening the illustrative demo…</p>
+      <h1>Example field</h1>
+      <p role="status">Opening the example field…</p>
     </main>
   ),
 });

@@ -1,0 +1,55 @@
+{
+  "runtime": "litert",
+  "model_id": "krishyak-leaf-v3",
+  "note": "Original photographs through predict_from_image with the LiteRT artifact, crop selected, release decision rule applied.",
+  "sets": {
+    "external_plantdoc_test": {
+      "photos": 235,
+      "coverage": 0.6851,
+      "accuracy_when_answering": 0.9255,
+      "confident_wrong_per_100_photos": 5.11,
+      "statuses": {
+        "healthy": 78,
+        "uncertain": 74,
+        "disease_detected": 83
+      },
+      "median_seconds_per_photo": 0.049
+    },
+    "field_test_sample": {
+      "photos": 1500,
+      "coverage": 0.8573,
+      "accuracy_when_answering": 0.9743,
+      "confident_wrong_per_100_photos": 2.2,
+      "statuses": {
+        "disease_detected": 1048,
+        "healthy": 238,
+        "uncertain": 214
+      },
+      "median_seconds_per_photo": 0.044
+    },
+    "india_farm_test": {
+      "photos": 3659,
+      "coverage": 0.9227,
+      "accuracy_when_answering": 0.9805,
+      "confident_wrong_per_100_photos": 1.8,
+      "statuses": {
+        "disease_detected": 2873,
+        "uncertain": 283,
+        "healthy": 503
+      },
+      "median_seconds_per_photo": 0.043
+    },
+    "india_unseen_farms": {
+      "photos": 300,
+      "coverage": 0.57,
+      "accuracy_when_answering": 0.5731,
+      "confident_wrong_per_100_photos": 24.33,
+      "statuses": {
+        "healthy": 141,
+        "uncertain": 129,
+        "disease_detected": 30
+      },
+      "median_seconds_per_photo": 0.044
+    }
+  }
+}

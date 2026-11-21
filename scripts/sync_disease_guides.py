@@ -7,7 +7,22 @@ import json
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-PHOTO_NAMES = ["tomato", "potato", "apple", "cherry", "grape", "orange", "peach", "pepper", "squash", "strawberry"]
+PHOTO_NAMES = [
+    "tomato",
+    "potato",
+    "apple",
+    "cherry",
+    "grape",
+    "orange",
+    "peach",
+    "pepper",
+    "squash",
+    "strawberry",
+    "rice",
+    "wheat",
+    "cotton",
+    "sugarcane",
+]
 
 
 def photo_name(label):

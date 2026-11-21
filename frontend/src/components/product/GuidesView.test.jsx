@@ -18,24 +18,27 @@ test("the guide library opens on the crop the farmer grows when it has guides", 
   ).toHaveTextContent(/spread quickly/);
 });
 
-test("without a matching crop it starts on tomato and any crop can be picked", () => {
+test("without a matching crop it starts on rice and any crop can be picked", () => {
   render(
     <GuidesView
-      workspace={{ cycles: [{ crop_id: "wheat", status: "active" }] }}
+      workspace={{ cycles: [{ crop_id: "mustard", status: "active" }] }}
     />,
   );
-  expect(screen.getByRole("button", { name: "Tomato" })).toHaveAttribute(
+  expect(screen.getByRole("button", { name: "Rice" })).toHaveAttribute(
     "aria-pressed",
     "true",
+  );
+  expect(screen.getByRole("region", { name: "Rice blast" })).toHaveTextContent(
+    /Keep water standing in the field/,
   );
   expect(
     screen
       .getAllByRole("button")
-      .slice(0, 4)
+      .slice(0, 5)
       .map((node) => node.textContent),
-  ).toEqual(["Tomato", "Potato", "Maize", "Capsicum"]);
+  ).toEqual(["Rice", "Wheat", "Cotton", "Sugarcane", "Maize"]);
   fireEvent.click(screen.getByRole("button", { name: "Grapes" }));
-  expect(screen.getByRole("button", { name: "Tomato" })).toHaveAttribute(
+  expect(screen.getByRole("button", { name: "Rice" })).toHaveAttribute(
     "aria-pressed",
     "false",
   );

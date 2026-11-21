@@ -13,31 +13,613 @@
     "Ask your local agriculture officer, Krishi Vigyan Kendra or the Kisan Call Centre (1800-180-1551) before any spraying."
   ],
   "classes": {
-    "Apple___Apple_scab": {"name": "Apple scab", "cause": "fungus", "steps": ["Collect and destroy fallen infected leaves.", "Prune to let air and sunlight into the tree."]},
-    "Apple___Black_rot": {"name": "Apple black rot", "cause": "fungus", "steps": ["Cut out dead branches and cankers.", "Remove dried, shrivelled fruit from the tree and ground."]},
-    "Apple___Cedar_apple_rust": {"name": "Apple rust", "cause": "fungus", "steps": ["Remove nearby juniper or cedar hosts where practical.", "Collect and destroy badly affected leaves."]},
-    "Cherry_(including_sour)___Powdery_mildew": {"name": "Powdery mildew (cherry)", "cause": "fungus", "steps": ["Prune crowded shoots to improve air flow.", "Remove heavily coated leaves."]},
-    "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot": {"name": "Grey leaf spot (maize)", "cause": "fungus", "steps": ["Plough in or remove old maize residue after harvest.", "Rotate with a non-cereal crop next season."]},
-    "Corn_(maize)___Common_rust_": {"name": "Common rust (maize)", "cause": "fungus", "steps": ["Note how many plants show rust pustules.", "Choose a rust-tolerant variety next season."]},
-    "Corn_(maize)___Northern_Leaf_Blight": {"name": "Leaf blight (maize)", "cause": "fungus", "steps": ["Remove or plough in infected residue after harvest.", "Rotate crops and use a tolerant variety next season."]},
-    "Grape___Black_rot": {"name": "Black rot (grape)", "cause": "fungus", "steps": ["Remove mummified berries and infected leaves.", "Keep the canopy open for air flow."]},
-    "Grape___Esca_(Black_Measles)": {"name": "Esca / black measles (grape)", "cause": "fungus", "steps": ["Mark affected vines and prune out dead wood in dry weather.", "Clean pruning tools between vines."]},
-    "Grape___Leaf_blight_(Isariopsis_Leaf_Spot)": {"name": "Leaf spot (grape)", "cause": "fungus", "steps": ["Remove spotted leaves and fallen debris.", "Avoid wetting leaves when irrigating."]},
-    "Orange___Haunglongbing_(Citrus_greening)": {"name": "Citrus greening", "cause": "bacteria spread by psyllid insects", "steps": ["There is no cure for infected trees; get it confirmed by an expert.", "Watch for small psyllid insects on new shoots and report them."]},
-    "Peach___Bacterial_spot": {"name": "Bacterial spot (peach)", "cause": "bacteria", "steps": ["Prune to improve air flow.", "Avoid overhead irrigation."]},
-    "Pepper,_bell___Bacterial_spot": {"name": "Bacterial spot (capsicum)", "cause": "bacteria", "steps": ["Remove badly spotted leaves.", "Avoid working among plants when they are wet.", "Use healthy, certified seed or seedlings next season."]},
-    "Potato___Early_blight": {"name": "Early blight (potato)", "cause": "fungus", "steps": ["Remove lower leaves with target-like brown spots.", "Keep the crop well fed and avoid water stress."]},
-    "Potato___Late_blight": {"name": "Late blight (potato)", "cause": "fungus-like organism; spreads fast in cool, wet weather", "urgent": true, "steps": ["Act quickly: it can spread across a field in days in cool, humid weather.", "Remove and destroy infected plants; do not leave them in the field.", "Contact your agriculture officer or the Kisan Call Centre today."]},
-    "Squash___Powdery_mildew": {"name": "Powdery mildew (gourds)", "cause": "fungus", "steps": ["Remove heavily coated leaves.", "Give plants more space for air flow."]},
-    "Strawberry___Leaf_scorch": {"name": "Leaf scorch (strawberry)", "cause": "fungus", "steps": ["Remove infected leaves.", "Avoid overhead irrigation."]},
-    "Tomato___Bacterial_spot": {"name": "Bacterial spot (tomato)", "cause": "bacteria", "steps": ["Remove badly spotted leaves.", "Avoid splashing water on leaves.", "Use healthy seedlings next season."]},
-    "Tomato___Early_blight": {"name": "Early blight (tomato)", "cause": "fungus", "steps": ["Remove lower leaves with brown ring-like spots.", "Mulch the soil so splashes do not reach the leaves.", "Rotate away from tomato, potato and chilli next season."]},
-    "Tomato___Late_blight": {"name": "Late blight (tomato)", "cause": "fungus-like organism; spreads fast in cool, wet weather", "urgent": true, "steps": ["Act quickly: it can spread across a field in days in cool, humid weather.", "Remove and destroy infected plants.", "Contact your agriculture officer or the Kisan Call Centre today."]},
-    "Tomato___Leaf_Mold": {"name": "Leaf mould (tomato)", "cause": "fungus", "steps": ["Improve air flow by pruning and wider spacing.", "Reduce humidity in protected cultivation."]},
-    "Tomato___Septoria_leaf_spot": {"name": "Septoria leaf spot (tomato)", "cause": "fungus", "steps": ["Remove spotted lower leaves.", "Avoid wetting leaves when irrigating."]},
-    "Tomato___Spider_mites Two-spotted_spider_mite": {"name": "Spider mites (tomato)", "cause": "tiny mites", "steps": ["Look under leaves for tiny moving dots and fine webbing.", "Remove badly infested leaves; mites increase in hot, dry weather."]},
-    "Tomato___Target_Spot": {"name": "Target spot (tomato)", "cause": "fungus", "steps": ["Remove infected lower leaves.", "Improve air flow between plants."]},
-    "Tomato___Tomato_Yellow_Leaf_Curl_Virus": {"name": "Leaf curl virus (tomato)", "cause": "virus spread by whiteflies", "steps": ["There is no cure for infected plants; pull out and destroy badly affected plants early.", "Check for whiteflies under leaves; use yellow sticky traps to monitor them."]},
-    "Tomato___Tomato_mosaic_virus": {"name": "Mosaic virus (tomato)", "cause": "virus", "steps": ["Pull out and destroy infected plants.", "Wash hands and tools after handling infected plants; avoid tobacco use near plants."]}
+    "Apple___Apple_scab": {
+      "name": "Apple scab",
+      "cause": "fungus",
+      "steps": [
+        "Collect and destroy fallen infected leaves.",
+        "Prune to let air and sunlight into the tree."
+      ]
+    },
+    "Apple___Black_rot": {
+      "name": "Apple black rot",
+      "cause": "fungus",
+      "steps": [
+        "Cut out dead branches and cankers.",
+        "Remove dried, shrivelled fruit from the tree and ground."
+      ]
+    },
+    "Apple___Cedar_apple_rust": {
+      "name": "Apple rust",
+      "cause": "fungus",
+      "steps": [
+        "Remove nearby juniper or cedar hosts where practical.",
+        "Collect and destroy badly affected leaves."
+      ]
+    },
+    "Apple___Mosaic_virus": {
+      "name": "Apple mosaic virus",
+      "cause": "virus",
+      "steps": [
+        "There is no cure for an infected tree; mark affected trees.",
+        "Use healthy planting material from a trusted nursery for new trees.",
+        "Wash and clean pruning tools between trees."
+      ]
+    },
+    "Cherry_(including_sour)___Leaf_spot": {
+      "name": "Cherry leaf spot",
+      "cause": "fungus",
+      "steps": [
+        "Collect and destroy fallen leaves.",
+        "Prune to let air and sunlight into the tree.",
+        "Avoid wetting the leaves when irrigating."
+      ]
+    },
+    "Cherry_(including_sour)___Powdery_mildew": {
+      "name": "Powdery mildew (cherry)",
+      "cause": "fungus",
+      "steps": [
+        "Prune crowded shoots to improve air flow.",
+        "Remove heavily coated leaves."
+      ]
+    },
+    "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot": {
+      "name": "Grey leaf spot (maize)",
+      "cause": "fungus",
+      "steps": [
+        "Plough in or remove old maize residue after harvest.",
+        "Rotate with a non-cereal crop next season."
+      ]
+    },
+    "Corn_(maize)___Common_rust_": {
+      "name": "Common rust (maize)",
+      "cause": "fungus",
+      "steps": [
+        "Note how many plants show rust pustules.",
+        "Choose a rust-tolerant variety next season."
+      ]
+    },
+    "Corn_(maize)___Northern_Leaf_Blight": {
+      "name": "Leaf blight (maize)",
+      "cause": "fungus",
+      "steps": [
+        "Remove or plough in infected residue after harvest.",
+        "Rotate crops and use a tolerant variety next season."
+      ]
+    },
+    "Corn_(maize)___Smut": {
+      "name": "Maize smut",
+      "cause": "fungus",
+      "steps": [
+        "Remove and destroy the swollen galls before they burst open.",
+        "Rotate away from maize for two seasons.",
+        "Use healthy seed of a tolerant variety next season."
+      ]
+    },
+    "Cotton___Bacterial_blight": {
+      "name": "Bacterial blight (cotton)",
+      "cause": "bacteria",
+      "steps": [
+        "Remove badly affected plants and destroy crop residue after picking.",
+        "Avoid overhead watering and working in the field when leaves are wet.",
+        "Use healthy seed of a tolerant variety next season."
+      ]
+    },
+    "Cotton___Herbicide_damage": {
+      "name": "Herbicide damage (cotton)",
+      "cause": "weedkiller drift or residue, not a disease",
+      "steps": [
+        "Check whether a weedkiller was sprayed on or near this field in the last two weeks.",
+        "Keep the crop well fed and avoid water stress so new growth can recover.",
+        "Wash and clean the sprayer fully before using it on cotton."
+      ]
+    },
+    "Cotton___Jassid_damage": {
+      "name": "Jassid (leafhopper) damage",
+      "cause": "small sap-sucking insects under the leaves",
+      "steps": [
+        "Look under the leaves for small green hopping insects.",
+        "Check several plants across the field before deciding how widespread it is.",
+        "Keep the crop well fed and avoid water stress."
+      ]
+    },
+    "Cotton___Leaf_curl_virus": {
+      "name": "Cotton leaf curl virus",
+      "cause": "virus spread by whiteflies",
+      "urgent": true,
+      "steps": [
+        "Act quickly: it can spread across a field through whiteflies.",
+        "Pull out and destroy badly affected plants early.",
+        "Remove weeds around the field that shelter whiteflies.",
+        "Use a tolerant variety next season."
+      ]
+    },
+    "Cotton___Leaf_reddening": {
+      "name": "Leaf reddening (cotton)",
+      "cause": "nutrient shortage or stress, not an infection",
+      "steps": [
+        "Check for waterlogging, drought or a sudden cold spell in the last weeks.",
+        "Keep the crop well fed and avoid water stress.",
+        "Ask for a soil test to find which nutrient is short."
+      ]
+    },
+    "Cotton___Leaf_variegation": {
+      "name": "Leaf variegation (cotton)",
+      "cause": "usually a harmless leaf colour change",
+      "steps": [
+        "Check whether only a few plants show the pattern; that is usually harmless.",
+        "Keep checking new leaves over the next week.",
+        "Take another photo if the patches grow or the leaves curl."
+      ]
+    },
+    "Grape___Black_rot": {
+      "name": "Black rot (grape)",
+      "cause": "fungus",
+      "steps": [
+        "Remove mummified berries and infected leaves.",
+        "Keep the canopy open for air flow."
+      ]
+    },
+    "Grape___Downy_mildew": {
+      "name": "Grape downy mildew",
+      "cause": "fungus-like organism; spreads fast in wet, humid weather",
+      "urgent": true,
+      "steps": [
+        "Act quickly: it can spread across a vineyard in days in humid weather.",
+        "Remove badly affected leaves and bunches.",
+        "Prune crowded shoots to improve air flow.",
+        "Avoid overhead watering."
+      ]
+    },
+    "Grape___Esca_(Black_Measles)": {
+      "name": "Esca / black measles (grape)",
+      "cause": "fungus",
+      "steps": [
+        "Mark affected vines and prune out dead wood in dry weather.",
+        "Clean pruning tools between vines."
+      ]
+    },
+    "Grape___Leaf_blight_(Isariopsis_Leaf_Spot)": {
+      "name": "Leaf spot (grape)",
+      "cause": "fungus",
+      "steps": [
+        "Remove spotted leaves and fallen debris.",
+        "Avoid wetting leaves when irrigating."
+      ]
+    },
+    "Orange___Citrus_canker": {
+      "name": "Citrus canker",
+      "cause": "bacteria",
+      "steps": [
+        "Cut out twigs with canker spots and destroy them.",
+        "Wash and clean pruning tools between trees.",
+        "Avoid overhead watering and working among wet trees."
+      ]
+    },
+    "Orange___Haunglongbing_(Citrus_greening)": {
+      "name": "Citrus greening",
+      "cause": "bacteria spread by psyllid insects",
+      "steps": [
+        "There is no cure for infected trees; get it confirmed by an expert.",
+        "Watch for small psyllid insects on new shoots and report them."
+      ]
+    },
+    "Peach___Bacterial_spot": {
+      "name": "Bacterial spot (peach)",
+      "cause": "bacteria",
+      "steps": [
+        "Prune to improve air flow.",
+        "Avoid overhead irrigation."
+      ]
+    },
+    "Peach___Leaf_curl": {
+      "name": "Peach leaf curl",
+      "cause": "fungus",
+      "steps": [
+        "Remove and destroy curled, thickened leaves.",
+        "Keep the tree well fed and avoid water stress so it regrows healthy leaves.",
+        "Collect fallen leaves under the tree."
+      ]
+    },
+    "Pepper,_bell___Bacterial_spot": {
+      "name": "Bacterial spot (capsicum)",
+      "cause": "bacteria",
+      "steps": [
+        "Remove badly spotted leaves.",
+        "Avoid working among plants when they are wet.",
+        "Use healthy, certified seed or seedlings next season."
+      ]
+    },
+    "Potato___Early_blight": {
+      "name": "Early blight (potato)",
+      "cause": "fungus",
+      "steps": [
+        "Remove lower leaves with target-like brown spots.",
+        "Keep the crop well fed and avoid water stress."
+      ]
+    },
+    "Potato___Late_blight": {
+      "name": "Late blight (potato)",
+      "cause": "fungus-like organism; spreads fast in cool, wet weather",
+      "urgent": true,
+      "steps": [
+        "Act quickly: it can spread across a field in days in cool, humid weather.",
+        "Remove and destroy infected plants; do not leave them in the field.",
+        "Contact your agriculture officer or the Kisan Call Centre today."
+      ]
+    },
+    "Rice___Bacterial_leaf_blight": {
+      "name": "Bacterial leaf blight (rice)",
+      "cause": "bacteria",
+      "steps": [
+        "Drain the field for a few days if water is standing deep.",
+        "Do not add more nitrogen fertilizer now; it makes the blight worse.",
+        "Remove weeds and old rice stubble around the field.",
+        "Use healthy seed of a tolerant variety next season."
+      ]
+    },
+    "Rice___Bacterial_leaf_streak": {
+      "name": "Bacterial leaf streak (rice)",
+      "cause": "bacteria",
+      "steps": [
+        "Do not add more nitrogen fertilizer now.",
+        "Avoid working in the field when leaves are wet.",
+        "Destroy crop residue after harvest and use healthy seed next season."
+      ]
+    },
+    "Rice___Bacterial_panicle_blight": {
+      "name": "Bacterial panicle blight (rice)",
+      "cause": "bacteria; worse in hot nights at flowering",
+      "steps": [
+        "Check several plants across the field for upright, empty, discoloured grains.",
+        "Do not save seed from this field.",
+        "Use healthy, certified seed next season."
+      ]
+    },
+    "Rice___Blast": {
+      "name": "Rice blast",
+      "cause": "fungus",
+      "urgent": true,
+      "steps": [
+        "Act quickly: it can spread across a field in a few humid days.",
+        "Do not add more nitrogen fertilizer now.",
+        "Keep water standing in the field; blast is worse when the soil dries.",
+        "Destroy infected crop residue after harvest."
+      ]
+    },
+    "Rice___Brown_spot": {
+      "name": "Brown spot (rice)",
+      "cause": "fungus; common on poor or dry soils",
+      "steps": [
+        "Keep the crop well fed and avoid water stress; brown spot marks a hungry crop.",
+        "Ask for a soil test to check potash and other nutrients.",
+        "Use healthy seed next season."
+      ]
+    },
+    "Rice___Dead_heart": {
+      "name": "Dead heart (stem borer)",
+      "cause": "stem borer caterpillars inside the stem",
+      "steps": [
+        "Pull out the dried central shoots and destroy them.",
+        "Look for egg masses near the leaf tips and remove them.",
+        "Cut the stubble low and plough the residue in after harvest."
+      ]
+    },
+    "Rice___Downy_mildew": {
+      "name": "Downy mildew (rice)",
+      "cause": "fungus-like organism",
+      "steps": [
+        "Pull out and destroy badly affected plants.",
+        "Drain water that stands too long in the nursery or field.",
+        "Use healthy seed next season."
+      ]
+    },
+    "Rice___Hispa": {
+      "name": "Rice hispa",
+      "cause": "small spiny beetles that scrape the leaves",
+      "steps": [
+        "Look for small blue-black spiny beetles and white streaks on leaves.",
+        "Remove badly affected leaf tips and destroy them.",
+        "Remove grassy weeds on the bunds where the beetles shelter."
+      ]
+    },
+    "Rice___Tungro": {
+      "name": "Rice tungro",
+      "cause": "virus spread by green leafhoppers",
+      "urgent": true,
+      "steps": [
+        "Act quickly: it can spread across a field through leafhoppers.",
+        "Pull out and destroy badly affected plants early.",
+        "Plough in the stubble after harvest so the virus does not carry over.",
+        "Use a tolerant variety and plant at the same time as your neighbours."
+      ]
+    },
+    "Squash___Powdery_mildew": {
+      "name": "Powdery mildew (gourds)",
+      "cause": "fungus",
+      "steps": [
+        "Remove heavily coated leaves.",
+        "Give plants more space for air flow."
+      ]
+    },
+    "Strawberry___Leaf_scorch": {
+      "name": "Leaf scorch (strawberry)",
+      "cause": "fungus",
+      "steps": [
+        "Remove infected leaves.",
+        "Avoid overhead irrigation."
+      ]
+    },
+    "Sugarcane___Mosaic": {
+      "name": "Sugarcane mosaic",
+      "cause": "virus",
+      "steps": [
+        "Pull out and destroy badly affected clumps.",
+        "Use healthy seed cane from a disease-free field.",
+        "Wash and clean cutting knives between fields."
+      ]
+    },
+    "Sugarcane___Red_rot": {
+      "name": "Red rot (sugarcane)",
+      "cause": "fungus",
+      "urgent": true,
+      "steps": [
+        "Act quickly: it can spread across a field and ruin the cane.",
+        "Pull out and destroy infected clumps with their roots.",
+        "Do not keep a ratoon crop from this field.",
+        "Use healthy seed cane of a resistant variety and rotate the field."
+      ]
+    },
+    "Sugarcane___Rust": {
+      "name": "Sugarcane rust",
+      "cause": "fungus",
+      "steps": [
+        "Remove badly rusted lower leaves.",
+        "Keep the crop well fed and avoid water stress.",
+        "Use a tolerant variety next planting."
+      ]
+    },
+    "Sugarcane___Yellow_leaf": {
+      "name": "Yellow leaf (sugarcane)",
+      "cause": "virus spread by aphids",
+      "steps": [
+        "Check several clumps across the field for a yellow midrib.",
+        "Use healthy seed cane from a disease-free field.",
+        "Keep the crop well fed and avoid water stress."
+      ]
+    },
+    "Tomato___Bacterial_spot": {
+      "name": "Bacterial spot (tomato)",
+      "cause": "bacteria",
+      "steps": [
+        "Remove badly spotted leaves.",
+        "Avoid splashing water on leaves.",
+        "Use healthy seedlings next season."
+      ]
+    },
+    "Tomato___Early_blight": {
+      "name": "Early blight (tomato)",
+      "cause": "fungus",
+      "steps": [
+        "Remove lower leaves with brown ring-like spots.",
+        "Mulch the soil so splashes do not reach the leaves.",
+        "Rotate away from tomato, potato and chilli next season."
+      ]
+    },
+    "Tomato___Late_blight": {
+      "name": "Late blight (tomato)",
+      "cause": "fungus-like organism; spreads fast in cool, wet weather",
+      "urgent": true,
+      "steps": [
+        "Act quickly: it can spread across a field in days in cool, humid weather.",
+        "Remove and destroy infected plants.",
+        "Contact your agriculture officer or the Kisan Call Centre today."
+      ]
+    },
+    "Tomato___Leaf_Mold": {
+      "name": "Leaf mould (tomato)",
+      "cause": "fungus",
+      "steps": [
+        "Improve air flow by pruning and wider spacing.",
+        "Reduce humidity in protected cultivation."
+      ]
+    },
+    "Tomato___Leaf_miner": {
+      "name": "Leaf miner (tomato)",
+      "cause": "tiny larvae tunnelling inside the leaves",
+      "steps": [
+        "Remove leaves with many winding tunnels and destroy them.",
+        "Check new leaves every few days.",
+        "Remove weeds around the field."
+      ]
+    },
+    "Tomato___Nutrient_deficiency": {
+      "name": "Nutrient shortage (tomato)",
+      "cause": "a nutrient is short in the soil, not an infection",
+      "steps": [
+        "Check which leaves are yellow: old lower leaves or young top leaves.",
+        "Ask for a soil test to find which nutrient is short.",
+        "Keep the crop well fed and avoid water stress."
+      ]
+    },
+    "Tomato___Septoria_leaf_spot": {
+      "name": "Septoria leaf spot (tomato)",
+      "cause": "fungus",
+      "steps": [
+        "Remove spotted lower leaves.",
+        "Avoid wetting leaves when irrigating."
+      ]
+    },
+    "Tomato___Spider_mites Two-spotted_spider_mite": {
+      "name": "Spider mites (tomato)",
+      "cause": "tiny mites",
+      "steps": [
+        "Look under leaves for tiny moving dots and fine webbing.",
+        "Remove badly infested leaves; mites increase in hot, dry weather."
+      ]
+    },
+    "Tomato___Spotted_wilt_virus": {
+      "name": "Spotted wilt virus (tomato)",
+      "cause": "virus spread by thrips",
+      "steps": [
+        "There is no cure for infected plants; pull out and destroy them early.",
+        "Remove weeds around the field that shelter thrips.",
+        "Use healthy seedlings next season."
+      ]
+    },
+    "Tomato___Target_Spot": {
+      "name": "Target spot (tomato)",
+      "cause": "fungus",
+      "steps": [
+        "Remove infected lower leaves.",
+        "Improve air flow between plants."
+      ]
+    },
+    "Tomato___Tomato_Yellow_Leaf_Curl_Virus": {
+      "name": "Leaf curl virus (tomato)",
+      "cause": "virus spread by whiteflies",
+      "steps": [
+        "There is no cure for infected plants; pull out and destroy badly affected plants early.",
+        "Check for whiteflies under leaves; use yellow sticky traps to monitor them."
+      ]
+    },
+    "Tomato___Tomato_mosaic_virus": {
+      "name": "Mosaic virus (tomato)",
+      "cause": "virus",
+      "steps": [
+        "Pull out and destroy infected plants.",
+        "Wash hands and tools after handling infected plants; avoid tobacco use near plants."
+      ]
+    },
+    "Wheat___Aphid": {
+      "name": "Aphids (wheat)",
+      "cause": "small sap-sucking insects",
+      "steps": [
+        "Look for clusters of small green or black insects on leaves and ears.",
+        "Check several plants across the field before deciding how widespread it is.",
+        "Look for ladybird beetles; they eat aphids and often control them."
+      ]
+    },
+    "Wheat___Black_rust": {
+      "name": "Black (stem) rust",
+      "cause": "fungus",
+      "urgent": true,
+      "steps": [
+        "Act quickly: rust can spread across a field and to neighbours on the wind.",
+        "Contact your agriculture officer or the Kisan Call Centre today.",
+        "Use a rust-resistant variety next season."
+      ]
+    },
+    "Wheat___Blast": {
+      "name": "Wheat blast",
+      "cause": "fungus",
+      "urgent": true,
+      "steps": [
+        "Act quickly: this disease can spread across a field within days.",
+        "Contact your agriculture officer or the Kisan Call Centre today; this disease must be reported.",
+        "Do not save seed from this field."
+      ]
+    },
+    "Wheat___Brown_rust": {
+      "name": "Brown (leaf) rust",
+      "cause": "fungus",
+      "urgent": true,
+      "steps": [
+        "Act quickly: rust can spread across a field and to neighbours on the wind.",
+        "Contact your agriculture officer or the Kisan Call Centre today.",
+        "Use a rust-resistant variety next season."
+      ]
+    },
+    "Wheat___Common_root_rot": {
+      "name": "Common root rot (wheat)",
+      "cause": "soil fungus",
+      "steps": [
+        "Pull out a few weak plants and look for dark brown roots and stem bases.",
+        "Rotate away from wheat and barley for a season.",
+        "Use healthy seed and avoid water stress early in the season."
+      ]
+    },
+    "Wheat___Fusarium_head_blight": {
+      "name": "Head blight (wheat scab)",
+      "cause": "fungus; worse with rain at flowering",
+      "steps": [
+        "Check the ears for bleached spikelets with pink colour at the base.",
+        "Harvest affected patches separately and do not save that grain as seed.",
+        "Plough in crop residue and rotate away from wheat and maize."
+      ]
+    },
+    "Wheat___Leaf_blight": {
+      "name": "Leaf blight (wheat)",
+      "cause": "fungus",
+      "steps": [
+        "Keep the crop well fed and avoid water stress.",
+        "Avoid overhead watering late in the day.",
+        "Destroy infected crop residue and use healthy seed next season."
+      ]
+    },
+    "Wheat___Loose_smut": {
+      "name": "Loose smut (wheat)",
+      "cause": "fungus carried inside the seed",
+      "steps": [
+        "Pull out black, powdery ears carefully into a bag and destroy them.",
+        "Do not save seed from this field.",
+        "Use certified seed next season."
+      ]
+    },
+    "Wheat___Mite": {
+      "name": "Mites (wheat)",
+      "cause": "tiny mites; worse in dry weather",
+      "steps": [
+        "Look under leaves for tiny moving dots and silvery or yellow speckling.",
+        "Avoid water stress; mites increase on a dry crop.",
+        "Check several plants across the field before deciding how widespread it is."
+      ]
+    },
+    "Wheat___Powdery_mildew": {
+      "name": "Powdery mildew (wheat)",
+      "cause": "fungus",
+      "steps": [
+        "Check the lower leaves for white powdery patches.",
+        "Do not add more nitrogen fertilizer now; a very thick crop gets more mildew.",
+        "Use a tolerant variety and wider spacing next season."
+      ]
+    },
+    "Wheat___Septoria": {
+      "name": "Septoria leaf blotch (wheat)",
+      "cause": "fungus",
+      "steps": [
+        "Check the lower leaves for brown blotches with tiny black dots.",
+        "Destroy infected crop residue after harvest.",
+        "Rotate away from wheat and use healthy seed next season."
+      ]
+    },
+    "Wheat___Stem_fly": {
+      "name": "Stem fly (wheat)",
+      "cause": "maggots feeding inside the young shoot",
+      "steps": [
+        "Pull out dried central shoots and look for a small maggot inside.",
+        "Check several plants across the field before deciding how widespread it is.",
+        "Sow at the recommended time next season; very early sowing gets more stem fly."
+      ]
+    },
+    "Wheat___Tan_spot": {
+      "name": "Tan spot (wheat)",
+      "cause": "fungus that survives on old wheat straw",
+      "steps": [
+        "Check leaves for tan spots with a yellow ring.",
+        "Plough in or remove old wheat residue.",
+        "Rotate away from wheat for a season."
+      ]
+    },
+    "Wheat___Yellow_rust": {
+      "name": "Yellow (stripe) rust",
+      "cause": "fungus",
+      "urgent": true,
+      "steps": [
+        "Act quickly: rust can spread across a field and to neighbours on the wind.",
+        "Contact your agriculture officer or the Kisan Call Centre today.",
+        "Use a rust-resistant variety next season."
+      ]
+    }
   }
 }

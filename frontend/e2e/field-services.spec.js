@@ -74,7 +74,7 @@ test.afterAll(async () => {
   await context?.close();
 });
 
-test("a new farmer's Home offers voice setup, then shows the crop calendar and Pest Radar", async () => {
+test("a new farmer starts at registration, then Home shows the field numbers, crop calendar and Pest Radar", async () => {
   test.setTimeout(120000);
   await page.goto("/app/today");
   await page.getByRole("button", { name: /Create my account/ }).click();
@@ -86,7 +86,7 @@ test("a new farmer's Home offers voice setup, then shows the crop calendar and P
     .check({ timeout: 30000 });
   await page.getByRole("button", { name: /Open my farm/ }).click();
   await expect(
-    page.getByRole("heading", { name: "Tell Krishyak about your farm" }),
+    page.getByRole("heading", { name: "Register your farm" }),
   ).toBeVisible({ timeout: 30000 });
   await audit("home-new");
   csrf = (await (await page.request.get("/api/v2/me")).json()).csrf_token;
@@ -324,8 +324,10 @@ test("with no signal the picture guides open and a leaf photo waits on the phone
   await page.waitForTimeout(6000);
   await context.setOffline(true);
   await page.goto("/app/guides");
+  // With no signal there is no field to read, so the library opens on its
+  // first crop.
   await expect(
-    page.getByRole("region", { name: "Late blight (tomato)" }),
+    page.getByRole("region", { name: "Bacterial leaf blight (rice)" }),
   ).toBeVisible({ timeout: 30000 });
 
   await page.goto("/app/health");

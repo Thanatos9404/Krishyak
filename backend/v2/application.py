@@ -13,7 +13,9 @@ from security import client_ip, normalize_request_id
 
 from .assessment import router as assessment_router
 from .assistant import router as assistant_router
+from .billing import router as billing_router
 from .claims import router as claims_router
+from .climate import router as climate_router
 from .context import router as context_router
 from .crop_calendar import router as calendar_router
 from .farm_context.router import router as farm_context_router
@@ -79,10 +81,12 @@ def install_v2(app, settings=None):
     app.include_router(assessment_router)
     app.include_router(radar_router)
     app.include_router(calendar_router)
+    app.include_router(climate_router)
     app.include_router(claims_router)
     app.include_router(live_router)
     app.include_router(groups_router)
     app.include_router(verify_router)
+    app.include_router(billing_router)
     app.include_router(pilots_router)
     app.include_router(notifications_router)
 

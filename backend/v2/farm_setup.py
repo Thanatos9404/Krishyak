@@ -12,7 +12,7 @@ import json
 import re
 
 from fastapi import APIRouter, Depends, HTTPException, Request
-from pydantic import Field
+from pydantic import Field, model_validator
 from sqlalchemy import select
 
 from db.models import Consent
@@ -31,13 +31,15 @@ from .agronomy import (
     typical_soil,
 )
 from .assistant import complete
-from .auth import authenticate
+from .climate import outlook
 from .crops import BY_ID, BY_NAME
+from .farm_context.models import india_today
 from .farm_context.providers import normalize_soil, soil_map
 from .farm_context.transport import Unavailable
-from .locations import normalized_name
-from .router import current_farmer, database, require_consent
+from .locations import normalized_name, resolve_location
+from .router import current_farmer, database, recheck, require_consent
 from .schemas import Input
+from .yields import common_crops
 
 router = APIRouter(prefix="/api/v2/farm-setup", tags=["Spoken farm setup"])
 CROPS = sorted({row["name"] for row in BY_ID.values()})
@@ -218,6 +220,130 @@ async def estimate_soil(gateway, draft):
     return None, None, None
 
 
+class LocateInput(Input):
+    """A GPS fix, or the state, district and village the farmer chose."""
+
+    latitude: float | None = Field(default=None, ge=6, le=37.5)
+    longitude: float | None = Field(default=None, ge=68, le=97.5)
+    accuracy_meters: float | None = Field(default=None, ge=0, le=100000)
+    state_code: int | None = Field(default=None, gt=0, le=9999)
+    district_code: int | None = Field(default=None, gt=0, le=999999)
+    village: str | None = Field(default=None, max_length=100)
+
+    @model_validator(mode="after")
+    def one_way_to_find_it(self):
+        if (self.latitude is None) != (self.longitude is None):
+            raise ValueError("Send both latitude and longitude")
+        if self.latitude is None and self.district_code is None:
+            raise ValueError("Use your location or choose your district")
+        return self
+
+
+def season_now(today=None):
+    """The cropping season a farmer is in or about to sow."""
+    month = (today or india_today()).month
+    return "kharif" if 6 <= month <= 9 else "rabi" if month >= 10 or month <= 2 else "summer"
+
+
+async def reverse_place(gateway, lat, lon):
+    """Village, district and state for a point, matched to the official location catalogue."""
+    try:
+        payload = await gateway.read(
+            "nominatim",
+            {"format": "jsonv2", "lat": lat, "lon": lon, "zoom": 14, "accept-language": "en", "addressdetails": 1},
+        )
+        address = payload["address"]
+    except (Unavailable, KeyError, TypeError):
+        return None
+    if str(address.get("country_code", "")).casefold() != "in":
+        return {"outside_india": True}
+    names = {key: text(address.get(key)) for key in ("state", "state_district", "county", "city_district")}
+    village = next(
+        (text(address.get(key)) for key in ("village", "hamlet", "town", "suburb", "city") if text(address.get(key))),
+        None,
+    )
+    district = names["state_district"] or names["county"] or names["city_district"]
+    district = re.sub(r"\s+(district|zila|jila)$", "", district, flags=re.IGNORECASE) if district else None
+    place = match_location(names["state"], district)
+    if not place or place.get("state_code") is None:
+        return None
+    return {**place, "village": village[:100] if village else None}
+
+
+@router.post("/locate")
+async def locate_field(
+    body: LocateInput, request: Request, farmer=Depends(current_farmer), db=Depends(database, scope="function")
+):
+    """Everything Krishyak can learn from a GPS fix, so the farmer does not have to type it.
+
+    Place names, a soil estimate, ten-year rainfall and temperature normals,
+    recent rain and the crops this district grows. The point is rounded to
+    about 1 km before any lookup and is not stored by this call.
+    """
+    require_consent(db, farmer, "location_processing")
+    quotas = request.app.state.v2_quotas
+    quotas.check("locate_user", str(farmer.id), 30, 3600)
+    quotas.check("locate_ip", client_ip(request), 12, 60)
+    owner = farmer.id
+    db.commit()
+    gateway = request.app.state.v2_farm_context.gateway
+    matched = "gps"
+    if body.latitude is not None:
+        lat, lon = round(body.latitude, 2), round(body.longitude, 2)
+        place = await reverse_place(gateway, lat, lon)
+        if place and place.get("outside_india"):
+            raise HTTPException(422, "This location is outside India. Choose your state and district instead.")
+    else:
+        try:
+            chosen = resolve_location(state_code=body.state_code, district_code=body.district_code)
+        except ValueError as error:
+            raise HTTPException(422, str(error)) from None
+        village = text(body.village)
+        found = await locate(gateway, {**chosen, "village": village})
+        if found is None:
+            raise HTTPException(
+                422, "Krishyak could not find this place on the map. Check the village name or use your location."
+            )
+        lat, lon, matched = found["latitude"], found["longitude"], found["matched"]
+        place = {**chosen, "village": village}
+    weather = await outlook(gateway, lat, lon)
+    place = place or {"state": None, "state_code": None, "district": None, "district_code": None, "village": None}
+    draft = {"state": place["state"], "district": place["district"], "location": {"latitude": lat, "longitude": lon}}
+    try:
+        # SoilGrids can take most of a minute; registration does not wait for it.
+        soil_type, soil_source, measurements = await asyncio.wait_for(estimate_soil(gateway, draft), 12)
+    except TimeoutError:
+        soil_type, soil_source, measurements = (
+            typical_soil(place["state"], place["district"], lon),
+            "state_typical",
+            None,
+        )
+        soil_source = soil_source if soil_type else None
+    await recheck(
+        db, request, "location_processing", owner=owner, changed="Account changed while finding your location"
+    )
+    season = season_now()
+    grown = common_crops(place["state"], place["district"]) if place["district"] else {}
+    return {
+        "location": {"latitude": lat, "longitude": lon, "accuracy_meters": body.accuracy_meters, "matched": matched},
+        "place": place,
+        "soil": {"soil_type": soil_type, "source": soil_source, "measurements": measurements},
+        "climate": weather["climate"],
+        "recent_rain": weather["recent_rain"],
+        "forecast": weather["forecast"],
+        "season": season,
+        "common_crops": grown,
+        "suggested_crops": [row for row in grown.get(season, []) if row["crop_id"] in CROP_PLANS][:4],
+        "sources": [
+            {"name": "OpenStreetMap Nominatim (place names)", "url": "https://nominatim.openstreetmap.org/"},
+            {"name": "ISRIC SoilGrids (soil estimate)", "url": "https://soilgrids.org/"},
+            *weather["sources"],
+            {"name": "Directorate of Economics and Statistics (district crop areas)", "url": "https://desagri.gov.in/"},
+        ],
+        "retention": "not_stored",
+    }
+
+
 @router.post("/understand")
 async def understand(
     body: UnderstandInput, request: Request, farmer=Depends(current_farmer), db=Depends(database, scope="function")
@@ -250,10 +376,7 @@ async def understand(
         draft["soil_type"], draft["soil_source"], draft["soil_measurements"] = await estimate_soil(
             gateway, draft if may_locate else {**draft, "location": None}
         )
-    current, _ = authenticate(db, request)
-    if current.id != owner:
-        raise HTTPException(403, "Account changed while reading your details")
-    require_consent(db, current, "speech_processing")
+    await recheck(db, request, "speech_processing", owner=owner, changed="Account changed while reading your details")
     draft["missing"] = [
         key
         for key, present in {

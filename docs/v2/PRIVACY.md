@@ -87,6 +87,21 @@ cancels frontend speech activity. Private requests recheck authorization and
 consent after provider work before returning a result. This restricts new access;
 it does not claim immediate deletion from a provider that already received data.
 
+Registration lookup: when the farmer taps "Use my location" (after agreeing
+to location processing), the browser's position is sent once, rounded to two
+decimal places (about 1 km) before any provider is asked, and is not stored
+by the lookup itself. Nominatim receives the rounded point to name the
+village and district; Open-Meteo receives it rounded to 0.05 degrees (about
+5 km) for the forecast and to 0.1 degrees (about 10 km) for rainfall history;
+SoilGrids receives the rounded point for the soil class. The farming profile
+(kind of farming, method) is optional, stored on the account, exported and
+deleted with it.
+
+The public example field uses a fixed example location and reads no account,
+cookie or visitor data. The institution usage statement contains the
+institution's own references, dates and results only, never a farmer's
+name, phone number or field.
+
 Export streams owned metadata and provenance; authenticated image download
 supplies photo bytes. Account deletion cascades domain rows and queues durable
 object cleanup. Failed cleanup after ten attempts is visible in the queue and

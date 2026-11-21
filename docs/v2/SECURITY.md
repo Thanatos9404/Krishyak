@@ -94,3 +94,12 @@ singled out. Loss photos are tagged as evidence and excluded from leaf-check
 lists, model feedback and Pest Radar. Saved offline photos are keyed by
 account in IndexedDB and are not encrypted at rest; the app removes them on
 sign-out and when a different account signs in.
+
+The public example endpoint takes no input, is limited to 30 requests a
+minute per IP and 600 computed reports an hour overall, and is cached, so it
+cannot be used to drain provider quotas. The registration lookup and weather
+outlook require a signed-in account with location consent and are limited
+per account. The usage statement and its CSV require the organiser role and
+a recent sign-in, return only rows that organiser created, and prefix any
+cell that starts with a formula character so a reference cannot execute in
+a spreadsheet. Downloads are recorded in the audit log.

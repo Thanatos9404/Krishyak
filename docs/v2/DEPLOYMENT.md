@@ -138,6 +138,17 @@ is required. To make an
 account an organiser, an operator sets `role = 'organisation_admin'` on its
 `v2_farmers` row.
 
+## Release v2_0012 (farming profile, usage statement)
+
+Migration `v2_0012_farming_profile` adds two nullable columns to
+`v2_farmers` (`farming_kind`, `farming_method`). It is additive; apply it
+with the same HTTP migration step as v2_0011. The usage statement needs no
+schema change. One optional variable is new: `V2_BILLING_LIVE` (default
+`false`). While it is `false` the organiser's usage card says the pilot is
+counted and not invoiced; set it to `true` only once institutions are
+invoiced under a signed agreement. List prices are read from
+`backend/v2/data/price_list.json`.
+
 ## Local PostGIS and Redis without Docker Desktop
 
 On Windows machines where Docker Desktop will not start, PostgreSQL 16 with

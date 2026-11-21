@@ -62,3 +62,36 @@ test("a chosen location saves canonical names and numerical codes", async () => 
     ),
   );
 });
+test("the farming answers from registration can be changed or cleared", async () => {
+  render(
+    <AccountDetails
+      {...props}
+      farmer={{
+        ...props.farmer,
+        farming_kind: "crops",
+        farming_method: "organic",
+      }}
+    />,
+  );
+  expect(screen.getByLabelText("What kind of farming do you do?")).toHaveValue(
+    "crops",
+  );
+  fireEvent.change(screen.getByLabelText("What kind of farming do you do?"), {
+    target: { value: "mixed" },
+  });
+  fireEvent.change(screen.getByLabelText("How do you farm?"), {
+    target: { value: "" },
+  });
+  fireEvent.click(screen.getByRole("button", { name: "Save account details" }));
+  await waitFor(() =>
+    expect(farmApi).toHaveBeenCalledWith(
+      "/me",
+      expect.objectContaining({
+        body: expect.objectContaining({
+          farming_kind: "mixed",
+          farming_method: null,
+        }),
+      }),
+    ),
+  );
+});

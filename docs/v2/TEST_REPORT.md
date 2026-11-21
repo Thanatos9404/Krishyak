@@ -133,3 +133,78 @@ Through the frontend proxy, 1 of 30 HTTP/1.1 requests from a script dropped
 its connection once; repeat runs of 40 requests over HTTP/1.1 and HTTP/2 had
 no drops, and requests sent straight to the API never dropped. Browsers use
 HTTP/2 and retry such drops, and no browser journey has hit one.
+
+## Accuracy and onboarding release, 20 November 2026
+
+Branch `feat/accuracy-onboarding`. Local results on Windows with PostGIS and
+Redis in WSL; accounts were synthetic and deleted afterwards. Staging results
+are recorded separately once this branch is deployed there.
+
+| Gate | Recorded result | Scope |
+|---|---|---|
+| Backend | 367 run, 365 passed, 2 skipped | Whole suite on real PostGIS: district yield table, rainfall normals, registration lookup, example field, price fallbacks, usage statement, leaf decision rule and input size |
+| Frontend unit | 402 passed, 65 suites | Dashboard cards, four-step registration, usage card, picture guides for the new crops |
+| Browser, production build | 21 of 21 (Chromium): public pages, field services including the offline journey, product flows, passkeys | A real leaf photo is checked by leaf model v2 through the API, online and after an offline save |
+| Layout | No horizontal overflow, no console errors | Home, field report, example field and institution screens at 1440, 1024, 768, 390 and 320 px; emulated viewports, not physical phones |
+| Leaf model v2 | See `MODEL_GOVERNANCE.md` | Evaluation on 16,557 held-out photographs; export equivalence on 247 inputs; serving-path check on 1,735 original photographs |
+| District yield model | See `YIELD_MODEL.md` | Time-split test on 2022-23 and an out-of-time check on 2024-25 |
+| Translations | 22 packs, 2,784 strings each, 0 structural failures | Script, placeholder and glossary checks only; native review still required |
+| Static checks | Ruff, Bandit, ESLint and Prettier pass; npm audit reports nothing after Next.js 16.4.6 | |
+
+Found and fixed during this round: the first fine-tune of the leaf model
+returned a non-finite loss because the mixup coefficient was computed from
+three independent draws instead of two; that run was discarded and the
+corrected run is the one released. Sarvam's document translation moved its
+upload storage to another host, which the Sindhi script's allow-list
+rejected until that exact host was added.
+
+Translation used existing Sarvam credits (an estimated 745 across the two
+runs, including Sindhi); nothing was purchased.
+
+### Staging, 20 November 2026
+
+Staging database migrated to `v2_0012` through the HTTP migration step;
+the switch was set back to `false` and the endpoint answers 404 again.
+
+| Check | Result |
+|---|---|
+| `scripts/smoke_staging.py` | 12 of 12, including live mandi data |
+| `e2e/staging.spec.js` | 9 of 9 on the final API build: passkey sign-up, GPS field with live weather, a real leaf photo checked by leaf model v2 in the LiteRT runtime and stored privately, a Copernicus job drained by the worker, market, voice answer, registration from GPS and speech ending on the dashboard, calendar with Pest Radar and a claim pack, Krishyak Live with the picture guides |
+
+Two defects were found by the staging runs and fixed before the final pass:
+
+- **Instance stall.** One run returned 503 from the location lookup and the
+  voice read-aloud at the same instant, 30 seconds after they started, while
+  three ordinary reads hung with them. The request log showed the cause:
+  async endpoints re-read the session on the event loop after a provider
+  call, and when the three-connection serverless pool was full the loop
+  blocked until the pool timeout. The re-read now runs in a worker thread,
+  the pool per instance is larger and its wait is 8 seconds. This had been
+  latent since the voice endpoints were added.
+- **Empty crop comparison.** The field report never listed other crops
+  because a loop variable shadowed the crop being assessed. It now compares
+  the other crops of the season that the district is recorded as growing,
+  with a test that the list is not empty.
+
+A status poll in the staging journey now retries once on a dropped
+connection; the drop happened seconds after the staging address was moved
+to a new build. Layout was re-checked with a 14-hectare field so that
+seven-digit amounts fit the dashboard cards and the comparison table at
+320 px.
+
+## Leaf model v3 and Indian farm photographs, 21 November 2026
+
+| Gate | Recorded result | Scope |
+|---|---|---|
+| Data audit | 103,530 photographs kept; 22,854 from documented Indian farms | `LEAF_DATASETS.md`; the older unverified rice photographs were found to be the Odisha set, and one "Indian" set's maize images to be studio copies |
+| v2 on Indian photographs | 94.9 % on 3,659 held-out photographs of sources it trained on; 92.2 % on 933 Pune cotton photographs it had never seen; 48.3 % on 300 Kashmir and Jalgaon photographs it had never seen | Crop selected |
+| Retrained network | Better than v2 on field and Indian farm test photographs (p = 0.012, 0.021), worse on the unseen farms (p = 0.029) | Exact McNemar test, `leaf_v2/compare.py` |
+| Weight averaging | No gain: validation macro-F1 dips between the two networks | `leaf_v2/soup.py` |
+| Released model (two networks, predictions averaged) | 95.7 % Indian farm test, 91.7 % field test, 83.4 % PlantDoc, 47.0 % unseen Indian farms | `MODEL_GOVERNANCE.md` |
+| Overfitting check | Field photographs: 97.1 % training, 91.3 % validation, 91.7 % test; validation still rising at the last epoch | `metrics.fit` and `learning_curve` in `release.json` |
+| Export equivalence | Same top class and decision on 247 inputs; largest probability difference 1.5e-6 | `runtime-verification.json` |
+| Serving path | 5,694 original photographs through the LiteRT artifact | `serving-check.json` |
+| Backend | 368 run, 366 passed, 2 skipped | Adds mirror-averaging and decision-rule tests |
+| Frontend unit | 402 passed, 65 suites | |
+| Translations | 22 packs, 2,785 strings each, 0 structural failures | Four account-change messages that the refactor of 20 November had hidden from the extractor were restored |
+| Staging | `e2e/staging.spec.js` 9 of 9 with `krishyak-leaf-v3` deployed | The 70 MB artifact builds and serves on Vercel; a real leaf photo is checked in about the same time as with v2 |

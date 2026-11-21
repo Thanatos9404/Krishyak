@@ -1,0 +1,26 @@
+{
+  "currency": "INR",
+  "gst": "excluded",
+  "effective_from": "2026-11-01",
+  "farmers_pay": false,
+  "items": {
+    "verify_report": {
+      "name": "Krishyak Verify",
+      "unit": "delivered report",
+      "price": 150,
+      "metered": true
+    },
+    "fpo_workspace": {
+      "name": "FPO workspace",
+      "unit": "month",
+      "price": 4000,
+      "metered": true
+    },
+    "programme_licence": {
+      "name": "Programme licence",
+      "unit": "programme per year",
+      "price": 1200000,
+      "metered": false
+    }
+  }
+}

@@ -23,7 +23,7 @@ class SimulationEngine:
         self,
         base_params: Dict,
         num_simulations: int = 500,
-        *, farm_context=None, market_quote_index=None, expected_quote_id=None
+        *, farm_context=None, market_quote_index=None, expected_quote_id=None, baseline_record=None
     ) -> Dict:
         """
         Run multiple simulations with parameter variations
@@ -36,6 +36,8 @@ class SimulationEngine:
             from v2.farm_context.engines import scenario_inputs
             base_params, public_evidence = scenario_inputs(base_params, farm_context, market_quote_index,expected_quote_id)
         context = self._prepare_context(base_params['crop'])
+        if baseline_record is not None:
+            context['baseline'] = dict(baseline_record)
         if public_evidence and public_evidence['market']['selected_quote']:
             from v2.farm_context.engines import reviewed_market_history
             quote = public_evidence['market']['selected_quote']

@@ -55,6 +55,18 @@ test("drawings match the action, not just a keyword", () => {
       "Ask your local agriculture officer, Krishi Vigyan Kendra or the Kisan Call Centre (1800-180-1551) before any spraying.",
     ),
   ).toBe("call_expert");
+  expect(pictureFor("Do not add more nitrogen fertilizer now.")).toBe(
+    "no_fertilizer",
+  );
+  expect(
+    pictureFor("Drain the field for a few days if water is standing deep."),
+  ).toBe("water_level");
+  expect(
+    pictureFor("Ask for a soil test to find which nutrient is short."),
+  ).toBe("soil_test");
+  expect(pictureFor("Do not keep a ratoon crop from this field.")).toBe(
+    "healthy_seed",
+  );
   // An unknown step still shows a neutral drawing rather than nothing.
   expect(pictureFor("Something new")).toBe("look");
 });

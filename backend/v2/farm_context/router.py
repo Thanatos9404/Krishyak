@@ -5,8 +5,7 @@ import asyncio
 from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import Field, ValidationError
 
-from ..auth import authenticate
-from ..router import current_farmer, database, require_consent
+from ..router import current_farmer, database, recheck, require_consent
 from ..schemas import Input
 from .models import ContextInput, FarmContext
 
@@ -35,10 +34,9 @@ async def context(
     except ValueError as error:
         raise HTTPException(422, str(error)) from None
     # Withdrawal/logout during slow requests prevents the result being returned.
-    farmer, _ = authenticate(db, request)
-    require_consent(db, farmer, "government_integration")
-    if body.latitude is not None:
-        require_consent(db, farmer, "location_processing")
+    await recheck(
+        db, request, "government_integration", *(["location_processing"] if body.latitude is not None else [])
+    )
     return result
 
 
@@ -73,7 +71,7 @@ async def planning(
     except ValueError:
         raise HTTPException(422, "Choose the same supported crop for context and scenario") from None
     result = await context(body.context, request, farmer, db)
-    require_consent(db, farmer, "agronomic_analysis")
+    await recheck(db, request, "agronomic_analysis")
     db.commit()
     slots = request.app.state.v2_planning_slots
     if slots.locked():
@@ -90,11 +88,13 @@ async def planning(
             )
     except ValueError as error:
         raise HTTPException(422, str(error)) from None
-    farmer, _ = authenticate(db, request)
-    for purpose in ("agronomic_analysis", "government_integration"):
-        require_consent(db, farmer, purpose)
-    if body.context.latitude is not None:
-        require_consent(db, farmer, "location_processing")
+    await recheck(
+        db,
+        request,
+        "agronomic_analysis",
+        "government_integration",
+        *(["location_processing"] if body.context.latitude is not None else []),
+    )
     current, optimal = comparison["current_plan"], comparison["ai_optimal_plan"]
     return {
         "success": True,

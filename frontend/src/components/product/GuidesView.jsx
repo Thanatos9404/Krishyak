@@ -6,7 +6,18 @@ import { PictureSteps } from "../../features/product/PictureGuide";
 import { cropCatalog, findCrop } from "../../features/product/crops";
 
 // Crops grown most widely in India come first.
-const ORDER = ["tomato", "potato", "maize", "pepper", "grape", "apple"];
+const ORDER = [
+  "rice",
+  "wheat",
+  "cotton",
+  "sugarcane",
+  "maize",
+  "tomato",
+  "potato",
+  "pepper",
+  "grape",
+  "apple",
+];
 const rank = (photo) => ORDER.indexOf(photo) + 1 || ORDER.length + 1;
 const CROPS = Object.keys(guides.crops)
   .sort((a, b) => rank(a) - rank(b))
@@ -26,7 +37,9 @@ export function GuidesView({ workspace: w }) {
   const cycle =
     w.cycles?.find((item) => item.status === "active") || w.cycles?.[0];
   const mine = findCrop(cycle)?.photo_name;
-  const [crop, setCrop] = useState(guides.crops[mine] ? mine : "tomato");
+  const [crop, setCrop] = useState(
+    guides.crops[mine] ? mine : CROPS[0].photo_name,
+  );
   return (
     <>
       <header className="home-greeting">

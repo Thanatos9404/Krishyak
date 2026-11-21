@@ -55,3 +55,28 @@ class ModelLoadingTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 inference.load_model()
         self.assertIsNone(inference._model)
+
+    def test_any_square_rgb_input_size_loads_and_other_shapes_are_rejected(self):
+        self.candidate.input_shape = (None,288,288,3)
+        with patch('builtins.open', mock_open(read_data='{"0":"Rice","1":"Wheat"}')):
+            model, _ = inference.load_model()
+        self.assertEqual(inference.image_size(model), (288,288))
+        for shape in [(None,288,224,3), (None,288,288,1), (None,32,32,3), (None,None,None,3)]:
+            with self.subTest(shape=shape), patch.object(inference, '_model', None):
+                self.candidate.input_shape = shape
+                with patch('builtins.open', mock_open(read_data='{"0":"Rice","1":"Wheat"}')):
+                    with self.assertRaises(ValueError):
+                        inference.load_model()
+
+    def test_a_release_decision_rule_is_validated(self):
+        def rule(decision):
+            with patch('pathlib.Path.read_text', return_value=json.dumps({'decision': decision})):
+                return inference.release_decision()
+        self.assertEqual(rule(None), inference.DEFAULT_DECISION)
+        self.assertEqual(rule({'threshold':.62,'crop_conditioned':True,'crop_mass_min':.3}),
+                         {'threshold':.62,'crop_conditioned':True,'crop_mass_min':.3,'mirror_averaging':False})
+        self.assertTrue(rule({'threshold':.7,'mirror_averaging':True})['mirror_averaging'])
+        for bad in [{'threshold':.1}, {'threshold':'high'}, {'threshold':.7,'crop_mass_min':2},
+                    {'threshold':.7,'crop_conditioned':'yes'}, {'threshold':.7,'mirror_averaging':1}]:
+            with self.subTest(bad=bad), self.assertRaises(ValueError):
+                rule(bad)

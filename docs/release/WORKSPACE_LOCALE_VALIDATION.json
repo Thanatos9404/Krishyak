@@ -1,5 +1,5 @@
 {
-  "source_sha256": "b712d5e1512b69476230f88350df8ce6b9b4052af1aa3ed20d41aff0d2ae526e",
+  "source_sha256": "5655395ec36d6eb7234b89e841ff3475ac357278f94187d20a340de9bb91fbad",
   "languages_checked": [
     "hi",
     "ur",
@@ -27,9 +27,9 @@
   "results": [
     {
       "language": "hi",
-      "strings": 2586,
-      "bytes": 313372,
-      "script_letter_fraction": 0.9771,
+      "strings": 2785,
+      "bytes": 344762,
+      "script_letter_fraction": 0.9762,
       "unchanged_english_labels": [
         "{{v0}} kg"
       ],
@@ -39,9 +39,9 @@
     },
     {
       "language": "ur",
-      "strings": 2586,
-      "bytes": 248324,
-      "script_letter_fraction": 0.9844,
+      "strings": 2785,
+      "bytes": 273463,
+      "script_letter_fraction": 0.9838,
       "unchanged_english_labels": [
         "{{v0}} kg"
       ],
@@ -51,9 +51,9 @@
     },
     {
       "language": "gu",
-      "strings": 2586,
-      "bytes": 304859,
-      "script_letter_fraction": 0.9741,
+      "strings": 2785,
+      "bytes": 335367,
+      "script_letter_fraction": 0.9719,
       "unchanged_english_labels": [
         "{{v0}} kg"
       ],
@@ -63,9 +63,9 @@
     },
     {
       "language": "bn",
-      "strings": 2586,
-      "bytes": 324900,
-      "script_letter_fraction": 0.9744,
+      "strings": 2785,
+      "bytes": 356822,
+      "script_letter_fraction": 0.9726,
       "unchanged_english_labels": [
         "{{v0}} kg",
         "{{v0}} qtl"
@@ -76,9 +76,9 @@
     },
     {
       "language": "mr",
-      "strings": 2586,
-      "bytes": 311519,
-      "script_letter_fraction": 0.9692,
+      "strings": 2785,
+      "bytes": 342092,
+      "script_letter_fraction": 0.9687,
       "unchanged_english_labels": [
         "{{v0}} kg"
       ],
@@ -88,9 +88,9 @@
     },
     {
       "language": "kn",
-      "strings": 2586,
-      "bytes": 337257,
-      "script_letter_fraction": 0.9776,
+      "strings": 2785,
+      "bytes": 370989,
+      "script_letter_fraction": 0.9772,
       "unchanged_english_labels": [
         "{{v0}} kg"
       ],
@@ -100,9 +100,9 @@
     },
     {
       "language": "ta",
-      "strings": 2586,
-      "bytes": 369632,
-      "script_letter_fraction": 0.9795,
+      "strings": 2785,
+      "bytes": 407749,
+      "script_letter_fraction": 0.9794,
       "unchanged_english_labels": [
         "{{v0}} kg"
       ],
@@ -112,32 +112,8 @@
     },
     {
       "language": "te",
-      "strings": 2586,
-      "bytes": 332645,
-      "script_letter_fraction": 0.9751,
-      "unchanged_english_labels": [
-        "{{v0}} kg"
-      ],
-      "structural_pass": true,
-      "semantic_approval": "not_established",
-      "native_review": "required"
-    },
-    {
-      "language": "ml",
-      "strings": 2586,
-      "bytes": 359445,
-      "script_letter_fraction": 0.9781,
-      "unchanged_english_labels": [
-        "{{v0}} kg"
-      ],
-      "structural_pass": true,
-      "semantic_approval": "not_established",
-      "native_review": "required"
-    },
-    {
-      "language": "pa",
-      "strings": 2586,
-      "bytes": 312826,
+      "strings": 2785,
+      "bytes": 367045,
       "script_letter_fraction": 0.9748,
       "unchanged_english_labels": [
         "{{v0}} kg"
@@ -147,10 +123,10 @@
       "native_review": "required"
     },
     {
-      "language": "as",
-      "strings": 2586,
-      "bytes": 318813,
-      "script_letter_fraction": 0.9756,
+      "language": "ml",
+      "strings": 2785,
+      "bytes": 396914,
+      "script_letter_fraction": 0.9774,
       "unchanged_english_labels": [
         "{{v0}} kg"
       ],
@@ -159,10 +135,36 @@
       "native_review": "required"
     },
     {
+      "language": "pa",
+      "strings": 2785,
+      "bytes": 344751,
+      "script_letter_fraction": 0.9737,
+      "unchanged_english_labels": [
+        "{{v0}} kg"
+      ],
+      "structural_pass": true,
+      "semantic_approval": "not_established",
+      "native_review": "required"
+    },
+    {
+      "language": "as",
+      "strings": 2785,
+      "bytes": 350417,
+      "script_letter_fraction": 0.9743,
+      "unchanged_english_labels": [
+        "{{v0}} kg",
+        "Aphids (wheat)",
+        "Apple mosaic virus"
+      ],
+      "structural_pass": true,
+      "semantic_approval": "not_established",
+      "native_review": "required"
+    },
+    {
       "language": "brx",
-      "strings": 2586,
-      "bytes": 335059,
-      "script_letter_fraction": 0.9787,
+      "strings": 2785,
+      "bytes": 369323,
+      "script_letter_fraction": 0.9779,
       "unchanged_english_labels": [
         "{{v0}} kg"
       ],
@@ -172,9 +174,9 @@
     },
     {
       "language": "doi",
-      "strings": 2586,
-      "bytes": 319330,
-      "script_letter_fraction": 0.9793,
+      "strings": 2785,
+      "bytes": 352815,
+      "script_letter_fraction": 0.9784,
       "unchanged_english_labels": [
         "{{v0}} kg"
       ],
@@ -184,9 +186,9 @@
     },
     {
       "language": "ks",
-      "strings": 2586,
-      "bytes": 265991,
-      "script_letter_fraction": 0.9843,
+      "strings": 2785,
+      "bytes": 292985,
+      "script_letter_fraction": 0.9839,
       "unchanged_english_labels": [
         "{{v0}} kg"
       ],
@@ -196,9 +198,9 @@
     },
     {
       "language": "kok",
-      "strings": 2586,
-      "bytes": 309211,
-      "script_letter_fraction": 0.9785,
+      "strings": 2785,
+      "bytes": 340291,
+      "script_letter_fraction": 0.9777,
       "unchanged_english_labels": [
         "{{v0}} kg"
       ],
@@ -208,9 +210,9 @@
     },
     {
       "language": "mai",
-      "strings": 2586,
-      "bytes": 301899,
-      "script_letter_fraction": 0.9775,
+      "strings": 2785,
+      "bytes": 331184,
+      "script_letter_fraction": 0.9767,
       "unchanged_english_labels": [
         "{{v0}} kg"
       ],
@@ -220,9 +222,9 @@
     },
     {
       "language": "mni",
-      "strings": 2586,
-      "bytes": 320041,
-      "script_letter_fraction": 0.9812,
+      "strings": 2785,
+      "bytes": 354360,
+      "script_letter_fraction": 0.9804,
       "unchanged_english_labels": [
         "{{v0}} kg"
       ],
@@ -232,9 +234,9 @@
     },
     {
       "language": "ne",
-      "strings": 2586,
-      "bytes": 323694,
-      "script_letter_fraction": 0.9778,
+      "strings": 2785,
+      "bytes": 355849,
+      "script_letter_fraction": 0.9772,
       "unchanged_english_labels": [
         "{{v0}} kg"
       ],
@@ -244,9 +246,9 @@
     },
     {
       "language": "or",
-      "strings": 2586,
-      "bytes": 332252,
-      "script_letter_fraction": 0.9788,
+      "strings": 2785,
+      "bytes": 365944,
+      "script_letter_fraction": 0.9783,
       "unchanged_english_labels": [
         "{{v0}} kg"
       ],
@@ -256,9 +258,9 @@
     },
     {
       "language": "sa",
-      "strings": 2586,
-      "bytes": 329110,
-      "script_letter_fraction": 0.9755,
+      "strings": 2785,
+      "bytes": 362364,
+      "script_letter_fraction": 0.9745,
       "unchanged_english_labels": [
         "{{v0}} kg"
       ],
@@ -268,9 +270,9 @@
     },
     {
       "language": "sat",
-      "strings": 2586,
-      "bytes": 338322,
-      "script_letter_fraction": 0.9886,
+      "strings": 2785,
+      "bytes": 372133,
+      "script_letter_fraction": 0.988,
       "unchanged_english_labels": [
         "{{v0}} kg"
       ],
@@ -280,8 +282,8 @@
     },
     {
       "language": "sd",
-      "strings": 2586,
-      "bytes": 240198,
+      "strings": 2785,
+      "bytes": 264599,
       "script_letter_fraction": 0.9792,
       "unchanged_english_labels": [
         "{{v0}} kg",

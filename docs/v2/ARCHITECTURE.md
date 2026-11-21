@@ -13,7 +13,7 @@ flowchart LR
   API --> PG[Neon PostgreSQL + PostGIS]
   API --> Redis[Upstash Redis usage budgets]
   API --> Objects[Private Vercel Blob photos, Mumbai]
-  API --> ML[LiteRT EfficientNetV2B0 with abstention]
+  API --> ML[LiteRT EfficientNetV2B2 with abstention]
   API --> Weather[Open-Meteo 48-hour forecast]
   API --> Market[AGMARKNET via data.gov.in]
   API --> Speech[Sarvam speech and read-aloud]

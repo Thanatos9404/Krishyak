@@ -2,8 +2,10 @@ import { useCallback, useEffect, useState } from "react";
 import {
   AlertTriangle,
   Building2,
+  Download,
   FileCheck2,
   Printer,
+  ReceiptText,
   RefreshCw,
   Users,
 } from "lucide-react";
@@ -587,6 +589,137 @@ export function VerifyDesk({ act, busy }) {
             {tx("Print or save as PDF")}
           </button>
         </article>
+      )}
+    </section>
+  );
+}
+
+const money = (value) =>
+  new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+    maximumFractionDigits: 0,
+  }).format(value);
+const UNITS = {
+  verify_report: "per delivered report",
+  fpo_workspace: "per month",
+  programme_licence: "per programme, per year",
+};
+
+// Plan and usage: what this institution used, at the published list price.
+export function UsageDesk() {
+  const { tx, formatDate, info } = useProductLocale();
+  const [usage, setUsage] = useState(null),
+    [problem, setProblem] = useState("");
+  const monthName = (month) =>
+    new Intl.DateTimeFormat(info.speechCode, {
+      month: "long",
+      year: "numeric",
+      timeZone: "UTC",
+    }).format(new Date(`${month}-01T00:00:00Z`));
+  useEffect(() => {
+    farmApi("/admin/usage?months=6")
+      .then(setUsage)
+      .catch((error) => setProblem(explain(error)));
+  }, []);
+  return (
+    <section className="product-card desk" aria-labelledby="usage-desk">
+      <h2 id="usage-desk">
+        <ReceiptText size={24} aria-hidden="true" /> {tx("Plan and usage")}
+      </h2>
+      <p>
+        {tx(
+          "Farmers never pay for a farm check or for joining a group. This is what your organisation used.",
+        )}
+      </p>
+      {problem && (
+        <p role="alert" className="error-panel inline">
+          {tx(problem)}
+        </p>
+      )}
+      {usage && (
+        <>
+          <p className="status-panel">
+            {usage.billing.live
+              ? tx(
+                  "Krishyak invoices this usage each month under your agreement. No payment is taken in the app.",
+                )
+              : tx(
+                  "Pilot period: your usage is counted here and nothing is invoiced.",
+                )}
+          </p>
+          <div
+            className="desk-table-wrap"
+            tabIndex={0}
+            role="region"
+            aria-label={tx("Usage by month")}
+          >
+            <table className="desk-table usage-table">
+              <thead>
+                <tr>
+                  <th scope="col">{tx("Month")}</th>
+                  <th scope="col">{tx("Verify reports delivered")}</th>
+                  <th scope="col">{tx("Member workspace")}</th>
+                  <th scope="col">{tx("At list price, before GST")}</th>
+                  <th scope="col">{tx("Report list")}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {usage.months.map((line) => (
+                  <tr key={line.month}>
+                    <th scope="row">{monthName(line.month)}</th>
+                    <td>
+                      {line.verify.delivered}
+                      <small>
+                        {tx("{{v0}} requested, {{v1}} waiting for the farmer", {
+                          v0: line.verify.requested,
+                          v1: line.verify.waiting_for_farmer,
+                        })}
+                      </small>
+                    </td>
+                    <td>{line.workspace ? tx("In use") : tx("Not in use")}</td>
+                    <td dir="ltr">{money(line.at_list_price.total)}</td>
+                    <td>
+                      {line.verify.delivered > 0 ? (
+                        <a
+                          className="button text"
+                          href={`/api/v2/admin/usage/${line.month}.csv`}
+                          download
+                        >
+                          <Download size={16} aria-hidden="true" />{" "}
+                          {tx("Download CSV")}
+                        </a>
+                      ) : (
+                        "-"
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <h3>{tx("List prices")}</h3>
+          <dl className="claim-facts">
+            {Object.entries(usage.prices).map(([id, item]) => (
+              <div key={id}>
+                <dt>{tx(item.name)}</dt>
+                <dd>
+                  <span dir="ltr">{money(item.price)}</span> {tx(UNITS[id])}
+                </dd>
+              </div>
+            ))}
+          </dl>
+          <p className="small">
+            {tx("Prices are before GST, from {{v0}}.", {
+              v0: formatDate(usage.billing.effective_from),
+            })}
+          </p>
+          <ul className="care-steps">
+            {usage.rules.map((rule) => (
+              <li key={rule}>{tx(rule)}</li>
+            ))}
+          </ul>
+        </>
       )}
     </section>
   );

@@ -55,6 +55,8 @@ class ProfileInput(Input):
     district_code: StrictInt | None = Field(default=None, gt=0, le=999999)
     subdistrict: str | None = Field(default=None, max_length=100)
     pin_code: str | None = Field(default=None, pattern=r"^[1-9][0-9]{5}$")
+    farming_kind: Literal["crops", "crops_and_animals", "vegetables_and_fruit", "mixed"] | None = None
+    farming_method: Literal["conventional", "organic", "natural"] | None = None
 
     @field_validator("pin_code", mode="before")
     @classmethod

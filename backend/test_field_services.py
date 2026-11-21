@@ -671,6 +671,72 @@ class FieldServiceTests(unittest.TestCase):
             (gone["status"], gone.get("farmer"), gone["result"], gone["declared"]), ("withdrawn", None, None, None)
         )
 
+    # ---- Usage statement --------------------------------------------------
+    def test_the_usage_statement_counts_delivered_reports_at_the_list_price(self):
+        bank = self.farmer(0, "Gramin Bank")
+        self.assertEqual(bank.get("/api/v2/admin/usage").status_code, 403)
+        self.make_organiser(bank)
+        month = india_today().strftime("%Y-%m")
+        empty = bank.get("/api/v2/admin/usage?months=3").json()
+        self.assertEqual([len(empty["months"]), empty["months"][0]["month"]], [3, month])
+        self.assertEqual(empty["months"][0]["at_list_price"], {"verify": 0, "workspace": 0, "total": 0})
+        self.assertEqual((empty["billing"]["live"], empty["billing"]["farmers_pay"]), (False, False))
+        self.assertEqual(empty["prices"]["verify_report"]["price"], 150)
+
+        def ask(reference):
+            made = bank.post("/api/v2/admin/verifications", json={"reference": reference, "purpose": "crop_loan"})
+            self.assertEqual(made.status_code, 201, made.text)
+            return made.json()
+
+        ask("KCC-WAITING")
+        grown, early = ask("=KCC-GROWN"), ask("KCC-EARLY")
+        me = self.farmer(1, "Ramesh", "location_processing", "satellite_processing")
+        sowing = india_today() - timedelta(days=60)
+        field = self.field(me, crop="wheat", mapped=True, sown_days_ago=60)
+        self.ndvi(field, [0.15, 0.16, 0.15, 0.2, 0.3, 0.45, 0.6, 0.68], sowing)
+        accepted = me.post(f"/api/v2/verifications/{grown['code']}/accept", json={"plot_id": field["id"]})
+        self.assertEqual(accepted.json()["result"]["verdict"], "consistent")
+        other = self.farmer(2, "Sita", "location_processing", "satellite_processing")
+        young = self.field(other, crop="wheat", mapped=True, sown_days_ago=10)
+        too_early = other.post(f"/api/v2/verifications/{early['code']}/accept", json={"plot_id": young["id"]})
+        self.assertEqual(too_early.json()["result"]["verdict"], "too_early")
+        self.assertIsNone(too_early.json()["result"]["reported_at"])
+
+        line = bank.get("/api/v2/admin/usage").json()["months"][0]
+        self.assertEqual(line["verify"], {"requested": 3, "delivered": 1, "waiting_for_farmer": 1, "withdrawn": 0})
+        self.assertEqual(line["at_list_price"], {"verify": 150, "workspace": 0, "total": 150})
+        # The delivery stamp is set once and does not move when the report is read again.
+        path = f"/api/v2/admin/verifications/{grown['id']}"
+        stamp = bank.get(path).json()["result"]["reported_at"]
+        self.assertEqual(bank.get(path).json()["result"]["reported_at"], stamp)
+
+        sheet = bank.get(f"/api/v2/admin/usage/{month}.csv")
+        self.assertEqual(sheet.status_code, 200, sheet.text)
+        self.assertIn("text/csv", sheet.headers["content-type"])
+        self.assertIn(f"krishyak-verify-{month}.csv", sheet.headers["content-disposition"])
+        rows = sheet.text.strip().splitlines()
+        self.assertEqual(len(rows), 2)
+        # A reference that starts like a formula cannot run in a spreadsheet.
+        self.assertTrue(rows[1].startswith("'=KCC-GROWN,crop_loan,"), rows[1])
+        self.assertTrue(rows[1].endswith(",consistent,150"), rows[1])
+        self.assertNotIn("Ramesh", sheet.text)
+        for bad in ("2026-13", "nov-2026", "2099-01"):
+            self.assertEqual(bank.get(f"/api/v2/admin/usage/{bad}.csv").status_code, 422, bad)
+        # Another account sees none of it.
+        self.assertEqual(me.get("/api/v2/admin/usage").status_code, 403)
+        self.assertEqual(me.get(f"/api/v2/admin/usage/{month}.csv").status_code, 403)
+
+        made = bank.post("/api/v2/admin/groups", json={"name": "Chomu FPO", "district": "Jaipur"})
+        self.assertEqual(made.status_code, 201, made.text)
+        line = bank.get("/api/v2/admin/usage").json()["months"][0]
+        self.assertEqual((line["workspace"], line["at_list_price"]["total"]), (True, 4150))
+        # A report the farmer withdraws stops counting.
+        self.assertEqual(me.delete(f"/api/v2/verifications/{grown['id']}").status_code, 200)
+        line = bank.get("/api/v2/admin/usage").json()["months"][0]
+        self.assertEqual((line["verify"]["delivered"], line["verify"]["withdrawn"]), (0, 1))
+        self.assertEqual(line["at_list_price"], {"verify": 0, "workspace": 4000, "total": 4000})
+        self.assertEqual(len(bank.get(f"/api/v2/admin/usage/{month}.csv").text.strip().splitlines()), 1)
+
 
 if __name__ == "__main__":
     unittest.main()

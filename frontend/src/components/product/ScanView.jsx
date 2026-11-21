@@ -490,10 +490,13 @@ export function ScanView({ workspace: w }) {
               <summary>{tx("How accurate is this?")}</summary>
               <p>
                 {tx(
-                  "On a public test set of field photos, the model was right about {{v0}}% of the time. It has not been validated on Indian farms, so treat it as a first opinion.",
+                  "On test photos from Indian farms like the ones it learned from, the model was right about {{v0}}% of the time. On farms and cameras it has not seen, it is right much less often. Treat every answer as a first opinion.",
                   {
                     v0: Math.round(
-                      model.release.metrics.external_test.accuracy * 100,
+                      (
+                        model.release.metrics.india_farm_test ||
+                        model.release.metrics.external_test
+                      ).accuracy * 100,
                     ),
                   },
                 )}

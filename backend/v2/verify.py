@@ -21,6 +21,7 @@ from sqlalchemy import func, select
 from db.models import AuditLog, CropCycle, Farmer, ImageAsset, Job, Observation, Verification, utcnow
 from repositories.ownership import owned_plot
 
+from .billing import delivered
 from .crops import BY_ID
 from .groups import ALPHABET, organiser
 from .router import current_farmer, database, require_consent
@@ -136,6 +137,11 @@ def evaluate(db, record):
     if waiting and verdict == "not_enough_evidence":
         reason = "satellite_check_running"
     record.status = "processing" if reason == "satellite_check_running" else "ready"
+    # Stamped once, when the satellite record first had something to say; the usage
+    # statement counts the report in that month.
+    reported_at = (record.result or {}).get("reported_at") or (
+        utcnow().isoformat() if delivered(verdict, job.status if job else None) else None
+    )
     record.result = {
         "verdict": verdict,
         "reason": reason,
@@ -148,6 +154,7 @@ def evaluate(db, record):
         "satellite": "Sentinel-2 L2A NDVI, field average of clear pixels, 10-day intervals",
         "satellite_job": job.status if job else "not_requested",
         "evaluated_at": utcnow().isoformat(),
+        "reported_at": reported_at,
         "limitations": LIMITS,
     }
 
@@ -227,6 +234,7 @@ def requests(request: Request, farmer=Depends(current_farmer), db=Depends(databa
                 "created_at": row.created_at,
                 "code": row.code if row.status == "awaiting_farmer" else None,
                 "verdict": (row.result or {}).get("verdict"),
+                "reported_at": (row.result or {}).get("reported_at"),
             }
             for row in rows
         ]

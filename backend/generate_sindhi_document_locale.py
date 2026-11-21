@@ -30,11 +30,19 @@ MAX_CHARACTERS = 50_000
 MAX_CREDITS = 250
 
 
+# Storage hosts the provider's job API has issued signed upload and download
+# addresses on. Exact hosts only: the S3 name pins the provider's bucket.
+STORAGE_HOSTS = {
+    "saasprodstudiopublicsa.blob.core.windows.net",  # until November 2026
+    "saas-prod-studio-app.s3.amazonaws.com",  # from November 2026
+}
+
+
 def signed_endpoint(value):
     parsed = urlsplit(value)
     approved = (
         parsed.hostname == "api.sarvam.ai" and parsed.path.startswith("/translate/document/")
-    ) or parsed.hostname == "saasprodstudiopublicsa.blob.core.windows.net"
+    ) or parsed.hostname in STORAGE_HOSTS
     if not approved or parsed.scheme != "https" or parsed.username or parsed.password or parsed.port:
         raise ValueError("Unapproved provider storage endpoint")
     return value
@@ -145,11 +153,12 @@ async def generate(report):
             labels.atomic_json(STATE, state)
         job = str(UUID(state["job_id"]))
         if state.get("upload_url"):
-            response = await client.put(
-                signed_endpoint(state["upload_url"]),
-                content=document,
-                headers={"Content-Type": "text/html", "x-ms-blob-type": "BlockBlob"},
-            )
+            upload = signed_endpoint(state["upload_url"])
+            headers = {"Content-Type": "text/html"}
+            if urlsplit(upload).hostname.endswith(".blob.core.windows.net"):
+                headers["x-ms-blob-type"] = "BlockBlob"
+            response = await client.put(upload, content=document, headers=headers)
+            report["upload_http_status"] = response.status_code
             if response.status_code not in {200, 201, 202}:
                 raise RuntimeError("Document upload unavailable")
             await api("POST", "/" + job + "/start")
