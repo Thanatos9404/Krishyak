@@ -4,6 +4,7 @@ import {
   ArrowDownRight,
   ArrowRight,
   ArrowUpRight,
+  Globe2,
   Minus,
   Store,
 } from "lucide-react";
@@ -74,9 +75,11 @@ function Trend({ change }) {
   return (
     <span className={`trend ${change.direction}`}>
       <Icon size={16} aria-hidden="true" />
-      {change.direction === "steady"
-        ? tx("Steady over a week ({{v0}}%)", { v0: value })
-        : tx("{{v0}}% in a week", { v0: value })}
+      {change.direction !== "steady"
+        ? tx("{{v0}}% in a week", { v0: value })
+        : Math.abs(change.percent) < 0.05
+          ? tx("Steady over a week")
+          : tx("Steady over a week ({{v0}}%)", { v0: value })}
     </span>
   );
 }
@@ -120,9 +123,84 @@ export function rupees(value, language) {
   }).format(value);
 }
 
+// The all-India average: shown first when the farmer's own mandis have nothing
+// as recent, and always labelled as national so it is not read as a local quote.
+function NationalPrice({ national, support, lead }) {
+  const { tx, language, formatDate } = useProductLocale();
+  const change = national.change;
+  const margin =
+    support && support.unit === "quintal"
+      ? ((national.per_quintal - support.msp) / support.msp) * 100
+      : null;
+  const Icon =
+    change?.direction === "up"
+      ? ArrowUpRight
+      : change?.direction === "down"
+        ? ArrowDownRight
+        : Minus;
+  return (
+    <article
+      className={`price-hero national ${lead ? "" : "secondary"}`}
+      aria-label={tx("All-India average price")}
+    >
+      <span className="price-place">
+        <Globe2 size={16} aria-hidden="true" /> {tx("All-India average")}
+        {national.describes ? ` · ${tx(national.describes)}` : ""}
+      </span>
+      <strong className="price-value">
+        {rupees(national.per_quintal, language)}{" "}
+        <small>{tx("per quintal")}</small>
+      </strong>
+      <span className="price-sub">
+        {tx("About {{v0}} per kg", {
+          v0: rupees(national.per_quintal / 100, language),
+        })}{" "}
+        · {tx("Reported {{v0}}", { v0: formatDate(national.date) })}
+      </span>
+      {change && (
+        <span className={`trend ${change.direction}`}>
+          <Icon size={16} aria-hidden="true" />
+          {change.direction === "steady"
+            ? tx("Steady since the day before")
+            : tx("{{v0}}% since the day before", {
+                v0: new Intl.NumberFormat(
+                  language === "en" ? "en-IN" : language,
+                  {
+                    maximumFractionDigits: 1,
+                    signDisplay: "always",
+                    numberingSystem: "latn",
+                  },
+                ).format(change.percent),
+              })}
+        </span>
+      )}
+      <p className="price-caution">
+        {tx(
+          "Average of all reporting mandis in India, not your local mandi. Your price can be quite different.",
+        )}
+      </p>
+      {lead && margin !== null && (
+        <p className="msp-compare">
+          {margin >= 0
+            ? tx(
+                "{{v0}}% above the government support price (MSP) of {{v1}}.",
+                { v0: Math.round(margin), v1: rupees(support.msp, language) },
+              )
+            : tx(
+                "{{v0}}% below the government support price (MSP) of {{v1}}. Ask about procurement centres near you.",
+                { v0: Math.round(-margin), v1: rupees(support.msp, language) },
+              )}
+        </p>
+      )}
+    </article>
+  );
+}
+
 export function MarketPrices({ result, crop, compact = false }) {
   const { tx, language, formatDate } = useProductLocale();
   const support = supportPriceFor(crop);
+  const national = result.national || null;
+  const nationalFirst = national && result.lead === "national";
   if (result.status === "idle") return null;
   if (result.status === "loading")
     return <p role="status">{tx("Finding mandi prices…")}</p>;
@@ -134,13 +212,22 @@ export function MarketPrices({ result, crop, compact = false }) {
     );
   if (!result.markets?.length)
     return (
-      <p className="inline-note">
-        {result.status === "not_configured"
-          ? tx("Mandi prices are not connected in this deployment.")
-          : tx(
-              "No mandi reported this crop in your area in the last 30 days. Try your state or a nearby district.",
-            )}
-      </p>
+      <div className="market-prices">
+        {national && (
+          <NationalPrice national={national} support={support} lead />
+        )}
+        <p className="inline-note">
+          {result.status === "not_configured"
+            ? tx("Mandi prices are not connected in this deployment.")
+            : national
+              ? tx(
+                  "No mandi in your area has a saved price for this crop from the last 30 days.",
+                )
+              : tx(
+                  "No mandi reported this crop in your area in the last 30 days. Try your state or a nearby district.",
+                )}
+        </p>
+      </div>
     );
   const [best, ...others] = result.markets;
   const margin =
@@ -156,48 +243,63 @@ export function MarketPrices({ result, crop, compact = false }) {
           )}
         </p>
       )}
-      <article className="price-hero">
-        <span className="price-place">
-          {best.market}, {best.district}
-          {result.scope === "state" && result.district
-            ? ` · ${tx("nearest reporting mandis in your state")}`
-            : ""}
-        </span>
-        <strong className="price-value">
-          {rupees(best.latest.modal_price, language)}{" "}
-          <small>{tx("per quintal")}</small>
-        </strong>
-        <span className="price-sub">
-          {tx("About {{v0}} per kg", {
-            v0: rupees(best.latest.modal_price / 100, language),
-          })}{" "}
-          ·{" "}
-          {best.latest.age_days === 0
-            ? tx("Reported today")
-            : tx("Reported {{v0}}", { v0: formatDate(best.latest.date) })}
-        </span>
-        <Trend change={best.change_7d} />
-        <Spark series={best.series} />
-        {margin !== null && (
-          <p className="msp-compare">
-            {margin >= 0
-              ? tx(
-                  "{{v0}}% above the government support price (MSP) of {{v1}}.",
-                  {
-                    v0: Math.round(margin),
-                    v1: rupees(support.msp, language),
-                  },
-                )
-              : tx(
-                  "{{v0}}% below the government support price (MSP) of {{v1}}. Ask about procurement centres near you.",
-                  {
-                    v0: Math.round(-margin),
-                    v1: rupees(support.msp, language),
-                  },
-                )}
-          </p>
-        )}
-      </article>
+      {nationalFirst && (
+        <NationalPrice national={national} support={support} lead />
+      )}
+      {nationalFirst && !compact && (
+        <h3 className="price-older">
+          {tx("Last price from your area, {{v0}}", {
+            v0: formatDate(best.latest.date),
+          })}
+        </h3>
+      )}
+      {(!nationalFirst || !compact) && (
+        <article className={`price-hero ${nationalFirst ? "secondary" : ""}`}>
+          <span className="price-place">
+            {best.market}, {best.district}
+            {result.scope === "state" && result.district
+              ? ` · ${tx("nearest reporting mandis in your state")}`
+              : ""}
+          </span>
+          <strong className="price-value">
+            {rupees(best.latest.modal_price, language)}{" "}
+            <small>{tx("per quintal")}</small>
+          </strong>
+          <span className="price-sub">
+            {tx("About {{v0}} per kg", {
+              v0: rupees(best.latest.modal_price / 100, language),
+            })}{" "}
+            ·{" "}
+            {best.latest.age_days === 0
+              ? tx("Reported today")
+              : tx("Reported {{v0}}", { v0: formatDate(best.latest.date) })}
+          </span>
+          <Trend change={best.change_7d} />
+          <Spark series={best.series} />
+          {!nationalFirst && margin !== null && (
+            <p className="msp-compare">
+              {margin >= 0
+                ? tx(
+                    "{{v0}}% above the government support price (MSP) of {{v1}}.",
+                    {
+                      v0: Math.round(margin),
+                      v1: rupees(support.msp, language),
+                    },
+                  )
+                : tx(
+                    "{{v0}}% below the government support price (MSP) of {{v1}}. Ask about procurement centres near you.",
+                    {
+                      v0: Math.round(-margin),
+                      v1: rupees(support.msp, language),
+                    },
+                  )}
+            </p>
+          )}
+        </article>
+      )}
+      {!nationalFirst && national && !compact && (
+        <NationalPrice national={national} support={support} lead={false} />
+      )}
       {!compact && others.length > 0 && (
         <ul className="market-list">
           {others.map((row) => (
@@ -252,6 +354,25 @@ export function MarketView({ workspace: w }) {
     district: location.district,
   });
   const result = useMarketPrices(query);
+  // The farmer's crop and place can arrive after this screen opens. Fill them
+  // in once, unless the farmer has already chosen something here.
+  const known = active?.crop_id || "",
+    home = locationFromProfile(w.farmer || {});
+  useEffect(() => {
+    if (!known && !home.state) return;
+    setCrop((value) => value || known);
+    setLocation((value) => (value.state ? value : home));
+    setQuery((value) =>
+      value.crop
+        ? value
+        : {
+            crop: known,
+            state: value.state || home.state,
+            district: value.district || home.district,
+          },
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [known, home.state, home.district]);
   return (
     <>
       <header className="product-page-heading">

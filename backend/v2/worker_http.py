@@ -61,6 +61,16 @@ def scheduled_trigger(request: Request):
     return {"worker_batch": "completed", "jobs_processed": completed}
 
 
+@router.get("/prices")
+async def scheduled_prices(request: Request):
+    """Nightly: store the day's mandi quotes and the all-India averages (Vercel Cron, cron secret)."""
+    if not authorized(request):
+        raise HTTPException(404, "Not found")
+    from .market import refresh_scopes
+
+    return {"price_refresh": "completed", **await refresh_scopes(request.app)}
+
+
 @router.post("/migrate")
 def migrate(request: Request):
     """Apply Alembic migrations from inside a serverless deployment.

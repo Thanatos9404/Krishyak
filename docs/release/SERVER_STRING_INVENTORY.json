@@ -7,27 +7,27 @@
   {
     "source": "Many farmers are checking right now. Please retry in a minute.",
     "file": "backend/v2/assessment.py",
-    "line": 309
+    "line": 329
   },
   {
     "source": "Add a field crop that Krishyak can assess, such as wheat, rice or mustard",
     "file": "backend/v2/assessment.py",
-    "line": 445
+    "line": 465
   },
   {
     "source": "Add your field's area first",
     "file": "backend/v2/assessment.py",
-    "line": 448
+    "line": 468
   },
   {
     "source": "Tell Krishyak your soil type or your state first",
     "file": "backend/v2/assessment.py",
-    "line": 452
+    "line": 472
   },
   {
     "source": "The example field is not available in this deployment",
     "file": "backend/v2/assessment.py",
-    "line": 501
+    "line": 521
   },
   {
     "source": "The assistant returned an empty answer",
@@ -757,12 +757,12 @@
   {
     "source": "Cached evidence has expired; refresh before acting",
     "file": "backend/v2/farm_context/transport.py",
-    "line": 172
+    "line": 174
   },
   {
     "source": "This source is unavailable. Other sections remain usable.",
     "file": "backend/v2/farm_context/transport.py",
-    "line": 186
+    "line": 188
   },
   {
     "source": "Krishyak could not understand that. Please try again or fill the form.",
@@ -1182,22 +1182,37 @@
   {
     "source": "Reported wholesale mandi prices; your actual offer depends on quality, quantity and buyer.",
     "file": "backend/v2/market.py",
-    "line": 304
+    "line": 320
   },
   {
     "source": "A trend compares quotes from the same market, variety and grade only.",
     "file": "backend/v2/market.py",
-    "line": 305
+    "line": 321
+  },
+  {
+    "source": "The all-India average covers every reporting mandi; your local price can differ a lot.",
+    "file": "backend/v2/market.py",
+    "line": 323
   },
   {
     "source": "Market prices are not available in this deployment",
     "file": "backend/v2/market.py",
-    "line": 252
+    "line": 259
   },
   {
     "source": "Choose a crop that is traded in mandis",
     "file": "backend/v2/market.py",
-    "line": 257
+    "line": 264
+  },
+  {
+    "source": "Paddy (common)",
+    "file": "backend/v2/national_prices.py",
+    "line": 66
+  },
+  {
+    "source": "Raw cotton (kapas)",
+    "file": "backend/v2/national_prices.py",
+    "line": 66
   },
   {
     "source": "Notification not found",
@@ -1732,12 +1747,17 @@
   {
     "source": "Not found",
     "file": "backend/v2/worker_http.py",
-    "line": 73
+    "line": 68
+  },
+  {
+    "source": "Not found",
+    "file": "backend/v2/worker_http.py",
+    "line": 83
   },
   {
     "source": "Migration failed; schema unchanged or partially locked, retry",
     "file": "backend/v2/worker_http.py",
-    "line": 92
+    "line": 102
   },
   {
     "source": "Gridded model reanalysis, not a measurement at the farm.",

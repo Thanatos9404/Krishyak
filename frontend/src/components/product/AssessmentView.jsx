@@ -321,12 +321,21 @@ export function AssessmentView({ workspace: w }) {
                         v1: report.price.market,
                         v2: formatDate(report.price.date),
                       })
-                    : tx(
-                        "Price {{v0}}/quintal, the government MSP for 2025-26",
-                        {
-                          v0: rupees(report.price.per_quintal, language),
-                        },
-                      )}
+                    : report.price.source === "national_average"
+                      ? tx(
+                          "Price {{v0}}/quintal, the all-India average on {{v1}}. Your mandi can differ.",
+                          {
+                            v0: rupees(report.price.per_quintal, language),
+                            v1: formatDate(report.price.date),
+                          },
+                        )
+                      : tx(
+                          "Price {{v0}}/quintal, the government MSP for {{v1}}",
+                          {
+                            v0: rupees(report.price.per_quintal, language),
+                            v1: report.price.date,
+                          },
+                        )}
                 </p>
               </>
             ) : (
