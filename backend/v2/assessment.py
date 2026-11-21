@@ -21,6 +21,7 @@ from db.models import CropCycle, MarketPrice, utcnow
 from repositories.ownership import owned_plot
 from security import client_ip
 
+from . import national_prices
 from .agronomy import CROP_PLANS, SEASON_RAIN_MM, fertilizer_products, typical_soil
 from .climate import normals, outlook, plot_point
 from .crop_calendar import calendar_for
@@ -60,9 +61,16 @@ def planning_name(crop_id):
 
 
 def price_for(db, crop_id, state, district):
-    """Latest stored mandi modal price, else the government MSP, else nothing."""
+    """A recent local mandi price, else the all-India average, else an older local one, else the MSP."""
     row = BY_ID.get(crop_id) or {}
     commodity = row.get("market_commodity")
+    national = national_prices.latest(db, crop_id)
+    average = national and {
+        "per_quintal": national["per_quintal"],
+        "source": "national_average",
+        "market": None,
+        "date": national["date"],
+    }
     if commodity and state:
         quotes = db.scalars(
             select(MarketPrice)
@@ -75,7 +83,12 @@ def price_for(db, crop_id, state, district):
             .limit(30)
         ).all()
         local = [x for x in quotes if district and x.district.lower() == district.lower()]
-        best = (local or quotes or [None])[0]
+
+        def recent(rows):
+            # A mandi quote leads only when it is at least as recent as the all-India figure.
+            return [x for x in rows if not average or x.arrival_date.isoformat() >= average["date"]]
+
+        best = (recent(local) or recent(quotes) or ([] if average else local or quotes) or [None])[0]
         if best is not None:
             return {
                 "per_quintal": float(best.modal_price),
@@ -83,6 +96,8 @@ def price_for(db, crop_id, state, district):
                 "market": best.market,
                 "date": best.arrival_date.isoformat(),
             }
+    if average:
+        return average
     # The dated, source-linked support prices the MSP page serves (not a copy in code).
     from gov_api_service import MSP_DATA
 
@@ -256,6 +271,11 @@ async def build_report(request, db, *, crop_id, area, soil, soil_type, water, st
     candidates = [
         other for other, plan in CROP_PLANS.items() if plan[0] == season and other != crop_id and planning_name(other)
     ]
+
+    # Keep the stored all-India averages current; a failure only means an older figure is used.
+    await national_prices.refresh(
+        request.app.state.v2_farm_context.gateway, request.app.state.v2_database, request.app.state.v2_quotas
+    )
 
     def prices():
         # Off the event loop: the first query may wait for a pooled connection.

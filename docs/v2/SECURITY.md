@@ -103,3 +103,9 @@ per account. The usage statement and its CSV require the organiser role and
 a recent sign-in, return only rows that organiser created, and prefix any
 cell that starts with a formula character so a reference cannot execute in
 a spreadsheet. Downloads are recorded in the audit log.
+
+The all-India price table is fetched without any farmer data (only the
+dashboard name and the date), at most 48 times a day, parsed strictly and
+stored; a failed read is not retried for 30 minutes. Market-level reports on
+the same portal require a CAPTCHA and are never requested. The nightly price
+route answers 404 without the cron secret and returns counts only.

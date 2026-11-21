@@ -8,6 +8,12 @@ Two data.gov.in resources are combined:
 Every accepted quote is stored, so a trend is only ever computed inside one
 market/variety/grade series from dated observations. Nothing is interpolated;
 when there is no comparable earlier quote the trend is reported as unknown.
+
+When the farmer's mandis have nothing as recent, the all-India daily average
+from Agmarknet 2.0 (``national_prices``) is offered first and labelled as
+national. A nightly job (``/internal/prices``) stores the day's quotes for the
+crops and districts farmers actually have, so a daytime outage of the open
+data service still leaves dated prices to show.
 """
 
 import asyncio
@@ -24,6 +30,7 @@ from sqlalchemy.dialects.postgresql import insert
 from db.models import MarketFetch, MarketPrice, utcnow
 from security import client_ip
 
+from . import national_prices
 from .crops import BY_ID, BY_NAME
 from .farm_context.models import india_today
 from .farm_context.providers import number
@@ -286,6 +293,10 @@ async def prices(
     status = "available" if markets and live else "stale" if markets else "unavailable"
     if not key and not markets:
         status = "not_configured"
+    national = None
+    if row["id"] in national_prices.COMMODITIES:
+        providers["national"] = await national_prices.refresh(service.gateway, factory, quotas)
+        national = await run_in_threadpool(national_prices.read_latest, factory, row["id"])
     return {
         "status": status,
         "commodity": commodity,
@@ -294,14 +305,85 @@ async def prices(
         "scope": scope_level,
         "unit": "INR/quintal",
         "markets": markets,
+        # All-India average for the crop, and which figure to show first: a local quote
+        # leads only when it is at least as recent as the national one.
+        "national": national,
+        "lead": national_prices.lead(markets, national),
         "providers": providers,
         "retrieved_at": (previous.fetched_at.isoformat() if fresh and previous else utcnow().isoformat()),
         "sources": [
             {"name": "AGMARKNET current daily prices (data.gov.in)", "url": ENDPOINTS["ogd"]},
             {"name": "AGMARKNET variety-wise daily prices (data.gov.in)", "url": ENDPOINTS["ogd_history"]},
+            *([national_prices.SOURCE] if national else []),
         ],
         "limitations": [
             "Reported wholesale mandi prices; your actual offer depends on quality, quantity and buyer.",
             "A trend compares quotes from the same market, variety and grade only.",
+            *(
+                ["The all-India average covers every reporting mandi; your local price can differ a lot."]
+                if national
+                else []
+            ),
         ],
     }
+
+
+def farmer_scopes(factory, limit=40):
+    """(state, district, crop) of active crops, most farmers first."""
+    from sqlalchemy import func
+
+    from db.models import CropCycle, Farm, Farmer, Plot
+
+    with factory() as db:
+        rows = db.execute(
+            select(Farmer.state, Farmer.district, CropCycle.crop_id, func.count())
+            .join(Plot, CropCycle.plot_id == Plot.id)
+            .join(Farm, Plot.farm_id == Farm.id)
+            .join(Farmer, Farm.farmer_id == Farmer.id)
+            .where(CropCycle.status == "active", CropCycle.crop_id.is_not(None), Farmer.state.is_not(None))
+            .group_by(Farmer.state, Farmer.district, CropCycle.crop_id)
+            .order_by(func.count().desc())
+            .limit(limit * 3)
+        ).all()
+    scopes, seen = [], set()
+    for state, district, crop_id, _count in rows:
+        commodity = (BY_ID.get(crop_id) or {}).get("market_commodity")
+        key = (normalized_name(state), normalized_name(district or ""), commodity)
+        if commodity and state.strip() and key not in seen:
+            seen.add(key)
+            scopes.append((state.strip(), (district or "").strip() or None, commodity))
+    return scopes[:limit]
+
+
+async def refresh_scopes(app, seconds=40, concurrency=4):
+    """Store today's quotes for the crops and districts farmers have. Bounded in time and in provider calls."""
+    service, factory, quotas = app.state.v2_farm_context, app.state.v2_database, app.state.v2_quotas
+    outcome = {"national": await national_prices.refresh(service.gateway, factory, quotas, force=True)}
+    key = service.settings.ogd_key.get_secret_value()
+    scopes = await run_in_threadpool(farmer_scopes, factory) if key else []
+    outcome.update(scopes=len(scopes), refreshed=0, unavailable=0, skipped=0, quotes=0)
+    started, gate = asyncio.get_running_loop().time(), asyncio.Semaphore(concurrency)
+
+    async def one(state, district, commodity):
+        async with gate:
+            if asyncio.get_running_loop().time() - started > seconds:
+                outcome["skipped"] += 1
+                return
+            scope = scope_key(state, district, commodity)
+            previous = await run_in_threadpool(last_fetch, factory, scope)
+            if previous is not None and previous.status == "success" and utcnow() - previous.fetched_at < FRESH:
+                outcome["skipped"] += 1
+                return
+            try:
+                quotas.check("market_provider", "global", 2000, 86400)
+                rows, providers = await fetch(service.gateway, key, state, district, commodity)
+            except HTTPException:
+                outcome["skipped"] += 1
+                return
+            status = "success" if "success" in providers.values() else "unavailable"
+            await run_in_threadpool(store, factory, scope, rows, status)
+            outcome["refreshed" if status == "success" else "unavailable"] += 1
+            outcome["quotes"] += len(rows)
+
+    await asyncio.gather(*(one(*scope) for scope in scopes))
+    return outcome

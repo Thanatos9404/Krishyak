@@ -1,6 +1,6 @@
 {
   "extractor": "Babel AST; literals, JSX text, positional template placeholders",
-  "source_strings": 2785,
+  "source_strings": 2799,
   "strings": [
     {
       "source": ". Interval composites may contain several acquisitions; exact contributing dates are not independently verified.",
@@ -41,7 +41,7 @@
       "references": [
         {
           "file": "src/components/product/MarketView.jsx",
-          "line": 306,
+          "line": 427,
           "kind": "literal"
         }
       ]
@@ -63,7 +63,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 271,
+          "line": 273,
           "kind": "literal"
         }
       ]
@@ -96,7 +96,7 @@
       "references": [
         {
           "file": "src/components/product/MarketView.jsx",
-          "line": 317,
+          "line": 438,
           "kind": "literal"
         }
       ]
@@ -261,7 +261,7 @@
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 442,
+          "line": 451,
           "kind": "literal"
         }
       ]
@@ -349,7 +349,7 @@
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 437,
+          "line": 446,
           "kind": "literal"
         }
       ]
@@ -360,12 +360,12 @@
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 347,
+          "line": 356,
           "kind": "literal"
         },
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 354,
+          "line": 363,
           "kind": "literal"
         }
       ]
@@ -437,12 +437,23 @@
       ]
     },
     {
+      "source": "{{v0}} price across India",
+      "sha256": "567c961f298b339fa081ed356d13c9d03066d438dae9fb97aa92fbbe60c3e720",
+      "references": [
+        {
+          "file": "src/components/product/TodayView.jsx",
+          "line": 54,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "{{v0}} price near you",
       "sha256": "338959c8ccfedd6bcae84db0ee7e0e234510781ec0d3cc2242ec3b5e27531d67",
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 53,
+          "line": 55,
           "kind": "literal"
         }
       ]
@@ -453,12 +464,12 @@
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 488,
+          "line": 497,
           "kind": "literal"
         },
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 504,
+          "line": 513,
           "kind": "literal"
         }
       ]
@@ -540,7 +551,12 @@
       "references": [
         {
           "file": "src/components/product/MarketView.jsx",
-          "line": 185,
+          "line": 186,
+          "kind": "literal"
+        },
+        {
+          "file": "src/components/product/MarketView.jsx",
+          "line": 283,
           "kind": "literal"
         }
       ]
@@ -551,7 +567,12 @@
       "references": [
         {
           "file": "src/components/product/MarketView.jsx",
-          "line": 192,
+          "line": 190,
+          "kind": "literal"
+        },
+        {
+          "file": "src/components/product/MarketView.jsx",
+          "line": 290,
           "kind": "literal"
         }
       ]
@@ -574,6 +595,17 @@
         {
           "file": "src/components/product/FarmSetupView.jsx",
           "line": 920,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "{{v0}}% since the day before",
+      "sha256": "e5e672d70b2ef27c5f78df1a7e6a3c7facaad8370dcd7d4704867c775627b509",
+      "references": [
+        {
+          "file": "src/components/product/MarketView.jsx",
+          "line": 165,
           "kind": "literal"
         }
       ]
@@ -731,7 +763,7 @@
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 436,
+          "line": 445,
           "kind": "literal"
         }
       ]
@@ -901,7 +933,7 @@
       "references": [
         {
           "file": "backend/v2/market.py",
-          "line": 305,
+          "line": 321,
           "kind": "server"
         }
       ]
@@ -945,7 +977,12 @@
       "references": [
         {
           "file": "src/components/product/MarketView.jsx",
-          "line": 171,
+          "line": 155,
+          "kind": "literal"
+        },
+        {
+          "file": "src/components/product/MarketView.jsx",
+          "line": 269,
           "kind": "literal"
         }
       ]
@@ -956,7 +993,7 @@
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 361,
+          "line": 370,
           "kind": "literal"
         }
       ]
@@ -1348,7 +1385,7 @@
       "references": [
         {
           "file": "backend/v2/assessment.py",
-          "line": 445,
+          "line": 465,
           "kind": "server"
         }
       ]
@@ -1436,7 +1473,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 259,
+          "line": 261,
           "kind": "literal"
         }
       ]
@@ -1513,7 +1550,7 @@
       "references": [
         {
           "file": "backend/v2/assessment.py",
-          "line": 448,
+          "line": 468,
           "kind": "server"
         }
       ]
@@ -1568,7 +1605,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 59,
+          "line": 61,
           "kind": "literal"
         }
       ]
@@ -1832,7 +1869,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 64,
+          "line": 66,
           "kind": "literal"
         }
       ]
@@ -1855,6 +1892,39 @@
         {
           "file": "src/components/product/SettingsView.jsx",
           "line": 186,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "All-India average",
+      "sha256": "def0df493012bcc90d86da89899edf6395b418051c571cbf932e2b57d4ee9758",
+      "references": [
+        {
+          "file": "src/components/product/MarketView.jsx",
+          "line": 147,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "All-India average on {{v0}}. A local mandi can differ.",
+      "sha256": "cce64b5ea4896f8ca6f7df834b17aa9085dfbe7bc3b7ac3eacf64b5b94259f22",
+      "references": [
+        {
+          "file": "src/features/product/DemoApp.jsx",
+          "line": 124,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "All-India average price",
+      "sha256": "d97a43355aae42b8b26c2e44eb20a285b17465378bf54bc9326b3ca07e0f9ff0",
+      "references": [
+        {
+          "file": "src/components/product/MarketView.jsx",
+          "line": 144,
           "kind": "literal"
         }
       ]
@@ -2710,7 +2780,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 115,
+          "line": 117,
           "kind": "literal"
         }
       ]
@@ -2827,6 +2897,17 @@
           "file": "backend/v2/pilots.py",
           "line": 127,
           "kind": "server"
+        }
+      ]
+    },
+    {
+      "source": "Average of all reporting mandis in India, not your local mandi. Your price can be quite different.",
+      "sha256": "379f1f17596d4192ea6d1c5cb75936db812e496a6db37a806285b26d945448e5",
+      "references": [
+        {
+          "file": "src/components/product/MarketView.jsx",
+          "line": 179,
+          "kind": "literal"
         }
       ]
     },
@@ -4370,7 +4451,7 @@
       "references": [
         {
           "file": "backend/v2/farm_context/transport.py",
-          "line": 172,
+          "line": 174,
           "kind": "server"
         }
       ]
@@ -4413,7 +4494,7 @@
         },
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 98,
+          "line": 100,
           "kind": "literal"
         }
       ]
@@ -4424,7 +4505,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 76,
+          "line": 78,
           "kind": "literal"
         }
       ]
@@ -4758,7 +4839,7 @@
         },
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 78,
+          "line": 80,
           "kind": "literal"
         },
         {
@@ -4779,7 +4860,7 @@
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 423,
+          "line": 432,
           "kind": "literal"
         }
       ]
@@ -4958,7 +5039,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 391,
+          "line": 393,
           "kind": "literal"
         }
       ]
@@ -4991,7 +5072,7 @@
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 562,
+          "line": 571,
           "kind": "literal"
         }
       ]
@@ -5332,7 +5413,7 @@
       "references": [
         {
           "file": "backend/v2/market.py",
-          "line": 257,
+          "line": 264,
           "kind": "server"
         }
       ]
@@ -5541,7 +5622,7 @@
       "references": [
         {
           "file": "src/components/product/MarketView.jsx",
-          "line": 295,
+          "line": 416,
           "kind": "literal"
         }
       ]
@@ -6297,7 +6378,7 @@
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 523,
+          "line": 532,
           "kind": "literal"
         }
       ]
@@ -6363,7 +6444,7 @@
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 476,
+          "line": 485,
           "kind": "literal"
         },
         {
@@ -6611,12 +6692,12 @@
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 468,
+          "line": 477,
           "kind": "literal"
         },
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 472,
+          "line": 481,
           "kind": "literal"
         }
       ]
@@ -8726,7 +8807,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 171,
+          "line": 173,
           "kind": "literal"
         }
       ]
@@ -9032,7 +9113,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 313,
+          "line": 315,
           "kind": "literal"
         }
       ]
@@ -9300,7 +9381,7 @@
       "references": [
         {
           "file": "src/components/product/MarketView.jsx",
-          "line": 128,
+          "line": 206,
           "kind": "literal"
         }
       ]
@@ -9657,7 +9738,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 188,
+          "line": 190,
           "kind": "literal"
         }
       ]
@@ -9723,7 +9804,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 99,
+          "line": 101,
           "kind": "literal"
         }
       ]
@@ -10214,7 +10295,7 @@
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 378,
+          "line": 387,
           "kind": "literal"
         }
       ]
@@ -10613,7 +10694,7 @@
         },
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 91,
+          "line": 93,
           "kind": "literal"
         },
         {
@@ -10634,7 +10715,7 @@
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 537,
+          "line": 546,
           "kind": "literal"
         }
       ]
@@ -10656,7 +10737,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 122,
+          "line": 127,
           "kind": "literal"
         }
       ]
@@ -10667,7 +10748,7 @@
       "references": [
         {
           "file": "src/components/product/MarketView.jsx",
-          "line": 301,
+          "line": 422,
           "kind": "literal"
         }
       ]
@@ -11068,7 +11149,7 @@
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 477,
+          "line": 486,
           "kind": "literal"
         },
         {
@@ -11183,7 +11264,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 77,
+          "line": 79,
           "kind": "literal"
         }
       ]
@@ -11363,7 +11444,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 176,
+          "line": 178,
           "kind": "literal"
         }
       ]
@@ -11615,7 +11696,7 @@
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 567,
+          "line": 576,
           "kind": "literal"
         }
       ]
@@ -12000,7 +12081,7 @@
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 370,
+          "line": 379,
           "kind": "literal"
         }
       ]
@@ -12099,7 +12180,7 @@
       "references": [
         {
           "file": "src/components/product/MarketView.jsx",
-          "line": 117,
+          "line": 120,
           "kind": "literal"
         },
         {
@@ -13267,7 +13348,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 80,
+          "line": 82,
           "kind": "literal"
         }
       ]
@@ -13566,7 +13647,7 @@
         },
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 458,
+          "line": 467,
           "kind": "literal"
         }
       ]
@@ -14246,7 +14327,7 @@
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 515,
+          "line": 524,
           "kind": "literal"
         }
       ]
@@ -14523,6 +14604,17 @@
           "file": "backend/v2/crop_calendar.py",
           "line": 37,
           "kind": "server"
+        }
+      ]
+    },
+    {
+      "source": "Last price from your area, {{v0}}",
+      "sha256": "43972d91ae423554776ebe7373acd2e623838ba3c59f0f457321cd226e7ebba3",
+      "references": [
+        {
+          "file": "src/components/product/MarketView.jsx",
+          "line": 251,
+          "kind": "literal"
         }
       ]
     },
@@ -14829,7 +14921,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 177,
+          "line": 179,
           "kind": "literal"
         }
       ]
@@ -15086,7 +15178,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 284,
+          "line": 286,
           "kind": "literal"
         }
       ]
@@ -15889,7 +15981,7 @@
       "references": [
         {
           "file": "src/components/product/MarketView.jsx",
-          "line": 259,
+          "line": 380,
           "kind": "literal"
         },
         {
@@ -15899,7 +15991,7 @@
         },
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 79,
+          "line": 81,
           "kind": "literal"
         }
       ]
@@ -15910,7 +16002,7 @@
       "references": [
         {
           "file": "src/components/product/MarketView.jsx",
-          "line": 139,
+          "line": 221,
           "kind": "literal"
         }
       ]
@@ -16052,7 +16144,7 @@
         },
         {
           "file": "backend/v2/assessment.py",
-          "line": 309,
+          "line": 329,
           "kind": "server"
         }
       ]
@@ -16151,7 +16243,7 @@
       "references": [
         {
           "file": "backend/v2/market.py",
-          "line": 252,
+          "line": 259,
           "kind": "server"
         }
       ]
@@ -16426,7 +16518,7 @@
       "references": [
         {
           "file": "backend/v2/worker_http.py",
-          "line": 92,
+          "line": 102,
           "kind": "server"
         }
       ]
@@ -16925,7 +17017,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 77,
+          "line": 79,
           "kind": "literal"
         }
       ]
@@ -17117,7 +17209,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 170,
+          "line": 172,
           "kind": "literal"
         }
       ]
@@ -17353,7 +17445,7 @@
       "references": [
         {
           "file": "src/components/product/MarketView.jsx",
-          "line": 163,
+          "line": 261,
           "kind": "literal"
         }
       ]
@@ -17714,7 +17806,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 251,
+          "line": 253,
           "kind": "literal"
         }
       ]
@@ -17835,6 +17927,17 @@
       ]
     },
     {
+      "source": "No mandi in your area has a saved price for this crop from the last 30 days.",
+      "sha256": "3bc4dcb39d51843acf8526e56528d86e2ad953e94a2c22332cec624ead837c4f",
+      "references": [
+        {
+          "file": "src/components/product/MarketView.jsx",
+          "line": 224,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "No mandi or support price is available for this crop near you today, so profit is not estimated.",
       "sha256": "e3e7718a87500394d5127a6f5e5525e9e0432bbddb29c250b709a81630d46729",
       "references": [
@@ -17851,7 +17954,7 @@
       "references": [
         {
           "file": "src/components/product/MarketView.jsx",
-          "line": 141,
+          "line": 227,
           "kind": "literal"
         }
       ]
@@ -17884,7 +17987,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 310,
+          "line": 312,
           "kind": "literal"
         }
       ]
@@ -17895,7 +17998,7 @@
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 456,
+          "line": 465,
           "kind": "literal"
         }
       ]
@@ -17950,7 +18053,7 @@
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 495,
+          "line": 504,
           "kind": "literal"
         }
       ]
@@ -17961,7 +18064,7 @@
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 333,
+          "line": 342,
           "kind": "literal"
         }
       ]
@@ -18269,7 +18372,7 @@
       "references": [
         {
           "file": "src/components/product/MarketView.jsx",
-          "line": 60,
+          "line": 61,
           "kind": "literal"
         }
       ]
@@ -18285,7 +18388,12 @@
         },
         {
           "file": "backend/v2/worker_http.py",
-          "line": 73,
+          "line": 68,
+          "kind": "server"
+        },
+        {
+          "file": "backend/v2/worker_http.py",
+          "line": 83,
           "kind": "server"
         }
       ]
@@ -18388,7 +18496,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 80,
+          "line": 82,
           "kind": "literal"
         },
         {
@@ -18497,7 +18605,7 @@
         },
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 379,
+          "line": 381,
           "kind": "literal"
         }
       ]
@@ -18541,7 +18649,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 92,
+          "line": 94,
           "kind": "literal"
         }
       ]
@@ -18585,7 +18693,7 @@
       "references": [
         {
           "file": "src/components/product/MarketView.jsx",
-          "line": 303,
+          "line": 424,
           "kind": "literal"
         }
       ]
@@ -18601,7 +18709,7 @@
         },
         {
           "file": "src/components/product/MarketView.jsx",
-          "line": 328,
+          "line": 449,
           "kind": "literal"
         }
       ]
@@ -18623,7 +18731,7 @@
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 553,
+          "line": 562,
           "kind": "literal"
         }
       ]
@@ -18950,7 +19058,7 @@
         },
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 60,
+          "line": 62,
           "kind": "literal"
         }
       ]
@@ -19300,7 +19408,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 195,
+          "line": 197,
           "kind": "literal"
         }
       ]
@@ -19393,8 +19501,19 @@
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 389,
+          "line": 398,
           "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Paddy (common)",
+      "sha256": "8970ba421535d99a3f2299c8eb156b7894451773925bb6200fe0882df33b43cc",
+      "references": [
+        {
+          "file": "backend/v2/national_prices.py",
+          "line": 66,
+          "kind": "server"
         }
       ]
     },
@@ -19822,7 +19941,12 @@
       "references": [
         {
           "file": "src/components/product/MarketView.jsx",
-          "line": 168,
+          "line": 152,
+          "kind": "literal"
+        },
+        {
+          "file": "src/components/product/MarketView.jsx",
+          "line": 266,
           "kind": "literal"
         },
         {
@@ -19931,7 +20055,7 @@
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 414,
+          "line": 423,
           "kind": "literal"
         }
       ]
@@ -20095,7 +20219,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 78,
+          "line": 80,
           "kind": "literal"
         }
       ]
@@ -20226,7 +20350,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 85,
+          "line": 87,
           "kind": "literal"
         }
       ]
@@ -20811,12 +20935,23 @@
       ]
     },
     {
-      "source": "Price {{v0}}/quintal, the government MSP for 2025-26",
-      "sha256": "c3c3bd8cdd7dc263bb0e572ea15a72b7be38a628da7d5efde34baebec657b4c5",
+      "source": "Price {{v0}}/quintal, the all-India average on {{v1}}. Your mandi can differ.",
+      "sha256": "6bff4ba267acca04a3bd26c4719805656162e2ab6828f14d3ab22d410076cd8c",
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 325,
+          "line": 326,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Price {{v0}}/quintal, the government MSP for {{v1}}",
+      "sha256": "2149fba3f0a02d99048192dd017cdbd52a9748f48b83fc565d9c3916c01deccf",
+      "references": [
+        {
+          "file": "src/components/product/AssessmentView.jsx",
+          "line": 333,
           "kind": "literal"
         }
       ]
@@ -20849,7 +20984,7 @@
       "references": [
         {
           "file": "src/components/product/MarketView.jsx",
-          "line": 231,
+          "line": 333,
           "kind": "literal"
         }
       ]
@@ -21040,7 +21175,7 @@
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 478,
+          "line": 487,
           "kind": "literal"
         }
       ]
@@ -21450,7 +21585,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 209,
+          "line": 211,
           "kind": "literal"
         }
       ]
@@ -21493,7 +21628,7 @@
         },
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 458,
+          "line": 467,
           "kind": "literal"
         }
       ]
@@ -21636,7 +21771,7 @@
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 364,
+          "line": 373,
           "kind": "literal"
         }
       ]
@@ -21906,6 +22041,17 @@
       ]
     },
     {
+      "source": "Raw cotton (kapas)",
+      "sha256": "400a622e8ad6e9dc76ef81041499071273fd84f9f71057c2c0013a1a67893042",
+      "references": [
+        {
+          "file": "backend/v2/national_prices.py",
+          "line": 66,
+          "kind": "server"
+        }
+      ]
+    },
+    {
       "source": "Raw model score:",
       "sha256": "f4b52a312154ad2c5b6f50824913d26a47cb9623f79ad03d727a4bc58935ca51",
       "references": [
@@ -21993,7 +22139,7 @@
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 368,
+          "line": 377,
           "kind": "literal"
         }
       ]
@@ -22015,7 +22161,7 @@
       "references": [
         {
           "file": "src/components/product/MarketView.jsx",
-          "line": 262,
+          "line": 383,
           "kind": "literal"
         }
       ]
@@ -22157,7 +22303,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 192,
+          "line": 194,
           "kind": "literal"
         },
         {
@@ -22167,7 +22313,7 @@
         },
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 136,
+          "line": 141,
           "kind": "literal"
         }
       ]
@@ -22183,7 +22329,7 @@
         },
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 185,
+          "line": 187,
           "kind": "literal"
         }
       ]
@@ -22205,7 +22351,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 132,
+          "line": 137,
           "kind": "literal"
         }
       ]
@@ -22689,7 +22835,7 @@
         },
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 84,
+          "line": 86,
           "kind": "literal"
         }
       ]
@@ -22722,7 +22868,12 @@
       "references": [
         {
           "file": "src/components/product/MarketView.jsx",
-          "line": 177,
+          "line": 158,
+          "kind": "literal"
+        },
+        {
+          "file": "src/components/product/MarketView.jsx",
+          "line": 275,
           "kind": "literal"
         }
       ]
@@ -22744,7 +22895,7 @@
       "references": [
         {
           "file": "src/components/product/MarketView.jsx",
-          "line": 176,
+          "line": 274,
           "kind": "literal"
         }
       ]
@@ -22755,7 +22906,7 @@
       "references": [
         {
           "file": "backend/v2/market.py",
-          "line": 304,
+          "line": 320,
           "kind": "server"
         }
       ]
@@ -23001,7 +23152,7 @@
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 479,
+          "line": 488,
           "kind": "literal"
         },
         {
@@ -23022,7 +23173,7 @@
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 387,
+          "line": 396,
           "kind": "literal"
         }
       ]
@@ -23797,7 +23948,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 268,
+          "line": 270,
           "kind": "literal"
         },
         {
@@ -23824,7 +23975,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 279,
+          "line": 281,
           "kind": "literal"
         }
       ]
@@ -24026,7 +24177,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 320,
+          "line": 322,
           "kind": "literal"
         }
       ]
@@ -24070,7 +24221,7 @@
       "references": [
         {
           "file": "src/features/product/DemoApp.jsx",
-          "line": 129,
+          "line": 134,
           "kind": "literal"
         }
       ]
@@ -24103,7 +24254,7 @@
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 346,
+          "line": 355,
           "kind": "literal"
         }
       ]
@@ -24694,7 +24845,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 76,
+          "line": 78,
           "kind": "literal"
         }
       ]
@@ -24705,7 +24856,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 320,
+          "line": 322,
           "kind": "literal"
         }
       ]
@@ -24738,7 +24889,7 @@
       "references": [
         {
           "file": "src/components/product/MarketView.jsx",
-          "line": 290,
+          "line": 411,
           "kind": "literal"
         }
       ]
@@ -25401,7 +25552,7 @@
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 577,
+          "line": 586,
           "kind": "literal"
         }
       ]
@@ -25412,7 +25563,7 @@
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 581,
+          "line": 590,
           "kind": "literal"
         }
       ]
@@ -25423,7 +25574,7 @@
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 583,
+          "line": 592,
           "kind": "literal"
         }
       ]
@@ -25582,7 +25733,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 329,
+          "line": 331,
           "kind": "literal"
         }
       ]
@@ -25593,7 +25744,7 @@
       "references": [
         {
           "file": "src/components/product/MarketView.jsx",
-          "line": 221,
+          "line": 323,
           "kind": "literal"
         },
         {
@@ -25843,7 +25994,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 255,
+          "line": 257,
           "kind": "literal"
         }
       ]
@@ -25876,7 +26027,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 117,
+          "line": 119,
           "kind": "literal"
         }
       ]
@@ -26180,7 +26331,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 257,
+          "line": 259,
           "kind": "literal"
         }
       ]
@@ -26334,12 +26485,34 @@
       ]
     },
     {
+      "source": "Steady over a week",
+      "sha256": "9a69b528bb0372c997613c2ba86d8c9f6d7fc07006533c8edac63a073cd73e1f",
+      "references": [
+        {
+          "file": "src/components/product/MarketView.jsx",
+          "line": 81,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
       "source": "Steady over a week ({{v0}}%)",
       "sha256": "6421443cc1f3a6fe232d296748613256fb2aebf0a47445e01c218dd7eebde97f",
       "references": [
         {
           "file": "src/components/product/MarketView.jsx",
-          "line": 78,
+          "line": 82,
+          "kind": "literal"
+        }
+      ]
+    },
+    {
+      "source": "Steady since the day before",
+      "sha256": "11f921f7d9d55f6993fa065c738fcb4df6a557d7bde82ac0d0854214614b0627",
+      "references": [
+        {
+          "file": "src/components/product/MarketView.jsx",
+          "line": 164,
           "kind": "literal"
         }
       ]
@@ -26886,7 +27059,7 @@
         },
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 136,
+          "line": 138,
           "kind": "literal"
         },
         {
@@ -27065,7 +27238,7 @@
       "references": [
         {
           "file": "backend/v2/assessment.py",
-          "line": 452,
+          "line": 472,
           "kind": "server"
         }
       ]
@@ -27207,6 +27380,17 @@
       ]
     },
     {
+      "source": "The all-India average covers every reporting mandi; your local price can differ a lot.",
+      "sha256": "fd7c1afde8896d37e1a795ed83f9fef67735831a2a401628814f8cfec00c9994",
+      "references": [
+        {
+          "file": "backend/v2/market.py",
+          "line": 323,
+          "kind": "server"
+        }
+      ]
+    },
+    {
       "source": "The assistant returned an empty answer",
       "sha256": "329b791b3be10aab181ff811affe8548c7b0ae7b76566594ba289554cf40f10d",
       "references": [
@@ -27333,7 +27517,7 @@
       "references": [
         {
           "file": "backend/v2/assessment.py",
-          "line": 501,
+          "line": 521,
           "kind": "server"
         }
       ]
@@ -27520,7 +27704,7 @@
       "references": [
         {
           "file": "src/components/product/MarketView.jsx",
-          "line": 155,
+          "line": 242,
           "kind": "literal"
         }
       ]
@@ -27860,7 +28044,7 @@
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 570,
+          "line": 579,
           "kind": "literal"
         }
       ]
@@ -28310,7 +28494,7 @@
       "references": [
         {
           "file": "backend/v2/farm_context/transport.py",
-          "line": 186,
+          "line": 188,
           "kind": "server"
         }
       ]
@@ -28563,7 +28747,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 79,
+          "line": 81,
           "kind": "literal"
         }
       ]
@@ -28667,7 +28851,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 121,
+          "line": 123,
           "kind": "literal"
         },
         {
@@ -29951,7 +30135,7 @@
       "references": [
         {
           "file": "src/components/product/MarketView.jsx",
-          "line": 310,
+          "line": 431,
           "kind": "literal"
         }
       ]
@@ -29973,7 +30157,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 263,
+          "line": 265,
           "kind": "literal"
         }
       ]
@@ -29984,7 +30168,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 395,
+          "line": 397,
           "kind": "literal"
         }
       ]
@@ -30500,7 +30684,7 @@
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 358,
+          "line": 367,
           "kind": "literal"
         }
       ]
@@ -30959,7 +31143,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 277,
+          "line": 279,
           "kind": "literal"
         }
       ]
@@ -30970,7 +31154,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 383,
+          "line": 385,
           "kind": "literal"
         }
       ]
@@ -31041,7 +31225,7 @@
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 342,
+          "line": 351,
           "kind": "literal"
         }
       ]
@@ -31118,7 +31302,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 375,
+          "line": 377,
           "kind": "literal"
         }
       ]
@@ -31173,7 +31357,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 367,
+          "line": 369,
           "kind": "literal"
         }
       ]
@@ -31184,7 +31368,7 @@
       "references": [
         {
           "file": "src/components/product/TodayView.jsx",
-          "line": 299,
+          "line": 301,
           "kind": "literal"
         }
       ]
@@ -31326,7 +31510,7 @@
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 592,
+          "line": 601,
           "kind": "literal"
         }
       ]
@@ -32286,7 +32470,7 @@
       "references": [
         {
           "file": "src/components/product/AssessmentView.jsx",
-          "line": 485,
+          "line": 494,
           "kind": "literal"
         }
       ]

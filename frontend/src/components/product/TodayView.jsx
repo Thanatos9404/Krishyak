@@ -50,7 +50,9 @@ function PriceGlance({ w, cycle }) {
     <section className="product-card glance" aria-labelledby="price-heading">
       <h2 id="price-heading">
         <Store size={22} aria-hidden="true" />{" "}
-        {tx("{{v0}} price near you", { v0: cropLabel(cycle, tx) })}
+        {result.lead === "national"
+          ? tx("{{v0}} price across India", { v0: cropLabel(cycle, tx) })
+          : tx("{{v0}} price near you", { v0: cropLabel(cycle, tx) })}
       </h2>
       {place.state ? (
         <MarketPrices result={result} crop={cycle.crop_id} compact />

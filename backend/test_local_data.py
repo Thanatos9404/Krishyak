@@ -72,6 +72,7 @@ class FakeGateway:
         self.quotas = SimpleNamespace(redis=None)
         self.calls = []
         self.failing = set()
+        self.national = None
 
     async def read(self, provider, params, **options):
         self.calls.append(provider)
@@ -84,6 +85,10 @@ class FakeGateway:
             start, end = date.fromisoformat(params["start_date"]), date.fromisoformat(params["end_date"])
             # 10 mm on every July day, 1 mm on every January day, dry otherwise.
             return archive_payload(start, end, lambda d: 10.0 if d.month == 7 else 1.0 if d.month == 1 else 0.0)
+        if provider == "agmarknet_national":
+            if self.national is None:
+                raise Unavailable()
+            return self.national
         if provider == "nominatim":
             return {
                 "address": {
@@ -439,6 +444,52 @@ class RegistrationAndReportTests(unittest.TestCase):
         self.assertEqual((price["source"], price["per_quintal"]), ("msp", float(entry["msp"])))
         self.assertEqual(price["date"], entry["year"])
         self.assertTrue(price["source_url"].startswith("https://"))
+
+    def test_with_no_recent_mandi_quote_the_report_uses_the_all_india_average(self):
+        reported = india_today() - timedelta(days=1)
+        self.gateway.national = {
+            "data": {
+                "records": [
+                    {
+                        "cmdt_name": "Wheat",
+                        "reported_date": reported.strftime("%d-%m-%Y"),
+                        "as_on_price": "2818.46",
+                        "one_day_ago_price": "2799.92",
+                        "two_day_ago_price": "2791.74",
+                    }
+                ]
+            }
+        }
+        self.allow("agronomic_analysis")
+        plot = self.wheat_field()
+        price = self.client.get(f"/api/v2/plots/{plot['id']}/assessment").json()["price"]
+        self.assertEqual(
+            price, {"per_quintal": 2818.46, "source": "national_average", "market": None, "date": reported.isoformat()}
+        )
+        # An older local quote does not displace it; a quote from the same day or later does.
+        from db.models import MarketPrice
+
+        def quote(days_ago, value):
+            return MarketPrice(
+                arrival_date=india_today() - timedelta(days=days_ago),
+                state="Rajasthan",
+                district="Jaipur",
+                market="Chomu",
+                commodity="Wheat",
+                variety="Other",
+                grade="FAQ",
+                modal_price=value,
+                source_resource="test",
+            )
+
+        with self.factory.begin() as db:
+            db.add(quote(5, 2500))
+        older = self.client.post(f"/api/v2/plots/{plot['id']}/assessment").json()["price"]
+        self.assertEqual(older["source"], "national_average")
+        with self.factory.begin() as db:
+            db.add(quote(0, 2700))
+        fresh = self.client.post(f"/api/v2/plots/{plot['id']}/assessment").json()["price"]
+        self.assertEqual((fresh["source"], fresh["per_quintal"], fresh["market"]), ("mandi", 2700.0, "Chomu"))
 
     def test_a_crop_with_no_price_gets_a_harvest_but_no_invented_money(self):
         self.allow("agronomic_analysis")

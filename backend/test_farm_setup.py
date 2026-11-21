@@ -146,6 +146,10 @@ class SetupAndAssessmentEndpointTests(unittest.TestCase):
             for table in reversed(Base.metadata.sorted_tables):
                 db.execute(delete(table))
         self.app.state.v2_quotas.local.clear()
+        # No test in this class may reach a real provider; those that need one patch it themselves.
+        offline = patch.object(self.app.state.v2_farm_context.gateway, "read", side_effect=Unavailable())
+        offline.start()
+        self.addCleanup(offline.stop)
         self.a = TestClient(self.app)
         self.a.headers["Origin"] = ORIGIN
         challenge = self.a.post("/api/v2/auth/request-otp", json={"mobile": "+919000000001"}).json()
