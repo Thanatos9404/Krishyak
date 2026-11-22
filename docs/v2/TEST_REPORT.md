@@ -226,3 +226,21 @@ stayed up), which left the app with stored quotes only.
 Also fixed: the market screen opened without the farmer's crop and place
 when those loaded after the screen, so no price showed until a crop was
 picked; and the field report named a fixed support-price year.
+
+### Dropped connections through the frontend, 22 November 2026
+
+Two staging runs of this change failed for a reason outside it: once the
+browser's `GET /api/v2/plots` got no answer for 20 seconds although the API
+had answered in 1.3 seconds, and once a request was reset before any answer.
+A sample of 40 small requests to production through the frontend lost 1
+(and several took more than 5 seconds); 40 sent straight to the API lost
+none; a later sample of 120 through the frontend lost none. The frontend's
+logs show only successful forwards, so the loss is between Vercel's edge
+and the forwarded request, and it comes in bursts.
+
+| Gate | Recorded result | Scope |
+|---|---|---|
+| Frontend unit | 409 passed, 65 suites | A read with no answer is sent again after 8 seconds; a broken read is sent again at once and succeeds silently; a read with a longer wait set by the caller is not repeated on timeout; a write is never sent twice; nothing is retried offline; a cancelled read is never repeated |
+| Staging | `e2e/staging.spec.js` 9 of 9 | Sign-up, weather, leaf photo, satellite job, market page, voice, registration, calendar and claim pack, Krishyak Live |
+| Staging prices | Wheat in Jaipur: Bassi APMC quote of 21 November leads, all-India average of 20 November below. Soybean and rice: all-India average leads. Apple: local quotes only | Checked against the Agmarknet table read directly on the same day |
+| Nightly job | 404 without the secret, 200 with it | Counts only in the answer |
