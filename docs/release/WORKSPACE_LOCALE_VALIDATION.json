@@ -1,5 +1,5 @@
 {
-  "source_sha256": "5655395ec36d6eb7234b89e841ff3475ac357278f94187d20a340de9bb91fbad",
+  "source_sha256": "5ea02069bb1b7c6aae3273a09a93e192c1b9d5a3031553cd21644c808f3abb1f",
   "languages_checked": [
     "hi",
     "ur",
@@ -27,8 +27,8 @@
   "results": [
     {
       "language": "hi",
-      "strings": 2785,
-      "bytes": 344762,
+      "strings": 2799,
+      "bytes": 347046,
       "script_letter_fraction": 0.9762,
       "unchanged_english_labels": [
         "{{v0}} kg"
@@ -39,9 +39,9 @@
     },
     {
       "language": "ur",
-      "strings": 2785,
-      "bytes": 273463,
-      "script_letter_fraction": 0.9838,
+      "strings": 2799,
+      "bytes": 275252,
+      "script_letter_fraction": 0.9839,
       "unchanged_english_labels": [
         "{{v0}} kg"
       ],
@@ -51,8 +51,8 @@
     },
     {
       "language": "gu",
-      "strings": 2785,
-      "bytes": 335367,
+      "strings": 2799,
+      "bytes": 337615,
       "script_letter_fraction": 0.9719,
       "unchanged_english_labels": [
         "{{v0}} kg"
@@ -63,8 +63,8 @@
     },
     {
       "language": "bn",
-      "strings": 2785,
-      "bytes": 356822,
+      "strings": 2799,
+      "bytes": 359008,
       "script_letter_fraction": 0.9726,
       "unchanged_english_labels": [
         "{{v0}} kg",
@@ -76,9 +76,9 @@
     },
     {
       "language": "mr",
-      "strings": 2785,
-      "bytes": 342092,
-      "script_letter_fraction": 0.9687,
+      "strings": 2799,
+      "bytes": 344495,
+      "script_letter_fraction": 0.9688,
       "unchanged_english_labels": [
         "{{v0}} kg"
       ],
@@ -88,8 +88,8 @@
     },
     {
       "language": "kn",
-      "strings": 2785,
-      "bytes": 370989,
+      "strings": 2799,
+      "bytes": 373351,
       "script_letter_fraction": 0.9772,
       "unchanged_english_labels": [
         "{{v0}} kg"
@@ -100,9 +100,9 @@
     },
     {
       "language": "ta",
-      "strings": 2785,
-      "bytes": 407749,
-      "script_letter_fraction": 0.9794,
+      "strings": 2799,
+      "bytes": 410331,
+      "script_letter_fraction": 0.9795,
       "unchanged_english_labels": [
         "{{v0}} kg"
       ],
@@ -112,8 +112,8 @@
     },
     {
       "language": "te",
-      "strings": 2785,
-      "bytes": 367045,
+      "strings": 2799,
+      "bytes": 369255,
       "script_letter_fraction": 0.9748,
       "unchanged_english_labels": [
         "{{v0}} kg"
@@ -124,8 +124,8 @@
     },
     {
       "language": "ml",
-      "strings": 2785,
-      "bytes": 396914,
+      "strings": 2799,
+      "bytes": 399453,
       "script_letter_fraction": 0.9774,
       "unchanged_english_labels": [
         "{{v0}} kg"
@@ -136,8 +136,8 @@
     },
     {
       "language": "pa",
-      "strings": 2785,
-      "bytes": 344751,
+      "strings": 2799,
+      "bytes": 346962,
       "script_letter_fraction": 0.9737,
       "unchanged_english_labels": [
         "{{v0}} kg"
@@ -148,8 +148,8 @@
     },
     {
       "language": "as",
-      "strings": 2785,
-      "bytes": 350417,
+      "strings": 2799,
+      "bytes": 352676,
       "script_letter_fraction": 0.9743,
       "unchanged_english_labels": [
         "{{v0}} kg",
@@ -162,8 +162,8 @@
     },
     {
       "language": "brx",
-      "strings": 2785,
-      "bytes": 369323,
+      "strings": 2799,
+      "bytes": 371748,
       "script_letter_fraction": 0.9779,
       "unchanged_english_labels": [
         "{{v0}} kg"
@@ -174,8 +174,8 @@
     },
     {
       "language": "doi",
-      "strings": 2785,
-      "bytes": 352815,
+      "strings": 2799,
+      "bytes": 355153,
       "script_letter_fraction": 0.9784,
       "unchanged_english_labels": [
         "{{v0}} kg"
@@ -186,8 +186,8 @@
     },
     {
       "language": "ks",
-      "strings": 2785,
-      "bytes": 292985,
+      "strings": 2799,
+      "bytes": 295032,
       "script_letter_fraction": 0.9839,
       "unchanged_english_labels": [
         "{{v0}} kg"
@@ -198,8 +198,8 @@
     },
     {
       "language": "kok",
-      "strings": 2785,
-      "bytes": 340291,
+      "strings": 2799,
+      "bytes": 342607,
       "script_letter_fraction": 0.9777,
       "unchanged_english_labels": [
         "{{v0}} kg"
@@ -210,8 +210,8 @@
     },
     {
       "language": "mai",
-      "strings": 2785,
-      "bytes": 331184,
+      "strings": 2799,
+      "bytes": 333373,
       "script_letter_fraction": 0.9767,
       "unchanged_english_labels": [
         "{{v0}} kg"
@@ -222,8 +222,8 @@
     },
     {
       "language": "mni",
-      "strings": 2785,
-      "bytes": 354360,
+      "strings": 2799,
+      "bytes": 356802,
       "script_letter_fraction": 0.9804,
       "unchanged_english_labels": [
         "{{v0}} kg"
@@ -234,8 +234,8 @@
     },
     {
       "language": "ne",
-      "strings": 2785,
-      "bytes": 355849,
+      "strings": 2799,
+      "bytes": 358143,
       "script_letter_fraction": 0.9772,
       "unchanged_english_labels": [
         "{{v0}} kg"
@@ -246,9 +246,9 @@
     },
     {
       "language": "or",
-      "strings": 2785,
-      "bytes": 365944,
-      "script_letter_fraction": 0.9783,
+      "strings": 2799,
+      "bytes": 368269,
+      "script_letter_fraction": 0.9782,
       "unchanged_english_labels": [
         "{{v0}} kg"
       ],
@@ -258,8 +258,8 @@
     },
     {
       "language": "sa",
-      "strings": 2785,
-      "bytes": 362364,
+      "strings": 2799,
+      "bytes": 364970,
       "script_letter_fraction": 0.9745,
       "unchanged_english_labels": [
         "{{v0}} kg"
@@ -270,8 +270,8 @@
     },
     {
       "language": "sat",
-      "strings": 2785,
-      "bytes": 372133,
+      "strings": 2799,
+      "bytes": 374582,
       "script_letter_fraction": 0.988,
       "unchanged_english_labels": [
         "{{v0}} kg"
@@ -282,9 +282,9 @@
     },
     {
       "language": "sd",
-      "strings": 2785,
-      "bytes": 264599,
-      "script_letter_fraction": 0.9792,
+      "strings": 2799,
+      "bytes": 266444,
+      "script_letter_fraction": 0.9793,
       "unchanged_english_labels": [
         "{{v0}} kg",
         "{{v0}} qtl"

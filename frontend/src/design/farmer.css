@@ -3392,3 +3392,29 @@
   gap: 6px;
   min-height: 44px;
 }
+/* All-India average price: same card as a mandi price, marked as national. */
+.price-hero.national .price-place {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.workspace-content .price-caution {
+  margin: 8px 0 0;
+  font-size: 15px;
+  color: #4d5b52;
+}
+.price-hero.secondary {
+  margin-top: 12px;
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: var(--k-cream);
+}
+.price-hero.secondary .price-value {
+  font-size: 24px;
+}
+.workspace-content .price-older {
+  margin: 18px 0 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--k-green-950);
+}

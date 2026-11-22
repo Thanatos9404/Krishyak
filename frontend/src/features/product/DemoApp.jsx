@@ -119,9 +119,14 @@ function Demo() {
                       v0: price.market,
                       v1: formatDate(price.date),
                     })
-                  : tx("Government support price (MSP) for {{v0}}.", {
-                      v0: price.date,
-                    })}
+                  : price.source === "national_average"
+                    ? tx(
+                        "All-India average on {{v0}}. A local mandi can differ.",
+                        { v0: formatDate(price.date) },
+                      )
+                    : tx("Government support price (MSP) for {{v0}}.", {
+                        v0: price.date,
+                      })}
               </p>
             </section>
           )}

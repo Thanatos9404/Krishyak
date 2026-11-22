@@ -208,3 +208,39 @@ seven-digit amounts fit the dashboard cards and the comparison table at
 | Frontend unit | 402 passed, 65 suites | |
 | Translations | 22 packs, 2,785 strings each, 0 structural failures | Four account-change messages that the refactor of 20 November had hidden from the extractor were restored |
 | Staging | `e2e/staging.spec.js` 9 of 9 with `krishyak-leaf-v3` deployed | The 70 MB artifact builds and serves on Vercel; a real leaf photo is checked in about the same time as with v2 |
+
+## Price sources, 21 November 2026
+
+data.gov.in's mandi API returned HTTP 502 for part of the day (its website
+stayed up), which left the app with stored quotes only.
+
+| Gate | Recorded result | Scope |
+|---|---|---|
+| Source survey | One usable addition | Agmarknet 2.0 market-level reports answer `TOKEN_OR_CAPTCHA_REQUIRED`; eNAM's price endpoints return a page shell; CEDA needs registration and is non-commercial; the Agmarknet 2.0 dashboard table of all-India averages is open |
+| Backend | 375 run, 373 passed, 2 skipped | Parsing and refusal of odd tables, which figure leads, outage behaviour, caching of failed reads, the nightly job, the price used by the field report |
+| Frontend unit | 406 passed, 65 suites | National card, ordering, compact Home card, crop preselection on the market screen |
+| Live local run | Wheat in Jaipur: Bassi APMC quote of the day leads, all-India average below. Soybean in Jaipur: no local quote, all-India average leads | Real data.gov.in and Agmarknet responses once the outage ended |
+| Layout | No overflow at 1440, 768, 390 and 320 px | Market screen, Home card, field report |
+| Translations | 22 packs, 2,799 strings each, 0 structural failures | |
+
+Also fixed: the market screen opened without the farmer's crop and place
+when those loaded after the screen, so no price showed until a crop was
+picked; and the field report named a fixed support-price year.
+
+### Dropped connections through the frontend, 22 November 2026
+
+Two staging runs of this change failed for a reason outside it: once the
+browser's `GET /api/v2/plots` got no answer for 20 seconds although the API
+had answered in 1.3 seconds, and once a request was reset before any answer.
+A sample of 40 small requests to production through the frontend lost 1
+(and several took more than 5 seconds); 40 sent straight to the API lost
+none; a later sample of 120 through the frontend lost none. The frontend's
+logs show only successful forwards, so the loss is between Vercel's edge
+and the forwarded request, and it comes in bursts.
+
+| Gate | Recorded result | Scope |
+|---|---|---|
+| Frontend unit | 409 passed, 65 suites | A read with no answer is sent again after 8 seconds; a broken read is sent again at once and succeeds silently; a read with a longer wait set by the caller is not repeated on timeout; a write is never sent twice; nothing is retried offline; a cancelled read is never repeated |
+| Staging | `e2e/staging.spec.js` 9 of 9 | Sign-up, weather, leaf photo, satellite job, market page, voice, registration, calendar and claim pack, Krishyak Live |
+| Staging prices | Wheat in Jaipur: Bassi APMC quote of 21 November leads, all-India average of 20 November below. Soybean and rice: all-India average leads. Apple: local quotes only | Checked against the Agmarknet table read directly on the same day |
+| Nightly job | 404 without the secret, 200 with it | Counts only in the answer |

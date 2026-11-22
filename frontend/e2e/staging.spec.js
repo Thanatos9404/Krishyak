@@ -27,13 +27,35 @@ const BOUNDARY = {
   ],
 };
 
+// A connection can be dropped between this machine and the deployment before
+// any answer arrives. That is not a product failure, so a dropped request is
+// sent again, at most twice. An answer of any status is returned as it is.
+// Every write here is safe to repeat: it sets a value, carries an
+// operation_id, or deletes the throwaway account.
+async function sent(send) {
+  for (let turn = 0; ; turn++) {
+    try {
+      return await send();
+    } catch (error) {
+      const dropped = /ECONNRESET|socket hang up|ETIMEDOUT|EPIPE/.test(
+        String(error?.message),
+      );
+      if (!dropped || turn === 2) throw error;
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+    }
+  }
+}
+
+const read = (url) => sent(() => page.request.get(url));
+
 async function api(method, url, data) {
-  const response = await page.request.fetch(url, {
-    method,
-    data,
-    headers: { Origin: new URL(page.url()).origin, "X-CSRF-Token": csrf },
-  });
-  return response;
+  return sent(() =>
+    page.request.fetch(url, {
+      method,
+      data,
+      headers: { Origin: new URL(page.url()).origin, "X-CSRF-Token": csrf },
+    }),
+  );
 }
 
 test.beforeAll(async ({ browser }, info) => {
@@ -91,7 +113,7 @@ test("live passkey sign-up and profile", async () => {
   await expect(
     page.getByRole("heading", { level: 1, name: /^Namaste, / }),
   ).toBeVisible({ timeout: 30000 });
-  csrf = (await (await page.request.get("/api/v2/me")).json()).csrf_token;
+  csrf = (await (await read("/api/v2/me")).json()).csrf_token;
   const profile = await api("PATCH", "/api/v2/me", {
     display_name: "Staging smoke farmer",
     state_code: 8,
@@ -151,18 +173,16 @@ test("a real leaf photo is checked by the deployed model and stored privately", 
   await expect(
     page.locator(".scan-result").getByRole("heading").first(),
   ).toBeVisible({ timeout: 60000 });
-  const scans = await (await page.request.get("/api/v2/disease-scans")).json();
+  const scans = await (await read("/api/v2/disease-scans")).json();
   expect(scans.items).toHaveLength(1);
-  const image = await page.request.get(
-    `/api/v2/disease-scans/${scans.items[0].id}/image`,
-  );
+  const image = await read(`/api/v2/disease-scans/${scans.items[0].id}/image`);
   expect(image.status()).toBe(200);
   expect(image.headers()["content-type"]).toContain("image/jpeg");
 });
 
 test("a live Copernicus job is drained by the serverless worker", async () => {
   test.setTimeout(180000);
-  const farms = await (await page.request.get("/api/v2/farms")).json();
+  const farms = await (await read("/api/v2/farms")).json();
   const plot = await api("POST", "/api/v2/plots", {
     operation_id: crypto.randomUUID(),
     farm_id: farms.items[0].id,
@@ -180,8 +200,7 @@ test("a live Copernicus job is drained by the serverless worker", async () => {
   let latest;
   for (let attempt = 0; attempt < 30; attempt++) {
     // A status poll is safe to repeat: one dropped connection is not a failure.
-    latest = await page.request
-      .get(`/api/v2/plots/${id}/remote-sensing`)
+    latest = await read(`/api/v2/plots/${id}/remote-sensing`)
       .then((response) => response.json())
       .catch(() => latest);
     if (["completed", "failed"].includes(latest?.latest_job?.status)) break;
@@ -316,17 +335,15 @@ test("registration fills the place from GPS, the rest from speech, and Home show
 
 test("the crop calendar, Pest Radar and a claim pack work on live data", async () => {
   test.setTimeout(150000);
-  const plots = await (await page.request.get("/api/v2/plots")).json();
+  const plots = await (await read("/api/v2/plots")).json();
   let calendar, radar;
   for (const plot of plots.items) {
     const answer = await (
-      await page.request.get(`/api/v2/plots/${plot.id}/calendar`)
+      await read(`/api/v2/plots/${plot.id}/calendar`)
     ).json();
     if (answer.status !== "available") continue;
     calendar = answer;
-    radar = await (
-      await page.request.get(`/api/v2/plots/${plot.id}/pest-radar`)
-    ).json();
+    radar = await (await read(`/api/v2/plots/${plot.id}/pest-radar`)).json();
   }
   expect(calendar, "the wheat field has a calendar").toBeTruthy();
   expect(calendar.crop_id).toBe("wheat");

@@ -149,6 +149,15 @@ counted and not invoiced; set it to `true` only once institutions are
 invoiced under a signed agreement. List prices are read from
 `backend/v2/data/price_list.json`.
 
+## Price fallback and nightly refresh
+
+No schema change and no new variable. `backend/vercel.json` gains a second
+daily cron, `/api/v2/internal/prices` at 16:00 UTC (21:30 in India), which
+uses the existing `CRON_SECRET`. Vercel runs crons on production
+deployments only; on staging call the route by hand with the staging
+secret. All-India averages are stored in `v2_market_prices` under the state
+`India`, so they never mix with a real state's quotes.
+
 ## Local PostGIS and Redis without Docker Desktop
 
 On Windows machines where Docker Desktop will not start, PostgreSQL 16 with

@@ -136,3 +136,99 @@ test("MSP comparison uses the published support price for the crop", () => {
     screen.getByText(/10% below the government support price/),
   ).toBeInTheDocument();
 });
+
+const national = (overrides = {}) => ({
+  per_quintal: 2818.46,
+  date: "2026-11-19",
+  age_days: 2,
+  commodity: "Wheat",
+  describes: null,
+  change: {
+    from_date: "2026-11-18",
+    from_price: 2799.92,
+    percent: 0.7,
+    direction: "steady",
+  },
+  series: [],
+  source: { name: "Agmarknet 2.0", url: "https://agmarknet.gov.in/" },
+  ...overrides,
+});
+
+test("with no local price the all-India average is shown and labelled as national", () => {
+  render(
+    <MarketPrices
+      result={body({
+        status: "unavailable",
+        markets: [],
+        national: national(),
+        lead: "national",
+      })}
+      crop="wheat"
+    />,
+  );
+  const card = screen.getByRole("article", { name: "All-India average price" });
+  expect(card).toHaveTextContent("All-India average");
+  expect(card).toHaveTextContent("₹2,818");
+  expect(card).toHaveTextContent("Reported 2026-11-19");
+  expect(card).toHaveTextContent("Steady since the day before");
+  expect(card).toHaveTextContent(/not your local mandi/);
+  expect(card).toHaveTextContent(/government support price \(MSP\)/);
+  expect(
+    screen.getByText(/No mandi in your area has a saved price/),
+  ).toBeInTheDocument();
+});
+
+test("an older local price follows the all-India average instead of leading", () => {
+  const older = market({
+    latest: { ...market().latest, date: "2026-11-10", age_days: 11 },
+  });
+  const result = body({
+    status: "stale",
+    markets: [older],
+    national: national({ describes: "Paddy (common)" }),
+    lead: "national",
+  });
+  const { rerender } = render(<MarketPrices result={result} crop="rice" />);
+  const cards = screen.getAllByRole("article");
+  expect(cards[0]).toHaveTextContent("All-India average · Paddy (common)");
+  expect(cards[1]).toHaveTextContent("Lasalgaon, Nashik");
+  expect(
+    screen.getByRole("heading", {
+      name: "Last price from your area, 2026-11-10",
+    }),
+  ).toBeInTheDocument();
+  // The Home card has room for one figure: the one that leads.
+  rerender(<MarketPrices result={result} crop="rice" compact />);
+  expect(screen.getAllByRole("article")).toHaveLength(1);
+  expect(screen.queryByText(/Lasalgaon/)).toBeNull();
+});
+
+test("a fresh local price leads and the all-India average sits below it for comparison", () => {
+  const result = body({ national: national(), lead: "local" });
+  const { rerender } = render(<MarketPrices result={result} crop="wheat" />);
+  const cards = screen.getAllByRole("article");
+  expect(cards[0]).toHaveTextContent("Lasalgaon, Nashik");
+  expect(cards[1]).toHaveTextContent("All-India average");
+  rerender(<MarketPrices result={result} crop="wheat" compact />);
+  expect(screen.getAllByRole("article")).toHaveLength(1);
+  expect(screen.getByText(/Lasalgaon, Nashik/)).toBeInTheDocument();
+});
+test("the farmer's crop and place are filled in when they arrive after the screen opens", async () => {
+  farmApi.mockResolvedValue(body());
+  const { rerender } = render(<MarketView workspace={{ cycles: [] }} />);
+  expect(farmApi).not.toHaveBeenCalled();
+  rerender(
+    <MarketView
+      workspace={{
+        cycles: [{ crop_id: "onion", status: "active" }],
+        farmer: { state_code: 8, district_code: 102 },
+      }}
+    />,
+  );
+  await waitFor(() =>
+    expect(farmApi.mock.calls[0]?.[0]).toBe(
+      "/market/prices?crop=onion&state=Rajasthan&district=Jaipur",
+    ),
+  );
+  await screen.findByText(/Lasalgaon, Nashik/);
+});
