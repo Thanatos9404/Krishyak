@@ -239,6 +239,13 @@ ran together without separators; the planning photograph was missing; and
 59 machine translations in Hindi, Bengali, Nepali, Kannada, Punjabi and
 Sanskrit carried a stray extra line ("near you"), while the support-price
 comparison split its percent sign from the number in up to 14 languages.
+Today also asked for the field report and the crop calendar twice (once
+before the crop cycles arrived); with both asked for once, the 23-language
+browser journey stays under the 500-a-minute request limit in Chromium.
+
+| Gate | Recorded result | Scope |
+|---|---|---|
+| Staging | `e2e/staging.spec.js` 9 of 9; smoke 12 of 12; Ask Krishyak in Marathi by typing and by voice | Deployed preview builds of this change |
 
 ## Price sources, 21 November 2026
 

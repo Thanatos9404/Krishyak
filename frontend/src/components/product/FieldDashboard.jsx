@@ -48,11 +48,21 @@ function useFieldRecord(path, deps) {
 
 export function useFieldReport(w) {
   const allowed = w.consents.includes("agronomic_analysis");
+  // Wait for the field's crop cycles: asking before they arrive meant asking
+  // twice, once without the crop and once with it.
+  const ready = w.cyclesReady !== false;
   return useFieldRecord(
-    w.selected && allowed && !w.offline
+    w.selected && allowed && !w.offline && ready
       ? `/plots/${w.selected}/assessment`
       : null,
-    [w.selected, allowed, w.offline, w.cycles?.[0]?.id, w.plot?.revision],
+    [
+      w.selected,
+      allowed,
+      w.offline,
+      ready,
+      w.cycles?.[0]?.id,
+      w.plot?.revision,
+    ],
   );
 }
 

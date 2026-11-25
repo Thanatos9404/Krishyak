@@ -194,3 +194,24 @@ test("no forecast and no permission both mean no card", () => {
   );
   expect(container).toBeEmptyDOMElement();
 });
+
+test("the field report waits for the crop cycles, so it is asked for once", async () => {
+  const { renderHook, waitFor: settle } = require("@testing-library/react");
+  const { useFieldReport } = require("./FieldDashboard");
+  const { farmApi: api } = require("../../features/farms/api");
+  api.mockReset();
+  api.mockResolvedValue({ score: 70 });
+  const base = {
+    selected: "field-a",
+    consents: ["agronomic_analysis"],
+    offline: false,
+    plot: { revision: 1 },
+  };
+  const { rerender } = renderHook((w) => useFieldReport(w), {
+    initialProps: { ...base, cycles: [], cyclesReady: false },
+  });
+  expect(api).not.toHaveBeenCalled();
+  rerender({ ...base, cycles: [{ id: "cycle-1" }], cyclesReady: true });
+  await settle(() => expect(api).toHaveBeenCalledTimes(1));
+  expect(api.mock.calls[0][0]).toBe("/plots/field-a/assessment");
+});
