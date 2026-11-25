@@ -46,6 +46,23 @@ for directory in (ROOT / "backend/v2", ROOT / "backend/remote_sensing"):
         for node in nodes:
             if isinstance(node, ast.Constant) and isinstance(node.value, str) and " " in node.value and not node.value.startswith(("https:", "SELECT ", "INSERT ", "UPDATE ", "DELETE ")):
                 records.append({"source": node.value, "file": str(file.relative_to(ROOT)).replace("\\", "/"), "line": node.lineno})
+# Pest names and the damage they cause, shown in the field report. Control
+# measures are never sent to the app, so they are not translated.
+pest_file = ROOT / "backend/pest_intelligence.py"
+for node in ast.walk(ast.parse(pest_file.read_text(encoding="utf-8"))):
+    if isinstance(node, ast.Dict):
+        for key, value in zip(node.keys, node.values):
+            if isinstance(key, ast.Constant) and key.value in {"common_name", "damage_symptoms"}:
+                for item in ast.walk(value):
+                    if isinstance(item, ast.Constant) and isinstance(item.value, str):
+                        records.append({"source": item.value, "file": "backend/pest_intelligence.py", "line": item.lineno})
+# Scheme names in the public benefits catalogue.
+government_file = ROOT / "backend/v2/government.py"
+for node in ast.walk(ast.parse(government_file.read_text(encoding="utf-8"))):
+    if isinstance(node, ast.Dict):
+        for key, value in zip(node.keys, node.values):
+            if isinstance(key, ast.Constant) and key.value == "name" and isinstance(value, ast.Constant) and " " in str(value.value):
+                records.append({"source": value.value, "file": "backend/v2/government.py", "line": value.lineno})
 # Farmer-facing disease names, causes and care steps shown after a photo check.
 guidance_file = ROOT / "backend/v2/disease_guidance.json"
 guidance = json.loads(guidance_file.read_text(encoding="utf-8"))

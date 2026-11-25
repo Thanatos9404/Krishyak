@@ -349,9 +349,9 @@ export function WeekAhead({ workspace: w, outlook }) {
               <CloudRain size={20} aria-hidden="true" />
               <span>
                 {window.percent_of_normal != null
-                  ? tx("Last 90 days: {{v0}} mm of rain, {{v1}}% of normal", {
+                  ? tx("Last 90 days: {{v0}} mm of rain, {{v1}} of normal", {
                       v0: window.rain_mm,
-                      v1: window.percent_of_normal,
+                      v1: `${window.percent_of_normal}%`,
                     })
                   : tx("Last 90 days: {{v0}} mm of rain", {
                       v0: window.rain_mm,

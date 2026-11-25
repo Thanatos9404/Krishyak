@@ -209,6 +209,37 @@ seven-digit amounts fit the dashboard cards and the comparison table at
 | Translations | 22 packs, 2,785 strings each, 0 structural failures | Four account-change messages that the refactor of 20 November had hidden from the extractor were restored |
 | Staging | `e2e/staging.spec.js` 9 of 9 with `krishyak-leaf-v3` deployed | The 70 MB artifact builds and serves on Vercel; a real leaf photo is checked in about the same time as with v2 |
 
+## Ask Krishyak in every language, 26 November 2026
+
+Ask Krishyak answered well in English but often failed in other languages.
+Sarvam's JSON mode returned an empty `{}` for 12 of 42 questions across 14
+languages (all three Hindi tries in one round; Marathi, Odia, Nepali,
+Malayalam and Punjabi repeatedly), and the server showed `{}` as the answer.
+Spoken answers now ask for JSON in the prompt only, accept plain text, never
+show JSON, and ask once more when a reply is empty or comes back in Latin
+letters for another language.
+
+| Gate | Recorded result | Scope |
+|---|---|---|
+| Model, same prompt | JSON mode 30/42 usable; without it 42/42 | 14 languages, 3 rounds |
+| Patched server code against Sarvam | 46/46 usable answers in the right script, slowest 2.0 s | All 23 languages, 2 rounds |
+| Speech round trip | Speaking then transcribing returned the sentence in all 11 languages with a Sarvam voice; transcription accepted all 23 language codes | Krishyak's own speech code |
+| End to end in the browser | Typed question, spoken question (a recording played as the microphone), answer read aloud: English, Hindi, Marathi, Odia, Tamil, Bengali, Punjabi | Local stack, phone width |
+| Screens in Hindi | 13 screens checked for English left on screen, failed requests and overflow | Local stack, phone width |
+
+Also fixed for the showcase: the voice dialog slid 18 px off the left edge
+after each answer; read-aloud and recording limits (12 an hour) were lower
+than the questions allowed (30 an hour), and a limit made answers silent
+instead of using the phone's voice; nine screens asked the server for speech
+settings separately; Bangalore was read as Bagalkote and Faizabad as
+Firozabad, and renamed districts (Cuttack, Gurgaon, Allahabad, Calicut and
+others) were not recognised; scheme details, weather caveats, pest names,
+crop-cycle labels and support-price names stayed in English; pest symptoms
+ran together without separators; the planning photograph was missing; and
+59 machine translations in Hindi, Bengali, Nepali, Kannada, Punjabi and
+Sanskrit carried a stray extra line ("near you"), while the support-price
+comparison split its percent sign from the number in up to 14 languages.
+
 ## Price sources, 21 November 2026
 
 data.gov.in's mandi API returned HTTP 502 for part of the day (its website

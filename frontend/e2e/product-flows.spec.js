@@ -239,11 +239,13 @@ test("revision-aware field edits, completed cycle and reported soil evidence", a
   await expect(
     page.getByText(`Edit selected field: ${fieldName}`, { exact: true }),
   ).toBeVisible();
-  await page.getByText("Tomato · active · edit cycle", { exact: true }).click();
+  await page
+    .getByText("Tomato · Growing now · edit cycle", { exact: true })
+    .click();
   await page.getByLabel("Cycle status").selectOption("completed");
   await page.getByRole("button", { name: "Update cycle", exact: true }).click();
   await expect(
-    page.getByText("Tomato · completed · edit cycle", { exact: true }),
+    page.getByText("Tomato · Harvested · edit cycle", { exact: true }),
   ).toBeVisible();
   await page
     .getByText("Enter a soil-card, lab or sensor reading", { exact: true })

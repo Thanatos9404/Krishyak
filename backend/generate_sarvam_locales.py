@@ -92,6 +92,11 @@ def restore(text, source, mapping):
         text = text.replace(token, placeholder)
     if Counter(PLACEHOLDERS.findall(text)) != Counter(PLACEHOLDERS.findall(source)) or not text.strip():
         raise ValueError('Translation placeholders/empty response failed validation')
+    # The last label of a batch runs to the end of the reply, so anything the
+    # model adds after it lands there. A line the source does not have is
+    # leaked text (it put "near you" under 19 Hindi labels); translate alone.
+    if text.strip().count('\n') > source.count('\n'):
+        raise ValueError('Translation added a line the source does not have')
     return text.strip()
 
 

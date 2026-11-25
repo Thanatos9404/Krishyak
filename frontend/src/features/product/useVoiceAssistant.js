@@ -3,9 +3,12 @@ import useSarvamRecognition from "../../hooks/useSarvamRecognition";
 import { farmApi } from "../farms/api";
 import { useProductLocale } from "./ProductLocale";
 import { workspaceSpeech } from "./workspaceSpeech";
-import { createSpeaker } from "./speakAnswer";
+import { createSpeaker, deviceVoice } from "./speakAnswer";
+import { getLanguage } from "../../i18n/config";
 
 export const VOICE_POLICY = "2026-10-03";
+const TOO_MANY =
+  "You have asked many questions. Please wait a little and try again.";
 // Where each assistant action takes the farmer.
 export const ACTION_LINKS = {
   scan: ["/app/health", "Check a sick plant"],
@@ -24,6 +27,7 @@ export function useVoiceAssistant(w) {
   const recognition = useSarvamRecognition({
     speechCode: info.speechCode,
     transport: workspaceSpeech,
+    errorMessages: { limitReached: TOO_MANY },
   });
   const [phase, setPhase] = useState("idle"),
     [turns, setTurns] = useState([]),
@@ -115,7 +119,7 @@ export function useVoiceAssistant(w) {
           error.network
             ? "You seem to be offline. Voice help needs the internet."
             : error.status === 429
-              ? "You have asked many questions. Please wait a little and try again."
+              ? TOO_MANY
               : "Krishyak could not answer right now. Please try again.",
         );
         setPhase("idle");
@@ -145,7 +149,9 @@ export function useVoiceAssistant(w) {
       setProblem(
         recognition.error === "Microphone permission denied."
           ? "Allow the microphone in your browser to speak, or type your question."
-          : "We could not hear that clearly. Please try again or type.",
+          : recognition.error === TOO_MANY
+            ? TOO_MANY
+            : "We could not hear that clearly. Please try again or type.",
       );
       setPhase("idle");
     }
@@ -190,10 +196,27 @@ export function useVoiceAssistant(w) {
     }
     await recognition.startListening();
   };
+  // How answers will be heard: the language's own voice, a related
+  // language's voice written in the same script, or only on screen.
+  const borrowed = capabilities?.tts_borrowed_voices?.[language];
+  const voiceNote = !capabilities
+    ? null
+    : borrowed
+      ? {
+          text: "Answers are read aloud with a {{v0}} voice.",
+          v0: getLanguage(borrowed).nativeName,
+        }
+      : !canSpeak && typeof window !== "undefined" && !deviceVoice(language)
+        ? {
+            text: "Answers are shown in writing. Reading aloud in {{v0}} is not available yet.",
+            v0: info.nativeName,
+          }
+        : null;
   return {
     phase,
     turns,
     problem,
+    voiceNote,
     granting,
     allowed,
     configured: capabilities ? Boolean(capabilities.configured) : null,

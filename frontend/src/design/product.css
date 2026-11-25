@@ -782,6 +782,11 @@
   background-repeat: no-repeat;
   background-position: right 15px center;
 }
+/* Forward arrows point the way the page reads (Urdu, Kashmiri, Sindhi). */
+[dir="rtl"] .lucide-arrow-right,
+[dir="rtl"] .lucide-chevron-right {
+  transform: scaleX(-1);
+}
 html[dir="rtl"] .india-location-picker select,
 html[dir="rtl"] .crop-picker select {
   background-position: left 15px center;

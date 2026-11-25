@@ -15,7 +15,7 @@ import { Dialog } from "./Dialog";
 import { AreaInput, useAreaText, useAreaUnit } from "./AreaInput";
 import { ConsentPrompt } from "../../features/farms/ConsentPrompt";
 import { CropPicker } from "./CropPicker";
-import { cropLabel } from "../../features/product/crops";
+import { cropLabel, cycleStatus } from "../../features/product/crops";
 import { FarmContextCard } from "./FarmContextCard";
 import { toHectares } from "../../features/product/india";
 const FieldMap = deferredFeature(() => import("../FieldMap"));
@@ -461,7 +461,8 @@ export function FarmView({ workspace: w, plotId }) {
                     <p key={item.id}>
                       <strong>{cropLabel(item, tx)}</strong> ·{" "}
                       {formatDate(item.sowing_date)} →{" "}
-                      {formatDate(item.expected_harvest)} · {item.status}
+                      {formatDate(item.expected_harvest)} ·{" "}
+                      {cycleStatus(item.status, tx)}
                     </p>
                   ))}
                 </div>

@@ -130,20 +130,29 @@ class TtsProvider(Protocol):
     async def synthesize(self, text: str, language: str) -> dict: ...
 
 
+# Languages without a Sarvam voice of their own, read by the voice of a
+# language written in the same script. Checked on 26 November 2026 by reading a
+# sentence aloud and transcribing it in the original language: 87-98 % of the
+# text came back. Urdu, Kashmiri, Sindhi, Manipuri and Santali have no voice in
+# their script, so they are left to the phone's own voices.
+BORROWED_VOICES = {"as": "bn", "brx": "hi", "doi": "hi", "kok": "mr", "mai": "hi", "ne": "hi", "sa": "hi"}
+
+
 class SarvamTtsProvider:
     name = "sarvam"
     model = "bulbul:v3:shubh"
 
     async def languages(self):
-        return list(TTS_LANGUAGES) if os.getenv("SARVAM_API_KEY", "").strip() else []
+        return [*TTS_LANGUAGES, *BORROWED_VOICES] if os.getenv("SARVAM_API_KEY", "").strip() else []
 
     async def synthesize(self, text, language):
+        base = language.split("-")[0].lower()
         result = await bounded_post(
             "https://api.sarvam.ai/text-to-speech",
             headers={"api-subscription-key": os.getenv("SARVAM_API_KEY", "")},
             payload={
                 "text": text,
-                "language_code": language_code(language, tts=True),
+                "language_code": language_code(BORROWED_VOICES.get(base, base), tts=True),
                 "model": "bulbul:v3",
                 "speaker": "shubh",
                 "pace": 0.9,
@@ -296,7 +305,12 @@ class ReadAloud:
             raise HTTPException(503, "Speech service unavailable") from None
         finally:
             self.active.discard(key)
-        result |= {"provider": provider.name, "language": code, "model": provider.model}
+        result |= {
+            "provider": provider.name,
+            "language": code,
+            "voice_language": BORROWED_VOICES.get(code, code) if provider.name == "sarvam" else code,
+            "model": provider.model,
+        }
         size = len(result["audios"][0])
         while self.cache and (self.cache_bytes + size > 8 * 1024 * 1024 or len(self.cache) >= 32):
             _, (_, old) = self.cache.popitem(last=False)

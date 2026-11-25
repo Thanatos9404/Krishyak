@@ -96,6 +96,10 @@ def validate(languages, output):
                 continue
             if Counter(PLACEHOLDERS.findall(key)) != Counter(PLACEHOLDERS.findall(value)): failures.append(f"{code}: placeholders changed: {key}")
             if re.search(r"ZXQ\d+QXZ|\[90{7,}", value): failures.append(f"{code}: untranslated generation marker")
+            if value.count("\n") > key.count("\n"): failures.append(f"{code}: translation adds a line the source does not have: {key}")
+            for match in re.finditer(r"(\{\{v\d+\}\})%", key):
+                if not re.search(re.escape(match.group(1)) + r"\s?[%٪]|[%٪]\s?" + re.escape(match.group(1)), value):
+                    failures.append(f"{code}: percent sign separated from its number: {key}")
             for word in glossary:
                 # Indian-language grammatical suffixes may touch a preserved
                 # Latin brand (for example Krishyak + a Telugu suffix).

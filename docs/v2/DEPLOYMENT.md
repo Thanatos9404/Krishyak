@@ -149,6 +149,14 @@ counted and not invoiced; set it to `true` only once institutions are
 invoiced under a signed agreement. List prices are read from
 `backend/v2/data/price_list.json`.
 
+## Speech limits
+
+Recording (speech to text) and reading aloud are each limited to 30 an hour
+per farmer and 10 a minute per address, matching Ask Krishyak. The daily
+totals across all farmers default to 100 each and can be raised without a
+code change with `SARVAM_STT_DAILY` and `SARVAM_TTS_DAILY`; each call uses
+existing Sarvam credits.
+
 ## Price fallback and nightly refresh
 
 No schema change and no new variable. `backend/vercel.json` gains a second

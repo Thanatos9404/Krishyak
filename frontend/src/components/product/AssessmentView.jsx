@@ -424,7 +424,11 @@ export function AssessmentView({ workspace: w }) {
                 <ul className="care-steps">
                   {report.pests.active.map((pest) => (
                     <li key={pest.name}>
-                      <strong>{pest.name}</strong>: {pest.symptoms}
+                      <strong>{tx(pest.name)}</strong>:{" "}
+                      {[pest.symptoms]
+                        .flat()
+                        .map((text) => tx(text))
+                        .join(", ")}
                     </li>
                   ))}
                 </ul>

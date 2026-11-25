@@ -72,10 +72,9 @@ export function createSpeaker() {
             player.start();
           });
           return id === generation;
-        } catch (problem) {
+        } catch {
           if (id !== generation) return false;
-          if (problem.status === 429) throw problem;
-          /* Fall through to a device voice. */
+          /* A failure or a usage limit falls through to a device voice. */
         }
       }
       const voice = deviceVoice(language);

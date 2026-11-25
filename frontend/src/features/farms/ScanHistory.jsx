@@ -1,6 +1,14 @@
 import { useProductLocale } from "../product/ProductLocale";
 import React, { useEffect, useState } from "react";
 import { farmApi } from "./api";
+const SCAN_STATUS = {
+  disease_detected: "Likely problem found",
+  healthy: "No common disease seen",
+  uncertain: "Could not tell",
+  unsupported: "Crop not covered yet",
+  invalid_image: "Photo could not be read",
+  unavailable: "Photo check unavailable",
+};
 export default function ScanHistory({ plotId, refresh, act, busy, offline }) {
   const { tx, formatDate } = useProductLocale();
   const [items, setItems] = useState([]),
@@ -36,8 +44,9 @@ export default function ScanHistory({ plotId, refresh, act, busy, offline }) {
       {items.map((item) => (
         <article className="v2-event" key={item.id}>
           <p>
-            {formatDate(item.created_at, { time: true })} · {item.result.status}{" "}
-            · {item.result.predicted_class || tx("No supported classification")}
+            {formatDate(item.created_at, { time: true })} ·{" "}
+            {tx(SCAN_STATUS[item.result.status] || "Photo checked")} ·{" "}
+            {item.result.predicted_class || tx("No supported classification")}
           </p>
           <button
             disabled={busy || offline}
