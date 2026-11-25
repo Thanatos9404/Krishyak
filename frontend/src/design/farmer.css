@@ -1108,11 +1108,16 @@
   background: linear-gradient(170deg, #17492e, var(--k-green-950) 70%);
   padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom);
   overflow: hidden;
+  overflow: clip;
 }
 .voice-backdrop {
   position: absolute;
   inset: 0;
   pointer-events: none;
+  /* The drifting shapes reach past the screen edge. Clipping them here keeps
+     the dialog from becoming sideways-scrollable, which moved the whole
+     conversation 18px off the left edge after each answer. */
+  overflow: hidden;
 }
 .voice-blob {
   position: absolute;
@@ -1210,6 +1215,11 @@
 .voice-welcome p:not(.voice-hello) {
   color: rgb(255 255 255 / 0.78);
   font-size: 17px;
+}
+.voice-welcome .voice-note {
+  margin-top: 12px;
+  font-size: 15px;
+  color: rgb(255 255 255 / 0.66);
 }
 .voice-turn {
   max-width: 88%;

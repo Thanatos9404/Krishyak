@@ -50,6 +50,84 @@ class ReplyParsingTests(unittest.TestCase):
             asyncio.run(complete([{"role": "user", "content": "hello"}]))
         self.assertEqual(caught.exception.status_code, 503)
 
+    def test_an_empty_object_is_never_shown_as_the_answer(self):
+        # Sarvam's JSON mode returned exactly this for Marathi, Odia and Nepali questions.
+        for content in ("{}", '{"action": "weather"}', '{"answer": null}'):
+            with self.subTest(content=content), self.assertRaises(HTTPException):
+                parse_reply(content, "mr")
+
+    def test_a_reply_cut_off_before_its_closing_brace_keeps_only_the_answer(self):
+        answer, action = parse_reply('{"answer": "आज पाणी देऊ नका.", "action": "weather"', "mr")
+        self.assertEqual((answer, action), ("आज पाणी देऊ नका.", "weather"))
+        answer, _ = parse_reply('{"answer": "ਅੱਜ ਪਾਣੀ ਨਾ ਦਿਓ', "pa")
+        self.assertEqual(answer, "ਅੱਜ ਪਾਣੀ ਨਾ ਦਿਓ")
+        # Text first, then the same answer as JSON that was cut short: the full text wins.
+        answer, action = parse_reply('ଆଜି ପାଣି ଦିଅନ୍ତୁ ନାହିଁ। ମାର୍କେଟ ସ୍କ୍ରିନ ଦେଖନ୍ତୁ। {"answer": "ଆଜି ପାଣି', "or")
+        self.assertEqual((answer, action), ("ଆଜି ପାଣି ଦିଅନ୍ତୁ ନାହିଁ। ମାର୍କେଟ ସ୍କ୍ରିନ ଦେଖନ୍ତୁ।", "none"))
+        answer, action = parse_reply(
+            'बाजार भाव 2878 रुपये आहे. {"answer": "बाजार भाव 2878 रुपये आहे.", "action": "market"}', "mr"
+        )
+        self.assertEqual((answer, action), ("बाजार भाव 2878 रुपये आहे.", "market"))
+
+    def test_an_english_reply_to_a_hindi_question_is_refused(self):
+        with self.assertRaises(HTTPException):
+            parse_reply('{"answer": "Do not water today.", "action": "none"}', "hi")
+        # App words inside an answer in the right script are fine.
+        answer, _ = parse_reply('{"answer": "ऐप में weather स्क्रीन देखें, आज बारिश नहीं होगी।"}', "hi")
+        self.assertIn("weather", answer)
+
+    def test_an_unusable_reply_is_asked_for_once_more(self):
+        import asyncio
+
+        from v2.assistant import reply
+
+        provider = AsyncMock(side_effect=["{}", '{"answer": "ଆଜି ପାଣି ଦିଅନ୍ତୁ ନାହିଁ।", "action": "weather"}'])
+        with patch("v2.assistant.complete", provider):
+            self.assertEqual(asyncio.run(reply([], "or")), ("ଆଜି ପାଣି ଦିଅନ୍ତୁ ନାହିଁ।", "weather"))
+        self.assertEqual(provider.await_count, 2)
+        provider = AsyncMock(return_value="{}")
+        with patch("v2.assistant.complete", provider), self.assertRaises(HTTPException):
+            asyncio.run(reply([], "or"))
+        self.assertEqual(provider.await_count, 2)
+        # Latin letters twice: the second answer is shown rather than an error.
+        provider = AsyncMock(return_value='{"answer": "Aaj paani mat do.", "action": "weather"}')
+        with patch("v2.assistant.complete", provider):
+            self.assertEqual(asyncio.run(reply([], "hi")), ("Aaj paani mat do.", "weather"))
+        self.assertEqual(provider.await_count, 2)
+
+    def test_json_mode_is_used_only_when_asked_for(self):
+        import asyncio
+
+        sent = []
+
+        class Client:
+            def __init__(self, *args, **kwargs):
+                pass
+
+            async def __aenter__(self):
+                return self
+
+            async def __aexit__(self, *args):
+                return False
+
+            async def post(self, url, headers, json):
+                sent.append(json)
+                return type(
+                    "Response",
+                    (),
+                    {
+                        "status_code": 200,
+                        "content": b"{}",
+                        "json": lambda self: {"choices": [{"message": {"content": "ok"}}]},
+                    },
+                )()
+
+        with patch.dict(os.environ, {"SARVAM_API_KEY": "test"}), patch("v2.assistant.httpx.AsyncClient", Client):
+            asyncio.run(complete([{"role": "user", "content": "hello"}]))
+            asyncio.run(complete([{"role": "user", "content": "hello"}], json_mode=True))
+        self.assertNotIn("response_format", sent[0])
+        self.assertEqual(sent[1]["response_format"], {"type": "json_object"})
+
 
 @unittest.skipUnless(os.getenv("V2_TEST_DATABASE_URL"), "Dedicated disposable PostGIS test URL required")
 class AssistantEndpointTests(unittest.TestCase):
@@ -196,7 +274,7 @@ class AssistantEndpointTests(unittest.TestCase):
         self.sign_in(self.a)
         self.sign_in(self.b, "+919000000002")
         plot = self.field(self.a)
-        provider = AsyncMock(return_value='{"answer": "ok", "action": "none"}')
+        provider = AsyncMock(return_value='{"answer": "ठीक है", "action": "none"}')
         with patch("v2.assistant.complete", provider):
             self.assertEqual(self.ask(self.a).status_code, 403)
             self.consent(self.a, "speech_processing")
@@ -214,7 +292,7 @@ class AssistantEndpointTests(unittest.TestCase):
 
         async def withdraw(messages):
             self.consent(self.a, "speech_processing", granted=False)
-            return '{"answer": "ok", "action": "none"}'
+            return '{"answer": "ठीक है", "action": "none"}'
 
         with patch("v2.assistant.complete", withdraw):
             self.assertEqual(self.ask(self.a).status_code, 403)
@@ -222,7 +300,7 @@ class AssistantEndpointTests(unittest.TestCase):
     def test_per_farmer_hourly_limit(self):
         self.sign_in(self.a)
         self.consent(self.a, "speech_processing")
-        with patch("v2.assistant.complete", AsyncMock(return_value='{"answer": "ok", "action": "none"}')):
+        with patch("v2.assistant.complete", AsyncMock(return_value='{"answer": "ठीक है", "action": "none"}')):
             codes = []
             for _ in range(11):
                 codes.append(self.ask(self.a).status_code)

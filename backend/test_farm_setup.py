@@ -44,6 +44,35 @@ class AgronomyTests(unittest.TestCase):
         self.assertEqual(match_location("Rajsthan", None)["state_code"], 8)
         self.assertIsNone(match_location("Atlantis", None))
 
+    def test_renamed_districts_resolve_and_near_spellings_do_not_guess_another_district(self):
+        cases = {
+            (None, "Bangalore"): ("Karnataka", "Bengaluru Urban"),
+            ("Odisha", "Cuttack"): ("Odisha", "Kataka"),
+            (None, "Cuttack"): ("Odisha", "Kataka"),
+            ("Uttar Pradesh", "Faizabad"): ("Uttar Pradesh", "Ayodhya"),
+            ("Uttar Pradesh", "Firozabad"): ("Uttar Pradesh", "Firozabad"),
+            ("Maharashtra", "Aurangabad"): ("Maharashtra", "Chhatrapati Sambhajinagar"),
+            ("Bihar", "Aurangabad"): ("Bihar", "Aurangabad"),
+            ("Haryana", "Gurgaon"): ("Haryana", "Gurugram"),
+            ("Kerala", "Calicut"): ("Kerala", "Kozhikode"),
+            ("West Bengal", "Burdwan"): ("West Bengal", "Purba Bardhaman"),
+            ("Odisha", "Keonjhar"): ("Odisha", "Kendujhar"),
+        }
+        for (state, district), expected in cases.items():
+            with self.subTest(district=district, state=state):
+                place = match_location(state, district)
+                self.assertEqual((place["state"], place["district"]), expected)
+        # Without a state, an old name that is also a current district elsewhere is not renamed.
+        self.assertEqual(match_location(None, "Aurangabad")["state"], "Bihar")
+
+    def test_every_renamed_district_points_at_a_catalogue_district(self):
+        from v2.locations import DISTRICT_RENAMES, resolve_location
+
+        for state, table in DISTRICT_RENAMES.items():
+            for old, current in table.items():
+                with self.subTest(old=old):
+                    self.assertEqual(resolve_location(state=state, district=current)["district"], current)
+
     def test_land_units_and_local_bigha(self):
         self.assertEqual(area_to_hectares(5, "hectare"), 5.0)
         self.assertAlmostEqual(area_to_hectares(10, "acre"), 4.0469, places=3)

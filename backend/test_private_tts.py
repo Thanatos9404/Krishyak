@@ -81,6 +81,16 @@ class ReadAloudTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(payload["model"], "bulbul:v3")
         self.assertEqual(payload["speaker"], "shubh")
 
+    async def test_languages_without_a_voice_borrow_one_written_in_the_same_script(self):
+        with patch.dict(os.environ, {"SARVAM_API_KEY": "test"}):
+            languages = await SarvamTtsProvider().languages()
+        self.assertTrue({"ne", "mai", "kok", "as"} <= set(languages))
+        self.assertFalse({"ur", "ks", "sd", "mni", "sat"} & set(languages))
+        for language, voice in (("ne", "hi-IN"), ("kok", "mr-IN"), ("as", "bn-IN")):
+            with patch("v2.tts.bounded_post", AsyncMock(return_value=self.audio)) as transport:
+                await SarvamTtsProvider().synthesize("पानी", language)
+            self.assertEqual(transport.call_args.kwargs["payload"]["language_code"], voice)
+
     async def test_bhashini_discovers_languages_rejects_ssrf_and_blocks_unapproved_production(self):
         environment = {
             "BHASHINI_TTS_ENABLED": "true",

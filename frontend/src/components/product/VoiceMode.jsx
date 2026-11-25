@@ -62,8 +62,14 @@ export function VoiceMode({ workspace: w, onClose }) {
     return () => window.removeEventListener("keydown", close);
   }, [cancel, onClose]);
   useEffect(() => {
-    end.current?.scrollIntoView?.({ block: "end", behavior: "smooth" });
-  }, [voice.turns.length, voice.phase]);
+    // Scroll only the conversation. scrollIntoView also scrolls every
+    // ancestor, including the dialog itself, sideways.
+    const list = end.current?.parentElement;
+    list?.scrollTo?.({
+      top: list.scrollHeight,
+      behavior: still ? "auto" : "smooth",
+    });
+  }, [voice.turns.length, voice.phase, still]);
   const close = () => {
     voice.cancel();
     onClose();
@@ -121,6 +127,11 @@ export function VoiceMode({ workspace: w, onClose }) {
                 { v0: info.nativeName },
               )}
             </p>
+            {voice.voiceNote && (
+              <p className="voice-note">
+                {tx(voice.voiceNote.text, { v0: voice.voiceNote.v0 })}
+              </p>
+            )}
           </div>
         )}
         <AnimatePresence initial={false}>

@@ -52,6 +52,12 @@ const cropCatalogFile = "src/features/product/cropCatalog.json";
 for (const crop of JSON.parse(fs.readFileSync(path.join(root, "frontend", cropCatalogFile), "utf8"))) {
   collect(crop.label, cropCatalogFile, 1, "crop-label", true);
 }
+// Government support prices: crop names, varieties and the product they apply to.
+const supportPricesFile = "src/data/msp_data.json";
+for (const [name, row] of Object.entries(JSON.parse(fs.readFileSync(path.join(root, "frontend", supportPricesFile), "utf8")).crops)) {
+  collect(name, supportPricesFile, 1, "support-price", true);
+  if (row.variety) collect(row.variety, supportPricesFile, 1, "support-price", true);
+}
 const locationsFile = "src/features/product/indiaLocations.json";
 const locations = JSON.parse(fs.readFileSync(path.join(root, "frontend", locationsFile), "utf8"));
 for (const row of [...locations.states, ...locations.districts]) {

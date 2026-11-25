@@ -10,10 +10,13 @@ import {
 } from "lucide-react";
 import supportPrices from "../../data/msp_data.json";
 import { farmApi } from "../../features/farms/api";
-import { findCrop } from "../../features/product/crops";
+import { findCrop, findCropByName } from "../../features/product/crops";
 import { CropPicker } from "./CropPicker";
 import { IndiaLocationPicker } from "./IndiaLocationPicker";
 import { locationFromProfile } from "../../features/product/indiaLocations";
+
+// What a support price is paid on, where that is not the crop itself.
+const PRICE_BASIS = { paddy: "Paddy", seed_cotton: "Seed cotton" };
 
 export function supportPriceFor(crop) {
   const row = findCrop(crop);
@@ -76,7 +79,7 @@ function Trend({ change }) {
     <span className={`trend ${change.direction}`}>
       <Icon size={16} aria-hidden="true" />
       {change.direction !== "steady"
-        ? tx("{{v0}}% in a week", { v0: value })
+        ? tx("{{v0}} in a week", { v0: `${value}%` })
         : Math.abs(change.percent) < 0.05
           ? tx("Steady over a week")
           : tx("Steady over a week ({{v0}}%)", { v0: value })}
@@ -182,13 +185,16 @@ function NationalPrice({ national, support, lead }) {
       {lead && margin !== null && (
         <p className="msp-compare">
           {margin >= 0
-            ? tx(
-                "{{v0}}% above the government support price (MSP) of {{v1}}.",
-                { v0: Math.round(margin), v1: rupees(support.msp, language) },
-              )
+            ? tx("{{v0}} above the government support price (MSP) of {{v1}}.", {
+                v0: `${Math.round(margin)}%`,
+                v1: rupees(support.msp, language),
+              })
             : tx(
-                "{{v0}}% below the government support price (MSP) of {{v1}}. Ask about procurement centres near you.",
-                { v0: Math.round(-margin), v1: rupees(support.msp, language) },
+                "{{v0}} below the government support price (MSP) of {{v1}}. Ask about procurement centres near you.",
+                {
+                  v0: `${Math.round(-margin)}%`,
+                  v1: rupees(support.msp, language),
+                },
               )}
         </p>
       )}
@@ -280,16 +286,16 @@ export function MarketPrices({ result, crop, compact = false }) {
             <p className="msp-compare">
               {margin >= 0
                 ? tx(
-                    "{{v0}}% above the government support price (MSP) of {{v1}}.",
+                    "{{v0}} above the government support price (MSP) of {{v1}}.",
                     {
-                      v0: Math.round(margin),
+                      v0: `${Math.round(margin)}%`,
                       v1: rupees(support.msp, language),
                     },
                   )
                 : tx(
-                    "{{v0}}% below the government support price (MSP) of {{v1}}. Ask about procurement centres near you.",
+                    "{{v0}} below the government support price (MSP) of {{v1}}. Ask about procurement centres near you.",
                     {
-                      v0: Math.round(-margin),
+                      v0: `${Math.round(-margin)}%`,
                       v1: rupees(support.msp, language),
                     },
                   )}
@@ -307,7 +313,8 @@ export function MarketPrices({ result, crop, compact = false }) {
               <span>
                 <strong>{row.market}</strong>
                 <small>
-                  {row.district} · {row.variety} · {formatDate(row.latest.date)}
+                  {row.district} · {tx(row.variety)} ·{" "}
+                  {formatDate(row.latest.date)}
                 </small>
               </span>
               <span className="market-list-price">
@@ -433,9 +440,13 @@ export function MarketView({ workspace: w }) {
             {Object.entries(supportPrices.crops).map(([name, row]) => (
               <div key={name}>
                 <dt>
-                  {name} · {row.variety}{" "}
+                  {tx(findCropByName(name)?.label || name)} · {tx(row.variety)}{" "}
                   {row.product_basis
-                    ? tx("\xB7 {{v0}}", { v0: row.product_basis })
+                    ? tx("\xB7 {{v0}}", {
+                        v0: tx(
+                          PRICE_BASIS[row.product_basis] || row.product_basis,
+                        ),
+                      })
                     : ""}
                 </dt>
                 <dd>

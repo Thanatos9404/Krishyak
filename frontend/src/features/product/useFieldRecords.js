@@ -15,7 +15,10 @@ export function useFieldRecords({
     [selected, setSelected] = useState("");
   const [today, setToday] = useState(null),
     [timeline, setTimeline] = useState([]),
-    [cycles, setCycles] = useState([]);
+    [cycles, setCycles] = useState([]),
+    // The field whose crop cycles have arrived (or failed to). Reads that
+    // depend on the crop wait for it, so they run once instead of twice.
+    [cyclesFor, setCyclesFor] = useState(null);
   const [savedAt, setSavedAt] = useState(null),
     [loading, setLoading] = useState(false);
   const selectedRef = useRef(selected),
@@ -137,7 +140,10 @@ export function useFieldRecords({
         setOffline(true);
       } else setError(problem.message);
     } finally {
-      if (alive.current && request === generation.current) setLoading(false);
+      if (alive.current && request === generation.current) {
+        setLoading(false);
+        if (selectedRef.current === field) setCyclesFor(field);
+      }
     }
   }, [ownerRef, offlineOpt, setError, setOffline]);
   useEffect(() => {
@@ -145,6 +151,7 @@ export function useFieldRecords({
     setToday(null);
     setTimeline([]);
     setCycles([]);
+    setCyclesFor(null);
     setSavedAt(null);
     if (selected && farmer?.id) refreshEvidence();
     if (selected && farmer?.id) fieldChoice(farmer.id, selected);
@@ -161,6 +168,7 @@ export function useFieldRecords({
     timeline,
     setTimeline,
     cycles,
+    cyclesReady: Boolean(selected) && cyclesFor === selected,
     savedAt,
     evidenceLoading: loading,
     loadFields,

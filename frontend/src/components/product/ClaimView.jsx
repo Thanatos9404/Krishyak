@@ -492,7 +492,9 @@ export function ClaimKitView({ workspace: w, reportId }) {
           <div>
             <dt>{tx("Damaged part of the field")}</dt>
             <dd>
-              {tx("About {{v0}}%", { v0: Math.round(report.affected_percent) })}
+              {tx("About {{v0}}", {
+                v0: `${Math.round(report.affected_percent)}%`,
+              })}
             </dd>
           </div>
           {report.note && report.note !== "Crop loss reported" && (

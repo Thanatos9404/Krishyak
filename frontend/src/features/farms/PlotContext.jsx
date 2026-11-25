@@ -118,7 +118,7 @@ export default function PlotContext({
                     <th>{tx("\xB0C")}</th>
                     <th>{tx("Humidity %")}</th>
                     <th>{tx("Rain mm")}</th>
-                    <th>Wind km/h</th>
+                    <th>{tx("Wind km/h")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -136,7 +136,7 @@ export default function PlotContext({
             </div>
             <ul>
               {weather.provenance.limitations.map((text) => (
-                <li key={text}>{text}</li>
+                <li key={text}>{tx(text)}</li>
               ))}
             </ul>
           </details>

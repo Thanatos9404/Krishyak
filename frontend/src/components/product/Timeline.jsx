@@ -33,6 +33,25 @@ const ICONS = {
   irrigation: Droplets,
   farmer_observation: ClipboardCheck,
 };
+// Where a record came from, in words a farmer reads.
+const SOURCE_TYPES = {
+  weather_model: "Weather forecast model",
+  remote_sensing: "Satellite",
+  remote_sensing_and_weather_model: "Satellite and weather model",
+  farmer_entered: "Entered by you",
+  farmer_reported_soil: "Soil reading you entered",
+  image_classifier: "Photo check",
+  historical_dataset: "Historical records",
+  rules: "Krishyak rules",
+};
+const SCAN_EVENTS = {
+  disease_detected:
+    "Photo check found a likely problem. Confirm symptoms in the field.",
+  healthy: "Photo check saw no common disease. Keep checking the field.",
+  uncertain:
+    "Photo check could not tell. Take a clearer photo or ask an expert.",
+  unsupported: "This crop is not covered by photo checks yet.",
+};
 export function eventDescription(item) {
   const data = item.payload || {};
   if (data.note) return data.note;
@@ -41,7 +60,10 @@ export function eventDescription(item) {
   if (item.kind === "weather")
     return "Forecast retrieved. Local conditions may differ from the weather model.";
   if (item.kind === "disease_scan")
-    return `Photo analysis ${String(data.status || data.result?.status || "recorded").replaceAll("_", " ")}. Confirm symptoms in the field.`;
+    return (
+      SCAN_EVENTS[data.status || data.result?.status] ||
+      "Photo checked. Confirm symptoms in the field."
+    );
   if (Array.isArray(data.measurements))
     return data.measurements
       .map(
@@ -83,7 +105,10 @@ export function Timeline({ items, onMore, busy, offline }) {
                   <details>
                     <summary>{tx("Source details")}</summary>
                     <p>
-                      {item.source_type?.replaceAll("_", " ")} · {item.source}
+                      {SOURCE_TYPES[item.source_type]
+                        ? tx(SOURCE_TYPES[item.source_type])
+                        : item.source_type?.replaceAll("_", " ")}{" "}
+                      · {item.source}
                     </p>
                   </details>
                 </div>

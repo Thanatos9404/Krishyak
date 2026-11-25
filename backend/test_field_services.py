@@ -538,7 +538,7 @@ class FieldServiceTests(unittest.TestCase):
         reply = AsyncMock(return_value='{"answer": "यह झुलसा रोग लग रहा है।", "action": "scan"}')
         data = {"question": "इस पत्ते को क्या हुआ है?", "language": "hi", "plot_id": plot["id"]}
         files = {"frame": ("frame.jpg", jpeg(), "image/jpeg")}
-        with patch("v2.live.classify", return_value=seen) as model, patch("v2.live.complete", reply):
+        with patch("v2.live.classify", return_value=seen) as model, patch("v2.assistant.complete", reply):
             response = me.post("/api/v2/live/turn", data=data, files=files)
         self.assertEqual(response.status_code, 200, response.text)
         body = response.json()
@@ -561,7 +561,7 @@ class FieldServiceTests(unittest.TestCase):
         self.assertEqual(me.post("/api/v2/live/turn", data=data, files=files).status_code, 403)
         self.allow(me, "agronomic_analysis")
         reply = AsyncMock(return_value='{"answer": "Please show one leaf.", "action": "none"}')
-        with patch("v2.live.complete", reply):
+        with patch("v2.assistant.complete", reply):
             no_field = me.post("/api/v2/live/turn", data=data, files=files)
             no_frame = me.post("/api/v2/live/turn", data=data)
             bad = me.post("/api/v2/live/turn", data=data, files={"frame": ("x.jpg", b"not an image", "image/jpeg")})

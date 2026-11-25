@@ -52,3 +52,17 @@ test("every pilot pack has searchable native labels for every record crop", () =
     }
   }
 });
+
+test("support-price names find the catalogue crop, so Gram reads as chickpea", () => {
+  const { findCropByName } = require("./crops");
+  expect(findCropByName("Gram")?.id).toBe("chickpea");
+  expect(findCropByName("bajra")?.label).toBe("Pearl millet (Bajra)");
+  expect(findCropByName("Copra (Ball)")).toBeNull();
+});
+
+test("crop cycle statuses read as words a farmer uses", () => {
+  const { cycleStatus } = require("./crops");
+  expect(cycleStatus("active")).toBe("Growing now");
+  expect(cycleStatus("completed", (text) => `[${text}]`)).toBe("[Harvested]");
+  expect(cycleStatus("unknown_state")).toBe("unknown_state");
+});

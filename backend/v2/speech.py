@@ -4,9 +4,10 @@ from fastapi import APIRouter, Depends, File, Form, HTTPException, Request, Uplo
 
 from sarvam_service import LANGUAGES, api_key, capabilities, transcribe_audio
 from security import client_ip
+from speech_limits import positive_env
 
 from .router import current_farmer, database, recheck, require_consent
-from .tts import ReadRequest, bounded_post
+from .tts import BORROWED_VOICES, ReadRequest, bounded_post
 
 router = APIRouter(prefix="/api/v2/speech", tags=["Private form dictation"])
 SUPPORTED = set(LANGUAGES)
@@ -32,6 +33,10 @@ async def speech_capabilities(request: Request, farmer=Depends(current_farmer)):
     result = capabilities()
     result["tts_providers"] = await request.app.state.v2_read_aloud.capabilities()
     result["tts_languages"] = sorted({code for codes in result["tts_providers"].values() for code in codes})
+    # Languages read aloud by a related language's voice, so the app can say so.
+    result["tts_borrowed_voices"] = {
+        code: voice for code, voice in BORROWED_VOICES.items() if code in result["tts_providers"].get("sarvam", [])
+    }
     return result | {
         "consent_required": "speech_processing",
         "retention": "no_persistent_storage",
@@ -55,11 +60,11 @@ async def form_dictation(
         await file.close()
         raise HTTPException(415, "Private dictation requires a bounded WAV recording")
     quotas = request.app.state.v2_quotas
-    quotas.check("form_speech", str(farmer.id), 12, 3600)
-    quotas.check("form_speech_ip", client_ip(request), 6, 60)
-    quotas.check("form_speech_global", "all", 100, 86400)
-    from speech_limits import positive_env
-
+    # Every spoken question to Ask Krishyak is one recording, so a farmer may
+    # record as often as they may ask (30 an hour, 10 a minute from one place).
+    quotas.check("form_speech", str(farmer.id), 30, 3600)
+    quotas.check("form_speech_ip", client_ip(request), 10, 60)
+    quotas.check("form_speech_global", "all", positive_env("SARVAM_STT_DAILY", 100), 86400)
     quotas.check("stt_seconds_global", "all", positive_env("SARVAM_STT_SECONDS_DAILY", 3000), 86400, amount=30)
     # Release the farmer lock during external work, then check withdrawal/session
     # before returning the transcript. No audio or transcript is persisted.
@@ -79,9 +84,10 @@ async def private_read_aloud(
     require_consent(db, farmer, "speech_processing")
     quotas = request.app.state.v2_quotas
     owner = farmer.id
-    quotas.check("tts_user", str(owner), 12, 3600)
-    quotas.check("tts_ip", client_ip(request), 6, 60)
-    quotas.check("tts_global", "all", 100, 86400)
+    # Every answer is read aloud once, so the limits follow the assistant's.
+    quotas.check("tts_user", str(owner), 30, 3600)
+    quotas.check("tts_ip", client_ip(request), 10, 60)
+    quotas.check("tts_global", "all", positive_env("SARVAM_TTS_DAILY", 100), 86400)
     db.commit()
     result = await request.app.state.v2_read_aloud.synthesize(payload, request, owner)
     await recheck(db, request, "speech_processing", owner=owner, changed="Account changed during speech processing")

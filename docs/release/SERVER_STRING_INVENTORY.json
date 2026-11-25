@@ -32,42 +32,47 @@
   {
     "source": "The assistant returned an empty answer",
     "file": "backend/v2/assistant.py",
-    "line": 248
-  },
-  {
-    "source": "The voice assistant is not configured on the server.",
-    "file": "backend/v2/assistant.py",
-    "line": 255
-  },
-  {
-    "source": "The voice assistant is busy. Please try again in a minute.",
-    "file": "backend/v2/assistant.py",
-    "line": 273
-  },
-  {
-    "source": "The voice assistant is unavailable. Please try again.",
-    "file": "backend/v2/assistant.py",
-    "line": 275
-  },
-  {
-    "source": "Select a supported language",
-    "file": "backend/v2/assistant.py",
-    "line": 292
-  },
-  {
-    "source": "Account changed during the question",
-    "file": "backend/v2/assistant.py",
-    "line": 308
-  },
-  {
-    "source": "The voice assistant is unavailable. Please try again.",
-    "file": "backend/v2/assistant.py",
-    "line": 271
+    "line": 279
   },
   {
     "source": "The assistant returned an invalid answer",
     "file": "backend/v2/assistant.py",
-    "line": 279
+    "line": 281
+  },
+  {
+    "source": "The voice assistant is not configured on the server.",
+    "file": "backend/v2/assistant.py",
+    "line": 305
+  },
+  {
+    "source": "The voice assistant is busy. Please try again in a minute.",
+    "file": "backend/v2/assistant.py",
+    "line": 329
+  },
+  {
+    "source": "The voice assistant is unavailable. Please try again.",
+    "file": "backend/v2/assistant.py",
+    "line": 331
+  },
+  {
+    "source": "Select a supported language",
+    "file": "backend/v2/assistant.py",
+    "line": 348
+  },
+  {
+    "source": "Account changed during the question",
+    "file": "backend/v2/assistant.py",
+    "line": 364
+  },
+  {
+    "source": "The voice assistant is unavailable. Please try again.",
+    "file": "backend/v2/assistant.py",
+    "line": 327
+  },
+  {
+    "source": "The assistant returned an invalid answer",
+    "file": "backend/v2/assistant.py",
+    "line": 335
   },
   {
     "source": "Untrusted request origin",
@@ -767,32 +772,32 @@
   {
     "source": "Krishyak could not understand that. Please try again or fill the form.",
     "file": "backend/v2/farm_setup.py",
-    "line": 76
+    "line": 77
   },
   {
     "source": "Account changed while finding your location",
     "file": "backend/v2/farm_setup.py",
-    "line": 323
+    "line": 324
   },
   {
     "source": "Select a supported language",
     "file": "backend/v2/farm_setup.py",
-    "line": 354
+    "line": 355
   },
   {
     "source": "Account changed while reading your details",
     "file": "backend/v2/farm_setup.py",
-    "line": 379
+    "line": 380
   },
   {
     "source": "This location is outside India. Choose your state and district instead.",
     "file": "backend/v2/farm_setup.py",
-    "line": 295
+    "line": 296
   },
   {
     "source": "Krishyak could not find this place on the map. Check the village name or use your location.",
     "file": "backend/v2/farm_setup.py",
-    "line": 305
+    "line": 306
   },
   {
     "source": "This is public program information, not eligibility approval",
@@ -1552,17 +1557,17 @@
   {
     "source": "Select a supported language",
     "file": "backend/v2/speech.py",
-    "line": 53
+    "line": 58
   },
   {
     "source": "Private dictation requires a bounded WAV recording",
     "file": "backend/v2/speech.py",
-    "line": 56
+    "line": 61
   },
   {
     "source": "Account changed during speech processing",
     "file": "backend/v2/speech.py",
-    "line": 87
+    "line": 93
   },
   {
     "source": "Invalid speech audio",
@@ -1592,42 +1597,42 @@
   {
     "source": "Speech unavailable for the selected language",
     "file": "backend/v2/tts.py",
-    "line": 218
+    "line": 227
   },
   {
     "source": "Speech unavailable for the selected language",
     "file": "backend/v2/tts.py",
-    "line": 252
+    "line": 261
   },
   {
     "source": "Speech unavailable for the selected language",
     "file": "backend/v2/tts.py",
-    "line": 259
+    "line": 268
   },
   {
     "source": "Speech service unavailable; retry later",
     "file": "backend/v2/tts.py",
-    "line": 270
+    "line": 279
   },
   {
     "source": "Speech service busy; retry later",
     "file": "backend/v2/tts.py",
-    "line": 272
+    "line": 281
   },
   {
     "source": "Speech service unavailable; retry later",
     "file": "backend/v2/tts.py",
-    "line": 189
+    "line": 198
   },
   {
     "source": "Invalid speech audio",
     "file": "backend/v2/tts.py",
-    "line": 233
+    "line": 242
   },
   {
     "source": "Speech service unavailable",
     "file": "backend/v2/tts.py",
-    "line": 296
+    "line": 305
   },
   {
     "source": "Speech usage limit reached; retry later",
@@ -1773,6 +1778,236 @@
     "source": "No irrigation, disease, crop species or soil nutrient inference.",
     "file": "backend/remote_sensing/climate.py",
     "line": 96
+  },
+  {
+    "source": "Brown Planthopper (BPH)",
+    "file": "backend/pest_intelligence.py",
+    "line": 57
+  },
+  {
+    "source": "Hopper burn",
+    "file": "backend/pest_intelligence.py",
+    "line": 60
+  },
+  {
+    "source": "Yellowing of leaves",
+    "file": "backend/pest_intelligence.py",
+    "line": 60
+  },
+  {
+    "source": "Wilting",
+    "file": "backend/pest_intelligence.py",
+    "line": 60
+  },
+  {
+    "source": "Yellow Stem Borer",
+    "file": "backend/pest_intelligence.py",
+    "line": 70
+  },
+  {
+    "source": "Dead hearts in vegetative stage",
+    "file": "backend/pest_intelligence.py",
+    "line": 73
+  },
+  {
+    "source": "White ear heads",
+    "file": "backend/pest_intelligence.py",
+    "line": 73
+  },
+  {
+    "source": "Rice Leaf Folder",
+    "file": "backend/pest_intelligence.py",
+    "line": 83
+  },
+  {
+    "source": "Longitudinal folding of leaves",
+    "file": "backend/pest_intelligence.py",
+    "line": 86
+  },
+  {
+    "source": "Scraping of green tissue",
+    "file": "backend/pest_intelligence.py",
+    "line": 86
+  },
+  {
+    "source": "Wheat Aphid",
+    "file": "backend/pest_intelligence.py",
+    "line": 98
+  },
+  {
+    "source": "Yellowing of leaves",
+    "file": "backend/pest_intelligence.py",
+    "line": 101
+  },
+  {
+    "source": "Stunted growth",
+    "file": "backend/pest_intelligence.py",
+    "line": 101
+  },
+  {
+    "source": "Honeydew secretion",
+    "file": "backend/pest_intelligence.py",
+    "line": 101
+  },
+  {
+    "source": "Termite",
+    "file": "backend/pest_intelligence.py",
+    "line": 111
+  },
+  {
+    "source": "Drying of plants in patches",
+    "file": "backend/pest_intelligence.py",
+    "line": 114
+  },
+  {
+    "source": "Hollow stems",
+    "file": "backend/pest_intelligence.py",
+    "line": 114
+  },
+  {
+    "source": "Mud galleries",
+    "file": "backend/pest_intelligence.py",
+    "line": 114
+  },
+  {
+    "source": "American Bollworm",
+    "file": "backend/pest_intelligence.py",
+    "line": 126
+  },
+  {
+    "source": "Bore holes in bolls",
+    "file": "backend/pest_intelligence.py",
+    "line": 129
+  },
+  {
+    "source": "Damaged squares",
+    "file": "backend/pest_intelligence.py",
+    "line": 129
+  },
+  {
+    "source": "Shedding of flowers",
+    "file": "backend/pest_intelligence.py",
+    "line": 129
+  },
+  {
+    "source": "Cotton Whitefly",
+    "file": "backend/pest_intelligence.py",
+    "line": 139
+  },
+  {
+    "source": "Yellowing of leaves",
+    "file": "backend/pest_intelligence.py",
+    "line": 142
+  },
+  {
+    "source": "Sticky honeydew",
+    "file": "backend/pest_intelligence.py",
+    "line": 142
+  },
+  {
+    "source": "Sooty mold",
+    "file": "backend/pest_intelligence.py",
+    "line": 142
+  },
+  {
+    "source": "Leaf curl",
+    "file": "backend/pest_intelligence.py",
+    "line": 142
+  },
+  {
+    "source": "Pink Bollworm",
+    "file": "backend/pest_intelligence.py",
+    "line": 152
+  },
+  {
+    "source": "Rosetted flowers",
+    "file": "backend/pest_intelligence.py",
+    "line": 155
+  },
+  {
+    "source": "Pink larvae in bolls",
+    "file": "backend/pest_intelligence.py",
+    "line": 155
+  },
+  {
+    "source": "Damaged seeds",
+    "file": "backend/pest_intelligence.py",
+    "line": 155
+  },
+  {
+    "source": "Early Shoot Borer",
+    "file": "backend/pest_intelligence.py",
+    "line": 167
+  },
+  {
+    "source": "Dead hearts",
+    "file": "backend/pest_intelligence.py",
+    "line": 170
+  },
+  {
+    "source": "Bore holes in shoots",
+    "file": "backend/pest_intelligence.py",
+    "line": 170
+  },
+  {
+    "source": "Frass in shoots",
+    "file": "backend/pest_intelligence.py",
+    "line": 170
+  },
+  {
+    "source": "Top Shoot Borer",
+    "file": "backend/pest_intelligence.py",
+    "line": 180
+  },
+  {
+    "source": "Bunchy top",
+    "file": "backend/pest_intelligence.py",
+    "line": 183
+  },
+  {
+    "source": "Dead heart",
+    "file": "backend/pest_intelligence.py",
+    "line": 183
+  },
+  {
+    "source": "Side shoots",
+    "file": "backend/pest_intelligence.py",
+    "line": 183
+  },
+  {
+    "source": "Sugarcane Woolly Aphid",
+    "file": "backend/pest_intelligence.py",
+    "line": 193
+  },
+  {
+    "source": "White waxy coating",
+    "file": "backend/pest_intelligence.py",
+    "line": 196
+  },
+  {
+    "source": "Yellowing",
+    "file": "backend/pest_intelligence.py",
+    "line": 196
+  },
+  {
+    "source": "Stunted growth",
+    "file": "backend/pest_intelligence.py",
+    "line": 196
+  },
+  {
+    "source": "Sooty mold",
+    "file": "backend/pest_intelligence.py",
+    "line": 196
+  },
+  {
+    "source": "PMFBY crop insurance",
+    "file": "backend/v2/government.py",
+    "line": 47
+  },
+  {
+    "source": "Soil Health Card",
+    "file": "backend/v2/government.py",
+    "line": 62
   },
   {
     "source": "Check several plants across the field before deciding how widespread it is.",

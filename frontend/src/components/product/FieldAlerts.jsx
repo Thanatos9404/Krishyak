@@ -144,9 +144,12 @@ const KINDS = {
 // ``plan`` can be handed in ready-made (the public example field).
 export function CalendarCard({ workspace: w, plan: given }) {
   const { tx, formatDate } = useProductLocale();
+  const ready = w.cyclesReady !== false;
   const fetched = useFieldRecord(
-    !given && w.selected && !w.offline ? `/plots/${w.selected}/calendar` : null,
-    [w.selected, w.offline, w.cycles?.[0]?.id, Boolean(given)],
+    !given && w.selected && !w.offline && ready
+      ? `/plots/${w.selected}/calendar`
+      : null,
+    [w.selected, w.offline, ready, w.cycles?.[0]?.id, Boolean(given)],
   );
   const plan = given || fetched;
   if (!plan || plan.status !== "available") return null;

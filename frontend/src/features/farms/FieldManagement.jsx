@@ -4,7 +4,14 @@ import { farmApi } from "./api";
 import { BoundaryEditor } from "../../components/product/BoundaryEditor";
 import { AreaInput } from "../../components/product/AreaInput";
 import { fromHectares, toHectares } from "../product/india";
-import { cropLabel } from "../product/crops";
+import { CYCLE_STATUS, cropLabel, cycleStatus } from "../product/crops";
+const FIELD_LABELS = {
+  variety: "Variety",
+  growth_stage: "Growth stage",
+  season: "Season",
+  sowing_date: "Sowing date",
+  expected_harvest: "Expected harvest",
+};
 import { CropPicker } from "../../components/product/CropPicker";
 function CycleEditor({ cycle, busy, offline, act, reload }) {
   const { tx } = useProductLocale();
@@ -12,7 +19,8 @@ function CycleEditor({ cycle, busy, offline, act, reload }) {
   return (
     <details>
       <summary>
-        {cropLabel(cycle, tx)} · {tx(cycle.status)} {tx("\xB7 edit cycle")}
+        {cropLabel(cycle, tx)} · {cycleStatus(cycle.status, tx)}{" "}
+        {tx("\xB7 edit cycle")}
       </summary>
       <form
         onSubmit={(event) => {
@@ -52,7 +60,7 @@ function CycleEditor({ cycle, busy, offline, act, reload }) {
         />
         {["variety", "growth_stage", "season"].map((key) => (
           <label className="v2-label" key={key}>
-            {key.replaceAll("_", " ")}
+            {tx(FIELD_LABELS[key])}
             <input
               value={draft[key] || ""}
               maxLength={key === "variety" ? 100 : 50}
@@ -67,7 +75,7 @@ function CycleEditor({ cycle, busy, offline, act, reload }) {
         ))}
         {["sowing_date", "expected_harvest"].map((key) => (
           <label className="v2-label" key={key}>
-            {key.replaceAll("_", " ")}
+            {tx(FIELD_LABELS[key])}
             <input
               type="date"
               required
@@ -92,8 +100,10 @@ function CycleEditor({ cycle, busy, offline, act, reload }) {
               }))
             }
           >
-            {["planned", "active", "completed", "cancelled"].map((status) => (
-              <option key={status}>{status}</option>
+            {Object.keys(CYCLE_STATUS).map((status) => (
+              <option key={status} value={status}>
+                {cycleStatus(status, tx)}
+              </option>
             ))}
           </select>
         </label>
@@ -106,7 +116,9 @@ function CycleEditor({ cycle, busy, offline, act, reload }) {
             act(async () => {
               if (
                 !window.confirm(
-                  "Delete this crop cycle? Field observations remain in the timeline.",
+                  tx(
+                    "Delete this crop cycle? Field observations remain in the timeline.",
+                  ),
                 )
               )
                 return;

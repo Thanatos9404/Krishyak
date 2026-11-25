@@ -7,7 +7,7 @@ always overrides them; the assessment says so.
 
 import difflib
 
-from .locations import CATALOG, DISTRICTS, STATES, normalized_name, resolve_location
+from .locations import CATALOG, DISTRICTS, STATES, normalized_name, renamed_district, resolve_location
 
 SOIL_TYPES = ("Alluvial", "Black", "Red", "Laterite", "Desert", "Mountain", "Loamy", "Clay", "Sandy")
 AREA_UNITS = ("hectare", "acre", "bigha", "guntha", "kanal", "cent")
@@ -159,9 +159,15 @@ def match_location(state=None, district=None):
         close = difflib.get_close_matches(normalized_name(state), list(names), n=1, cutoff=0.8)
         state_code = names[close[0]] if close else None
     if district:
+        # A renamed district (Bangalore, Cuttack, Allahabad) before any guess:
+        # spelling similarity alone sent Bangalore to Bagalkote and Faizabad
+        # to Firozabad.
+        old = renamed_district(STATES[state_code]["name"] if state_code is not None else None, district)
+        if old:
+            return resolve_location(state=old[0], district=old[1])
         rows = [row for row in CATALOG["districts"] if state_code is None or row["state_code"] == state_code]
         names = {normalized_name(row["name"]): row["code"] for row in rows}
-        close = difflib.get_close_matches(normalized_name(district), list(names), n=1, cutoff=0.75)
+        close = difflib.get_close_matches(normalized_name(district), list(names), n=1, cutoff=0.8)
         if close:
             row = DISTRICTS[names[close[0]]]
             return resolve_location(state_code=row["state_code"], district_code=row["code"])

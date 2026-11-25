@@ -70,7 +70,8 @@ export function BoundaryEditor({ value, onChange }) {
   return (
     <fieldset className="boundary-editor">
       <legend>
-        {tx("Field boundary")} <span className="optional">optional</span>
+        {tx("Field boundary")}{" "}
+        <span className="optional">{tx("optional")}</span>
       </legend>
       <p>
         {tx(

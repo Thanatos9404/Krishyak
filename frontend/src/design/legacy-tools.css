@@ -1628,7 +1628,7 @@
   font-family: var(--font);
 }
 .legacy-tools .farm-empty-state__photo {
-  background-image: url(/images/terraces-800.webp);
+  background-image: url(/images/terraces-800-7f2fed8ebcda.webp);
   min-height: 220px;
   background-size: cover;
   background-position: center;

@@ -2,7 +2,7 @@ import { useProductLocale } from "../product/ProductLocale";
 import React, { useEffect, useState } from "react";
 import { farmApi } from "./api";
 export default function BenefitsPanel() {
-  const { tx } = useProductLocale();
+  const { tx, formatDate } = useProductLocale();
   const [catalog, setCatalog] = useState(null),
     [error, setError] = useState("");
   useEffect(() => {
@@ -33,26 +33,26 @@ export default function BenefitsPanel() {
       )}
       {catalog?.items.map((program) => (
         <article key={program.id} className="v2-event">
-          <h3>{program.name}</h3>
-          <p>{program.purpose}</p>
+          <h3>{tx(program.name)}</h3>
+          <p>{tx(program.purpose)}</p>
           <p>
             <strong>{tx("Needs official verification")}</strong>
           </p>
           <ul>
             {program.requires_verification.map((item) => (
-              <li key={item}>{item}</li>
+              <li key={item}>{tx(item)}</li>
             ))}
           </ul>
           <p>
-            {tx("Source review:")} {program.reviewed_at} ·{" "}
-            {program.review_scope}
+            {tx("Source review:")} {formatDate(program.reviewed_at)} ·{" "}
+            {tx(program.review_scope)}
           </p>
           <a
             href={program.official_url}
             target="_blank"
             rel="noopener noreferrer"
           >
-            {tx("Open official")} {program.name} portal
+            {tx("Open the official {{v0}} portal", { v0: tx(program.name) })}
           </a>
           <details>
             <summary>{tx("Source and limits")}</summary>
@@ -65,7 +65,7 @@ export default function BenefitsPanel() {
             </a>
             <ul>
               {catalog.limitations.map((item) => (
-                <li key={item}>{item}</li>
+                <li key={item}>{tx(item)}</li>
               ))}
             </ul>
           </details>

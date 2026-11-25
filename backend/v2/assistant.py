@@ -228,28 +228,78 @@ FACTS (the farmer's own records, may be incomplete):
 {json.dumps(facts, ensure_ascii=False, default=str)}"""
 
 
-def parse_reply(content):
-    """Accept the model's JSON, or fall back to its plain text."""
+def _field(text, key):
+    """One string field read from a JSON object that may be cut short."""
+    match = re.search(rf'"{key}"\s*:\s*"((?:[^"\\]|\\.)*)', text, re.S)
+    if not match:
+        return None
+    try:
+        return json.loads(f'"{match.group(1)}"')
+    except json.JSONDecodeError:
+        return match.group(1)
+
+
+def written_in(answer, language):
+    """False when a reply meant for another language came back mostly in Latin letters (English)."""
+    if language == "en":
+        return True
+    letters = re.findall(r"[^\W\d_]", answer)
+    latin = re.findall(r"[A-Za-z]", answer)
+    return len(latin) <= 0.5 * max(1, len(letters))
+
+
+def parse_reply(content, language="en", *, script=True):
+    """Accept the model's JSON, or its plain text. An empty reply is an error, and so
+    is one in Latin letters for another language unless script checking is off."""
     text = (content or "").strip()
     text = re.sub(r"^```(?:json)?|```$", "", text).strip()
     answer, action = text, "none"
     match = re.search(r"\{.*\}", text, re.S)
+    value = None
     if match:
         try:
             value = json.loads(match.group(0))
-            if isinstance(value, dict) and isinstance(value.get("answer"), str):
-                answer = value["answer"]
-                action = value.get("action") if value.get("action") in ACTIONS else "none"
         except json.JSONDecodeError:
-            pass
-    answer = re.sub(r"[*#_`>|]+", " ", answer)
+            value = None
+    if isinstance(value, dict):
+        # An object without an answer (the model sometimes returns just "{}") is no answer at all.
+        answer = value.get("answer") if isinstance(value.get("answer"), str) else ""
+        action = value.get("action") if value.get("action") in ACTIONS else "none"
+    elif text.startswith("{") or '"answer"' in text:
+        # A reply cut off before its closing brace. The model sometimes writes the
+        # answer as text and then repeats it as JSON; the text before the brace is
+        # then complete. Otherwise keep what the JSON holds. Never show the JSON.
+        before = text[: text.find("{")].strip() if "{" in text else ""
+        answer = before or _field(text, "answer") or ""
+        found = _field(text, "action")
+        action = found if found in ACTIONS else "none"
+    answer = re.sub(r"[*#_`>|{}]+", " ", answer)
     answer = re.sub(r"\s+", " ", answer).strip()
     if not answer:
         raise HTTPException(502, "The assistant returned an empty answer")
+    if script and not written_in(answer, language):
+        raise HTTPException(502, "The assistant returned an invalid answer")
     return answer[:900], action
 
 
-async def complete(messages, *, temperature=0.2):
+async def reply(messages, language):
+    """Ask, and ask once more when the reply is empty or in the wrong script.
+
+    Such replies come back in well under a second, so the second try costs
+    little. The second reply is kept whatever its script (a farmer who types
+    Hindi in Latin letters may get Latin letters back); only an empty one
+    fails. A provider failure or timeout is not repeated.
+    """
+    for attempt in range(2):
+        content = await complete(messages)
+        try:
+            return parse_reply(content, language, script=attempt == 0)
+        except HTTPException:
+            if attempt:
+                raise
+
+
+async def complete(messages, *, temperature=0.2, json_mode=False):
     key = os.getenv("SARVAM_API_KEY", "").strip()
     if not key:
         raise HTTPException(503, "The voice assistant is not configured on the server.")
@@ -257,12 +307,18 @@ async def complete(messages, *, temperature=0.2):
         "model": os.getenv("SARVAM_CHAT_MODEL", "sarvam-105b"),
         "messages": messages,
         "temperature": temperature,
-        "max_tokens": 400,
-        # Both callers ask for one JSON object; JSON mode guarantees valid syntax.
-        "response_format": {"type": "json_object"},
+        # Indian scripts take several tokens per word, and the model sometimes
+        # repeats its answer as JSON after the text, so leave room for both.
+        "max_tokens": 800,
         # Answers are short and spoken; reasoning would only add delay.
         "reasoning_effort": None,
     }
+    if json_mode:
+        # Only for English-only extraction. For answers in Indian languages,
+        # JSON mode often returns an empty "{}" (Marathi, Odia, Nepali, Hindi
+        # and others in testing on 25 November 2026), so spoken answers ask
+        # for JSON in the prompt and parse_reply copes with plain text.
+        payload["response_format"] = {"type": "json_object"}
     try:
         async with asyncio.timeout(30):
             async with httpx.AsyncClient(timeout=httpx.Timeout(28, connect=5), follow_redirects=False) as client:
@@ -304,7 +360,7 @@ async def ask(
     for turn in body.history:
         messages.append({"role": "user" if turn.role == "farmer" else "assistant", "content": turn.text})
     messages.append({"role": "user", "content": body.question})
-    answer, action = parse_reply(await complete(messages))
+    answer, action = await reply(messages, language)
     await recheck(db, request, "speech_processing", owner=owner, changed="Account changed during the question")
     return {
         "answer": answer,

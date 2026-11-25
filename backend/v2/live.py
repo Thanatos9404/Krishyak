@@ -17,7 +17,7 @@ from sarvam_service import LANGUAGES
 from security import client_ip
 from speech_limits import positive_env
 
-from .assistant import CAMERA, Turn, complete, gather_facts, parse_reply, system_prompt
+from .assistant import CAMERA, Turn, gather_facts, reply, system_prompt
 from .images import classify, scan_slot
 from .providers import sanitize_image
 from .radar import field_crop
@@ -99,7 +99,7 @@ async def turn(
     for item in turns:
         messages.append({"role": "user" if item.role == "farmer" else "assistant", "content": item.text})
     messages.append({"role": "user", "content": question})
-    answer, action = parse_reply(await complete(messages))
+    answer, action = await reply(messages, code)
     await recheck(db, request, "speech_processing", owner=owner, changed="Account changed during the question")
     return {
         "answer": answer,

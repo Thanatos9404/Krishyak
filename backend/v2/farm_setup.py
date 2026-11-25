@@ -72,7 +72,8 @@ def read_json(content):
         value = json.loads(match.group(0)) if match else None
     except json.JSONDecodeError:
         value = None
-    if not isinstance(value, dict):
+    # An empty object means the model read nothing; it is retried, not shown as a blank form.
+    if not isinstance(value, dict) or not value:
         raise HTTPException(502, "Krishyak could not understand that. Please try again or fill the form.")
     return value
 
@@ -362,7 +363,7 @@ async def understand(
     messages = [{"role": "system", "content": PROMPT}, {"role": "user", "content": body.text}]
     for attempt in range(2):
         try:
-            raw = read_json(await complete(messages, temperature=0))
+            raw = read_json(await complete(messages, temperature=0, json_mode=True))
             break
         except HTTPException as error:
             # One retry for an occasional malformed or failed reply; never for limits.
